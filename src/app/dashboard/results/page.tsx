@@ -40,7 +40,7 @@ interface ReportData {
         deviceName: string;
         standards: string[];
         status: string;
-        createdAt: string;
+        createdAt: any; // ISO string from API, or Firestore Timestamp object
         documents: { id: string; fileName: string; fileType: string }[];
         gapResults: GapResult[];
     };
@@ -160,7 +160,16 @@ function ResultsContent() {
                     <h1 className="text-3xl font-bold">{upload.deviceName}</h1>
                     <p className="text-[var(--muted)]">
                         {upload.standards.join(", ")} •{" "}
-                        {new Date(upload.createdAt).toLocaleDateString()}
+                        {(() => {
+                            const d = upload.createdAt;
+                            if (!d) return "";
+                            // Handle ISO string, Firestore Timestamp object, or epoch
+                            const date = typeof d === "string" ? new Date(d)
+                                : d._seconds ? new Date(d._seconds * 1000)
+                                    : d.toDate ? new Date(d.toDate())
+                                        : new Date(d);
+                            return isNaN(date.getTime()) ? "" : date.toLocaleDateString();
+                        })()}
                     </p>
                 </div>
                 <button onClick={exportReport} className="btn-secondary flex items-center gap-2">
@@ -263,8 +272,8 @@ function ResultsContent() {
                         key={tab.key}
                         onClick={() => setFilter(tab.key)}
                         className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${filter === tab.key
-                                ? "bg-[var(--primary)]/10 text-[var(--primary)] border border-[var(--primary)]/30"
-                                : "text-[var(--muted)] hover:text-white border border-transparent hover:border-[var(--border)]"
+                            ? "bg-[var(--primary)]/10 text-[var(--primary)] border border-[var(--primary)]/30"
+                            : "text-[var(--muted)] hover:text-white border border-transparent hover:border-[var(--border)]"
                             }`}
                     >
                         {tab.label}
@@ -298,10 +307,10 @@ function ResultsContent() {
                             </div>
                             <span
                                 className={`badge ${result.status === "compliant"
-                                        ? "badge-compliant"
-                                        : result.status === "gap_detected"
-                                            ? "badge-gap"
-                                            : "badge-review"
+                                    ? "badge-compliant"
+                                    : result.status === "gap_detected"
+                                        ? "badge-gap"
+                                        : "badge-review"
                                     }`}
                             >
                                 {result.status.replace("_", " ")}

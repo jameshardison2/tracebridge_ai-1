@@ -2,6 +2,34 @@ import { NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebase-admin";
 
 /**
+ * Convert Firestore Timestamp fields to ISO strings for JSON serialization.
+ * Firestore Timestamps serialize as {_seconds, _nanoseconds} which breaks new Date().
+ */
+function serializeTimestamps(obj: any): any {
+    if (!obj || typeof obj !== "object") return obj;
+    if (Array.isArray(obj)) return obj.map(serializeTimestamps);
+
+    const result: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+        if (value && typeof value === "object" && "_seconds" in (value as any)) {
+            // Firestore Timestamp → ISO string
+            const ts = value as { _seconds: number; _nanoseconds: number };
+            result[key] = new Date(ts._seconds * 1000).toISOString();
+        } else if (value && typeof value === "object" && typeof (value as any).toDate === "function") {
+            // Firestore Timestamp with toDate method
+            result[key] = (value as any).toDate().toISOString();
+        } else if (Array.isArray(value)) {
+            result[key] = value.map(serializeTimestamps);
+        } else if (value && typeof value === "object") {
+            result[key] = serializeTimestamps(value);
+        } else {
+            result[key] = value;
+        }
+    }
+    return result;
+}
+
+/**
  * GET /api/reports
  * Get all uploads/reports, optionally filtered by upload ID.
  * Query params: ?uploadId=xxx or ?all=true
@@ -21,7 +49,7 @@ export async function GET(request: Request) {
 
         if (uploadId) {
             // Get specific upload with full results
-            const uploadDoc = await adminDb!.collection("uploads").doc(uploadId).get();
+            const uploadDoc = await adminDb.collection("uploads").doc(uploadId).get();
 
             if (!uploadDoc.exists) {
                 return NextResponse.json(
@@ -30,35 +58,31 @@ export async function GET(request: Request) {
                 );
             }
 
-            const upload = { id: uploadDoc.id, ...uploadDoc.data() };
+            const upload = serializeTimestamps({ id: uploadDoc.id, ...uploadDoc.data() });
 
             // Get documents for this upload
-            const documentsSnapshot = await adminDb!
+            const documentsSnapshot = await adminDb
                 .collection("documents")
                 .where("uploadId", "==", uploadId)
                 .get();
 
-            const documents = documentsSnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
+            const documents = documentsSnapshot.docs.map(doc =>
+                serializeTimestamps({ id: doc.id, ...doc.data() })
+            );
 
             // Get gap results for this upload
-            const gapResultsSnapshot = await adminDb!
+            const gapResultsSnapshot = await adminDb
                 .collection("gapResults")
                 .where("uploadId", "==", uploadId)
                 .get();
 
             // Sort in memory to avoid index requirement
             const gapResults = gapResultsSnapshot.docs
-                .map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }))
+                .map(doc => serializeTimestamps({ id: doc.id, ...doc.data() }))
                 .sort((a: any, b: any) => {
                     const statusOrder = { compliant: 0, needs_review: 1, gap_detected: 2 };
-                    return (statusOrder[a.status as keyof typeof statusOrder] || 3) - 
-                           (statusOrder[b.status as keyof typeof statusOrder] || 3);
+                    return (statusOrder[a.status as keyof typeof statusOrder] || 3) -
+                        (statusOrder[b.status as keyof typeof statusOrder] || 3);
                 });
 
             // Calculate summary
@@ -93,13 +117,11 @@ export async function GET(request: Request) {
         }
 
         // Get all uploads (list view)
-        const uploadsSnapshot = await adminDb!
-            .collection("uploads")
-            .get();
+        const uploadsSnapshot = await adminDb.collection("uploads").get();
 
         const uploads = await Promise.all(
             uploadsSnapshot.docs.map(async (doc) => {
-                const uploadData = { id: doc.id, ...doc.data() };
+                const uploadData = serializeTimestamps({ id: doc.id, ...doc.data() });
 
                 // Get document count
                 const documentsSnapshot = await adminDb!
@@ -121,11 +143,9 @@ export async function GET(request: Request) {
             })
         );
 
-        // Sort by createdAt in memory (newest first)
+        // Sort by createdAt (newest first) — now ISO strings
         uploads.sort((a: any, b: any) => {
-            const aTime = a.createdAt?.toMillis?.() || 0;
-            const bTime = b.createdAt?.toMillis?.() || 0;
-            return bTime - aTime;
+            return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
         });
 
         return NextResponse.json({
@@ -135,12 +155,11 @@ export async function GET(request: Request) {
     } catch (error) {
         console.error("Error fetching reports:", error);
         return NextResponse.json(
-            { 
-                success: false, 
-                error: error instanceof Error ? error.message : "Failed to fetch reports" 
+            {
+                success: false,
+                error: error instanceof Error ? error.message : "Failed to fetch reports",
             },
             { status: 500 }
         );
     }
 }
-

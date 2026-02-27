@@ -98,11 +98,7 @@ export default function UploadPage() {
             setUploadId(uploadId);
             setProgress(40);
 
-            // Step 2: Analyze
-            const analyzeData = new FormData();
-            analyzeData.append("uploadId", uploadId);
-            files.forEach((f) => analyzeData.append("files", f));
-
+            // Step 2: Analyze (files are downloaded from Firebase Storage server-side)
             // Simulate progress during analysis
             const progressInterval = setInterval(() => {
                 setProgress((p) => Math.min(p + 2, 90));
@@ -110,7 +106,8 @@ export default function UploadPage() {
 
             const analyzeRes = await fetch("/api/analyze", {
                 method: "POST",
-                body: analyzeData,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ uploadId }),
             });
             const analyzeJson = await analyzeRes.json();
 
@@ -209,8 +206,8 @@ export default function UploadPage() {
                                     key={std.id}
                                     onClick={() => toggleStandard(std.id)}
                                     className={`p-4 rounded-xl border text-left transition-all ${selected
-                                            ? "border-[var(--primary)] bg-[var(--primary)]/10"
-                                            : "border-[var(--border)] hover:border-[var(--primary)]/30"
+                                        ? "border-[var(--primary)] bg-[var(--primary)]/10"
+                                        : "border-[var(--border)] hover:border-[var(--primary)]/30"
                                         }`}
                                 >
                                     <div className="flex items-center gap-2 mb-1">

@@ -8,10 +8,10 @@ import mammoth from "mammoth";
 // Configure fetch with longer timeout for Node.js environment
 const fetchWithTimeout = async (url: string, options: RequestInit & { timeout?: number } = {}) => {
     const { timeout = 60000, ...fetchOptions } = options;
-    
+
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
-    
+
     try {
         const response = await fetch(url, {
             ...fetchOptions,
@@ -42,7 +42,7 @@ function generateMockResponse(
     rawResponse: string;
 } {
     const random = Math.random();
-    
+
     if (random < 0.4) {
         return {
             found: true,
@@ -114,11 +114,35 @@ SECTION: ${section}
 REQUIREMENT: ${requirement}
 EXPECTED DOCUMENT: ${expectedDocument}
 
+DOCUMENT SYNONYM GUIDE:
+Companies often use different names for the same regulatory document. Match on CONTENT, not just filename.
+- "Software Development Plan" = SDP, Dev Plan, Development Plan, SDLC Plan
+- "Software Requirements Specification" = SRS, Requirements Doc, System Requirements
+- "Software Architecture Document" = SAD, Architecture Doc, Design Specification, Software Design
+- "Software Detailed Design" = SDD, Detailed Design, Module Design
+- "Software Verification Plan" = SVP, Test Plan, Verification Plan, V&V Plan
+- "Software Verification Report" = Test Report, Verification Report, V&V Report
+- "Risk Management File" = RMF, Risk File, Risk Analysis, Risk Assessment, FMEA
+- "Risk Management Plan" = RMP, Risk Plan
+- "Software of Unknown Provenance" = SOUP List, SOUP Analysis, Third-Party Components, OTS List
+- "Clinical Evaluation Report" = CER, Clinical Evaluation
+- "Quality Manual" = QMS Manual, Quality Management System Manual
+- "Design History File" = DHF, Design File
+- "Post-Market Surveillance Plan" = PMS Plan, Post-Market Plan
+- "Software Maintenance Plan" = Maintenance Plan, Support Plan
+- "Labeling" = IFU, Instructions for Use, User Manual, Label
+- "Technical Documentation" = Technical File, Tech Doc
+
 INSTRUCTIONS:
-1. Search through ALL uploaded documents thoroughly.
-2. Look for evidence that the requirement is addressed — this could be the exact document, or equivalent content within another document.
-3. Provide specific citations with document name, section, and relevant quotes.
-4. Be conservative: if you find partial evidence, mark confidence as "medium".
+1. Search through ALL uploaded documents thoroughly — look at headings, section titles, content, and conclusions.
+2. Match on CONTENT, not filename: a document called "V&V_Report.docx" may contain the Software Development Plan inside it.
+3. A requirement is met if the SUBSTANCE is addressed anywhere, even spread across multiple documents.
+4. Provide specific citations with document name, section/heading, and relevant quotes.
+
+CONFIDENCE SCALE:
+- "high": The requirement is explicitly and clearly addressed — the expected content exists with clear evidence.
+- "medium": The requirement appears to be addressed but with alternate wording, in a differently-named document, or partially covered. This still counts as evidence.
+- "low": Only a tangential or passing mention — not clearly fulfilling the requirement.
 
 RESPOND IN EXACTLY THIS JSON FORMAT (no markdown, no code blocks):
 {
@@ -136,7 +160,7 @@ RESPOND IN EXACTLY THIS JSON FORMAT (no markdown, no code blocks):
 
     // Process files and convert .docx to text
     const parts: any[] = [{ text: prompt }];
-    
+
     for (const file of fileBuffers) {
         // Check if it's a .docx file
         if (file.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
@@ -144,7 +168,7 @@ RESPOND IN EXACTLY THIS JSON FORMAT (no markdown, no code blocks):
             try {
                 const result = await mammoth.extractRawText({ buffer: file.data });
                 const text = result.value;
-                
+
                 // Add as text part with document name
                 parts.push({
                     text: `\n\n--- Document: ${file.name} ---\n${text}\n--- End of ${file.name} ---\n`

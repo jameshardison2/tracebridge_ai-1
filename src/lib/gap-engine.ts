@@ -98,7 +98,7 @@ export async function runGapAnalysis(
     // Step B: For each rule, query Gemini for evidence
     for (let i = 0; i < rules.length; i++) {
         const rule = rules[i];
-        
+
         // Skip non-applicable rules  
         if (
             rule.expectedDocument === "(Not applicable)" ||
@@ -113,7 +113,7 @@ export async function runGapAnalysis(
             if (i > 0) {
                 await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay
             }
-            
+
             const geminiResult = await queryGeminiREST(
                 fileBuffers,
                 rule.requirement,
@@ -123,11 +123,12 @@ export async function runGapAnalysis(
             );
 
             // Step C: Combine deterministic + semantic results
+            // BUG-003 FIX: medium confidence = compliant (synonym matches, alternate wording)
             let status: "compliant" | "gap_detected" | "needs_review";
 
-            if (geminiResult.found && geminiResult.confidence === "high") {
+            if (geminiResult.found && (geminiResult.confidence === "high" || geminiResult.confidence === "medium")) {
                 status = "compliant";
-            } else if (geminiResult.found && geminiResult.confidence === "medium") {
+            } else if (geminiResult.found && geminiResult.confidence === "low") {
                 status = "needs_review";
             } else {
                 status = "gap_detected";

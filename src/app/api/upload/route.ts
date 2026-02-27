@@ -3,6 +3,14 @@ import { adminAuth, adminDb, adminStorage, verifyIdToken } from "@/lib/firebase-
 import { Upload, DocumentMetadata, AuditLog } from "@/lib/firestore-types";
 import { Timestamp } from "firebase-admin/firestore";
 
+// Route segment config for Vercel
+export const maxDuration = 60;
+export const dynamic = "force-dynamic";
+
+// Vercel Hobby: 4.5MB body limit. Reject files > 4MB to leave room for form fields.
+const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB per file
+const MAX_TOTAL_SIZE = 4.5 * 1024 * 1024; // 4.5MB total payload
+
 /**
  * POST /api/upload
  * Upload documents to Firebase Storage and store metadata in Firestore.
@@ -33,6 +41,30 @@ export async function POST(request: Request) {
                     error: "Missing required fields: deviceName, standards, files",
                 },
                 { status: 400 }
+            );
+        }
+
+        // BUG-001: Validate file sizes before processing
+        let totalSize = 0;
+        for (const file of files) {
+            if (file.size > MAX_FILE_SIZE) {
+                return NextResponse.json(
+                    {
+                        success: false,
+                        error: `File "${file.name}" (${(file.size / 1024 / 1024).toFixed(1)}MB) exceeds the 4MB limit. Please compress or split large documents.`,
+                    },
+                    { status: 413 }
+                );
+            }
+            totalSize += file.size;
+        }
+        if (totalSize > MAX_TOTAL_SIZE) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    error: `Total upload size (${(totalSize / 1024 / 1024).toFixed(1)}MB) exceeds the 4.5MB limit. Try uploading fewer files at a time.`,
+                },
+                { status: 413 }
             );
         }
 
@@ -146,9 +178,9 @@ export async function POST(request: Request) {
     } catch (error) {
         console.error("Upload error:", error);
         return NextResponse.json(
-            { 
-                success: false, 
-                error: error instanceof Error ? error.message : "Failed to process upload" 
+            {
+                success: false,
+                error: error instanceof Error ? error.message : "Failed to process upload"
             },
             { status: 500 }
         );
