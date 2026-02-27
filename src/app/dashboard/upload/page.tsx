@@ -2,6 +2,8 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "@/lib/firebase";
 import {
     Upload,
     FileText,
@@ -30,6 +32,9 @@ const AVAILABLE_STANDARDS = [
     },
 ];
 
+// Per-file limit: 20MB (Firebase Storage free tier allows up to 5GB total)
+const MAX_FILE_SIZE = 20 * 1024 * 1024;
+
 export default function UploadPage() {
     const router = useRouter();
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -37,8 +42,9 @@ export default function UploadPage() {
     const [selectedStandards, setSelectedStandards] = useState<string[]>([]);
     const [files, setFiles] = useState<File[]>([]);
     const [dragActive, setDragActive] = useState(false);
-    const [step, setStep] = useState<"upload" | "analyzing" | "done">("upload");
+    const [step, setStep] = useState<"upload" | "uploading" | "analyzing" | "done">("upload");
     const [progress, setProgress] = useState(0);
+    const [statusText, setStatusText] = useState("");
     const [error, setError] = useState("");
     const [uploadId, setUploadId] = useState("");
 
@@ -55,6 +61,15 @@ export default function UploadPage() {
                 f.type ===
                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         );
+
+        // Check file sizes
+        const oversized = fileArray.filter(f => f.size > MAX_FILE_SIZE);
+        if (oversized.length > 0) {
+            setError(`File "${oversized[0].name}" is ${(oversized[0].size / 1024 / 1024).toFixed(1)}MB. Max file size is 20MB.`);
+            return;
+        }
+
+        setError("");
         setFiles((prev) => [...prev, ...fileArray]);
     };
 
@@ -75,31 +90,78 @@ export default function UploadPage() {
         }
 
         setError("");
-        setStep("analyzing");
-        setProgress(10);
+        setStep("uploading");
+        setProgress(5);
+        setStatusText("Uploading files to cloud storage...");
 
         try {
-            // Step 1: Upload
-            const uploadData = new FormData();
-            uploadData.append("deviceName", deviceName);
-            uploadData.append("standards", JSON.stringify(selectedStandards));
-            files.forEach((f) => uploadData.append("files", f));
+            // Step 1: Upload files directly to Firebase Storage from browser
+            // This bypasses Vercel's 4.5MB body limit entirely
+            const userId = "demo-user"; // Will use Firebase Auth UID when auth is set up
+            const uploadTimestamp = Date.now();
+            const uploadedFiles: {
+                fileName: string;
+                fileType: string;
+                fileSize: number;
+                storagePath: string;
+                storageUrl: string;
+            }[] = [];
 
-            setProgress(20);
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const fileType = file.name.split(".").pop()?.toLowerCase() || "unknown";
+                const storagePath = `uploads/${userId}/${uploadTimestamp}-${file.name}`;
+
+                setStatusText(`Uploading ${file.name} (${i + 1}/${files.length})...`);
+                setProgress(5 + Math.round((i / files.length) * 30));
+
+                // Upload directly to Firebase Storage
+                const storageRef = ref(storage, storagePath);
+                await uploadBytes(storageRef, file, {
+                    contentType: file.type || "application/octet-stream",
+                    customMetadata: {
+                        originalName: file.name,
+                        uploadedBy: userId,
+                    },
+                });
+
+                // Get download URL
+                const storageUrl = await getDownloadURL(storageRef);
+
+                uploadedFiles.push({
+                    fileName: file.name,
+                    fileType,
+                    fileSize: file.size,
+                    storagePath,
+                    storageUrl,
+                });
+            }
+
+            setProgress(35);
+            setStatusText("Creating upload record...");
+
+            // Step 2: Send only metadata to API (tiny JSON — no file size limit)
             const uploadRes = await fetch("/api/upload", {
                 method: "POST",
-                body: uploadData,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    deviceName,
+                    standards: selectedStandards,
+                    files: uploadedFiles,
+                }),
             });
             const uploadJson = await uploadRes.json();
 
             if (!uploadJson.success) throw new Error(uploadJson.error);
 
-            const uploadId = uploadJson.data.uploadId;
-            setUploadId(uploadId);
+            const newUploadId = uploadJson.data.uploadId;
+            setUploadId(newUploadId);
             setProgress(40);
 
-            // Step 2: Analyze (files are downloaded from Firebase Storage server-side)
-            // Simulate progress during analysis
+            // Step 3: Analyze (server downloads files from Storage)
+            setStep("analyzing");
+            setStatusText("Gemini AI is analyzing your documents...");
+
             const progressInterval = setInterval(() => {
                 setProgress((p) => Math.min(p + 2, 90));
             }, 1000);
@@ -107,7 +169,7 @@ export default function UploadPage() {
             const analyzeRes = await fetch("/api/analyze", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ uploadId }),
+                body: JSON.stringify({ uploadId: newUploadId }),
             });
             const analyzeJson = await analyzeRes.json();
 
@@ -120,23 +182,25 @@ export default function UploadPage() {
 
             // Redirect to results after brief pause
             setTimeout(() => {
-                router.push(`/dashboard/results?id=${uploadId}`);
+                router.push(`/dashboard/results?id=${newUploadId}`);
             }, 1500);
         } catch (err) {
-            setError(err instanceof Error ? err.message : "Analysis failed");
+            setError(err instanceof Error ? err.message : "Upload failed. Please try again.");
             setStep("upload");
             setProgress(0);
         }
     };
 
-    if (step === "analyzing") {
+    if (step === "uploading" || step === "analyzing") {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh]">
                 <div className="glass-card p-12 text-center max-w-md w-full gradient-border pulse-glow">
                     <Loader2 className="w-12 h-12 text-[var(--primary)] mx-auto mb-6 animate-spin" />
-                    <h2 className="text-2xl font-bold mb-2">Analyzing Documents</h2>
+                    <h2 className="text-2xl font-bold mb-2">
+                        {step === "uploading" ? "Uploading Documents" : "Analyzing Documents"}
+                    </h2>
                     <p className="text-[var(--muted)] mb-6">
-                        Gemini AI is searching your documents for compliance evidence...
+                        {statusText}
                     </p>
                     <div className="w-full bg-[var(--border)] rounded-full h-2 mb-2">
                         <div
@@ -245,7 +309,7 @@ export default function UploadPage() {
                             Drag & drop files here or click to browse
                         </p>
                         <p className="text-xs text-[var(--muted)]">
-                            Supports PDF and DOCX files
+                            PDF and DOCX files up to 20MB each
                         </p>
                         <input
                             ref={fileInputRef}
