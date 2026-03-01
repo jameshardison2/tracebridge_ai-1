@@ -7,21 +7,7 @@ import { Timestamp } from "firebase-admin/firestore";
 export const maxDuration = 60;
 export const dynamic = "force-dynamic";
 
-/**
- * POST /api/upload
- * Create an upload record and store document metadata in Firestore.
- * 
- * Files are uploaded directly from the browser to Firebase Storage (client-side),
- * so this route only receives lightweight JSON metadata — no file size limits.
- * 
- * Expected body (JSON):
- * {
- *   deviceName: string,
- *   standards: string[],
- *   files: [{ fileName, fileType, fileSize, storagePath, storageUrl }],
- *   idToken?: string
- * }
- */
+
 export async function POST(request: Request) {
     try {
         // Check if Firebase is initialized
@@ -33,14 +19,20 @@ export async function POST(request: Request) {
         }
 
         const body = await request.json();
-        const { deviceName, standards, files, idToken } = body;
+        const { deviceName, files, idToken } = body;
+        // Auto-default to all 3 standards
+        const standards = body.standards || [
+            "IEC 62304:2006",
+            "ISO 14971:2019",
+            "ISO 13485:2016",
+        ];
 
         // Validate required fields
-        if (!deviceName || !standards || !Array.isArray(standards) || !files || !Array.isArray(files) || files.length === 0) {
+        if (!deviceName || !files || !Array.isArray(files) || files.length === 0) {
             return NextResponse.json(
                 {
                     success: false,
-                    error: "Missing required fields: deviceName, standards, files",
+                    error: "Missing required fields: deviceName, files",
                 },
                 { status: 400 }
             );

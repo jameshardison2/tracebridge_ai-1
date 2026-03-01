@@ -1,14 +1,16 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth-context";
 import {
     Shield,
     LayoutDashboard,
     Upload,
-    BarChart3,
     FileText,
     LogOut,
+    Loader2,
 } from "lucide-react";
 
 const navItems = [
@@ -23,6 +25,38 @@ export default function DashboardLayout({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
+    const router = useRouter();
+    const { user, loading, logout } = useAuth();
+
+    // Auth guard — redirect to login if not authenticated
+    useEffect(() => {
+        if (!loading && !user) {
+            router.push("/login");
+        }
+    }, [user, loading, router]);
+
+    const handleLogout = async () => {
+        await logout();
+        router.push("/login");
+    };
+
+    // Show loading while checking auth
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-[var(--primary)]" />
+            </div>
+        );
+    }
+
+    // Don't render dashboard if not authenticated
+    if (!user) {
+        return null;
+    }
+
+    const initials = user.displayName
+        ? user.displayName.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2)
+        : user.email?.[0]?.toUpperCase() || "U";
 
     return (
         <div className="min-h-screen flex">
@@ -47,8 +81,8 @@ export default function DashboardLayout({
                                 key={item.href}
                                 href={item.href}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${isActive
-                                        ? "bg-[var(--primary)]/10 text-[var(--primary)]"
-                                        : "text-[var(--muted)] hover:text-white hover:bg-[var(--card-hover)]"
+                                    ? "bg-[var(--primary)]/10 text-[var(--primary)]"
+                                    : "text-[var(--muted)] hover:text-white hover:bg-[var(--card-hover)]"
                                     }`}
                             >
                                 <item.icon className="w-5 h-5" />
@@ -61,15 +95,34 @@ export default function DashboardLayout({
                 <div className="p-4 border-t border-[var(--border)]">
                     <div className="flex items-center gap-3 px-4 py-3">
                         <div className="w-8 h-8 rounded-full bg-[var(--primary)]/20 flex items-center justify-center">
-                            <span className="text-xs font-bold text-[var(--primary)]">D</span>
+                            {user.photoURL ? (
+                                <img
+                                    src={user.photoURL}
+                                    alt=""
+                                    className="w-8 h-8 rounded-full"
+                                />
+                            ) : (
+                                <span className="text-xs font-bold text-[var(--primary)]">
+                                    {initials}
+                                </span>
+                            )}
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium truncate">Demo User</p>
+                            <p className="text-sm font-medium truncate">
+                                {user.displayName || "User"}
+                            </p>
                             <p className="text-xs text-[var(--muted)] truncate">
-                                demo@tracebridge.ai
+                                {user.email}
                             </p>
                         </div>
                     </div>
+                    <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-3 px-4 py-2 rounded-xl text-sm text-[var(--muted)] hover:text-[var(--danger)] hover:bg-[var(--danger)]/10 transition-all mt-1"
+                    >
+                        <LogOut className="w-4 h-4" />
+                        Sign Out
+                    </button>
                 </div>
             </aside>
 

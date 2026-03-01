@@ -33,7 +33,7 @@ export default function LandingPage() {
               Standards
             </a>
           </nav>
-          <Link href="/dashboard" className="btn-primary text-sm flex items-center gap-2">
+          <Link href="/login" className="btn-primary text-sm flex items-center gap-2">
             Launch App <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -58,13 +58,13 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="/dashboard/upload"
+              href="/login"
               className="btn-primary text-lg px-8 py-4 flex items-center justify-center gap-2"
             >
               Start Analysis <ArrowRight className="w-5 h-5" />
             </Link>
             <Link
-              href="/dashboard"
+              href="/login"
               className="btn-secondary text-lg px-8 py-4 flex items-center justify-center gap-2"
             >
               View Dashboard
@@ -140,20 +140,14 @@ export default function LandingPage() {
               },
               {
                 num: "02",
-                title: "Select Standards",
-                desc: "Choose which regulatory standards to check against — IEC 62304 (Software), ISO 14971 (Risk), ISO 13485 (QMS).",
-                icon: Shield,
-              },
-              {
-                num: "03",
                 title: "AI Analysis",
-                desc: "Gemini AI searches your documents for evidence of each compliance requirement, returning citations.",
+                desc: "Gemini AI scans your documents against IEC 62304, ISO 14971, and ISO 13485, returning citations with exact quotes.",
                 icon: Brain,
               },
               {
-                num: "04",
+                num: "03",
                 title: "Gap Report",
-                desc: "Receive a structured report showing compliant items, detected gaps, and items needing review — all with citations.",
+                desc: "Receive a structured report showing what FDA requires, what you submitted, identified gaps, and remediation steps.",
                 icon: BarChart3,
               },
             ].map((step, i) => (

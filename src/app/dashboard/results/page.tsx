@@ -11,9 +11,11 @@ import {
     FileText,
     ArrowLeft,
     Download,
-    ChevronDown,
-    ChevronUp,
     ExternalLink,
+    X,
+    ChevronLeft,
+    ChevronRight,
+    Eye,
 } from "lucide-react";
 
 interface GapResult {
@@ -40,7 +42,7 @@ interface ReportData {
         deviceName: string;
         standards: string[];
         status: string;
-        createdAt: any; // ISO string from API, or Firestore Timestamp object
+        createdAt: any;
         documents: { id: string; fileName: string; fileType: string }[];
         gapResults: GapResult[];
     };
@@ -53,13 +55,50 @@ interface ReportData {
     };
 }
 
+// Severity-based cost/timeline estimates
+function getEstimates(severity?: string, status?: string) {
+    if (status === "compliant") return { cost: "—", timeline: "—" };
+    switch (severity) {
+        case "critical":
+            return { cost: "$5,000 – $10,000", timeline: "8–12 weeks" };
+        case "major":
+            return { cost: "$2,000 – $5,000", timeline: "4–8 weeks" };
+        case "minor":
+            return { cost: "$500 – $2,000", timeline: "2–4 weeks" };
+        default:
+            return { cost: "$1,000 – $5,000", timeline: "4–8 weeks" };
+    }
+}
+
+// Get category from standard
+function getCategory(standard: string): string {
+    if (standard.includes("62304")) return "V&V Documentation";
+    if (standard.includes("14971")) return "Risk Management";
+    if (standard.includes("13485")) return "Quality Systems";
+    return "General";
+}
+
+// Get priority label and color
+function getPriority(status: string, severity?: string) {
+    if (status === "compliant") {
+        return { label: "PASSED", color: "#10b981", bg: "rgba(16,185,129,0.1)" };
+    }
+    if (severity === "critical" || status === "gap_detected") {
+        return { label: "CRITICAL", color: "#ef4444", bg: "rgba(239,68,68,0.1)" };
+    }
+    if (severity === "major") {
+        return { label: "MODERATE", color: "#f59e0b", bg: "rgba(245,158,11,0.1)" };
+    }
+    return { label: "LOW", color: "#6366f1", bg: "rgba(99,102,241,0.1)" };
+}
+
 function ResultsContent() {
     const searchParams = useSearchParams();
     const uploadId = searchParams.get("id");
     const [report, setReport] = useState<ReportData | null>(null);
     const [loading, setLoading] = useState(true);
-    const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
     const [filter, setFilter] = useState<"all" | "gap_detected" | "needs_review" | "compliant">("all");
+    const [selectedResult, setSelectedResult] = useState<GapResult | null>(null);
 
     useEffect(() => {
         if (!uploadId) {
@@ -75,28 +114,6 @@ function ResultsContent() {
             .finally(() => setLoading(false));
     }, [uploadId]);
 
-    const toggleRow = (id: string) => {
-        setExpandedRows((prev) => {
-            const next = new Set(prev);
-            if (next.has(id)) next.delete(id);
-            else next.add(id);
-            return next;
-        });
-    };
-
-    const getStatusIcon = (status: string) => {
-        switch (status) {
-            case "compliant":
-                return <CheckCircle2 className="w-5 h-5 text-[var(--success)]" />;
-            case "gap_detected":
-                return <XCircle className="w-5 h-5 text-[var(--danger)]" />;
-            case "needs_review":
-                return <AlertTriangle className="w-5 h-5 text-[var(--warning)]" />;
-            default:
-                return null;
-        }
-    };
-
     const exportReport = () => {
         if (!report) return;
         const blob = new Blob([JSON.stringify(report, null, 2)], {
@@ -108,6 +125,17 @@ function ResultsContent() {
         a.download = `gap-report-${report.upload.deviceName.replace(/\s+/g, "-")}.json`;
         a.click();
         URL.revokeObjectURL(url);
+    };
+
+    // Navigate between gaps in modal
+    const navigateGap = (direction: "prev" | "next") => {
+        if (!selectedResult || !report) return;
+        const results = report.upload.gapResults;
+        const currentIdx = results.findIndex(r => r.id === selectedResult.id);
+        const nextIdx = direction === "next"
+            ? Math.min(currentIdx + 1, results.length - 1)
+            : Math.max(currentIdx - 1, 0);
+        setSelectedResult(results[nextIdx]);
     };
 
     if (loading) {
@@ -142,7 +170,6 @@ function ResultsContent() {
             ? upload.gapResults
             : upload.gapResults.filter((r) => r.status === filter);
 
-    // Compliance score ring
     const circumference = 2 * Math.PI * 45;
     const offset = circumference - (summary.complianceScore / 100) * circumference;
 
@@ -163,101 +190,76 @@ function ResultsContent() {
                         {(() => {
                             const d = upload.createdAt;
                             if (!d) return "";
-                            // Handle ISO string, Firestore Timestamp object, or epoch
                             const date = typeof d === "string" ? new Date(d)
                                 : d._seconds ? new Date(d._seconds * 1000)
-                                    : d.toDate ? new Date(d.toDate())
-                                        : new Date(d);
+                                    : new Date(d);
                             return isNaN(date.getTime()) ? "" : date.toLocaleDateString();
                         })()}
                     </p>
                 </div>
                 <button onClick={exportReport} className="btn-secondary flex items-center gap-2">
-                    <Download className="w-4 h-4" /> Export JSON
+                    <Download className="w-4 h-4" /> Export
                 </button>
             </div>
 
             {/* Summary Cards */}
             <div className="grid md:grid-cols-4 gap-4 mb-8">
                 {/* Score Ring */}
-                <div className="glass-card p-6 flex items-center gap-4 md:col-span-1">
+                <div className="glass-card p-6 flex items-center gap-4">
                     <svg width="80" height="80" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="var(--border)" strokeWidth="6" />
                         <circle
-                            cx="50"
-                            cy="50"
-                            r="45"
-                            fill="none"
-                            stroke="var(--border)"
-                            strokeWidth="6"
-                        />
-                        <circle
-                            cx="50"
-                            cy="50"
-                            r="45"
-                            fill="none"
-                            stroke={
-                                summary.complianceScore >= 80
-                                    ? "var(--success)"
-                                    : summary.complianceScore >= 50
-                                        ? "var(--warning)"
-                                        : "var(--danger)"
-                            }
+                            cx="50" cy="50" r="45" fill="none"
+                            stroke={summary.complianceScore >= 80 ? "var(--success)" : summary.complianceScore >= 50 ? "var(--warning)" : "var(--danger)"}
                             strokeWidth="6"
                             strokeDasharray={circumference}
                             strokeDashoffset={offset}
                             strokeLinecap="round"
                             transform="rotate(-90 50 50)"
-                            style={{ transition: "stroke-dashoffset 1s ease", animation: "scoreIn 1s ease" }}
+                            style={{ transition: "stroke-dashoffset 1s ease" }}
                         />
-                        <text
-                            x="50"
-                            y="50"
-                            textAnchor="middle"
-                            dominantBaseline="central"
-                            fill="white"
-                            fontSize="20"
-                            fontWeight="bold"
-                        >
+                        <text x="50" y="50" textAnchor="middle" dominantBaseline="central" fill="white" fontSize="20" fontWeight="bold">
                             {summary.complianceScore}%
                         </text>
                     </svg>
                     <div>
-                        <p className="text-sm text-[var(--muted)]">Compliance</p>
-                        <p className="font-bold text-lg">Score</p>
+                        <p className="text-sm text-[var(--muted)]">Completion</p>
+                        <p className="font-bold text-lg">{summary.complianceScore}%</p>
                     </div>
                 </div>
 
-                {/* Stat cards */}
-                {[
-                    {
-                        label: "Compliant",
-                        value: summary.compliant,
-                        color: "var(--success)",
-                        icon: CheckCircle2,
-                    },
-                    {
-                        label: "Gaps Found",
-                        value: summary.gaps,
-                        color: "var(--danger)",
-                        icon: XCircle,
-                    },
-                    {
-                        label: "Needs Review",
-                        value: summary.needsReview,
-                        color: "var(--warning)",
-                        icon: AlertTriangle,
-                    },
-                ].map((stat, i) => (
-                    <div key={i} className="glass-card p-6">
-                        <div className="flex items-center justify-between mb-2">
-                            <stat.icon className="w-5 h-5" style={{ color: stat.color }} />
-                            <span className="text-3xl font-bold" style={{ color: stat.color }}>
-                                {stat.value}
-                            </span>
-                        </div>
-                        <p className="text-sm text-[var(--muted)]">{stat.label}</p>
+                {/* Gaps Detected */}
+                <div className="glass-card p-6">
+                    <div className="flex items-center justify-between mb-2">
+                        <XCircle className="w-5 h-5" style={{ color: "var(--danger)" }} />
+                        <span className="text-3xl font-bold" style={{ color: "var(--danger)" }}>
+                            {summary.gaps}
+                        </span>
                     </div>
-                ))}
+                    <p className="text-sm text-[var(--muted)]">Gaps Detected</p>
+                </div>
+
+                {/* Needs Review */}
+                <div className="glass-card p-6">
+                    <div className="flex items-center justify-between mb-2">
+                        <AlertTriangle className="w-5 h-5" style={{ color: "var(--warning)" }} />
+                        <span className="text-3xl font-bold" style={{ color: "var(--warning)" }}>
+                            {summary.needsReview}
+                        </span>
+                    </div>
+                    <p className="text-sm text-[var(--muted)]">Needs Review</p>
+                </div>
+
+                {/* Compliant */}
+                <div className="glass-card p-6">
+                    <div className="flex items-center justify-between mb-2">
+                        <CheckCircle2 className="w-5 h-5" style={{ color: "var(--success)" }} />
+                        <span className="text-3xl font-bold" style={{ color: "var(--success)" }}>
+                            {summary.compliant}
+                        </span>
+                    </div>
+                    <p className="text-sm text-[var(--muted)]">Compliant</p>
+                </div>
             </div>
 
             {/* Filter tabs */}
@@ -282,98 +284,253 @@ function ResultsContent() {
             </div>
 
             {/* Results Table */}
-            <div className="space-y-2">
-                {filteredResults.map((result) => (
-                    <div key={result.id} className="glass-card overflow-hidden">
-                        <button
-                            onClick={() => toggleRow(result.id)}
-                            className="w-full p-4 flex items-center gap-4 text-left hover:bg-[var(--card-hover)] transition-colors"
+            <div className="glass-card overflow-hidden">
+                {/* Table header */}
+                <div className="grid grid-cols-[100px_1fr_1fr_120px_100px] gap-4 px-6 py-3 border-b border-[var(--border)] text-xs font-semibold text-[var(--muted)] uppercase tracking-wider">
+                    <span>Priority</span>
+                    <span>Gap Category</span>
+                    <span>FDA Requirement</span>
+                    <span>Status</span>
+                    <span>Action</span>
+                </div>
+
+                {/* Table rows */}
+                {filteredResults.map((result) => {
+                    const priority = getPriority(result.status, result.severity);
+                    const category = getCategory(result.standard);
+
+                    return (
+                        <div
+                            key={result.id}
+                            className="grid grid-cols-[100px_1fr_1fr_120px_100px] gap-4 px-6 py-4 border-b border-[var(--border)] last:border-b-0 hover:bg-[var(--card-hover)] transition-colors items-center"
                         >
-                            {getStatusIcon(result.status)}
-                            <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 mb-1">
-                                    <span className="text-sm font-mono text-[var(--primary)]">
-                                        {result.standard} § {result.section}
-                                    </span>
-                                    {result.severity && (
-                                        <span className={`badge badge-${result.severity}`}>
-                                            {result.severity}
-                                        </span>
-                                    )}
-                                </div>
-                                <p className="text-sm font-medium truncate">
-                                    {result.missingRequirement}
-                                </p>
+                            {/* Priority badge */}
+                            <div>
+                                <span
+                                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
+                                    style={{ color: priority.color, backgroundColor: priority.bg }}
+                                >
+                                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: priority.color }} />
+                                    {priority.label}
+                                </span>
                             </div>
-                            <span
-                                className={`badge ${result.status === "compliant"
-                                    ? "badge-compliant"
-                                    : result.status === "gap_detected"
-                                        ? "badge-gap"
-                                        : "badge-review"
-                                    }`}
-                            >
-                                {result.status.replace("_", " ")}
-                            </span>
-                            {expandedRows.has(result.id) ? (
-                                <ChevronUp className="w-4 h-4 text-[var(--muted)]" />
-                            ) : (
-                                <ChevronDown className="w-4 h-4 text-[var(--muted)]" />
-                            )}
-                        </button>
 
-                        {expandedRows.has(result.id) && (
-                            <div className="px-4 pb-4 border-t border-[var(--border)] pt-4">
-                                <div className="mb-4">
-                                    <p className="text-xs text-[var(--muted)] mb-1 uppercase tracking-wider">
-                                        Requirement
-                                    </p>
-                                    <p className="text-sm">{result.requirement}</p>
-                                </div>
-
-                                {result.citations &&
-                                    Array.isArray(result.citations) &&
-                                    result.citations.length > 0 && (
-                                        <div className="mt-4">
-                                            <p className="text-xs text-[var(--muted)] mb-2 uppercase tracking-wider">
-                                                Citations
-                                            </p>
-                                            <div className="space-y-2">
-                                                {result.citations.map((cite, i) => (
-                                                    <div
-                                                        key={i}
-                                                        className="p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] text-sm"
-                                                    >
-                                                        <div className="flex items-center gap-2 mb-1">
-                                                            <FileText className="w-3 h-3 text-[var(--primary)]" />
-                                                            <span className="font-medium text-[var(--primary)]">
-                                                                {cite.source}
-                                                            </span>
-                                                            <span className="text-[var(--muted)]">
-                                                                — {cite.section}
-                                                            </span>
-                                                        </div>
-                                                        {cite.quote && (
-                                                            <p className="text-[var(--muted)] italic text-xs mt-1">
-                                                                &ldquo;{cite.quote}&rdquo;
-                                                            </p>
-                                                        )}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
+                            {/* Category */}
+                            <div>
+                                <p className="text-sm font-medium">{category}</p>
+                                <p className="text-xs text-[var(--muted)]">{result.standard}</p>
                             </div>
-                        )}
-                    </div>
-                ))}
+
+                            {/* FDA Requirement */}
+                            <div>
+                                <p className="text-sm truncate">{result.missingRequirement || result.requirement}</p>
+                                <p className="text-xs text-[var(--muted)]">§ {result.section}</p>
+                            </div>
+
+                            {/* Status */}
+                            <div>
+                                <span className={`text-xs font-medium ${result.status === "compliant" ? "text-[var(--success)]" :
+                                        result.status === "gap_detected" ? "text-[var(--danger)]" :
+                                            "text-[var(--warning)]"
+                                    }`}>
+                                    {result.status === "compliant" ? "Complete" :
+                                        result.status === "gap_detected" ? "Missing" : "Incomplete"}
+                                </span>
+                            </div>
+
+                            {/* Action */}
+                            <div>
+                                <button
+                                    onClick={() => setSelectedResult(result)}
+                                    className="text-sm text-[var(--primary)] hover:underline flex items-center gap-1"
+                                >
+                                    <Eye className="w-3.5 h-3.5" />
+                                    View Details
+                                </button>
+                            </div>
+                        </div>
+                    );
+                })}
 
                 {filteredResults.length === 0 && (
-                    <div className="glass-card p-12 text-center text-[var(--muted)]">
+                    <div className="p-12 text-center text-[var(--muted)]">
                         No results match the current filter.
                     </div>
                 )}
             </div>
+
+            {/* ==================== VIEW DETAILS MODAL ==================== */}
+            {selectedResult && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="bg-[var(--card)] rounded-2xl border border-[var(--border)] w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+                        {/* Modal Header */}
+                        <div className="sticky top-0 bg-[#1a1f3d] rounded-t-2xl px-6 py-5 flex items-start justify-between border-b border-[var(--border)]">
+                            <div>
+                                <h2 className="text-xl font-bold mb-1">
+                                    Gap Analysis: {getCategory(selectedResult.standard)} — {selectedResult.section}
+                                </h2>
+                                <span
+                                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
+                                    style={{
+                                        color: getPriority(selectedResult.status, selectedResult.severity).color,
+                                        backgroundColor: getPriority(selectedResult.status, selectedResult.severity).bg,
+                                    }}
+                                >
+                                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: getPriority(selectedResult.status, selectedResult.severity).color }} />
+                                    {getPriority(selectedResult.status, selectedResult.severity).label}
+                                </span>
+                            </div>
+                            <button
+                                onClick={() => setSelectedResult(null)}
+                                className="p-1 rounded-lg hover:bg-white/10 transition-colors"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        {/* Modal Body — 3 Columns */}
+                        <div className="grid md:grid-cols-3 gap-0 md:gap-0">
+                            {/* Column 1: What FDA Requires */}
+                            <div className="p-6 border-r border-[var(--border)]">
+                                <h3 className="text-sm font-semibold text-[var(--primary)] mb-4 uppercase tracking-wider">
+                                    What FDA Requires
+                                </h3>
+                                <p className="text-sm font-medium mb-2">
+                                    {selectedResult.standard} § {selectedResult.section}
+                                </p>
+                                <p className="text-sm text-[var(--muted)] leading-relaxed mb-4">
+                                    {selectedResult.requirement}
+                                </p>
+                                <p className="text-xs text-[var(--muted)] italic">
+                                    Source: {selectedResult.standard}
+                                </p>
+                            </div>
+
+                            {/* Column 2: What You Submitted */}
+                            <div className="p-6 border-r border-[var(--border)]">
+                                <h3 className="text-sm font-semibold text-[var(--primary)] mb-4 uppercase tracking-wider">
+                                    What You Submitted
+                                </h3>
+                                {selectedResult.citations && selectedResult.citations.length > 0 ? (
+                                    <div className="space-y-3">
+                                        {selectedResult.citations.map((cite, i) => (
+                                            <div key={i} className="flex items-start gap-2">
+                                                <CheckCircle2 className="w-4 h-4 text-[var(--success)] flex-shrink-0 mt-0.5" />
+                                                <div>
+                                                    <p className="text-sm font-medium">{cite.source}</p>
+                                                    <p className="text-xs text-[var(--muted)]">{cite.section}</p>
+                                                    {cite.quote && (
+                                                        <p className="text-xs text-[var(--muted)] italic mt-1">
+                                                            &ldquo;{cite.quote}&rdquo;
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="flex items-start gap-2">
+                                        <XCircle className="w-4 h-4 text-[var(--danger)] flex-shrink-0 mt-0.5" />
+                                        <p className="text-sm text-[var(--danger)]">
+                                            No matching evidence found in submitted documents.
+                                        </p>
+                                    </div>
+                                )}
+
+                                {/* View Submitted Document button */}
+                                {upload.documents.length > 0 && (
+                                    <div className="mt-6">
+                                        <button className="btn-secondary text-xs px-3 py-2 flex items-center gap-1.5">
+                                            <FileText className="w-3.5 h-3.5" />
+                                            View Submitted Documents
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Column 3: Gap Identified */}
+                            <div className="p-6">
+                                <h3 className="text-sm font-semibold text-[var(--primary)] mb-4 uppercase tracking-wider">
+                                    Gap Identified
+                                </h3>
+
+                                {selectedResult.status === "compliant" ? (
+                                    <div className="p-4 rounded-xl bg-[var(--success)]/10 border border-[var(--success)]/20">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <CheckCircle2 className="w-5 h-5 text-[var(--success)]" />
+                                            <p className="text-sm font-semibold text-[var(--success)]">
+                                                REQUIREMENT MET
+                                            </p>
+                                        </div>
+                                        <p className="text-xs text-[var(--muted)]">
+                                            Your submission adequately addresses this requirement.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="p-4 rounded-xl bg-[var(--danger)]/10 border border-[var(--danger)]/20 mb-4">
+                                            <p className="text-xs font-semibold text-[var(--danger)] uppercase mb-2">
+                                                {selectedResult.status === "gap_detected" ? "MISSING REQUIREMENT:" : "NEEDS REVIEW:"}
+                                            </p>
+                                            <p className="text-sm text-[var(--muted)] leading-relaxed">
+                                                {selectedResult.missingRequirement || "Evidence insufficient for this requirement."}
+                                            </p>
+                                        </div>
+
+                                        {/* Remediation */}
+                                        <div className="mb-4">
+                                            <p className="text-xs font-semibold text-[var(--muted)] uppercase mb-2">
+                                                REMEDIATION:
+                                            </p>
+                                            <ol className="text-sm text-[var(--muted)] space-y-1 list-decimal list-inside">
+                                                <li>Review {selectedResult.standard} § {selectedResult.section}</li>
+                                                <li>Prepare documentation addressing the requirement</li>
+                                                <li>Include evidence in your submission package</li>
+                                                <li>Re-run gap analysis to verify compliance</li>
+                                            </ol>
+                                        </div>
+
+                                        {/* Estimates */}
+                                        <div className="space-y-2 pt-4 border-t border-[var(--border)]">
+                                            <div className="flex justify-between">
+                                                <span className="text-sm font-medium">Estimated Timeline:</span>
+                                                <span className="text-sm text-[var(--muted)]">
+                                                    {getEstimates(selectedResult.severity, selectedResult.status).timeline}
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between">
+                                                <span className="text-sm font-medium">Estimated Cost:</span>
+                                                <span className="text-sm text-[var(--muted)]">
+                                                    {getEstimates(selectedResult.severity, selectedResult.status).cost}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Modal Footer — Navigation */}
+                        <div className="px-6 py-4 border-t border-[var(--border)] flex items-center justify-between">
+                            <div />
+                            <div className="flex items-center gap-3">
+                                <button
+                                    onClick={() => navigateGap("prev")}
+                                    className="btn-secondary text-sm px-4 py-2 flex items-center gap-1"
+                                >
+                                    <ChevronLeft className="w-4 h-4" /> Previous Gap
+                                </button>
+                                <button
+                                    onClick={() => navigateGap("next")}
+                                    className="btn-secondary text-sm px-4 py-2 flex items-center gap-1"
+                                >
+                                    Next Gap <ChevronRight className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
