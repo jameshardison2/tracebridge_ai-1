@@ -40,6 +40,7 @@ export default function UploadPage() {
     const [dragActive, setDragActive] = useState(false);
     const [step, setStep] = useState<"upload" | "analyzing" | "done">("upload");
     const [activeStep, setActiveStep] = useState(0);
+    const [analysisProgress, setAnalysisProgress] = useState({ current: 0, total: 0 });
     const [error, setError] = useState("");
     const [uploadId, setUploadId] = useState("");
 
@@ -144,54 +145,48 @@ export default function UploadPage() {
             setUploadId(newUploadId);
             setActiveStep(2);
 
-            // Step 3: Kick off analysis — returns IMMEDIATELY (runs in background on server)
-            setTimeout(() => setActiveStep(3), 1500);
-            const analyzeRes = await fetch("/api/analyze", {
+            // Step 3: Get list of rules to check
+            setActiveStep(3);
+            const startRes = await fetch("/api/analyze/start", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ uploadId: newUploadId }),
             });
+            const startJson = await startRes.json();
+            if (!startJson.success) throw new Error(startJson.error);
 
-            let analyzeJson;
-            try {
-                analyzeJson = await analyzeRes.json();
-            } catch {
-                throw new Error(`Analysis error (${analyzeRes.status})`);
-            }
-            if (!analyzeJson.success) throw new Error(analyzeJson.error);
+            const rules = startJson.data.rules;
+            const totalRules = rules.length;
+            setAnalysisProgress({ current: 0, total: totalRules });
 
-            // Step 4: Poll /api/reports until analysis completes (status = complete/failed)
+            // Step 4: Analyze rules ONE AT A TIME (each ≈10-15s, well under Vercel 60s limit)
             setActiveStep(4);
-            const MAX_POLLS = 60;       // 3 minutes max (60 × 3s)
-            const POLL_INTERVAL = 3000; // 3 seconds
+            for (let i = 0; i < totalRules; i++) {
+                setAnalysisProgress({ current: i + 1, total: totalRules });
 
-            await new Promise<void>((resolve, reject) => {
-                let polls = 0;
-                const poll = setInterval(async () => {
-                    polls++;
-                    try {
-                        const statusRes = await fetch(`/api/reports?uploadId=${newUploadId}`);
-                        const statusJson = await statusRes.json();
+                const ruleRes = await fetch("/api/analyze/rule", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ uploadId: newUploadId, rule: rules[i] }),
+                });
 
-                        if (statusJson.success) {
-                            const status = statusJson.data?.upload?.status;
-                            if (status === "complete") {
-                                clearInterval(poll);
-                                resolve();
-                            } else if (status === "failed") {
-                                clearInterval(poll);
-                                reject(new Error(statusJson.data?.upload?.errorMessage || "Analysis failed on server"));
-                            }
-                        }
+                const ruleJson = await ruleRes.json();
+                if (!ruleJson.success) {
+                    console.warn(`Rule ${rules[i].section} failed:`, ruleJson.error);
+                    // Continue processing remaining rules even if one fails
+                }
 
-                        if (polls >= MAX_POLLS) {
-                            clearInterval(poll);
-                            reject(new Error("Analysis timed out. Please try again."));
-                        }
-                    } catch {
-                        // Network blip — keep polling
-                    }
-                }, POLL_INTERVAL);
+                // Small delay between rules to avoid rate limiting
+                if (i < totalRules - 1) {
+                    await new Promise(r => setTimeout(r, 500));
+                }
+            }
+
+            // Step 5: Finalize analysis
+            await fetch("/api/analyze/complete", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ uploadId: newUploadId }),
             });
 
             setStep("done");
@@ -254,7 +249,10 @@ export default function UploadPage() {
                         />
                     </div>
                     <p className="text-xs text-[var(--muted)]">
-                        Step {activeStep + 1} of {ANALYSIS_STEPS.length}
+                        {analysisProgress.total > 0
+                            ? `Analyzing rule ${analysisProgress.current} of ${analysisProgress.total}`
+                            : `Step ${activeStep + 1} of ${ANALYSIS_STEPS.length}`
+                        }
                     </p>
                 </div>
             </div>
