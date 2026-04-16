@@ -126,7 +126,7 @@ export default function DashboardPage() {
                     <div className="flex-1">
                         <h3 className="font-semibold mb-1">View Reports</h3>
                         <p className="text-sm text-[var(--muted)]">
-                            Browse your gap analysis reports
+                            Browse your gap analysis reports. Here is a test
                         </p>
                     </div>
                     <ArrowRight className="w-5 h-5 text-[var(--muted)] group-hover:text-[var(--accent)] transition-colors" />
