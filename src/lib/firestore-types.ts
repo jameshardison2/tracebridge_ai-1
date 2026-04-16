@@ -11,6 +11,12 @@ export interface Upload {
   id?: string;
   userId: string;
   deviceName: string;
+  productCode?: string;
+  features?: {
+      requiresSoftware: boolean;
+      requiresClinical: boolean;
+      requiresBiocompatibility: boolean;
+  };
   standards: string[];
   status: "pending" | "analyzing" | "complete" | "failed";
   createdAt: Timestamp | Date;

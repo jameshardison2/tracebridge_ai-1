@@ -18,6 +18,7 @@ import {
     BarChart3,
     FileSearch,
 } from "lucide-react";
+import { ProductCodeSelector } from "@/components/ProductCodeSelector";
 
 // Per-file limit: 20MB
 const MAX_FILE_SIZE = 20 * 1024 * 1024;
@@ -36,6 +37,7 @@ export default function UploadPage() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { user } = useAuth();
     const [deviceName, setDeviceName] = useState("");
+    const [selectedCode, setSelectedCode] = useState<any>(null);
     const [files, setFiles] = useState<File[]>([]);
     const [dragActive, setDragActive] = useState(false);
     const [step, setStep] = useState<"upload" | "analyzing" | "done">("upload");
@@ -73,8 +75,8 @@ export default function UploadPage() {
     };
 
     const handleSubmit = async () => {
-        if (!deviceName || files.length === 0) {
-            setError("Please enter a device name and upload at least one document.");
+        if (!selectedCode || files.length === 0) {
+            setError("Please select a medical device type and upload at least one document.");
             return;
         }
 
@@ -127,7 +129,13 @@ export default function UploadPage() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    deviceName,
+                    deviceName: selectedCode.description,
+                    productCode: selectedCode.code,
+                    features: {
+                        requiresSoftware: selectedCode.requiresSoftware,
+                        requiresClinical: selectedCode.requiresClinical,
+                        requiresBiocompatibility: selectedCode.requiresBiocompatibility
+                    },
                     files: uploadedFiles,
                     idToken,
                 }),
@@ -290,19 +298,9 @@ export default function UploadPage() {
             )}
 
             <div className="space-y-6">
-                {/* Device Name */}
+                {/* Device Type Selector */}
                 <div className="glass-card p-6">
-                    <label className="block text-sm font-medium mb-3">Device Name</label>
-                    <input
-                        type="text"
-                        value={deviceName}
-                        onChange={(e) => setDeviceName(e.target.value)}
-                        placeholder="e.g., Horizon POD Insulin Pump"
-                        className="w-full px-4 py-3 rounded-xl bg-[var(--background)] border border-[var(--border)] text-white placeholder:text-[var(--muted)] focus:outline-none focus:border-[var(--primary)] transition-colors"
-                    />
-                    <p className="text-xs text-[var(--muted)] mt-2">
-                        TraceBridge will automatically check against IEC 62304, ISO 14971, and ISO 13485.
-                    </p>
+                    <ProductCodeSelector onSelect={setSelectedCode} />
                 </div>
 
                 {/* File Upload */}
@@ -369,7 +367,7 @@ export default function UploadPage() {
                 {/* Submit */}
                 <button
                     onClick={handleSubmit}
-                    disabled={!deviceName || files.length === 0}
+                    disabled={!selectedCode || files.length === 0}
                     className="btn-primary w-full py-4 text-lg disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:transform-none flex items-center justify-center gap-2"
                 >
                     <Shield className="w-5 h-5" />

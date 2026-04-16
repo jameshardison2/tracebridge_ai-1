@@ -19,7 +19,7 @@ export async function POST(request: Request) {
         }
 
         const body = await request.json();
-        const { deviceName, files, idToken } = body;
+        const { deviceName, productCode, features, files, idToken } = body;
         // Auto-default to all 3 standards
         const standards = body.standards || [
             "IEC 62304:2006",
@@ -58,6 +58,8 @@ export async function POST(request: Request) {
         const uploadData: Upload = {
             userId,
             deviceName,
+            productCode: productCode || "Unknown",
+            features: features || null,
             standards,
             status: "pending",
             createdAt: Timestamp.now(),

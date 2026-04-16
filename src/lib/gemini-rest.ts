@@ -93,41 +93,35 @@ function generateMockResponse(
 
 /**
  * Query Gemini using direct REST API (v1)
+ * Optimized for Single-Prompt Batching
  */
-export async function queryGeminiREST(
+export async function queryGeminiRESTArray(
     fileBuffers: { data: Buffer; mimeType: string; name: string }[],
-    requirement: string,
-    standard: string,
-    section: string,
-    expectedDocument: string
-): Promise<{
-    found: boolean;
-    confidence: "high" | "medium" | "low";
-    citations: { source: string; section: string; quote: string }[];
-    rawResponse: string;
-    estimatedCost: string;
-    estimatedTimeline: string;
-    remediationSteps: string[];
-}> {
-    console.log(`[DEBUG] Querying Gemini REST API for ${standard} ${section}`);
+    rules: { id: string; requirement: string; standard: string; section: string; expectedDocument: string }[]
+): Promise<any[]> {
+    console.log(`[DEBUG] Querying Gemini REST API for batch of ${rules.length} rules!`);
     console.log(`[DEBUG] API Key present: ${!!GEMINI_API_KEY}`);
     console.log(`[DEBUG] Mock mode: ${MOCK_MODE}`);
 
-    // Use mock mode if enabled
+    // Build the rules payload string
+    const rulesListString = rules.map(r => `ruleId: ${r.id}\nSTANDARD: ${r.standard}\nSECTION: ${r.section}\nREQUIREMENT: ${r.requirement}\nEXPECTED DOCUMENT: ${r.expectedDocument}`).join('\n\n');
+
     if (MOCK_MODE) {
-        console.log(`[MOCK MODE] Analyzing ${standard} ${section}`);
+        console.log(`[MOCK MODE] Analyzing ${rules.length} rules (Batch)`);
         await new Promise(resolve => setTimeout(resolve, 100));
-        return generateMockResponse(requirement, standard, section);
+        return rules.map(r => {
+            const mock = generateMockResponse(r.requirement, r.standard, r.section);
+            return { ruleId: r.id, ...mock };
+        });
     }
 
     const prompt = `You are a regulatory compliance auditor reviewing medical device documentation.
 
-TASK: Determine if the uploaded documents contain sufficient evidence for the following regulatory requirement.
+TASK: Determine if the uploaded documents contain sufficient evidence for EACH of the following regulatory requirements. You will return exactly ONE JSON array containing an object for every rule.
 
-STANDARD: ${standard}
-SECTION: ${section}
-REQUIREMENT: ${requirement}
-EXPECTED DOCUMENT: ${expectedDocument}
+--- RULES TO EVALUATE ---
+${rulesListString}
+-------------------------
 
 DOCUMENT SYNONYM GUIDE:
 Companies often use different names for the same regulatory document. Match on CONTENT, not just filename.
@@ -160,9 +154,17 @@ INSTRUCTIONS:
 4. Provide specific citations with document name, section/heading, and relevant quotes.
 
 CONFIDENCE SCALE:
-- "high": The requirement is explicitly and clearly addressed — the expected content exists with clear evidence.
-- "medium": The requirement appears to be addressed but with alternate wording, in a differently-named document, or partially covered. This still counts as evidence.
-- "low": Only a tangential or passing mention — not clearly fulfilling the requirement.
+- "high": The requirement is explicitly and clearly addressed with substantive evidence.
+- "medium": The requirement is addressed, but the evidence is brief, spread across sections, or uses alternate terminology. This still counts as compliant!
+- "low": Tangential or inadequate mention. 
+
+CRITICAL RULE FOR MISSING EVIDENCE: If you are looking for a major component (e.g. Risk Management, Software Code, Biocompatibility) and you cannot find ANY meaningful evidence in the documents, YOU MUST STRICTLY RETURN "found": false! Do not be afraid to say it's missing. Missing evidence is a "gap_detected". Do not automatically return true with low confidence.
+
+FORMATTING & LENGTH CONSTRAINTS (CRITICAL!):
+1. "source" (filename): Never use more than the first 30 characters of a filename. 
+2. "quote": Must be strictly under 100 characters. DO NOT get stuck repeating text.
+3. "reasoning": Give a 1-sentence assessment. Maximum 150 characters. Keep it brief.
+4. "remediationSteps": Provide exactly 1 or 2 extremely short bullet points (max 10 words each).
 
 COST & TIMELINE ESTIMATION:
 If the requirement is NOT met (found=false or confidence=low), estimate the remediation effort:
@@ -172,79 +174,90 @@ If the requirement is NOT met (found=false or confidence=low), estimate the reme
 
 If the requirement IS met (found=true, confidence=high/medium), set cost to "—", timeline to "—", and remediationSteps to [].
 
-RESPOND IN EXACTLY THIS JSON FORMAT (no markdown, no code blocks):
-{
-  "found": true/false,
-  "confidence": "high"/"medium"/"low",
-  "citations": [
-    {
-      "source": "document name",
-      "section": "section or page reference",
-      "quote": "relevant excerpt (max 200 chars)"
-    }
-  ],
-  "reasoning": "brief explanation of your assessment",
-  "estimatedCost": "$X,XXX - $X,XXX" or "—",
-  "estimatedTimeline": "X-X weeks" or "—",
-  "remediationSteps": ["step 1", "step 2"]
-}`;
+RESPOND IN EXACTLY THIS JSON FORMAT (you MUST return a JSON array containing one object per ruleId. Do NOT wrap in markdown codeblocks):
+[
+  {
+    "ruleId": "the string ID from the rules list",
+    "found": true/false,
+    "confidence": "high"/"medium"/"low",
+    "citations": [
+      {
+        "source": "document name",
+        "section": "section or page reference",
+        "quote": "relevant excerpt (max 200 chars)"
+      }
+    ],
+    "reasoning": "brief explanation of your assessment",
+    "estimatedCost": "$X,XXX - $X,XXX" or "—",
+    "estimatedTimeline": "X-X weeks" or "—",
+    "remediationSteps": ["step 1", "step 2"]
+  }
+]`;
 
-    // Process files and convert .docx to text
     const parts: any[] = [{ text: prompt }];
 
     for (const file of fileBuffers) {
-        // Check if it's a .docx file
         if (file.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
             console.log(`[DEBUG] Converting .docx file to text: ${file.name}`);
             try {
                 const result = await mammoth.extractRawText({ buffer: file.data });
-                const text = result.value;
-
-                // Add as text part with document name
-                parts.push({
-                    text: `\n\n--- Document: ${file.name} ---\n${text}\n--- End of ${file.name} ---\n`
-                });
-                console.log(`[DEBUG] Successfully converted ${file.name} (${text.length} chars)`);
+                parts.push({ text: `\n\n--- Document: ${file.name} ---\n${result.value}\n--- End of ${file.name} ---\n` });
+                console.log(`[DEBUG] Successfully converted ${file.name} (${result.value.length} chars)`);
             } catch (error) {
                 console.error(`[DEBUG] Failed to convert ${file.name}:`, error);
-                // Skip this file or add error message
-                parts.push({
-                    text: `\n\n--- Document: ${file.name} ---\n[Error: Could not extract text from this document]\n--- End of ${file.name} ---\n`
-                });
+                parts.push({ text: `\n\n--- Document: ${file.name} ---\n[Error: Could not extract text from this document]\n--- End of ${file.name} ---\n` });
             }
         } else {
-            // For PDF and other supported formats, send as inline data
             parts.push({
-                inline_data: {
-                    mime_type: file.mimeType,
-                    data: file.data.toString("base64")
-                }
+                inline_data: { mime_type: file.mimeType, data: file.data.toString("base64") }
             });
         }
     }
 
-    // Use v1 API endpoint with gemini-2.5-flash (latest and best model)
-    const url = `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-    console.log(`[DEBUG] Using v1 API endpoint`);
-    console.log(`[DEBUG] Model: gemini-2.5-flash`);
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+    console.log(`[DEBUG] Using v1beta API endpoint / Model: gemini-2.5-flash`);
 
     try {
         const response = await fetchWithTimeout(url, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                contents: [{
-                    parts: parts
-                }],
+                contents: [{ parts: parts }],
                 generationConfig: {
                     temperature: 0.2,
-                    maxOutputTokens: 2048,
+                    maxOutputTokens: 8192,
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "ARRAY",
+                        description: "List of gap analysis scorecards",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                ruleId: { type: "STRING" },
+                                found: { type: "BOOLEAN" },
+                                confidence: { type: "STRING" },
+                                citations: {
+                                    type: "ARRAY",
+                                    items: {
+                                        type: "OBJECT",
+                                        properties: {
+                                            source: { type: "STRING" },
+                                            section: { type: "STRING" },
+                                            quote: { type: "STRING" }
+                                        }
+                                    }
+                                },
+                                reasoning: { type: "STRING" },
+                                estimatedCost: { type: "STRING" },
+                                estimatedTimeline: { type: "STRING" },
+                                remediationSteps: { type: "ARRAY", items: { type: "STRING" } }
+                            },
+                            required: ["ruleId", "found", "confidence", "citations", "reasoning", "estimatedCost", "estimatedTimeline", "remediationSteps"]
+                        }
+                    }
                 }
             }),
-            timeout: 120000 // 120 second timeout for large documents (144+ pages)
+            timeout: 120000 
         });
 
         console.log(`[DEBUG] Response status: ${response.status}`);
@@ -257,59 +270,30 @@ RESPOND IN EXACTLY THIS JSON FORMAT (no markdown, no code blocks):
 
         const data = await response.json();
         console.log(`[DEBUG] Received response from Gemini`);
-
-        // Extract text from response
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-
-        // Parse JSON response
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-            const parsed = JSON.parse(jsonMatch[0]);
-            return {
-                found: parsed.found === true,
-                confidence: parsed.confidence || "low",
-                citations: parsed.citations || [],
-                rawResponse: text,
-                estimatedCost: parsed.estimatedCost || "—",
-                estimatedTimeline: parsed.estimatedTimeline || "—",
-                remediationSteps: parsed.remediationSteps || [],
-            };
+        
+        const candidate = data.candidates?.[0];
+        if (candidate?.finishReason === "MAX_TOKENS") {
+            console.warn("[DEBUG] WARNING: Output truncated due to MAX_TOKENS limit!");
         }
 
-        return {
-            found: false,
-            confidence: "low",
-            citations: [],
-            rawResponse: text,
-            estimatedCost: "—",
-            estimatedTimeline: "—",
-            remediationSteps: [],
-        };
+        let text = candidate?.content?.parts?.[0]?.text || "";
+        
+        // Strip out any trailing markdown artifacts
+        text = text.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
+
+        try {
+            return JSON.parse(text);
+        } catch (parseError) {
+            console.error("Failed to cleanly parse JSON Array. Trying aggressive regex extraction...");
+            const jsonMatch = text.match(/\[\s*\{[\s\S]*\}\s*\]/);
+            if (jsonMatch) {
+                return JSON.parse(jsonMatch[0]);
+            }
+            console.error("Fatal JSON parse failure. Raw text snippet:", text.substring(0, 500));
+            throw parseError;
+        }
     } catch (error) {
         console.error("[DEBUG] Gemini REST API error:", error);
-        const errorMessage = error instanceof Error ? error.message : "";
-        console.error("[DEBUG] Error message:", errorMessage);
-
-        // Auto-fallback to mock on network errors
-        if (errorMessage.includes("fetch failed") || errorMessage.includes("timeout") || errorMessage.includes("ECONNREFUSED")) {
-            console.log(`[AUTO-MOCK] Network error, using mock response`);
-            console.log(`[AUTO-MOCK] This may be due to firewall, proxy, or network restrictions`);
-            return generateMockResponse(requirement, standard, section);
-        }
-
-        // Auto-fallback to mock on any error
-        if (errorMessage.includes("quota") || errorMessage.includes("429")) {
-            console.log(`[AUTO-MOCK] Quota exceeded, using mock response`);
-            return generateMockResponse(requirement, standard, section);
-        }
-
-        if (errorMessage.includes("404") || errorMessage.includes("not found")) {
-            console.log(`[AUTO-MOCK] Model not found, using mock response`);
-            return generateMockResponse(requirement, standard, section);
-        }
-
-        // Fallback to mock for any other error
-        console.log(`[AUTO-MOCK] Unknown error, using mock response`);
-        return generateMockResponse(requirement, standard, section);
+        throw error;
     }
 }
