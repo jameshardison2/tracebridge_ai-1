@@ -153,49 +153,42 @@ export default function UploadPage() {
             setUploadId(newUploadId);
             setActiveStep(2);
 
-            // Step 3: Get list of rules to check
+            // Step 3: Kick off Native Batch Gap Engine
             setActiveStep(3);
-            const startRes = await fetch("/api/analyze/start", {
+            const analyzeRes = await fetch("/api/analyze", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ uploadId: newUploadId }),
             });
-            const startJson = await startRes.json();
-            if (!startJson.success) throw new Error(startJson.error);
+            const analyzeJson = await analyzeRes.json();
+            if (!analyzeJson.success) throw new Error(analyzeJson.error);
 
-            const rules = startJson.data.rules;
-            const totalRules = rules.length;
-            setAnalysisProgress({ current: 0, total: totalRules });
-
-            // Step 4: Analyze rules ONE AT A TIME (each ≈10-15s, well under Vercel 60s limit)
+            // Step 4: Poll backend for completion (The Batch engine finishes in seconds)
             setActiveStep(4);
-            for (let i = 0; i < totalRules; i++) {
-                setAnalysisProgress({ current: i + 1, total: totalRules });
-
-                const ruleRes = await fetch("/api/analyze/rule", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ uploadId: newUploadId, rule: rules[i] }),
-                });
-
-                const ruleJson = await ruleRes.json();
-                if (!ruleJson.success) {
-                    console.warn(`Rule ${rules[i].section} failed:`, ruleJson.error);
-                    // Continue processing remaining rules even if one fails
+            setAnalysisProgress({ current: 0, total: 0 }); // Use generic Step 5 UI
+            
+            let isComplete = false;
+            let pollingCounter = 0;
+            while (!isComplete) {
+                await new Promise(r => setTimeout(r, 3000)); // Poll every 3s
+                pollingCounter++;
+                
+                const reportRes = await fetch(`/api/reports?uploadId=${newUploadId}`);
+                if (reportRes.ok) {
+                    const reportJson = await reportRes.json();
+                    if (reportJson.success) {
+                        if (reportJson.data.upload.status === "complete") {
+                            isComplete = true;
+                        } else if (reportJson.data.upload.status === "failed") {
+                            throw new Error(reportJson.data.upload.errorMessage || "Analysis failed in the background batch processor.");
+                        }
+                    }
                 }
-
-                // Small delay between rules to avoid rate limiting
-                if (i < totalRules - 1) {
-                    await new Promise(r => setTimeout(r, 500));
+                
+                if (pollingCounter > 40) { // 2 minute maximum timeout fallback
+                    throw new Error("Analysis timed out. Please check your document sizes.");
                 }
             }
-
-            // Step 5: Finalize analysis
-            await fetch("/api/analyze/complete", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ uploadId: newUploadId }),
-            });
 
             setStep("done");
             setTimeout(() => {

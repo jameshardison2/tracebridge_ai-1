@@ -144,27 +144,57 @@ function ResultsContent() {
 
         const doc = new jsPDF();
         const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
 
-        // Header
-        doc.setFillColor(15, 23, 42);
-        doc.rect(0, 0, pageWidth, 40, "F");
+        // ==========================================
+        // 1. COVER PAGE
+        // ==========================================
+        doc.setFillColor(15, 23, 42); // Dark slate bg
+        doc.rect(0, 0, pageWidth, pageHeight, "F");
+        
         doc.setTextColor(255, 255, 255);
-        doc.setFontSize(20);
-        doc.text("TraceBridge AI", 14, 18);
-        doc.setFontSize(10);
-        doc.text("Regulatory Compliance Gap Analysis Report", 14, 26);
-        doc.setFontSize(8);
-        doc.text(`Device: ${report.upload.deviceName}  |  Generated: ${new Date().toLocaleDateString()}`, 14, 34);
+        doc.setFontSize(40);
+        doc.text("TraceBridge AI", pageWidth / 2, pageHeight * 0.35, { align: "center" });
+        
+        doc.setFontSize(18);
+        doc.setTextColor(156, 163, 175); // gray-400
+        doc.text("Regulatory Compliance Gap Analysis", pageWidth / 2, pageHeight * 0.42, { align: "center" });
 
-        // Summary
+        // Line separator
+        doc.setDrawColor(99, 102, 241); // Indigo-500
+        doc.setLineWidth(1.5);
+        doc.line(pageWidth * 0.2, pageHeight * 0.5, pageWidth * 0.8, pageHeight * 0.5);
+
+        doc.setFontSize(14);
+        doc.setTextColor(255, 255, 255);
+        doc.text(`Device Code: ${report.upload.deviceName}`, pageWidth / 2, pageHeight * 0.6, { align: "center" });
+        doc.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth / 2, pageHeight * 0.65, { align: "center" });
+        
+        doc.setFontSize(12);
+        doc.setTextColor(99, 102, 241);
+        doc.text(`Overall Compliance Score: ${report.summary.complianceScore}%`, pageWidth / 2, pageHeight * 0.72, { align: "center" });
+        
+        // ==========================================
+        // 2. SUMMARY (Page 2)
+        // ==========================================
+        doc.addPage();
+        
+        doc.setFillColor(15, 23, 42);
+        doc.rect(0, 0, pageWidth, 30, "F");
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(16);
+        doc.text("TraceBridge AI Scorecard", 14, 19);
+
         doc.setTextColor(0, 0, 0);
         doc.setFontSize(14);
-        doc.text("Summary", 14, 52);
+        doc.text("Executive Summary", 14, 45);
         doc.setFontSize(10);
-        doc.text(`Compliance Score: ${report.summary.complianceScore}%`, 14, 60);
-        doc.text(`Total: ${report.summary.total}  |  Compliant: ${report.summary.compliant}  |  Gaps: ${report.summary.gaps}  |  Review: ${report.summary.needsReview}`, 14, 67);
+        doc.text(`Compliance Score: ${report.summary.complianceScore}%`, 14, 53);
+        doc.text(`Total Rules Checked: ${report.summary.total}  |  Compliant: ${report.summary.compliant}  |  Gaps: ${report.summary.gaps}  |  Review: ${report.summary.needsReview}`, 14, 60);
 
-        // Table
+        // ==========================================
+        // 3. TABLE
+        // ==========================================
         const tableData = report.upload.gapResults.map((r: GapResult) => {
             const priority = getPriority(r.status, r.severity);
             const estimates = getEstimates(r);
@@ -175,39 +205,64 @@ function ResultsContent() {
                 r.requirement.length > 55 ? r.requirement.substring(0, 52) + "..." : r.requirement,
                 r.status === "compliant" ? "\u2713 Compliant" : r.status === "gap_detected" ? "\u2717 Gap" : "\u26a0 Review",
                 estimates.cost,
-                estimates.timeline,
             ];
         });
 
         autoTable(doc, {
-            startY: 75,
-            head: [["Priority", "Category", "Standard", "Requirement", "Status", "Est. Cost", "Timeline"]],
+            startY: 68,
+            head: [["Priority", "Category", "Standard", "Requirement", "Status", "Est. Cost"]],
             body: tableData,
             theme: "grid",
-            headStyles: { fillColor: [99, 102, 241], textColor: 255, fontSize: 7 },
-            bodyStyles: { fontSize: 6.5 },
-            columnStyles: { 0: { cellWidth: 18 }, 3: { cellWidth: 50 } },
+            headStyles: { fillColor: [99, 102, 241], textColor: 255, fontSize: 8, fontStyle: "bold" },
+            bodyStyles: { fontSize: 7, textColor: [30, 41, 59] },
+            alternateRowStyles: { fillColor: [248, 250, 252] },
+            columnStyles: { 0: { cellWidth: 18, fontStyle: "bold" }, 3: { cellWidth: 60 } },
         });
 
-        // Gap detail pages
+        // ==========================================
+        // 4. GAP DETAILS
+        // ==========================================
         const gaps = report.upload.gapResults.filter((r: GapResult) => r.status !== "compliant");
         for (const gap of gaps) {
             doc.addPage();
-            const est = getEstimates(gap);
+            
+            const isCrit = gap.severity === "critical";
+            doc.setFillColor(isCrit ? 254 : 243, isCrit ? 226 : 244, isCrit ? 226 : 246);
+            doc.rect(14, 20, pageWidth - 28, 16, "F");
+            
             doc.setFontSize(14);
-            doc.setTextColor(239, 68, 68);
-            doc.text(`Gap: ${gap.standard} \u00a7${gap.section}`, 14, 20);
-            doc.setFontSize(10);
-            doc.setTextColor(0, 0, 0);
-            doc.text("What FDA Requires:", 14, 32);
+            doc.setTextColor(isCrit ? 220 : 0, isCrit ? 38 : 0, isCrit ? 38 : 0);
+            const est = getEstimates(gap);
+            doc.text(`${isCrit ? "CRITICAL GAP" : "GAP"}: ${gap.standard} \u00a7${gap.section}`, 18, 30);
+            
+            let y = 46;
+            doc.setFontSize(11);
+            doc.setTextColor(99, 102, 241);
+            doc.text("What FDA Requires:", 14, y);
+            
+            y += 6;
             doc.setFontSize(9);
+            doc.setTextColor(30, 41, 59);
             const reqLines = doc.splitTextToSize(gap.requirement, pageWidth - 28);
-            doc.text(reqLines, 14, 39);
-            let y = 39 + reqLines.length * 5 + 8;
-            doc.setFontSize(10);
-            doc.text("Citations:", 14, y);
-            y += 7;
+            doc.text(reqLines, 14, y);
+            y += reqLines.length * 5 + 6;
+            
+            doc.setFontSize(11);
+            doc.setTextColor(99, 102, 241);
+            doc.text("Identified Missing Requirement:", 14, y);
+            y += 6;
             doc.setFontSize(9);
+            doc.setTextColor(220, 38, 38);
+            const missLines = doc.splitTextToSize(gap.missingRequirement || "Evidence is insufficient.", pageWidth - 28);
+            doc.text(missLines, 14, y);
+            y += missLines.length * 5 + 6;
+
+            doc.setFontSize(11);
+            doc.setTextColor(99, 102, 241);
+            doc.text("Citations Analyzed:", 14, y);
+            y += 6;
+            doc.setFontSize(9);
+            doc.setTextColor(30, 41, 59);
             if (gap.citations?.length) {
                 for (const c of gap.citations) {
                     const line = doc.splitTextToSize(`\u2022 ${c.source} \u2014 ${c.section}: \"${c.quote}\"`, pageWidth - 28);
@@ -215,14 +270,17 @@ function ResultsContent() {
                     y += line.length * 5 + 2;
                 }
             } else {
-                doc.text("No evidence found.", 14, y);
+                doc.text("No matching text blocks or evidence found.", 14, y);
                 y += 6;
             }
             y += 4;
-            doc.setFontSize(10);
-            doc.text("Remediation:", 14, y);
-            y += 7;
+            
+            doc.setFontSize(11);
+            doc.setTextColor(99, 102, 241);
+            doc.text("Recommended Remediation:", 14, y);
+            y += 6;
             doc.setFontSize(9);
+            doc.setTextColor(30, 41, 59);
             if (gap.remediationSteps?.length) {
                 for (const step of gap.remediationSteps) {
                     const sl = doc.splitTextToSize(`\u2022 ${step}`, pageWidth - 28);
@@ -230,17 +288,24 @@ function ResultsContent() {
                     y += sl.length * 5 + 2;
                 }
             }
-            y += 4;
-            doc.text(`Cost: ${est.cost}  |  Timeline: ${est.timeline}`, 14, y);
+            y += 6;
+            
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Estimated Cost: ${est.cost}  |  Estimated Timeline: ${est.timeline}`, 14, y);
         }
 
-        // Footer
+        // ==========================================
+        // 5. FOOTER
+        // ==========================================
         const pages = doc.getNumberOfPages();
         for (let i = 1; i <= pages; i++) {
             doc.setPage(i);
             doc.setFontSize(7);
             doc.setTextColor(150);
-            doc.text(`TraceBridge AI \u2014 Confidential  |  Page ${i}/${pages}`, pageWidth / 2, doc.internal.pageSize.getHeight() - 8, { align: "center" });
+            if (i > 1) {
+                doc.text(`TraceBridge AI \u2014 Confidential  |  Page ${i - 1} of ${pages - 1}`, pageWidth / 2, pageHeight - 8, { align: "center" });
+            }
         }
 
         doc.save(`TraceBridge-Report-${report.upload.deviceName.replace(/\s+/g, "-")}.pdf`);

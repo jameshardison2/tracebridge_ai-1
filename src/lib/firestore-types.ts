@@ -12,6 +12,8 @@ export interface Upload {
   userId: string;
   deviceName: string;
   productCode?: string;
+  deviceClass?: string;
+  regulationNumber?: string;
   features?: {
       requiresSoftware: boolean;
       requiresClinical: boolean;

@@ -50,8 +50,14 @@ export async function getRulesForStandards(standards: string[]): Promise<Complia
 function determineSeverity(
     standard: string,
     section: string,
-    requiredForClass: string | null | undefined
+    requiredForClass: string | null | undefined,
+    deviceClass?: string
 ): "critical" | "major" | "minor" {
+    // Soften requiredForClass penalties if the device is a lowly Class I device
+    if (deviceClass === "Class I" && requiredForClass && requiredForClass !== "Class I") {
+        return "minor";
+    }
+
     // Risk management and safety-related requirements are critical
     if (
         standard.includes("14971") ||
@@ -61,8 +67,8 @@ function determineSeverity(
         return "critical";
     }
 
-    // Class C requirements are critical
-    if (requiredForClass === "C") {
+    // High classification mandates stricter penalties
+    if (deviceClass === "Class III" || requiredForClass === "Class III" || requiredForClass === "C") {
         return "critical";
     }
 
@@ -103,10 +109,11 @@ export async function runGapAnalysis(
     );
 
     // DYNAMIC RULE PURGE OPTIMIZATION: Check FDA Product Code features to delete massive rule categories
+    let uploadData: Upload | null = null;
     if (adminDb && uploadId) {
         const uploadDoc = await adminDb.collection("uploads").doc(uploadId).get();
         if (uploadDoc.exists) {
-            const uploadData = uploadDoc.data() as Upload;
+            uploadData = uploadDoc.data() as Upload;
             const features = uploadData.features;
 
             if (features) {
@@ -202,7 +209,7 @@ export async function runGapAnalysis(
             status = "gap_detected";
         }
 
-        const severity = determineSeverity(rule.standard, rule.section, rule.requiredForClass);
+        const severity = determineSeverity(rule.standard, rule.section, rule.requiredForClass, uploadData?.deviceClass);
 
         const gapItem: GapReportItem = {
             gap_title: status === "compliant" ? `${rule.requirement} - Verified` : `Missing: ${rule.requirement}`,
