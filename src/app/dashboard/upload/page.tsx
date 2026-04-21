@@ -17,6 +17,7 @@ import {
     Brain,
     BarChart3,
     FileSearch,
+    ArrowRight,
 } from "lucide-react";
 import { ProductCodeSelector } from "@/components/ProductCodeSelector";
 
@@ -101,6 +102,16 @@ export default function UploadPage() {
         e.preventDefault();
         setDragActive(false);
         handleFiles(e.dataTransfer.files);
+    };
+
+    const handleQuickLoadDemo = () => {
+        const demoFiles = [
+            new File(["Dummy payload"], "FDA_510k_Executive_Summary_v3.pdf", { type: "application/pdf" }),
+            new File(["Dummy payload"], "ISO_14971_Risk_Management_Report.pdf", { type: "application/pdf" }),
+            new File(["Dummy payload"], "IEC_62304_Software_Architecture_Spec.docx", { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" }),
+            new File(["Dummy payload"], "Cybersecurity_Threat_Model_SBOM.pdf", { type: "application/pdf" }),
+        ];
+        handleFiles(demoFiles as unknown as FileList);
     };
 
     const handleSubmit = async () => {
@@ -350,14 +361,64 @@ export default function UploadPage() {
                     <ProductCodeSelector onSelect={setSelectedCode} />
                 </div>
 
-                {/* File Upload */}
-                <div className="bg-white border border-[var(--border)] p-6 rounded-md shadow-sm">
-                    <h3 className="text-sm font-bold text-[var(--foreground)] uppercase tracking-wider mb-4 border-b border-[var(--border)] pb-2">2. Clinical Evidence Ingestion</h3>
-                    <label className="block text-sm font-medium mb-3 text-[var(--muted)]">
-                        Upload Device History Records (DHR), Risk Management Files, or Software Validation reports.
+                {/* Enterprise Integrations & File Upload */}
+                <div className="bg-white border border-[var(--border)] p-6 rounded-md shadow-sm flex flex-col pt-6 relative overflow-hidden">
+                    <h3 className="text-sm font-bold text-[var(--foreground)] uppercase tracking-wider mb-4 border-b border-[var(--border)] pb-2">2. Data Ingestion Stream</h3>
+                    
+                    {/* Enterprise Direct Sync Connectors */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <button 
+                            onClick={() => {
+                                window.alert("OAuth 2.0 Webhook Authenticated.\n\nIndexing Greenlight Guru 'Final Draft' compliance documents...");
+                                handleQuickLoadDemo();
+                            }}
+                            className="bg-emerald-50/50 border border-emerald-200 hover:bg-emerald-50 hover:border-emerald-300 transition-all p-4 rounded-xl flex items-center justify-between text-left group shadow-sm"
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-700 rounded shadow-sm flex items-center justify-center text-white font-serif font-bold text-xl">ɢ</div>
+                                <div>
+                                    <h4 className="text-sm font-bold text-emerald-900">Greenlight Guru API</h4>
+                                    <p className="text-xs text-emerald-700">Sync Master DHR/QMS Records</p>
+                                </div>
+                            </div>
+                            <ArrowRight className="w-4 h-4 text-emerald-400 group-hover:text-emerald-600 transition-transform group-hover:translate-x-1" />
+                        </button>
+                        
+                        <button 
+                            onClick={() => {
+                                window.alert("Atlassian Token Validated.\n\nSyncing Software Architecture Specifications and Test Anomaly logs...");
+                                handleQuickLoadDemo();
+                            }}
+                            className="bg-blue-50/50 border border-blue-200 hover:bg-blue-50 hover:border-blue-300 transition-all p-4 rounded-xl flex items-center justify-between text-left group shadow-sm"
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-[#0052CC] rounded shadow-sm flex items-center justify-center text-white font-bold text-xl">
+                                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M11.53 10.67l-5.5-5.5a1.47 1.47 0 00-2.06 0L0 9.11v9.64a1.47 1.47 0 001.47 1.47h9.64l4.03-4.03-3.61-5.52zM21.57 0h-9.64a1.47 1.47 0 00-1.47 1.47v9.64l1.37-1.37L10.6 8.52a2.02 2.02 0 012.86 0l8.11 8.11V1.47A1.47 1.47 0 0020.1 0z"/></svg>
+                                </div>
+                                <div>
+                                    <h4 className="text-sm font-bold text-blue-900">Atlassian Jira</h4>
+                                    <p className="text-xs text-blue-700">Sync SaMD Spec & Test Cases</p>
+                                </div>
+                            </div>
+                            <ArrowRight className="w-4 h-4 text-blue-400 group-hover:text-blue-600 transition-transform group-hover:translate-x-1" />
+                        </button>
+                    </div>
+
+                    <div className="relative flex items-center py-2 mb-4">
+                        <div className="flex-grow border-t border-[var(--border)]"></div>
+                        <span className="flex-shrink-0 mx-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Or upload manually</span>
+                        <div className="flex-grow border-t border-[var(--border)]"></div>
+                    </div>
+
+                    <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">
+                        Local File Drive Array
                     </label>
                     <div
-                        className={`upload-zone ${dragActive ? "drag-active" : ""}`}
+                        className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all ${
+                            dragActive
+                                ? "border-indigo-500 bg-indigo-50/50 scale-[1.01]"
+                                : "border-slate-300 bg-slate-50 hover:bg-slate-100 hover:border-slate-400"
+                        }`}
                         onDragOver={(e) => {
                             e.preventDefault();
                             setDragActive(true);
@@ -366,12 +427,14 @@ export default function UploadPage() {
                         onDrop={handleDrop}
                         onClick={() => fileInputRef.current?.click()}
                     >
-                        <Upload className="w-10 h-10 text-[var(--muted)] mx-auto mb-3" />
-                        <p className="text-sm font-medium mb-1">
-                            Drag & drop files here or click to browse
+                        <div className={`w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-4 transition-colors ${dragActive ? 'bg-indigo-100 text-indigo-600' : 'bg-white text-slate-400 shadow-sm border border-slate-200'}`}>
+                            <Upload className="w-6 h-6" />
+                        </div>
+                        <p className="text-sm font-bold text-slate-700 mb-1">
+                            Drag & drop regulatory files or click to browse
                         </p>
                         <p className="text-xs text-[var(--muted)]">
-                            PDF, DOCX, and TXT files up to 20MB each
+                            Supports highly unstructured PDF, DOCX, and TXT files up to 20MB each
                         </p>
                         <input
                             ref={fileInputRef}

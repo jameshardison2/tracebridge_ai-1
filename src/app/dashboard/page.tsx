@@ -150,6 +150,52 @@ export default function DashboardPage() {
                 </div>
             </div>
 
+            {/* Educational Workflow Component */}
+            <div className="bg-[#0f172a] rounded-xl border border-slate-800 p-6 shadow-xl mb-2 relative overflow-hidden hidden xl:block">
+                <div className="absolute top-0 right-0 p-40 bg-indigo-500/10 blur-[80px] rounded-full pointer-events-none"></div>
+                <h2 className="text-white font-bold text-xs uppercase tracking-widest flex items-center gap-2 mb-6">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                    TraceBridge Operating Mechanism
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 relative z-10">
+                    {/* Step 1 */}
+                    <Link href="/dashboard/upload" className="bg-slate-800/80 backdrop-blur-sm border border-slate-700 hover:border-slate-500 transition-colors p-4 rounded-lg flex gap-3 items-start relative group cursor-pointer block">
+                        <div className="w-8 h-8 rounded bg-slate-700 text-white flex items-center justify-center font-bold shrink-0 shadow-sm group-hover:bg-slate-600 transition-colors">1</div>
+                        <div>
+                            <h3 className="text-sm font-bold text-white mb-1">Submit Audit</h3>
+                            <p className="text-xs text-slate-400">Upload MedTech documentation to directly target ISO/FDA protocols.</p>
+                        </div>
+                        <ArrowRight className="w-5 h-5 text-slate-600 absolute -right-3 top-1/2 -translate-y-1/2 z-20 hidden md:block" />
+                    </Link>
+                    {/* Step 2 */}
+                    <div className="bg-indigo-900/40 backdrop-blur-sm border border-indigo-500/30 p-4 rounded-lg flex gap-3 items-start relative">
+                        <div className="w-8 h-8 rounded bg-indigo-600 text-white flex items-center justify-center font-bold shrink-0 shadow-md">2</div>
+                        <div>
+                            <h3 className="text-sm font-bold text-indigo-100 mb-1">AI Detection</h3>
+                            <p className="text-xs text-indigo-300">Google Gemini systematically parses architecture and intelligently flags gaps.</p>
+                        </div>
+                        <ArrowRight className="w-5 h-5 text-slate-600 absolute -right-3 top-1/2 -translate-y-1/2 z-20 hidden md:block" />
+                    </div>
+                    {/* Step 3 */}
+                    <Link href="/dashboard/pipeline" className="bg-emerald-900/40 backdrop-blur-sm border border-emerald-500/30 hover:border-emerald-400/60 transition-colors p-4 rounded-lg flex gap-3 items-start relative group cursor-pointer block">
+                        <div className="w-8 h-8 rounded bg-emerald-600 text-white flex items-center justify-center font-bold shrink-0 shadow-md group-hover:bg-emerald-500 transition-colors">3</div>
+                        <div>
+                            <h3 className="text-sm font-bold text-emerald-100 mb-1">Execute Triage</h3>
+                            <p className="text-xs text-emerald-300">Formally assign and remediate issues using the interactive Pipeline Tracker.</p>
+                        </div>
+                        <ArrowRight className="w-5 h-5 text-slate-600 absolute -right-3 top-1/2 -translate-y-1/2 z-20 hidden md:block" />
+                    </Link>
+                    {/* Step 4 */}
+                    <div className="bg-slate-800/80 backdrop-blur-sm border border-slate-700 p-4 rounded-lg flex gap-3 items-start relative">
+                        <div className="w-8 h-8 rounded bg-amber-500 text-white flex items-center justify-center font-bold shrink-0 shadow-sm">4</div>
+                        <div>
+                            <h3 className="text-sm font-bold text-white mb-1">FDA Checkout</h3>
+                            <p className="text-xs text-slate-400">Export your signed-off trace items flawlessly to the FDA eCopy CSV Format.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {/* Top Stat Ribbon & Search */}
             <div className="flex flex-col lg:flex-row gap-6">
                 

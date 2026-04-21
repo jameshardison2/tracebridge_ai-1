@@ -258,8 +258,8 @@ export async function runGapAnalysis(
             gapTitle: gapItem.gap_title,
             missingRequirement: rule.requirement,
             citations: geminiResult.citations || [],
-            reasoning: geminiResult.analytical_reasoning,
-            missingEvidence: geminiResult.exact_missing_evidence,
+            reasoning: geminiResult.analytical_reasoning || "No analytical reasoning provided.",
+            missingEvidence: geminiResult.exact_missing_evidence || "No specific missing evidence identified.",
             geminiResponse: JSON.stringify(geminiResult, null, 2),
             createdAt: Timestamp.now(),
         };

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Check } from "lucide-react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 
 type TaskStatus = 'DETECTED' | 'TRIAGED' | 'ASSIGNED' | 'IN_REMEDIATION' | 'CLOSED';
@@ -33,53 +33,77 @@ export default function PipelinePage() {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [slackToast, setSlackToast] = useState("");
     const [isMounted, setIsMounted] = useState(false);
+    const searchParams = useSearchParams();
+    const [uploads, setUploads] = useState<any[]>([]);
+    const [activeUploadId, setActiveUploadId] = useState<string | null>(searchParams.get("id"));
+
 
     // Initial Load & API Hydration
     useEffect(() => {
         setIsMounted(true);
         if (!user) return;
 
-        const loadRealGaps = async () => {
+        const loadUploads = async () => {
             try {
                 const token = await user.getIdToken();
                 const r = await fetch("/api/reports", { headers: { Authorization: `Bearer ${token}` } });
                 const data = await r.json();
 
                 if (data.success && data.data.uploads?.length > 0) {
-                    const latestRef = data.data.uploads[0];
-                    // Deep fetch to retrieve full gapResults payload, not just the bandwidth-constrained summary
-                    const rFull = await fetch(`/api/reports?uploadId=${latestRef.id}`, { headers: { Authorization: `Bearer ${token}` } });
-                    const fullData = await rFull.json();
-
-                    if (fullData.success && fullData.data.upload) {
-                        const latest = fullData.data.upload;
-                        const newTasks: Task[] = (latest.gapResults || []).map((gap: any) => ({
-                            id: gap.id,
-                            uploadId: latest.id,
-                            status: gap.status === 'compliant' ? 'CLOSED' : (gap.status === 'gap_detected' ? 'DETECTED' : 'TRIAGED'),
-                            title: gap.requirement.substring(0,60) + (gap.requirement.length > 60 ? "..." : ""),
-                            standard: gap.standard + (gap.section ? ` § ${gap.section}` : ""),
-                            priority: gap.severity ? gap.severity.toUpperCase() : "MEDIUM",
-                            confidence: gap.confidence ? Math.round(gap.confidence * 100) : 0,
-                            subNote: gap.citations?.[0]?.quote ? "Evidence Extracted" : "Missing File",
-                            closedBy: gap.status === 'compliant' ? "AI Verified" : undefined,
-                            closedTime: gap.status === 'compliant' ? "Automated" : undefined
-                        }));
-                        
-                        const savedTasks = localStorage.getItem('tracebridge_pipeline_tasks');
-                        if (savedTasks) {
-                            try {
-                                const parsed = JSON.parse(savedTasks);
-                                if (parsed.length > 0 && parsed[0].uploadId === latest.id) {
-                                    setTasks(parsed);
-                                    return;
-                                }
-                            } catch (e) {
-                                console.error("Local pipeline storage unparseable");
-                            }
-                        }
-                        setTasks(newTasks);
+                    setUploads(data.data.uploads);
+                    if (!activeUploadId) {
+                        setActiveUploadId(data.data.uploads[0].id);
                     }
+                }
+            } catch (err) {
+                console.error("Failed to load uploads view:", err);
+            }
+        };
+
+        loadUploads();
+    }, [user]);
+
+    useEffect(() => {
+        if (!user || !activeUploadId) return;
+
+        const loadRealGaps = async () => {
+            try {
+                const token = await user.getIdToken();
+                // Deep fetch to retrieve full gapResults payload, not just the bandwidth-constrained summary
+                const rFull = await fetch(`/api/reports?uploadId=${activeUploadId}`, { headers: { Authorization: `Bearer ${token}` } });
+                const fullData = await rFull.json();
+
+                if (fullData.success && fullData.data.upload) {
+                    const latest = fullData.data.upload;
+                    const newTasks: Task[] = (latest.gapResults || []).map((gap: any) => ({
+                        id: gap.id,
+                        uploadId: latest.id,
+                        status: gap.status === 'compliant' ? 'CLOSED' : (gap.status === 'gap_detected' ? 'DETECTED' : 'TRIAGED'),
+                        title: gap.requirement.substring(0,60) + (gap.requirement.length > 60 ? "..." : ""),
+                        standard: gap.standard + (gap.section ? ` § ${gap.section}` : ""),
+                        priority: gap.severity ? gap.severity.toUpperCase() : "MEDIUM",
+                        confidence: gap.confidence ? Math.round(gap.confidence * 100) : 0,
+                        subNote: gap.citations?.[0]?.quote ? "Evidence Extracted" : "Missing File",
+                        closedBy: gap.status === 'compliant' ? "AI Verified" : undefined,
+                        closedTime: gap.status === 'compliant' ? "Automated" : undefined
+                    }));
+                    
+                    let finalTasks = newTasks;
+                    const savedTasks = localStorage.getItem('tracebridge_pipeline_tasks');
+                    if (savedTasks) {
+                        try {
+                            const parsed = JSON.parse(savedTasks);
+                            if (parsed.length > 0 && parsed[0].uploadId === latest.id) {
+                                finalTasks = newTasks.map((t) => {
+                                    const stored = parsed.find((p: any) => p.id === t.id);
+                                    return stored ? { ...t, ...stored, title: t.title, standard: t.standard } : t;
+                                });
+                            }
+                        } catch (e) {
+                            console.error("Local pipeline storage unparseable");
+                        }
+                    }
+                    setTasks(finalTasks);
                 }
             } catch (err) {
                 console.error("Pipeline Sync Failed:", err);
@@ -87,18 +111,9 @@ export default function PipelinePage() {
         };
 
         loadRealGaps();
-    }, [user]);
+    }, [user, activeUploadId]);
 
-    useEffect(() => {
-        if (!isMounted) return;
-        const saved = localStorage.getItem('tracebridge_pipeline_tasks');
-        if (saved) {
-            try {
-                const parsed = JSON.parse(saved);
-                if (parsed.length > 0) setTasks(parsed);
-            } catch(e) {}
-        }
-    }, [pathname, isMounted]);
+
 
     useEffect(() => {
         if (isMounted) {
@@ -180,10 +195,6 @@ export default function PipelinePage() {
                         <Check className="w-4 h-4 text-emerald-500" />
                         {t.title} {t.standard}
                     </h4>
-                    <div className="pl-5.5 mt-2">
-                        <p className="text-[9px] text-slate-400 font-medium">Closed by {t.closedBy}</p>
-                        <p className="text-[9px] text-slate-400">{t.closedTime}</p>
-                    </div>
                 </div>
             );
         }
@@ -269,6 +280,22 @@ export default function PipelinePage() {
                             Jira-style state machine • Drag gaps between columns • Real-time sync to Slack
                         </p>
                     </div>
+                    {isMounted && uploads.length > 0 && (
+                        <div className="flex items-center gap-3">
+                            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest hidden md:inline-block">Active Pipeline:</span>
+                            <select
+                                value={activeUploadId || ""}
+                                onChange={(e) => setActiveUploadId(e.target.value)}
+                                className="bg-white border text-center border-slate-200 text-slate-700 text-sm font-bold rounded-lg px-4 py-2 outline-none shadow-sm focus:ring-2 focus:ring-indigo-500 max-w-[320px] truncate hover:border-indigo-300 transition-colors cursor-pointer"
+                            >
+                                {uploads.slice(0, 5).map(u => (
+                                    <option key={u.id} value={u.id}>
+                                        {u.projectName || `Trace Project (${u.id.substring(0, 6)})`} • {new Date(u.createdAt).toLocaleDateString()}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
                 </div>
 
                 {/* Pipeline Distribution Bar */}
