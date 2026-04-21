@@ -152,36 +152,56 @@ export async function runGapAnalysis(
             arr.slice(i * size, i * size + size)
         );
 
-    const ruleChunks = chunkArray(applicableRules, 4);
+    const ruleChunks = chunkArray(applicableRules, 15);
     let geminiBatchResults: any[] = [];
 
     for (let c = 0; c < ruleChunks.length; c++) {
         const chunk = ruleChunks[c];
-        try {
-            // Free Tier allows 15 RPM. Add a pause between batch chunks to avoid 429
-            if (c > 0) {
-                await new Promise(resolve => setTimeout(resolve, 3500));
-            }
+        let chunkSuccess = false;
+        let retryCount = 0;
+        const maxRetries = 3;
 
-            const chunkResults = await queryGeminiRESTArray(fileBuffers, chunk.map(r => ({
-                id: r.id || "",
-                requirement: r.requirement,
-                standard: r.standard,
-                section: r.section,
-                expectedDocument: r.expectedDocument
-            })));
-            geminiBatchResults = geminiBatchResults.concat(chunkResults);
-        } catch(err) {
-            console.error("Chunk Analysis Failed: ", err);
-            // Fallback: entire chunk failed, mark all as needs_review
-            const chunkFails = chunk.map(r => ({
-                ruleId: r.id,
-                found: false,
-                confidence: "low",
-                citations: [],
-                reasoning: `Error: ${err instanceof Error ? err.message : "Unknown API crash"}`,
-            }));
-            geminiBatchResults = geminiBatchResults.concat(chunkFails);
+        while (!chunkSuccess && retryCount <= maxRetries) {
+            try {
+                // STRICT FREE TIER TOKEN LIMIT THROTTLING: 1 Million Tokens / Min
+                // We MUST mathematically pace massive documents over a minute to survive the Token quota.
+                if (c > 0 || retryCount > 0) {
+                    const delay = 35000 + (retryCount > 0 ? Math.pow(2, retryCount) * 8000 : 0);
+                    console.log(`[Gap Engine] Strict Token Rate Limit Pause for ${delay}ms... (Chunk ${c+1}/${ruleChunks.length}, Attempt ${retryCount+1})`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+
+                const chunkResults = await queryGeminiRESTArray(fileBuffers, chunk.map(r => ({
+                    id: r.id || "",
+                    requirement: r.requirement,
+                    standard: r.standard,
+                    section: r.section,
+                    expectedDocument: r.expectedDocument
+                })));
+                
+                geminiBatchResults = geminiBatchResults.concat(chunkResults);
+                chunkSuccess = true; // Escapes loop
+                
+            } catch(err: any) {
+                console.error(`[Gap Engine] Chunk Analysis Crash (Attempt ${retryCount+1}): `, err.message);
+                
+                if (retryCount < maxRetries) {
+                    console.warn(`[Gap Engine] Transient API failure caught. Escalating backoff and retrying chunk ${c+1}...`);
+                    retryCount++;
+                } else {
+                    // Fallback: entire chunk failed permanently after max retries
+                    console.error(`[Gap Engine] EXHAUSTED RETRIES. Chunk ${c+1} failed permanently. Defaulting to Gap.`);
+                    const chunkFails = chunk.map(r => ({
+                        ruleId: r.id,
+                        found: false,
+                        confidence: "low",
+                        citations: [],
+                        reasoning: `Fatal API Error after ${maxRetries} retries: ${err instanceof Error ? err.message : "Capacity failure"}`,
+                    }));
+                    geminiBatchResults = geminiBatchResults.concat(chunkFails);
+                    chunkSuccess = true; // Escapes loop safely
+                }
+            }
         }
     }
 
@@ -196,7 +216,8 @@ export async function runGapAnalysis(
             found: false,
             confidence: "low",
             citations: [],
-            reasoning: "Missing ruleId in AI batch output."
+            analytical_reasoning: "Missing ruleId in AI batch output.",
+            exact_missing_evidence: "System failure rendering evidence."
         };
 
         let status: "compliant" | "gap_detected" | "needs_review";

@@ -12,12 +12,14 @@ import {
     Users,
     LogOut,
     Loader2,
+    Kanban,
 } from "lucide-react";
 
 const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/dashboard/upload", label: "Upload", icon: Upload },
     { href: "/dashboard/results", label: "Reports", icon: FileText },
+    { href: "/dashboard/pipeline", label: "Pipeline", icon: Kanban },
     { href: "/dashboard/team", label: "Team", icon: Users },
 ];
 
@@ -67,8 +69,8 @@ export default function DashboardLayout({
                 <div className="p-6 border-b border-[var(--border)]">
                     <Link href="/" className="flex items-center gap-2">
                         <Shield className="w-7 h-7 text-[var(--primary)]" />
-                        <span className="text-lg font-bold gradient-text">
-                            TraceBridge AI
+                        <span className="text-lg font-bold text-[var(--foreground)]">
+                            TraceBridge UI
                         </span>
                     </Link>
                 </div>
@@ -83,8 +85,8 @@ export default function DashboardLayout({
                                 key={item.href}
                                 href={item.href}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${isActive
-                                    ? "bg-[var(--primary)]/10 text-[var(--primary)]"
-                                    : "text-[var(--muted)] hover:text-white hover:bg-[var(--card-hover)]"
+                                    ? "bg-[var(--primary)]/10 text-[var(--primary)] font-bold"
+                                    : "text-[var(--muted)] hover:text-[var(--primary)] hover:bg-[var(--card-hover)]"
                                     }`}
                             >
                                 <item.icon className="w-5 h-5" />

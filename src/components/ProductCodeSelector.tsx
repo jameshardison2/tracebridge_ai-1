@@ -64,11 +64,11 @@ export function ProductCodeSelector({ onSelect }: ProductCodeSelectorProps) {
                 /* The Search View */
                 <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Search className="h-5 w-5 text-gray-400" />
+                        <Search className="h-5 w-5 text-slate-400" />
                     </div>
                     <input
                         type="text"
-                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-600 bg-black text-white focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] transition-all"
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 bg-white text-slate-900 focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] transition-all placeholder:text-slate-400 shadow-sm"
                         placeholder="Search for a medical device (e.g. Glucose Monitor, Scalpel)..."
                         value={search}
                         onChange={(e) => {
@@ -80,18 +80,18 @@ export function ProductCodeSelector({ onSelect }: ProductCodeSelectorProps) {
                     
                     {/* The Dropdown Menu */}
                     {isOpen && (
-                        <div className="absolute z-10 mt-1 w-full bg-gray-900 border border-gray-700 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+                        <div className="absolute z-10 mt-1 w-full bg-white border border-slate-200 rounded-xl shadow-lg max-h-60 overflow-y-auto">
                             {filteredCodes.length === 0 ? (
-                                <div className="p-3 text-gray-400 text-sm">No exact matches found. Try simplifying your search.</div>
+                                <div className="p-3 text-slate-500 text-sm">No exact matches found. Try simplifying your search.</div>
                             ) : (
                                 filteredCodes.map((code) => (
                                     <div 
                                         key={code.code}
                                         onClick={() => handleSelect(code)}
-                                        className="p-3 hover:bg-gray-800 cursor-pointer border-b border-gray-800 last:border-0"
+                                        className="p-3 hover:bg-slate-50 cursor-pointer border-b border-slate-100 last:border-0 transition-colors"
                                     >
-                                        <div className="font-semibold text-white">{code.description} <span className="text-[var(--primary)]">[{code.code}]</span></div>
-                                        <div className="text-xs text-gray-400">{code.deviceClass}</div>
+                                        <div className="font-semibold text-slate-900">{code.description} <span className="text-[var(--primary)] text-xs ml-1 bg-blue-50 px-1 py-0.5 rounded border border-blue-100">[{code.code}]</span></div>
+                                        <div className="text-xs text-slate-500 font-medium mt-1">{code.deviceClass}</div>
                                     </div>
                                 ))
                             )}

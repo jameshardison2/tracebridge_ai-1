@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "@/lib/firebase";
@@ -45,13 +45,42 @@ export default function UploadPage() {
     const [analysisProgress, setAnalysisProgress] = useState({ current: 0, total: 0 });
     const [error, setError] = useState("");
     const [uploadId, setUploadId] = useState("");
+    
+    // Scan theater state
+    const [currentScanText, setCurrentScanText] = useState("Initializing compliance engine...");
+
+    useEffect(() => {
+        if (activeStep !== 4) return;
+        
+        const possibleTexts = [
+            "Scanning IEC 62304 Section 5.1.2...",
+            "Evaluating ISO 14971 Risk Controls...",
+            "Cross-referencing FDA 21 CFR Part 820...",
+            "Analyzing Software Requirements Specification...",
+            "Extracting Traceability Matrix boundaries...",
+            "Checking ISO 13485 Design History constraints...",
+            "Validating Cybersecurity compliance vectors...",
+            "Assessing human factors testing protocols..."
+        ];
+        
+        // Shuffle randomly for dynamic effect
+        const shuffled = possibleTexts.sort(() => 0.5 - Math.random());
+        let i = 0;
+        
+        const interval = setInterval(() => {
+            setCurrentScanText(shuffled[i % shuffled.length]);
+            i++;
+        }, 600);
+        
+        return () => clearInterval(interval);
+    }, [activeStep]);
 
     const handleFiles = (newFiles: FileList | File[]) => {
         const fileArray = Array.from(newFiles).filter(
             (f) =>
                 f.type === "application/pdf" ||
-                f.type ===
-                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                f.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+                f.type === "text/plain"
         );
 
         const oversized = fileArray.filter(f => f.size > MAX_FILE_SIZE);
@@ -173,7 +202,10 @@ export default function UploadPage() {
                 await new Promise(r => setTimeout(r, 3000)); // Poll every 3s
                 pollingCounter++;
                 
-                const reportRes = await fetch(`/api/reports?uploadId=${newUploadId}`);
+                const headers: Record<string, string> = {};
+                if (idToken) headers["Authorization"] = `Bearer ${idToken}`;
+                
+                const reportRes = await fetch(`/api/reports?uploadId=${newUploadId}`, { headers });
                 if (reportRes.ok) {
                     const reportJson = await reportRes.json();
                     if (reportJson.success) {
@@ -185,8 +217,8 @@ export default function UploadPage() {
                     }
                 }
                 
-                if (pollingCounter > 40) { // 2 minute maximum timeout fallback
-                    throw new Error("Analysis timed out. Please check your document sizes.");
+                if (pollingCounter > 300) { // 15 minute maximum timeout to account for exponential API backoffs
+                    throw new Error("Analysis timed out. Please check your document sizes or API rate limits.");
                 }
             }
 
@@ -204,37 +236,41 @@ export default function UploadPage() {
     // Analysis step-by-step UI
     if (step === "analyzing") {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[60vh]">
-                <div className="glass-card p-12 text-center max-w-lg w-full gradient-border">
-                    <Loader2 className="w-12 h-12 text-[var(--primary)] mx-auto mb-6 animate-spin" />
-                    <h2 className="text-2xl font-bold mb-2">Analyzing Your Submission...</h2>
-                    <p className="text-[var(--muted)] mb-8 text-sm">
-                        This may take a few minutes for large documents.
-                    </p>
+            <div className="flex flex-col items-center justify-center min-h-[60vh] max-w-2xl mx-auto">
+                <div className="bg-white border border-[var(--border)] rounded-md p-8 w-full shadow-sm">
+                    <div className="flex items-center gap-4 mb-6 border-b border-[var(--border)] pb-4">
+                        <Loader2 className="w-8 h-8 text-[var(--primary)] animate-spin" />
+                        <div>
+                            <h2 className="text-xl font-bold text-[var(--foreground)]">Regulatory Gap Analysis in Progress</h2>
+                            <p className="text-[var(--muted)] text-sm">
+                                Processing ISO 13485 constraints. Do not close this window.
+                            </p>
+                        </div>
+                    </div>
 
-                    {/* Step list */}
-                    <div className="space-y-4 text-left">
+                    {/* Step list table format */}
+                    <div className="space-y-2 border border-[var(--border)] rounded bg-slate-50 p-2">
                         {ANALYSIS_STEPS.map((s, i) => {
                             const isComplete = i < activeStep;
                             const isActive = i === activeStep;
                             return (
                                 <div
                                     key={i}
-                                    className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-500 ${isActive
-                                        ? "bg-[var(--primary)]/10 border border-[var(--primary)]/30"
+                                    className={`flex items-center gap-3 p-3 transition-colors ${isActive
+                                        ? "bg-white border border-[var(--primary)]/30 rounded"
                                         : isComplete
                                             ? "opacity-100"
                                             : "opacity-40"
                                         }`}
                                 >
                                     {isComplete ? (
-                                        <CheckCircle2 className="w-5 h-5 text-[var(--success)] flex-shrink-0" />
+                                        <CheckCircle2 className="w-4 h-4 text-[var(--success)] flex-shrink-0" />
                                     ) : isActive ? (
-                                        <Loader2 className="w-5 h-5 text-[var(--primary)] animate-spin flex-shrink-0" />
+                                        <Loader2 className="w-4 h-4 text-[var(--primary)] animate-spin flex-shrink-0" />
                                     ) : (
-                                        <s.icon className="w-5 h-5 text-[var(--muted)] flex-shrink-0" />
+                                        <s.icon className="w-4 h-4 text-[var(--muted)] flex-shrink-0" />
                                     )}
-                                    <span className={`text-sm ${isActive ? "text-white font-medium" : isComplete ? "text-[var(--success)]" : "text-[var(--muted)]"}`}>
+                                    <span className={`text-sm ${isActive ? "text-[var(--primary)] font-bold" : isComplete ? "text-[var(--foreground)]" : "text-[var(--muted)]"}`}>
                                         {s.label}
                                     </span>
                                 </div>
@@ -242,19 +278,36 @@ export default function UploadPage() {
                         })}
                     </div>
 
-                    {/* Progress bar */}
-                    <div className="w-full bg-[var(--border)] rounded-full h-2 mt-8 mb-2">
-                        <div
-                            className="h-2 rounded-full bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] transition-all duration-1000"
-                            style={{ width: `${Math.min(((activeStep + 1) / ANALYSIS_STEPS.length) * 100, 100)}%` }}
-                        />
-                    </div>
-                    <p className="text-xs text-[var(--muted)]">
-                        {analysisProgress.total > 0
-                            ? `Analyzing rule ${analysisProgress.current} of ${analysisProgress.total}`
-                            : `Step ${activeStep + 1} of ${ANALYSIS_STEPS.length}`
-                        }
-                    </p>
+                    {/* Scan Theater / Progress */}
+                    {activeStep === 4 ? (
+                        <div className="mt-8 p-6 rounded-xl bg-slate-50 border border-[var(--border)] shadow-sm flex flex-col items-center justify-center transition-all">
+                            <div className="flex items-center gap-3 mb-2">
+                                <span className="relative flex h-3 w-3">
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--primary)] opacity-75"></span>
+                                  <span className="relative inline-flex rounded-full h-3 w-3 bg-[var(--primary)]"></span>
+                                </span>
+                                <span className="text-xs font-bold text-[var(--primary)] uppercase tracking-wider">Clinical Engine Active</span>
+                            </div>
+                            <p className="text-sm font-mono text-[var(--muted)] h-5 overflow-hidden transition-all duration-300">
+                                {currentScanText}
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="mt-8">
+                            <div className="w-full bg-[var(--border)] rounded-full h-2 mb-2">
+                                <div
+                                    className="h-2 rounded-full bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] transition-all duration-1000"
+                                    style={{ width: `${Math.min(((activeStep + 1) / ANALYSIS_STEPS.length) * 100, 100)}%` }}
+                                />
+                            </div>
+                            <p className="text-xs text-[var(--muted)]">
+                                {analysisProgress.total > 0
+                                    ? `Analyzing rule ${analysisProgress.current} of ${analysisProgress.total}`
+                                    : `Step ${activeStep + 1} of ${ANALYSIS_STEPS.length}`
+                                }
+                            </p>
+                        </div>
+                    )}
                 </div>
             </div>
         );
@@ -292,14 +345,16 @@ export default function UploadPage() {
 
             <div className="space-y-6">
                 {/* Device Type Selector */}
-                <div className="glass-card p-6">
+                <div className="bg-white border border-[var(--border)] p-6 rounded-md shadow-sm">
+                    <h3 className="text-sm font-bold text-[var(--foreground)] uppercase tracking-wider mb-4 border-b border-[var(--border)] pb-2">1. Device Classification</h3>
                     <ProductCodeSelector onSelect={setSelectedCode} />
                 </div>
 
                 {/* File Upload */}
-                <div className="glass-card p-6">
-                    <label className="block text-sm font-medium mb-3">
-                        Upload Documents
+                <div className="bg-white border border-[var(--border)] p-6 rounded-md shadow-sm">
+                    <h3 className="text-sm font-bold text-[var(--foreground)] uppercase tracking-wider mb-4 border-b border-[var(--border)] pb-2">2. Clinical Evidence Ingestion</h3>
+                    <label className="block text-sm font-medium mb-3 text-[var(--muted)]">
+                        Upload Device History Records (DHR), Risk Management Files, or Software Validation reports.
                     </label>
                     <div
                         className={`upload-zone ${dragActive ? "drag-active" : ""}`}
@@ -316,13 +371,13 @@ export default function UploadPage() {
                             Drag & drop files here or click to browse
                         </p>
                         <p className="text-xs text-[var(--muted)]">
-                            PDF and DOCX files up to 20MB each
+                            PDF, DOCX, and TXT files up to 20MB each
                         </p>
                         <input
                             ref={fileInputRef}
                             type="file"
                             multiple
-                            accept=".pdf,.docx"
+                            accept=".pdf,.docx,.txt"
                             className="hidden"
                             onChange={(e) => e.target.files && handleFiles(e.target.files)}
                         />
