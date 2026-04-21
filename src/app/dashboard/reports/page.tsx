@@ -124,6 +124,7 @@ function ReportsContent() {
     const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
 
     // Customization Engine State
+    const [activeTemplate, setActiveTemplate] = useState<'510k' | 'capa' | 'complaint' | 'executive'>('510k');
     const [enginePayload, setEnginePayload] = useState<string>('');
     const [availableSubmissions, setAvailableSubmissions] = useState<any[]>([]);
     const [engineFramework, setEngineFramework] = useState('fda');
@@ -823,73 +824,56 @@ function ReportsContent() {
         };
 
         return (
-            <div className="flex flex-col pb-12 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                <div className="mb-8">
+            <div className="flex flex-col h-full min-h-[0px] animate-in fade-in slide-in-from-bottom-2 duration-500">
+                <div className="mb-6 shrink-0">
                     <h1 className="text-2xl font-bold flex items-center gap-3 text-slate-900">
-                        Global Quality & Compliance Summary
-                        <span className="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold">
-                            Enterprise View
+                        Regulatory Artifact Hub
+                        <span className="px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-bold">
+                            Submission Builder
                         </span>
                     </h1>
-                    <p className="text-sm text-slate-500 mt-1">Aggregated regulatory readiness across all active medical device submissions.</p>
+                    <p className="text-sm text-slate-500 mt-1">Configure and generate official FDA submission matrices, CAPA reports, and post-market logs.</p>
                 </div>
 
-                {/* KPI Metrics */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
-                        <div className="flex items-center gap-3 mb-2 text-slate-500 font-medium text-sm">
-                            <Shield className="w-4 h-4 text-indigo-500" />
-                            Active 510(k) Submissions
-                        </div>
-                        <div className="text-3xl font-bold text-slate-900">4</div>
-                        <div className="text-xs text-slate-500 mt-2">2 in Drafting • 2 in Gap Remediation</div>
-                    </div>
-                    <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
-                        <div className="flex items-center gap-3 mb-2 text-slate-500 font-medium text-sm">
-                            <AlertTriangle className="w-4 h-4 text-amber-500" />
-                            Total Unresolved Gaps
-                        </div>
-                        <div className="text-3xl font-bold text-slate-900">17</div>
-                        <div className="text-xs flex items-center gap-2 mt-2 font-medium">
-                            <span className="text-red-600">5 Critical</span>
-                            <span className="text-slate-300">•</span>
-                            <span className="text-amber-600">8 Major</span>
-                            <span className="text-slate-300">•</span>
-                            <span className="text-indigo-600">4 Minor</span>
-                        </div>
-                    </div>
-                    <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
-                        <div className="flex items-center gap-3 mb-2 text-slate-500 font-medium text-sm">
-                            <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                            Pipeline Velocity
-                        </div>
-                        <div className="text-3xl font-bold text-slate-900">72%</div>
-                        <div className="text-xs text-slate-500 mt-2">Requirement closure rate this month (+14% vs Q1)</div>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-                    {/* Report Configuration Engine */}
-                    <div className="col-span-2 bg-white border border-slate-200 rounded-xl shadow-sm p-6 xl:p-8">
-                        <div className="flex items-center gap-3 mb-8">
-                            <FileSearch className="w-6 h-6 text-indigo-600" />
-                            <div>
-                                <h2 className="text-xl font-bold text-slate-900">Report Customization Engine</h2>
-                                <p className="text-sm text-slate-500 mt-1">Configure your final regulatory artifact parameters via the wizard below.</p>
+                <div className="flex flex-1 gap-6 overflow-hidden items-start pb-4">
+                    {/* LEFT COLUMN: BUILDER CONFIG */}
+                    <div className="flex-1 flex flex-col gap-6 overflow-y-auto custom-scrollbar pr-2 pb-12 max-h-[calc(100vh-140px)]">
+                        {/* Pre-Configured Templates Gallery */}
+                        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 shrink-0">
+                            <h2 className="text-sm font-bold text-slate-800 uppercase tracking-widest mb-4">1. Select Target Template</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <button onClick={() => setActiveTemplate('510k')} className={`text-left p-4 rounded-xl border-2 transition-all ${activeTemplate === '510k' ? 'border-indigo-600 bg-indigo-50/50 relative overflow-hidden' : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'}`}>
+                                    {activeTemplate === '510k' && <div className="absolute top-0 left-0 w-1 h-full bg-indigo-600"></div>}
+                                    <h3 className={`font-bold text-base ${activeTemplate === '510k' ? 'text-indigo-900' : 'text-slate-800'} flex items-center gap-2`}><FileText className="w-4 h-4 text-indigo-600" /> 510(k) Trace Matrix</h3>
+                                    <p className="text-xs text-slate-500 mt-1 pr-2">Full pre-market compliance grid strictly mapped to IEC 62304 & ISO 14971.</p>
+                                </button>
+                                <button onClick={() => setActiveTemplate('capa')} className={`text-left p-4 rounded-xl border-2 transition-all ${activeTemplate === 'capa' ? 'border-rose-500 bg-rose-50/50 relative overflow-hidden' : 'border-slate-200 hover:border-rose-300 hover:bg-slate-50'}`}>
+                                    {activeTemplate === 'capa' && <div className="absolute top-0 left-0 w-1 h-full bg-rose-500"></div>}
+                                    <h3 className={`font-bold text-base ${activeTemplate === 'capa' ? 'text-rose-900' : 'text-slate-800'} flex items-center gap-2`}><Shield className="w-4 h-4 text-rose-500" /> CAPA Action Log</h3>
+                                    <p className="text-xs text-slate-500 mt-1 pr-2">Aggregates "Critical" and "Major" gaps combined with AI remediation plans.</p>
+                                </button>
+                                <button onClick={() => setActiveTemplate('complaint')} className={`text-left p-4 rounded-xl border-2 transition-all ${activeTemplate === 'complaint' ? 'border-emerald-500 bg-emerald-50/50 relative overflow-hidden' : 'border-slate-200 hover:border-emerald-300 hover:bg-slate-50'}`}>
+                                    {activeTemplate === 'complaint' && <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>}
+                                    <h3 className={`font-bold text-base ${activeTemplate === 'complaint' ? 'text-emerald-900' : 'text-slate-800'} flex items-center gap-2`}><AlertTriangle className="w-4 h-4 text-emerald-500" /> Post-Market Signals</h3>
+                                    <p className="text-xs text-slate-500 mt-1 pr-2">Complaint handling data sourced directly from adverse event reports (MAUDE).</p>
+                                </button>
+                                <button onClick={() => setActiveTemplate('executive')} className={`text-left p-4 rounded-xl border-2 transition-all ${activeTemplate === 'executive' ? 'border-amber-500 bg-amber-50/50 relative overflow-hidden' : 'border-slate-200 hover:border-amber-300 hover:bg-slate-50'}`}>
+                                    {activeTemplate === 'executive' && <div className="absolute top-0 left-0 w-1 h-full bg-amber-500"></div>}
+                                    <h3 className={`font-bold text-base ${activeTemplate === 'executive' ? 'text-amber-900' : 'text-slate-800'} flex items-center gap-2`}><Printer className="w-4 h-4 text-amber-500" /> Executive Audit Brief</h3>
+                                    <p className="text-xs text-slate-500 mt-1 pr-2">High-level readiness charts and attestation sign-offs. Ideal for C-Suite.</p>
+                                </button>
                             </div>
                         </div>
-                        
-                        <div className="space-y-10">
-                            {/* Step 1 */}
-                            <div>
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm">1</div>
-                                    <h3 className="text-lg font-bold text-slate-800">Select Target Payload</h3>
-                                </div>
-                                <div className="ml-11">
-                                    <label className="block text-base font-bold text-slate-800 mb-2">Evaluated Submission</label>
+
+                        {/* Config Wizard */}
+                        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 shrink-0">
+                            <h2 className="text-sm font-bold text-slate-800 uppercase tracking-widest mb-6">2. Define Output Constraints</h2>
+                            {activeTemplate !== 'complaint' ? (
+                            <div className="space-y-6">
+                                <div>
+                                    <label className="block text-sm font-bold text-slate-800 mb-2">Evaluated Submission Scope</label>
                                     <div className="relative">
-                                        <select value={enginePayload} onChange={(e) => setEnginePayload(e.target.value)} className="w-full appearance-none bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-4 text-[15px] font-medium text-slate-600 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer hover:bg-slate-50 transition-colors">
+                                        <select value={enginePayload} onChange={(e) => setEnginePayload(e.target.value)} className="w-full appearance-none bg-slate-50/50 border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-600 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer hover:bg-slate-50 transition-colors">
                                             {availableSubmissions.length > 0 ? (
                                                 availableSubmissions.map(sub => (
                                                     <option key={sub.id} value={sub.id}>
@@ -903,123 +887,226 @@ function ReportsContent() {
                                         <ChevronDown className="w-4 h-4 text-slate-400 absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" />
                                     </div>
                                 </div>
-                            </div>
 
-                            {/* Step 2 */}
-                            <div>
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm">2</div>
-                                    <h3 className="text-lg font-bold text-slate-800">Apply Regulatory Transforms</h3>
-                                </div>
-                                <div className="space-y-3 ml-11">
-                                    <label className="flex items-center gap-4 p-4 border border-slate-100 bg-slate-50/50 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors">
-                                        <input type="checkbox" checked={engineMitigations} onChange={(e) => setEngineMitigations(e.target.checked)} className="w-5 h-5 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500" />
+                                <div className="space-y-3">
+                                    <label className="flex items-center gap-4 p-3 border border-slate-100 bg-slate-50/50 rounded-lg cursor-pointer hover:bg-slate-50 transition-colors">
+                                        <input type="checkbox" checked={engineMitigations} onChange={(e) => setEngineMitigations(e.target.checked)} className="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500" />
                                         <div className="flex-1">
-                                            <div className="text-sm font-bold text-slate-800">Include AI Mitigation Recommendations</div>
-                                            <div className="text-xs text-slate-500 mt-0.5">Appends TraceBridge generated remediation text and code snippets to all identified gaps.</div>
+                                            <div className="text-sm font-bold text-slate-800">Include AI Mitigation Strategies</div>
+                                            <div className="text-xs text-slate-500 mt-0.5">Appends explicit engineering remediation steps to deficiency nodes.</div>
                                         </div>
                                     </label>
-                                    <label className="flex items-center gap-4 p-4 border border-slate-100 bg-slate-50/50 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors">
-                                        <input type="checkbox" checked={engineRedact} onChange={(e) => setEngineRedact(e.target.checked)} className="w-5 h-5 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500" />
+                                    <label className="flex items-center gap-4 p-3 border border-slate-100 bg-slate-50/50 rounded-lg cursor-pointer hover:bg-slate-50 transition-colors">
+                                        <input type="checkbox" checked={engineRedact} onChange={(e) => setEngineRedact(e.target.checked)} className="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500" />
                                         <div className="flex-1">
                                             <div className="text-sm font-bold text-slate-800">Redact Proprietary IP (Safe Mode)</div>
-                                            <div className="text-xs text-slate-500 mt-0.5">Automatically masks explicit biological formulas, trade secrets, and PII from the export wrapper.</div>
+                                            <div className="text-xs text-slate-500 mt-0.5">Scrub biological formulas and confidential code snippets before export.</div>
                                         </div>
                                     </label>
-                                    <label className="flex items-center gap-4 p-4 border border-slate-100 bg-slate-50/50 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors">
-                                        <input type="checkbox" checked={engineRta} onChange={(e) => setEngineRta(e.target.checked)} className="w-5 h-5 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500" />
+                                    {activeTemplate === '510k' && (
+                                    <label className="flex items-center gap-4 p-3 border border-slate-100 bg-slate-50/50 rounded-lg cursor-pointer hover:bg-slate-50 transition-colors">
+                                        <input type="checkbox" checked={engineRta} onChange={(e) => setEngineRta(e.target.checked)} className="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500" />
                                         <div className="flex-1">
-                                            <div className="text-sm font-bold text-slate-800">Ensure FDA RTA Summary Styling</div>
-                                            <div className="text-xs text-slate-500 mt-0.5">Formats the output strictly according to the official FDA Refuse to Accept (RTA) checklist layout.</div>
+                                            <div className="text-sm font-bold text-slate-800">FDA RTA Summary Styling</div>
+                                            <div className="text-xs text-slate-500 mt-0.5">Overrides aesthetics to match the FDA Refuse to Accept schema.</div>
                                         </div>
                                     </label>
+                                    )}
                                 </div>
                             </div>
-                            
-                            {/* Step 3 */}
-                            <div className="pt-2">
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm">3</div>
-                                    <h3 className="text-lg font-bold text-slate-800">Generate Final Artifact</h3>
-                                </div>
-                                <div className="ml-11 grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <button onClick={() => { generateLiveReport(); setPendingExport('csv'); }} className="flex items-center justify-center gap-3 lg:gap-4 bg-white border border-slate-200 shadow-sm rounded-xl py-6 hover:bg-slate-50 transition-all hover:border-indigo-200 focus:ring-2 focus:ring-indigo-500 outline-none group">
-                                        <Download className="w-[1.125rem] h-[1.125rem] text-slate-600 group-hover:text-indigo-600 transition-colors" />
-                                        <div className="text-left leading-tight">
-                                            <div className="font-bold text-[#2A3B4C] text-[15px] lg:text-[17px]">FDA eCopy</div>
-                                            <div className="font-bold text-[#2A3B4C] text-[15px] lg:text-[17px]">(CSV)</div>
+                            ) : (
+                                <div className="space-y-6">
+                                    <div className="bg-rose-50 text-rose-800 border border-rose-200 p-4 rounded-lg flex gap-3 shadow-inner">
+                                        <Eye className="w-5 h-5 text-rose-500 shrink-0 mt-0.5" />
+                                        <div>
+                                            <p className="text-sm font-bold">Hostile Auditor Vector Connected</p>
+                                            <p className="text-xs text-rose-700 mt-1 leading-relaxed text-balance">This template is dynamically linked to 18 live adverse event reports and the MAUDE database to triangulate post-market anomaly signals for your exact product code.</p>
                                         </div>
-                                    </button>
-                                    <button onClick={() => { generateLiveReport(); setPendingExport('pdf'); }} className="flex items-center justify-center gap-3 lg:gap-4 bg-white border border-slate-200 shadow-sm rounded-xl py-6 hover:bg-slate-50 transition-all hover:border-indigo-200 focus:ring-2 focus:ring-indigo-500 outline-none group">
-                                        <ExternalLink className="w-[1.125rem] h-[1.125rem] text-slate-600 group-hover:text-indigo-600 transition-colors" />
-                                        <div className="text-left leading-tight">
-                                            <div className="font-bold text-[#2A3B4C] text-[15px] lg:text-[17px]">Report</div>
-                                            <div className="font-bold text-[#2A3B4C] text-[15px] lg:text-[17px]">(PDF)</div>
-                                        </div>
-                                    </button>
-                                    <button onClick={() => { 
-                                        generateLiveReport().then(() => {
-                                            setTimeout(() => window.print(), 500);
-                                        }); 
-                                    }} className="flex items-center justify-center gap-3 lg:gap-4 bg-white border border-slate-200 shadow-sm rounded-xl py-6 hover:bg-slate-50 transition-all hover:border-indigo-200 focus:ring-2 focus:ring-indigo-500 outline-none group">
-                                        <Printer className="w-[1.125rem] h-[1.125rem] text-slate-600 group-hover:text-indigo-600 transition-colors" />
-                                        <div className="text-left leading-tight">
-                                            <div className="font-bold text-[#2A3B4C] text-[15px] lg:text-[17px]">Quick</div>
-                                            <div className="font-bold text-[#2A3B4C] text-[15px] lg:text-[17px]">(Print)</div>
-                                        </div>
-                                    </button>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <label className="flex items-center gap-4 p-3 border border-emerald-100/50 bg-emerald-50/20 rounded-lg cursor-pointer">
+                                            <input type="checkbox" checked={true} readOnly className="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500" />
+                                            <div className="flex-1">
+                                                <div className="text-sm font-bold text-slate-800">Cross-reference 18 Hostile Audit Artifacts</div>
+                                            </div>
+                                        </label>
+                                        <label className="flex items-center gap-4 p-3 border border-emerald-100/50 bg-emerald-50/20 rounded-lg cursor-pointer">
+                                            <input type="checkbox" checked={true} readOnly className="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500" />
+                                            <div className="flex-1">
+                                                <div className="text-sm font-bold text-slate-800">Flag External Sentinel Events</div>
+                                            </div>
+                                        </label>
+                                    </div>
                                 </div>
-                                <div className="ml-11 mt-6">
-                                    <button onClick={() => generateLiveReport()} className="w-full py-4 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 transform active:scale-[0.98]">
-                                        Generate TraceMatrix <ChevronRight className="w-5 h-5" />
-                                    </button>
-                                </div>
-                            </div>
+                            )}
                         </div>
                     </div>
 
-                    {/* Report of Findings (Global Insights) */}
-                    <div className="col-span-1 bg-[#0f172a] border border-slate-800 rounded-xl shadow-xl overflow-hidden flex flex-col relative text-white">
-                        <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/10 to-transparent pointer-events-none" />
-                        
-                        <div className="p-6 border-b border-slate-800/50 relative z-10">
-                            <h2 className="text-base font-bold flex items-center gap-2">
-                                <AlertTriangle className="w-5 h-5 text-amber-400" />
-                                Global Findings Report
-                            </h2>
-                            <p className="text-xs text-slate-400 mt-1">Enterprise-wide deficiency tracking across all active projects.</p>
-                        </div>
-                        
-                        <div className="p-6 flex-1 flex flex-col gap-6 relative z-10">
-                            <div>
-                                <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Most Frequent Deficiencies</div>
-                                <div className="space-y-4">
-                                    <div className="flex items-start justify-between group">
-                                        <div className="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">FDA Cybersecurity Guidance § V.A</div>
-                                        <span className="bg-red-500/20 text-red-400 text-xs font-bold px-2 py-0.5 rounded border border-red-500/20">6 items</span>
-                                    </div>
-                                    <div className="flex items-start justify-between group">
-                                        <div className="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">IEC 62304 § 5.3</div>
-                                        <span className="bg-amber-500/20 text-amber-400 text-xs font-bold px-2 py-0.5 rounded border border-amber-500/20">4 items</span>
-                                    </div>
-                                    <div className="flex items-start justify-between group">
-                                        <div className="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">ISO 14971:2019 § 7</div>
-                                        <span className="bg-amber-500/20 text-amber-400 text-xs font-bold px-2 py-0.5 rounded border border-amber-500/20">2 items</span>
-                                    </div>
+                    {/* RIGHT COLUMN: STICKY PREVIEW */}
+                    <div className="w-[400px] xl:w-[480px] shrink-0 sticky top-0 h-[calc(100vh-160px)]">
+                        <div className="bg-[#0f172a] h-full rounded-2xl border border-slate-800 shadow-2xl overflow-hidden flex flex-col relative text-white animate-in slide-in-from-right-4 duration-700 delay-100 fade-in">
+                            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-500/10 via-transparent to-transparent pointer-events-none" />
+                            
+                            <div className="px-6 py-4 border-b border-slate-800/80 flex items-center justify-between relative z-10 bg-slate-900/60 backdrop-blur-md">
+                                <div>
+                                    <h2 className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Layout Engine</h2>
+                                    <p className="text-[10px] text-slate-500 mt-0.5">Wireframe updates dynamically.</p>
+                                </div>
+                                <div className="flex items-center gap-2 bg-slate-800 px-3 py-1 rounded-full border border-slate-700">
+                                    <span className="flex h-2 w-2 relative">
+                                        <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-emerald-400 opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                    </span>
+                                    <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Live</span>
                                 </div>
                             </div>
-                            
-                            <div className="mt-auto pt-6 border-t border-slate-800">
-                                <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">60-Day Remediation Velocity</div>
-                                <div className="flex items-end gap-2 h-20 w-full mb-3">
-                                    <div className="w-1/6 bg-indigo-500/20 rounded-t h-[30%] hover:bg-indigo-500/40 transition-colors"></div>
-                                    <div className="w-1/6 bg-indigo-500/30 rounded-t h-[45%] hover:bg-indigo-500/50 transition-colors"></div>
-                                    <div className="w-1/6 bg-indigo-500/40 rounded-t h-[60%] hover:bg-indigo-500/60 transition-colors"></div>
-                                    <div className="w-1/6 bg-indigo-500/60 rounded-t h-[55%] hover:bg-indigo-500/70 transition-colors"></div>
-                                    <div className="w-1/6 bg-indigo-500/80 rounded-t h-[80%] hover:bg-indigo-500/90 transition-colors"></div>
-                                    <div className="w-1/6 bg-indigo-500 rounded-t h-[100%] shadow-[0_0_15px_rgba(99,102,241,0.5)]"></div>
+
+                            <div className="flex-1 p-6 relative z-10 flex flex-col overflow-y-auto custom-scrollbar">
+                                {/* Preview Dynamic Rendering */}
+                                {activeTemplate === '510k' && (
+                                    <div className="space-y-4 animate-in fade-in zoom-in-95 duration-300">
+                                        <div className="bg-slate-800/40 border border-slate-700/50 p-4 rounded-xl backdrop-blur-sm">
+                                            <div className="h-4 w-3/4 bg-slate-600/50 rounded mb-2.5"></div>
+                                            <div className="h-2 w-1/2 bg-slate-600/30 rounded"></div>
+                                        </div>
+                                        <div className="border border-slate-700/50 rounded-xl overflow-hidden shadow-inner">
+                                            <div className="flex bg-slate-800/90 p-3 gap-3 border-b border-slate-700/50">
+                                                <div className="h-2.5 w-12 bg-slate-500/50 rounded"></div>
+                                                <div className="h-2.5 w-24 bg-slate-500/50 rounded"></div>
+                                                <div className="h-2.5 w-12 bg-slate-500/50 rounded ml-auto"></div>
+                                            </div>
+                                            {[1,2,3,4,5,6].map(i => (
+                                                <div key={i} className="flex p-3 gap-3 border-b border-slate-700/30 border-dashed hover:bg-slate-800/30 transition-colors">
+                                                    <div className="h-2.5 w-8 bg-indigo-500/30 rounded mt-0.5 shrink-0"></div>
+                                                    <div className="space-y-2 flex-1">
+                                                        <div className="h-2.5 w-full bg-slate-600/30 rounded"></div>
+                                                        <div className="h-2.5 w-4/5 bg-slate-600/30 rounded"></div>
+                                                    </div>
+                                                    <div className="h-3.5 w-10 bg-emerald-500/20 rounded-full shrink-0"></div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {activeTemplate === 'capa' && (
+                                    <div className="space-y-4 animate-in fade-in zoom-in-95 duration-300">
+                                        <div className="flex justify-center mb-6 mt-4 relative">
+                                            <div className="absolute inset-0 bg-rose-500/10 blur-xl rounded-full w-20 h-20 left-1/2 -translate-x-1/2"></div>
+                                            <div className="w-16 h-16 rounded-full bg-rose-500/20 flex flex-col items-center justify-center border border-rose-500/30 relative z-10 shadow-[0_0_15px_rgba(244,63,94,0.3)]">
+                                                <Shield className="w-6 h-6 text-rose-400 mb-1" />
+                                            </div>
+                                        </div>
+                                        <div className="text-center mb-8">
+                                            <div className="h-4 w-48 bg-slate-600/50 rounded mx-auto mb-3"></div>
+                                            <div className="h-2 w-32 bg-slate-600/30 rounded mx-auto"></div>
+                                        </div>
+                                        {[1,2].map(i => (
+                                            <div key={i} className="bg-slate-800/40 border border-slate-700/80 hover:border-rose-500/30 p-4 rounded-xl transition-colors">
+                                                <div className="flex items-center justify-between mb-3">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]"></div>
+                                                        <div className="h-3 w-24 bg-rose-500/30 rounded"></div>
+                                                    </div>
+                                                    <div className="h-3 w-12 bg-slate-600/40 rounded-full"></div>
+                                                </div>
+                                                <div className="h-2.5 w-full bg-slate-600/50 rounded mb-2.5"></div>
+                                                <div className="h-2.5 w-11/12 bg-slate-600/50 rounded mb-4"></div>
+                                                {engineMitigations && (
+                                                    <div className="bg-slate-900/80 p-3.5 rounded-lg border border-indigo-500/20 mt-3 relative overflow-hidden">
+                                                        <div className="absolute left-0 top-0 h-full w-1 bg-indigo-500/50"></div>
+                                                        <div className="h-2 w-20 bg-indigo-400/40 rounded mb-2.5 ml-2"></div>
+                                                        <div className="h-2 w-full bg-indigo-400/20 rounded mb-2 ml-2"></div>
+                                                        <div className="h-2 w-4/5 bg-indigo-400/20 rounded ml-2"></div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {activeTemplate === 'complaint' && (
+                                    <div className="space-y-5 animate-in fade-in zoom-in-95 duration-300">
+                                        <div className="bg-gradient-to-r from-rose-950/40 to-slate-900/40 border border-rose-500/30 p-5 rounded-xl shadow-[inset_0_1px_0_rgba(244,63,94,0.1)]">
+                                            <h3 className="text-rose-400 font-bold text-xs flex items-center gap-2 mb-3 uppercase tracking-wider"><AlertTriangle className="w-4 h-4" /> Detected Sentinel Events</h3>
+                                            <div className="h-2.5 w-full bg-rose-900/40 rounded mb-2"></div>
+                                            <div className="h-2.5 w-[90%] bg-rose-900/40 rounded mb-2"></div>
+                                            <div className="h-2.5 w-2/3 bg-rose-900/40 rounded"></div>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="bg-slate-800/40 p-4 rounded-xl border border-slate-700/80 flex flex-col items-center text-center">
+                                                <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center mb-2">
+                                                    <div className="text-2xl font-black text-amber-400">14</div>
+                                                </div>
+                                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">MAUDE Hits</div>
+                                            </div>
+                                            <div className="bg-slate-800/40 p-4 rounded-xl border border-slate-700/80 flex flex-col items-center text-center">
+                                                <div className="w-10 h-10 rounded-full bg-rose-500/10 flex items-center justify-center mb-2">
+                                                    <div className="text-2xl font-black text-rose-400">2</div>
+                                                </div>
+                                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Warning Letters</div>
+                                            </div>
+                                        </div>
+                                        <div className="space-y-3 mt-2">
+                                            {[1,2,3,4].map(i => (
+                                                <div key={i} className="flex p-3.5 gap-4 bg-slate-800/30 rounded-xl border border-slate-700/50 hover:bg-slate-800/50 transition-colors cursor-default">
+                                                    <div className="w-1.5 h-10 bg-gradient-to-b from-amber-400 to-rose-500 rounded-full shrink-0 shadow-[0_0_10px_rgba(245,158,11,0.2)]"></div>
+                                                    <div className="flex-1 space-y-2.5 py-1">
+                                                        <div className="flex justify-between">
+                                                          <div className="h-2.5 w-3/4 bg-slate-500/40 rounded"></div>
+                                                          <div className="h-2.5 w-8 bg-slate-600/30 rounded"></div>
+                                                        </div>
+                                                        <div className="h-2.5 w-1/2 bg-slate-500/20 rounded"></div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {activeTemplate === 'executive' && (
+                                    <div className="space-y-8 animate-in fade-in zoom-in-95 duration-300 h-full flex flex-col justify-center px-4">
+                                        <div className="flex items-center justify-center gap-4 relative">
+                                            <div className="absolute inset-0 bg-indigo-500/10 blur-2xl rounded-full w-40 h-40 left-1/2 -translate-x-1/2"></div>
+                                            <div className="w-28 h-28 rounded-full border-4 border-indigo-500/80 flex items-center justify-center bg-[#0f172a] relative z-10 shadow-[0_0_30px_rgba(79,70,229,0.2)]">
+                                                <span className="text-4xl font-extrabold text-white tracking-tighter">92%</span>
+                                                <span className="absolute bottom-2 text-[8px] text-indigo-300 font-bold uppercase tracking-widest">Ready</span>
+                                            </div>
+                                        </div>
+                                        <div className="space-y-4">
+                                            <div className="flex justify-between items-center bg-slate-800/50 p-4 rounded-xl border border-slate-700/50 backdrop-blur-sm">
+                                                <div className="space-y-2">
+                                                    <div className="h-3 w-28 bg-slate-500/60 rounded"></div>
+                                                    <div className="h-2 w-16 bg-slate-600/40 rounded"></div>
+                                                </div>
+                                                <div className="h-4 w-12 bg-emerald-500/80 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.3)]"></div>
+                                            </div>
+                                            <div className="flex justify-between items-center bg-slate-800/50 p-4 rounded-xl border border-slate-700/50 backdrop-blur-sm">
+                                                <div className="space-y-2">
+                                                    <div className="h-3 w-36 bg-slate-500/60 rounded"></div>
+                                                    <div className="h-2 w-20 bg-slate-600/40 rounded"></div>
+                                                </div>
+                                                <div className="h-4 w-12 bg-rose-500/80 rounded-full shadow-[0_0_10px_rgba(244,63,94,0.3)]"></div>
+                                            </div>
+                                        </div>
+                                        <div className="mt-8 border-t border-slate-700/80 pt-8 flex justify-between px-6">
+                                            <div className="w-28 h-[2px] bg-slate-600/80 mt-6 relative"><span className="absolute -top-5 left-0 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Sign Here</span></div>
+                                            <div className="w-24 h-[2px] bg-slate-600/80 mt-6 relative"><span className="absolute -top-5 left-0 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Date</span></div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Action Buttons Fixed at Bottom of Preview */}
+                                <div className="mt-auto pt-6 bg-[#0f172a] relative z-20">
+                                    <div className="grid grid-cols-2 gap-3 pb-2">
+                                        <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm">
+                                            <Download className="w-[1.125rem] h-[1.125rem]" /> FDA eCopy (.csv)
+                                        </button>
+                                        <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] transition-all">
+                                            <ExternalLink className="w-[1.125rem] h-[1.125rem]" /> Report (.pdf)
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className="text-xs text-slate-400 text-center font-medium">Clear upward trend in gap resolution</div>
                             </div>
                         </div>
                     </div>
