@@ -11,6 +11,8 @@ export interface GapReportItem {
     severity: "critical" | "major" | "minor";
     citations: { source: string; section: string; quote: string }[];
     status: "compliant" | "gap_detected" | "needs_review";
+    reasoning?: string;
+    missingEvidence?: string;
 }
 
 /**
@@ -240,6 +242,8 @@ export async function runGapAnalysis(
             severity,
             citations: geminiResult.citations || [],
             status,
+            reasoning: geminiResult.analytical_reasoning,
+            missingEvidence: geminiResult.exact_missing_evidence
         };
 
         results.push(gapItem);
@@ -254,6 +258,8 @@ export async function runGapAnalysis(
             gapTitle: gapItem.gap_title,
             missingRequirement: rule.requirement,
             citations: geminiResult.citations || [],
+            reasoning: geminiResult.analytical_reasoning,
+            missingEvidence: geminiResult.exact_missing_evidence,
             geminiResponse: JSON.stringify(geminiResult, null, 2),
             createdAt: Timestamp.now(),
         };

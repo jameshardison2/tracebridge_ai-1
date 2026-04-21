@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Check } from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
+import { useAuth } from "@/lib/auth-context";
 
 type TaskStatus = 'DETECTED' | 'TRIAGED' | 'ASSIGNED' | 'IN_REMEDIATION' | 'CLOSED';
 
@@ -21,67 +23,88 @@ interface Task {
     closedBy?: string;
     closedTime?: string;
     attachments?: boolean;
+    uploadId?: string;
 }
 
-const INITIAL_TASKS: Task[] = [
-    // DETECTED
-    {
-        id: "t1", status: "DETECTED", priority: "CRITICAL", title: "Risk management review",
-        standard: "ISO 14971:2019 § 8", confidence: 0, subNote: "No evidence"
-    },
-    {
-        id: "t2", status: "DETECTED", priority: "MEDIUM", title: "Design transfer records",
-        standard: "ISO 13485 § 7.3.8", confidence: 42, subNote: "Weak match"
-    },
-    // TRIAGED
-    {
-        id: "t3", status: "TRIAGED", priority: "CRITICAL", title: "Software unit verification",
-        standard: "IEC 62304 § 5.6", confidence: 54, subNote: "Pending assignment"
-    },
-    {
-        id: "t4", status: "TRIAGED", priority: "MEDIUM", title: "Human factors validation",
-        standard: "IEC 62366 § 5.9", confidence: 68, subNote: "Needs QA review"
-    },
-    // ASSIGNED
-    {
-        id: "t5", status: "ASSIGNED", priority: "CRITICAL", title: "Post-market data review",
-        standard: "ISO 14971 § 10", assigneeInitials: "SR", assigneeLabel: "Sarah R.",
-        assigneeColor: "bg-indigo-100 text-indigo-700", dueDate: "Due Apr 25"
-    },
-    {
-        id: "t6", status: "ASSIGNED", priority: "MINE • MEDIUM", title: "Internal audit cadence",
-        standard: "ISO 13485 § 8.2.2", assigneeInitials: "JN", assigneeLabel: "James N.",
-        assigneeColor: "bg-amber-400 text-amber-900", dueDate: "Due Apr 22"
-    },
-    // IN REMEDIATION
-    {
-        id: "t7", status: "IN_REMEDIATION", priority: "MEDIUM", title: "Complaint handling SOP",
-        standard: "ISO 13485 § 8.2.1", assigneeInitials: "MK", assigneeLabel: "Mark K.",
-        assigneeColor: "bg-emerald-100 text-emerald-700", extraFlag: "AI DRAFT READY"
-    },
-    {
-        id: "t8", status: "IN_REMEDIATION", priority: "CRITICAL", title: "CAPA process clarity",
-        standard: "ISO 13485 § 8.5.2", assigneeInitials: "AP", assigneeLabel: "Aisha P.",
-        assigneeColor: "bg-rose-100 text-rose-700", attachments: true
-    },
-    // CLOSED
-    {
-        id: "t9", status: "CLOSED", title: "Internal audit section 8", standard: "§ 8.2.2",
-        closedBy: "James N.", closedTime: "14 min ago"
-    },
-    {
-        id: "t10", status: "CLOSED", title: "Management review metrics", standard: "§ 5.6",
-        closedBy: "Sarah R.", closedTime: "2 hr ago"
-    },
-    {
-        id: "t11", status: "CLOSED", title: "Document control", standard: "§ 4.2.3",
-        closedBy: "Mark K.", closedTime: "Yesterday"
-    }
-];
-
 export default function PipelinePage() {
-    const [tasks, setTasks] = useState<Task[]>(INITIAL_TASKS);
+    const router = useRouter();
+    const pathname = usePathname();
+    const { user } = useAuth();
+    const [tasks, setTasks] = useState<Task[]>([]);
     const [slackToast, setSlackToast] = useState("");
+    const [isMounted, setIsMounted] = useState(false);
+
+    // Initial Load & API Hydration
+    useEffect(() => {
+        setIsMounted(true);
+        if (!user) return;
+
+        const loadRealGaps = async () => {
+            try {
+                const token = await user.getIdToken();
+                const r = await fetch("/api/reports", { headers: { Authorization: `Bearer ${token}` } });
+                const data = await r.json();
+
+                if (data.success && data.data.uploads?.length > 0) {
+                    const latestRef = data.data.uploads[0];
+                    // Deep fetch to retrieve full gapResults payload, not just the bandwidth-constrained summary
+                    const rFull = await fetch(`/api/reports?uploadId=${latestRef.id}`, { headers: { Authorization: `Bearer ${token}` } });
+                    const fullData = await rFull.json();
+
+                    if (fullData.success && fullData.data.upload) {
+                        const latest = fullData.data.upload;
+                        const newTasks: Task[] = (latest.gapResults || []).map((gap: any) => ({
+                            id: gap.id,
+                            uploadId: latest.id,
+                            status: gap.status === 'compliant' ? 'CLOSED' : (gap.status === 'gap_detected' ? 'DETECTED' : 'TRIAGED'),
+                            title: gap.requirement.substring(0,60) + (gap.requirement.length > 60 ? "..." : ""),
+                            standard: gap.standard + (gap.section ? ` § ${gap.section}` : ""),
+                            priority: gap.severity ? gap.severity.toUpperCase() : "MEDIUM",
+                            confidence: gap.confidence ? Math.round(gap.confidence * 100) : 0,
+                            subNote: gap.citations?.[0]?.quote ? "Evidence Extracted" : "Missing File",
+                            closedBy: gap.status === 'compliant' ? "AI Verified" : undefined,
+                            closedTime: gap.status === 'compliant' ? "Automated" : undefined
+                        }));
+                        
+                        const savedTasks = localStorage.getItem('tracebridge_pipeline_tasks');
+                        if (savedTasks) {
+                            try {
+                                const parsed = JSON.parse(savedTasks);
+                                if (parsed.length > 0 && parsed[0].uploadId === latest.id) {
+                                    setTasks(parsed);
+                                    return;
+                                }
+                            } catch (e) {
+                                console.error("Local pipeline storage unparseable");
+                            }
+                        }
+                        setTasks(newTasks);
+                    }
+                }
+            } catch (err) {
+                console.error("Pipeline Sync Failed:", err);
+            }
+        };
+
+        loadRealGaps();
+    }, [user]);
+
+    useEffect(() => {
+        if (!isMounted) return;
+        const saved = localStorage.getItem('tracebridge_pipeline_tasks');
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                if (parsed.length > 0) setTasks(parsed);
+            } catch(e) {}
+        }
+    }, [pathname, isMounted]);
+
+    useEffect(() => {
+        if (isMounted) {
+            localStorage.setItem('tracebridge_pipeline_tasks', JSON.stringify(tasks));
+        }
+    }, [tasks, isMounted]);
 
     const detected = tasks.filter(t => t.status === 'DETECTED');
     const triaged = tasks.filter(t => t.status === 'TRIAGED');
@@ -110,7 +133,28 @@ export default function PipelinePage() {
                 triggerSlackToast(`Task "${task.title}" synced to Jira as DONE and posted to #compliance.`);
             }
 
-            return prev.map(t => t.id === id ? { ...t, status: targetStatus } : t);
+            return prev.map(t => {
+                if (t.id === id) {
+                    const extraFields: Partial<Task> = {};
+                    if (targetStatus === 'ASSIGNED') {
+                        extraFields.assigneeInitials = 'ME';
+                        extraFields.assigneeColor = 'bg-indigo-100 text-indigo-700';
+                        extraFields.assigneeLabel = 'System Engineer';
+                        const d = new Date();
+                        d.setDate(d.getDate() + 5);
+                        extraFields.dueDate = d.toLocaleDateString();
+                        extraFields.extraFlag = 'CAPA Review';
+                        extraFields.attachments = true;
+                    } else if (targetStatus === 'IN_REMEDIATION') {
+                        extraFields.assigneeInitials = 'QA';
+                        extraFields.assigneeColor = 'bg-rose-100 text-rose-700';
+                        extraFields.assigneeLabel = 'Quality Analyst';
+                        extraFields.dueDate = 'Pending Sign-Off';
+                    }
+                    return { ...t, status: targetStatus, ...extraFields };
+                }
+                return t;
+            });
         });
     };
 
@@ -129,7 +173,8 @@ export default function PipelinePage() {
             return (
                 <div 
                     key={t.id} draggable onDragStart={(e) => onDragStart(e, t.id)}
-                    className="bg-white rounded-lg p-4 border border-emerald-100 shadow-sm mb-3 cursor-grab hover:shadow-md transition-all active:cursor-grabbing"
+                    onClick={() => router.push(`/dashboard/results?id=${t.uploadId || 'demo-id'}&demoGap=${t.id}`)}
+                    className="bg-white rounded-lg p-4 border border-emerald-100 shadow-sm mb-3 cursor-pointer hover:shadow-md transition-all active:cursor-grabbing"
                 >
                     <h4 className="text-[13px] font-bold text-slate-900 mb-1 flex items-center gap-1.5">
                         <Check className="w-4 h-4 text-emerald-500" />
@@ -149,17 +194,20 @@ export default function PipelinePage() {
         return (
             <div 
                 key={t.id} draggable onDragStart={(e) => onDragStart(e, t.id)}
-                className={`bg-white rounded-lg p-4 border shadow-sm mb-3 cursor-grab hover:shadow-md hover:border-slate-300 transition-all active:cursor-grabbing ${borderColor}`}
+                onClick={() => router.push(`/dashboard/results?id=${t.uploadId || 'demo-id'}&demoGap=${t.id}`)}
+                className={`bg-white rounded-lg p-4 border shadow-sm mb-3 cursor-pointer hover:shadow-md hover:border-indigo-400 transition-all active:cursor-grabbing ${borderColor} relative group overflow-hidden`}
             >
-                {t.priority && (
-                    <span className={`px-1.5 py-0.5 rounded font-bold text-[9px] uppercase tracking-wider mb-2 inline-block ${
-                        t.priority.includes('CRITICAL') ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-700'
-                    }`}>
-                        {t.priority}
-                    </span>
-                )}
-                <h4 className="text-[13px] font-bold text-slate-900 mb-1">{t.title}</h4>
-                <p className="text-[10px] text-slate-400 mb-4 font-mono tracking-tighter">{t.standard}</p>
+                <div className="absolute inset-0 bg-indigo-50/50 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                <div className="relative z-10">
+                    {t.priority && (
+                        <span className={`px-1.5 py-0.5 rounded font-bold text-[9px] uppercase tracking-wider mb-2 inline-block ${
+                            t.priority.includes('CRITICAL') ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-700'
+                        }`}>
+                            {t.priority}
+                        </span>
+                    )}
+                    <h4 className="text-[13px] font-bold text-slate-900 mb-1 group-hover:text-indigo-700 transition-colors">{t.title}</h4>
+                    <p className="text-[10px] text-slate-400 mb-4 font-mono tracking-tighter">{t.standard}</p>
 
                 {/* Progress Bar (Detected/Triaged) */}
                 {t.confidence !== undefined && (
@@ -192,6 +240,7 @@ export default function PipelinePage() {
                         )}
                     </div>
                 )}
+                </div>
             </div>
         );
     };

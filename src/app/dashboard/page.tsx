@@ -30,6 +30,15 @@ export default function DashboardPage() {
     const [submissions, setSubmissions] = useState<Upload[]>([]);
     const [loading, setLoading] = useState(true);
     const { user } = useAuth();
+    const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
+
+    const handleSort = (key: string) => {
+        let direction: 'asc' | 'desc' = 'asc';
+        if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
+    };
 
     useEffect(() => {
         if (!user) return;
@@ -85,6 +94,27 @@ export default function DashboardPage() {
         }
     };
 
+    let sortedSubmissions = [...submissions];
+    if (sortConfig !== null) {
+        sortedSubmissions.sort((a, b) => {
+            let aVal: any = a[sortConfig.key as keyof Upload];
+            let bVal: any = b[sortConfig.key as keyof Upload];
+            
+            if (sortConfig.key === 'createdAt') {
+                aVal = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : new Date(a.createdAt).getTime();
+                bVal = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : new Date(b.createdAt).getTime();
+            }
+            if (sortConfig.key === 'deviceName') {
+                aVal = a.deviceName.toLowerCase();
+                bVal = b.deviceName.toLowerCase();
+            }
+            
+            if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+            if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+            return 0;
+        });
+    }
+
     return (
         <div className="flex flex-col gap-6">
             
@@ -102,6 +132,14 @@ export default function DashboardPage() {
                     </p>
                 </div>
                 <div className="flex gap-3">
+                    <button
+                        onClick={handleSeedBackdoor}
+                        disabled={loading}
+                        className="bg-indigo-600 text-white hover:bg-indigo-700 transition-colors px-4 py-2 rounded-md text-sm font-bold flex items-center gap-2 shadow-sm disabled:opacity-50"
+                    >
+                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
+                        Inject 30 Demo Audits
+                    </button>
                     <Link
                         href="/dashboard/upload"
                         className="bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] transition-colors px-4 py-2 rounded-md text-sm font-bold flex items-center gap-2 shadow-sm"
@@ -175,17 +213,17 @@ export default function DashboardPage() {
                     ) : (
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="border-b border-[var(--border)] bg-slate-100">
-                                    <th className="px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Audit Target / Device</th>
+                                <tr className="border-b border-[var(--border)] bg-slate-100 select-none">
+                                    <th onClick={() => handleSort('deviceName')} className="px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-200 transition-colors">Audit Target / Device {sortConfig?.key === 'deviceName' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}</th>
                                     <th className="px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider hidden md:table-cell">Regulated Protocol</th>
-                                    <th className="px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider hidden lg:table-cell">Documents Ingested</th>
-                                    <th className="px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider hidden md:table-cell">Execution Date</th>
-                                    <th className="px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Current Status</th>
+                                    <th onClick={() => handleSort('documentCount')} className="px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider hidden lg:table-cell cursor-pointer hover:bg-slate-200 transition-colors">Documents Ingested {sortConfig?.key === 'documentCount' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}</th>
+                                    <th onClick={() => handleSort('createdAt')} className="px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider hidden md:table-cell cursor-pointer hover:bg-slate-200 transition-colors">Execution Date {sortConfig?.key === 'createdAt' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}</th>
+                                    <th onClick={() => handleSort('status')} className="px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-200 transition-colors">Current Status {sortConfig?.key === 'status' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}</th>
                                     <th className="px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider text-right">Action</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-200">
-                                {submissions.map((sub) => (
+                                {sortedSubmissions.map((sub) => (
                                     <tr key={sub.id} className="hover:bg-slate-50 transition-colors">
                                         <td className="px-4 py-3">
                                             <div className="flex items-center gap-2 mb-0.5">

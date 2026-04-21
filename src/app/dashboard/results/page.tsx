@@ -119,7 +119,16 @@ function ResultsContent() {
     const [selectedResult, setSelectedResult] = useState<GapResult | null>(null);
     const [remediationLoading, setRemediationLoading] = useState(false);
     const [remediationDrafts, setRemediationDrafts] = useState<Record<string, string>>({});
-    
+    const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
+
+    const handleSort = (key: string) => {
+        let direction: 'asc' | 'desc' = 'asc';
+        if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
+    };
+
     // Feature States
     const [precedents, setPrecedents] = useState<any[]>([]);
     const [activityLogs, setActivityLogs] = useState<any[]>([]);
@@ -131,6 +140,26 @@ function ResultsContent() {
     const [isSettingsModalOpen, setSettingsModalOpen] = useState(false);
     const [isDriftModalOpen, setDriftModalOpen] = useState(false);
     const [isLogsModalOpen, setLogsModalOpen] = useState(false);
+    const [localPipelineStatus, setLocalPipelineStatus] = useState<string>("");
+
+    useEffect(() => {
+        if (selectedResult) {
+            let initialVal = "DETECTED";
+            if (selectedResult.status === "compliant") initialVal = "CLOSED";
+            
+            const saved = localStorage.getItem('tracebridge_pipeline_tasks');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    const exists = parsed.find((t: any) => t.id === selectedResult.id);
+                    if (exists) {
+                        initialVal = exists.status;
+                    }
+                } catch(e){}
+            }
+            setLocalPipelineStatus(initialVal);
+        }
+    }, [selectedResult]);
 
     const calculateDaysRemaining = () => {
         const target = new Date(auditTargetDate);
@@ -138,6 +167,36 @@ function ResultsContent() {
         const diffTime = target.getTime() - today.getTime();
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         return diffDays > 0 ? diffDays : 0;
+    };
+
+    const handleModalPipelineSync = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        if (!selectedResult) return;
+        const targetStatus = e.target.value;
+
+        const saved = localStorage.getItem('tracebridge_pipeline_tasks');
+        if (saved) {
+            try {
+                let parsed = JSON.parse(saved);
+                const exists = parsed.findIndex((t: any) => t.id === selectedResult.id);
+                if (exists >= 0) {
+                    parsed[exists].status = targetStatus;
+                } else {
+                    parsed.push({
+                        id: selectedResult.id,
+                        uploadId: selectedResult.uploadId || "demo-id",
+                        status: targetStatus,
+                        title: selectedResult.requirement.substring(0, 60),
+                        standard: selectedResult.standard,
+                        priority: selectedResult.severity?.toUpperCase() || "MEDIUM"
+                    });
+                }
+                localStorage.setItem('tracebridge_pipeline_tasks', JSON.stringify(parsed));
+                setLocalPipelineStatus(val);
+                // Optional: Force toast notification for UX polish
+                const event = new CustomEvent("pipeline-sync", { detail: { msg: `Action synced to board as ${targetStatus}` } });
+                window.dispatchEvent(event);
+            } catch(e){}
+        }
     };
 
     const handleRemediate = async () => {
@@ -209,6 +268,31 @@ function ResultsContent() {
 
         fetchReport();
     }, [uploadId, user]);
+
+    // Pipeline Link Interceptor
+    useEffect(() => {
+        if (report && searchParams.get("demoGap")) {
+            const gapId = searchParams.get("demoGap");
+            const existing = report.upload.gapResults.find(r => r.id === gapId);
+            if (existing) {
+                setSelectedResult(existing);
+            } else {
+                const title = searchParams.get("demoTitle") || "Trace Pipeline Mock Requirement";
+                const std = searchParams.get("demoStd") || "Pipeline Extracted Standard";
+                setSelectedResult({
+                    id: gapId!,
+                    uploadId: report.upload.id,
+                    standard: std,
+                    section: "Triage",
+                    requirement: title,
+                    status: "gap_detected",
+                    confidence: 0,
+                    severity: "high",
+                    citations: [{ source: "Pipeline State", quote: "No matching trace lineage mapped for this pipeline action.", section: "N/A" }]
+                });
+            }
+        }
+    }, [report, searchParams]);
 
     // Secondary Effect: Fetch FDA Precedents when Product Code is available
     useEffect(() => {
@@ -709,6 +793,24 @@ function ResultsContent() {
             ? upload.gapResults
             : upload.gapResults.filter((r) => r.status === filter);
 
+    let sortedResults = [...filteredResults];
+    if (sortConfig !== null) {
+        sortedResults.sort((a, b) => {
+            let aVal: any = a.id;
+            let bVal: any = b.id;
+            
+            if (sortConfig.key === 'category') { aVal = a.standard; bVal = b.standard; }
+            if (sortConfig.key === 'requirement') { aVal = a.requirement; bVal = b.requirement; }
+            if (sortConfig.key === 'confidence') { aVal = a.confidence || 0; bVal = b.confidence || 0; }
+            if (sortConfig.key === 'state') { aVal = a.status; bVal = b.status; }
+            if (sortConfig.key === 'action') { aVal = a.status === 'compliant' ? 1 : 0; bVal = b.status === 'compliant' ? 1 : 0; }
+            
+            if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+            if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+            return 0;
+        });
+    }
+
     const circumference = 2 * Math.PI * 45;
     const offset = circumference - (summary.complianceScore / 100) * circumference;
 
@@ -828,99 +930,6 @@ function ResultsContent() {
                         </p>
                     </button>
                 </div>
-
-                {/* Micro-Dashboards Feeds */}
-                <div className="grid grid-cols-3 gap-6 mt-1 mb-3">
-                    {/* Document Drift */}
-                    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-                        <div className="flex items-center gap-2 mb-5">
-                            <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-none">Document Drift</h3>
-                            <span className="px-1.5 py-0.5 rounded bg-red-100 text-red-600 text-[8px] font-bold tracking-widest ml-1">{driftLogs.length || 0} NEW</span>
-                            <span className="text-[9px] font-bold text-slate-400 ml-auto border border-slate-100 rounded px-1.5 py-0.5 shadow-sm">Live System</span>
-                        </div>
-                        <div className="space-y-4">
-                            {driftLogs.length === 0 ? (
-                                <div className="text-[10px] text-slate-400 italic">No document drift detected since verification.</div>
-                            ) : driftLogs.map((drift, idx) => (
-                                <div key={idx} className="flex items-start gap-2.5">
-                                    <div className="w-1 h-full min-h-[30px] rounded-full bg-orange-400 shrink-0"></div>
-                                    <div className="flex-1 min-w-0">
-                                        <h4 className="text-[11px] font-bold text-slate-900 truncate">
-                                            {drift.fileName} <span className="font-normal text-slate-400">{drift.status}</span>
-                                        </h4>
-                                        <p className="text-[9.5px] text-slate-500 mt-1 leading-snug truncate">
-                                            {drift.affectedRuleCount} traces for {drift.standardRule || 'Analysis'} now stale
-                                        </p>
-                                    </div>
-                                    <button className="text-[9px] font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-2 py-1 rounded border border-indigo-100 transition-colors">Re-verify</button>
-                                </div>
-                            ))}
-                        </div>
-                        <a href="#" onClick={(e) => { e.preventDefault(); setDriftModalOpen(true); }} className="text-[10px] font-bold text-indigo-600 mt-5 inline-block hover:underline">View all drift events →</a>
-                    </div>
-
-                    {/* FDA Precedents */}
-                    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-                        <div className="flex items-center gap-2 mb-5">
-                            <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-none">openFDA Target</h3>
-                            <span className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[8px] font-bold tracking-widest border border-slate-200 ml-auto shadow-sm">
-                                {report.upload.productCode || 'LLZ'}
-                            </span>
-                        </div>
-                        <div className="space-y-3.5">
-                            {loadingPrecedents ? (
-                                <div className="text-[10px] text-slate-400 italic">Querying openFDA parameters...</div>
-                            ) : precedents.length === 0 ? (
-                                <div className="text-[10px] text-slate-400 italic">No exact FDA precedents found.</div>
-                            ) : (
-                                precedents.map((p, idx) => (
-                                    <div key={idx} className="flex items-start gap-2.5">
-                                        <span className={`px-1 py-0.5 border text-[8px] font-bold rounded shrink-0 w-8 text-center ${
-                                            p.type === 'WL' ? 'bg-red-100 border-red-200 text-red-700' :
-                                            p.type === '510k' ? 'bg-indigo-100 border-indigo-200 text-indigo-700' :
-                                            'bg-amber-100 border-amber-200 text-amber-700'
-                                        }`}>
-                                            {p.type}
-                                        </span>
-                                        <div>
-                                            <h4 className="text-[11px] font-bold text-slate-900 leading-tight">{p.title}</h4>
-                                            <p className="text-[9px] text-slate-400 mt-1">{p.date}</p>
-                                        </div>
-                                    </div>
-                                ))
-                            )}
-                        </div>
-                        <a href={`https://api.fda.gov/device/510k.json?search=product_code:${report.upload.productCode}`} target="_blank" rel="noopener noreferrer" className="text-[10px] font-bold text-indigo-600 mt-5 inline-block hover:underline">View openFDA endpoint →</a>
-                    </div>
-
-                    {/* Team Activity */}
-                    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-                        <div className="flex items-center gap-2 mb-5">
-                            <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-none">Team Activity</h3>
-                            <div className="flex -space-x-1 ml-auto items-center">
-                                <div className="w-5 h-5 rounded-full bg-amber-400 text-[8px] text-amber-900 font-bold flex items-center justify-center ring-2 ring-white z-40 shadow-sm">JN</div>
-                                <div className="w-5 h-5 rounded-full bg-indigo-500 text-[8px] text-white font-bold flex items-center justify-center ring-2 ring-white z-30 shadow-sm">SR</div>
-                                <div className="w-5 h-5 rounded-full bg-emerald-500 text-[8px] text-white font-bold flex items-center justify-center ring-2 ring-white z-20 shadow-sm">MK</div>
-                                <div className="w-5 h-5 rounded-full bg-rose-400 text-[8px] text-white font-bold flex items-center justify-center ring-2 ring-white z-10 shadow-sm">AP</div>
-                                <span className="pl-3 text-[9px] font-medium text-slate-400">4 online</span>
-                            </div>
-                        </div>
-                        <div className="space-y-4">
-                            {activityLogs.length === 0 ? (
-                                <div className="text-[10px] text-slate-400 italic">No recent activity detected. Connect teammates to see live sync.</div>
-                            ) : activityLogs.map((log) => (
-                                <div key={log.id} className="flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-500">
-                                    {log.action.includes('Remedia') ? <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> : <div className="w-4 h-4 rounded-full bg-indigo-100 flex items-center justify-center shrink-0"><ArrowLeft className="w-2.5 h-2.5 text-indigo-600 rotate-180" /></div>}
-                                    <div className="flex-1 flex items-center justify-between min-w-0">
-                                        <p className="text-[11px] text-slate-600 truncate"><span className="font-bold text-slate-900">{log.userName}</span> {log.action.toLowerCase()}</p>
-                                        <span className="text-[9px] font-medium text-slate-400 shrink-0">just now</span>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                        <a href="#" onClick={(e) => { e.preventDefault(); setLogsModalOpen(true); }} className="text-[10px] font-bold text-indigo-600 mt-[1.6rem] inline-block hover:underline relative">View full stream logs →</a>
-                    </div>
-                </div>
             </div>
 
             {/* Main Split Interface */}
@@ -963,18 +972,18 @@ function ResultsContent() {
             <div className="bg-[var(--card)] w-full">
                 <table className="w-full text-left border-collapse">
                     <thead>
-                        <tr className="border-b border-[var(--border)] bg-white">
-                            <th className="px-5 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest w-[160px]">Gap Category</th>
-                            <th className="px-5 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">FDA Requirement</th>
-                            <th className="px-5 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest w-[140px]">Confidence</th>
+                        <tr className="border-b border-[var(--border)] bg-white select-none">
+                            <th onClick={() => handleSort('category')} className="px-5 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest w-[160px] cursor-pointer hover:bg-slate-50 transition-colors">Gap Category {sortConfig?.key === 'category' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}</th>
+                            <th onClick={() => handleSort('requirement')} className="px-5 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest cursor-pointer hover:bg-slate-50 transition-colors">FDA Requirement {sortConfig?.key === 'requirement' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}</th>
+                            <th onClick={() => handleSort('confidence')} className="px-5 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest w-[140px] cursor-pointer hover:bg-slate-50 transition-colors">Confidence {sortConfig?.key === 'confidence' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}</th>
                             <th className="px-5 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest w-[150px]">Assignee</th>
-                            <th className="px-5 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest w-[120px]">State</th>
+                            <th onClick={() => handleSort('state')} className="px-5 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest w-[120px] cursor-pointer hover:bg-slate-50 transition-colors">State {sortConfig?.key === 'state' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}</th>
                             <th className="px-5 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest w-[200px]">Trace Lineage</th>
-                            <th className="px-5 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest w-[120px]">Action</th>
+                            <th onClick={() => handleSort('action')} className="px-5 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest w-[120px] cursor-pointer hover:bg-slate-50 transition-colors">Action {sortConfig?.key === 'action' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-[var(--border)]">
-                        {filteredResults.map((result) => {
+                        {sortedResults.map((result) => {
                             const priority = getPriority(result.status, result.severity);
                             const category = getCategory(result.standard);
 
@@ -1112,7 +1121,7 @@ function ResultsContent() {
                         </div>
 
                         {/* Deep Evaluation Grid */}
-                        <div className={`grid grid-cols-1 ${selectedResult.status === 'compliant' ? 'md:grid-cols-4' : 'md:grid-cols-3'} min-h-[500px]`}>
+                        <div className="grid grid-cols-1 md:grid-cols-3 min-h-[500px]">
                             {/* Column 1: What FDA Requires */}
                             <div className="p-6 border-r border-[var(--border)]">
                                 <h3 className="text-sm font-semibold text-[var(--primary)] mb-4 uppercase tracking-wider">
@@ -1157,6 +1166,8 @@ function ResultsContent() {
                                     </div>
                                 )}
 
+                                {/* Engine reasoning moved to Column 3 final output view */}
+
                                 {upload.documents && upload.documents.length > 0 && (
                                     <div className="mt-6">
                                         <button 
@@ -1170,68 +1181,29 @@ function ResultsContent() {
                                 )}
                             </div>
 
-                            {/* Column 3: Evidence Overlay (Only renders safely on PASSED traits to collapse workspace constraints) */}
-                            {selectedResult.status === "compliant" && (
-                                <div className="bg-slate-50/50 p-6 border-r border-[var(--border)] relative overflow-hidden flex flex-col items-center">
-                                    <h3 className="text-sm font-semibold text-[var(--primary)] mb-4 uppercase tracking-wider w-full">
-                                        Evidence
-                                    </h3>
-                                    <div className="flex-1 flex flex-col items-center w-full">
-                                        {/* Mock Chrome PDF Browser Top Bar */}
-                                        <div className="w-[90%] bg-slate-200 h-6 rounded-t-lg flex items-center px-2 gap-1.5 shadow-sm border border-slate-300">
-                                            <div className="w-2.5 h-2.5 rounded-full bg-red-400"></div>
-                                            <div className="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
-                                            <div className="w-2.5 h-2.5 rounded-full bg-green-400"></div>
-                                            <span className="flex-1 text-center text-[8px] font-bold text-slate-500 uppercase tracking-widest flex items-center justify-center gap-1 opacity-70">
-                                                <span className="w-3 h-3 bg-red-500 text-white rounded flex items-center justify-center text-[8px]">PDF</span>
-                                                {selectedResult.citations[0].source}
-                                            </span>
-                                        </div>
-                                        
-                                        {/* Mock White PDF Page Canvas */}
-                                        <div className="relative bg-white w-[90%] shadow-lg border-x border-b border-slate-200 aspect-[8.5/11] p-6 max-h-[400px] overflow-hidden flex flex-col">
-                                            <div className="w-1/2 h-2 bg-slate-200 mb-2 rounded"></div>
-                                            <div className="w-3/4 h-2 bg-slate-200 mb-2 rounded"></div>
-                                            <div className="w-full h-2 bg-slate-200 mb-2 rounded"></div>
-                                            
-                                            {/* Highlighted Execution String */}
-                                            <div className="my-4 relative ring-1 ring-yellow-400/50 rounded-sm">
-                                                <div className="absolute inset-0 bg-yellow-300/80 rounded-sm mix-blend-multiply"></div>
-                                                <p className="text-[11px] font-serif text-slate-900 leading-relaxed relative z-10 break-words selection:bg-yellow-400 px-1 py-0.5">
-                                                    "{selectedResult.citations[0].quote}"
-                                                </p>
-                                            </div>
-                                            
-                                            <div className="w-full h-2 bg-slate-200 mt-2 rounded"></div>
-                                            <div className="w-5/6 h-2 bg-slate-200 mt-2 rounded"></div>
-                                            <div className="w-1/3 h-2 bg-slate-200 mt-2 rounded"></div>
-                                        </div>
-                                        
-                                        {/* Engine Overlay Badges */}
-                                        <div className="absolute bottom-2 right-2 bg-black/70 backdrop-blur text-white px-2 py-1 rounded text-[9px] font-bold tracking-widest flex items-center gap-1 z-30 shadow-lg">
-                                            <Eye className="w-3 h-3" /> TRACE EXTRACTED
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Column 4: Gap Identified */}
+                            {/* Column 3: Audit Result */}
                             <div className="p-6">
                                 <h3 className="text-sm font-semibold text-[var(--primary)] mb-4 uppercase tracking-wider">
-                                    Gap Identified
+                                    {selectedResult.status === "compliant" ? "Audit Evaluation Feedback" : "Gap Identified"}
                                 </h3>
 
                                 {selectedResult.status === "compliant" ? (
                                     <div className="p-4 rounded-xl bg-[var(--success)]/10 border border-[var(--success)]/20 mb-4">
-                                        <div className="flex items-center gap-2 mb-2">
+                                        <div className="flex items-center gap-2 mb-3 border-b border-[var(--success)]/20 pb-2">
                                             <CheckCircle2 className="w-5 h-5 text-[var(--success)]" />
-                                            <p className="text-sm font-semibold text-[var(--success)]">
-                                                REQUIREMENT MET
+                                            <p className="text-sm font-bold text-[var(--success)] tracking-wide">
+                                                AI ENGINE: REQUIREMENT MET
                                             </p>
                                         </div>
-                                        <p className="text-xs text-[var(--muted)]">
-                                            Your submission adequately addresses this requirement.
+                                        <p className="text-sm text-emerald-900 leading-relaxed font-medium mb-3">
+                                            {selectedResult.reasoning || "The system mathematically verified the compliance string by statically mapping the document boundary against strict FDA parameters."}
                                         </p>
+                                        {selectedResult.citations && selectedResult.citations.length > 0 && (
+                                            <div className="bg-white/60 p-3 rounded-lg border border-emerald-500/20">
+                                                <p className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest mb-1 shadow-sm">Extracted Legal Trace:</p>
+                                                <p className="text-xs text-emerald-800 font-mono italic">"{selectedResult.citations[0].quote}"</p>
+                                            </div>
+                                        )}
                                     </div>
                                 ) : (
                                     <>
@@ -1281,31 +1253,47 @@ function ResultsContent() {
                                         AI CO-PILOT REMEDIATION:
                                     </p>
                                             {remediationDrafts[selectedResult.id] ? (
-                                                <div className="p-4 rounded-xl bg-slate-50 border border-[var(--primary)]/30 max-h-[300px] overflow-y-auto custom-scrollbar">
-                                                    <div className="flex flex-col gap-3">
-                                                        <span className="text-xs font-bold text-[var(--primary)] mb-1 uppercase tracking-widest flex items-center gap-2">
-                                                            <CheckCircle2 className="w-3 h-3" /> Draft Generated
+                                                <div className="p-0 rounded-xl bg-white border border-indigo-200 shadow-sm max-h-[350px] overflow-hidden flex flex-col">
+                                                    <div className="bg-indigo-50/50 px-4 py-3 border-b border-indigo-100 flex items-center justify-between shrink-0">
+                                                        <span className="text-xs font-bold text-indigo-700 uppercase tracking-widest flex items-center gap-2">
+                                                            <CheckCircle2 className="w-4 h-4 text-indigo-500" /> AI Action Plan Verified
                                                         </span>
-                                                        <div className="text-sm font-mono text-[var(--muted)] whitespace-pre-wrap leading-relaxed">
-                                                            {remediationDrafts[selectedResult.id]}
-                                                        </div>
+                                                        <button className="text-[10px] font-bold text-slate-500 bg-white border border-slate-200 hover:bg-slate-50 hover:text-indigo-600 px-2 py-1 rounded shadow-sm transition-all">Copy to Jira</button>
+                                                    </div>
+                                                    <div className="p-5 overflow-y-auto custom-scrollbar flex-1">
+                                                        {remediationDrafts[selectedResult.id].split('\n').map((line, idx) => {
+                                                            const trimmed = line.trim();
+                                                            if (!trimmed) return null;
+                                                            if (trimmed.startsWith('**') || trimmed.match(/^[A-Z][a-zA-Z\s]+:\*\*$/)) {
+                                                                return <h4 key={idx} className="text-[11px] font-extrabold text-slate-800 mt-4 first:mt-0 mb-2 uppercase tracking-wider">{trimmed.replace(/\*\*/g, '')}</h4>;
+                                                            }
+                                                            if (trimmed.startsWith('* ') || trimmed.startsWith('- ')) {
+                                                                return (
+                                                                    <div key={idx} className="flex gap-2.5 mb-2 ml-1">
+                                                                        <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5 shrink-0 shadow-sm"></div>
+                                                                        <p className="text-sm text-slate-700 leading-relaxed font-medium">{trimmed.substring(2).replace(/\*\*/g, '')}</p>
+                                                                    </div>
+                                                                );
+                                                            }
+                                                            return <p key={idx} className="text-sm text-slate-600 mb-2 leading-relaxed">{trimmed.replace(/\*\*/g, '')}</p>;
+                                                        })}
                                                     </div>
                                                 </div>
                                             ) : (
                                                 <button 
                                                     onClick={handleRemediate}
                                                     disabled={remediationLoading}
-                                                    className="w-full btn-secondary text-sm py-3 px-4 flex items-center justify-center gap-2 border border-[var(--primary)]/50 hover:bg-[var(--primary)]/10 hover:border-[var(--primary)] transition-all relative overflow-hidden"
+                                                    className="w-full btn-secondary text-sm py-3 px-4 flex items-center justify-center gap-2 border border-[var(--primary)]/50 hover:bg-[var(--primary)]/10 hover:border-[var(--primary)] transition-all relative overflow-hidden shadow-sm"
                                                 >
                                                     {remediationLoading ? (
                                                         <>
                                                             <div className="w-4 h-4 border-2 border-[var(--primary)] border-t-transparent rounded-full animate-spin" />
-                                                            Drafting Medical Payload...
+                                                            Synthesizing CAPA Requirements...
                                                         </>
                                                     ) : (
                                                         <>
                                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-[var(--primary)]"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                                            Generate 1-Click Remediation
+                                                            Draft Engineering CAPA Ticket
                                                         </>
                                                     )}
                                                 </button>
@@ -1335,20 +1323,25 @@ function ResultsContent() {
                             {/* Center: State & Assignee (Jira Workflow Simulation) */}
                             <div className="hidden lg:flex items-center gap-6 border-l border-r border-slate-200 px-6">
                                 <div className="flex items-center gap-2">
-                                    <span className="text-xs font-semibold text-slate-500 uppercase tracking-widest">State:</span>
-                                    <select className="text-sm font-bold bg-slate-50 border border-slate-200 rounded-md px-3 py-1.5 outline-none text-slate-700 hover:bg-white focus:ring-2 focus:ring-indigo-500/20 cursor-pointer shadow-sm transition-all text-center">
-                                        <option>{selectedResult.status === "compliant" ? "Closed" : "Open"}</option>
-                                        <option>In Review</option>
-                                        <option>Remediated</option>
-                                        <option>{selectedResult.status !== "compliant" ? "Closed" : "Open"}</option>
+                                    <span className="text-xs font-semibold text-slate-500 uppercase tracking-widest">RA Status:</span>
+                                    <select 
+                                        value={localPipelineStatus}
+                                        onChange={handleModalPipelineSync}
+                                        className="text-sm font-bold bg-slate-50 border border-slate-200 rounded-md px-3 py-1.5 outline-none text-slate-700 hover:bg-white focus:ring-2 focus:ring-indigo-500/20 cursor-pointer shadow-sm transition-all text-center"
+                                    >
+                                        <option value="DETECTED">DETECTED (New Finding)</option>
+                                        <option value="TRIAGED">TRIAGED (RA Prioritized)</option>
+                                        <option value="ASSIGNED">ASSIGNED (Pending CAPA)</option>
+                                        <option value="IN_REMEDIATION">IN REMEDIATION (QC Review)</option>
+                                        <option value="CLOSED">CLOSED ({selectedResult.status === "compliant" ? "Trace Verified" : "Resolved"})</option>
                                     </select>
                                 </div>
                                 <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full px-2 py-1 shadow-sm hover:bg-white transition-colors cursor-pointer">
                                     <div className="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[9px] font-bold shrink-0">
-                                        {selectedResult.status === 'compliant' ? 'AI' : 'JH'}
+                                        {selectedResult.status === 'compliant' ? 'TB' : 'QA'}
                                     </div>
                                     <span className="text-xs font-bold text-slate-600 pr-1 truncate max-w-[100px]">
-                                        {selectedResult.status === 'compliant' ? 'TraceBridge' : 'J. Hardison'}
+                                        {selectedResult.status === 'compliant' ? 'TraceBridge AI' : 'Quality Eng'}
                                     </span>
                                 </div>
                             </div>
@@ -1358,21 +1351,44 @@ function ResultsContent() {
                                 <button onClick={() => navigateGap("next")} className="text-slate-400 hover:text-slate-600 text-sm font-bold px-3 py-2 transition-colors uppercase tracking-wider">
                                     Skip [S]
                                 </button>
-                                <a 
-                                    href={`mailto:engineering@company.com?subject=Remediation Task: ${selectedResult.standard.split(':')[0]} %C2%A7${selectedResult.section}`}
-                                    className="bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100 px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors shadow-sm focus:ring-2 focus:ring-rose-500/20"
-                                >
-                                    Reject [R]
-                                </a>
-                                <button 
-                                    onClick={() => {
-                                        alert("Traceability Matrix Lineage Legally Approved & Locked.");
-                                        setSelectedResult(null);
-                                    }}
-                                    className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all shadow-md shadow-emerald-500/20 focus:ring-2 focus:ring-emerald-500"
-                                >
-                                    Approve [A]
-                                </button>
+                                
+                                {selectedResult.status === "compliant" ? (
+                                    <>
+                                        <a 
+                                            href={`mailto:quality@company.com?subject=Trace Verification Flag: ${selectedResult.standard.split(':')[0]}`}
+                                            className="bg-amber-50 text-amber-600 border border-amber-200 hover:bg-amber-100 px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors shadow-sm focus:ring-2 focus:ring-amber-500/20"
+                                        >
+                                            Flag Discrepancy [F]
+                                        </a>
+                                        <button 
+                                            onClick={() => {
+                                                alert("Traceability Matrix Lineage Legally Approved & Locked.");
+                                                setSelectedResult(null);
+                                            }}
+                                            className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all shadow-md shadow-emerald-500/20 focus:ring-2 focus:ring-emerald-500"
+                                        >
+                                            Legally Sign-Off [A]
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <button 
+                                            onClick={() => { setSelectedResult(null); }}
+                                            className="bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100 px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors shadow-sm focus:ring-2 focus:ring-rose-500/20"
+                                        >
+                                            Dismiss False Positive [D]
+                                        </button>
+                                        <button 
+                                            onClick={() => {
+                                                alert("CAPA Epic successfully assigned to Engineering Jira instance.");
+                                                setSelectedResult(null);
+                                            }}
+                                            className="bg-[#4f46e5] hover:bg-[#4338ca] text-white px-8 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all shadow-md shadow-indigo-500/20 focus:ring-2 focus:ring-indigo-500"
+                                        >
+                                            Assign to eQMS/Jira
+                                        </button>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>

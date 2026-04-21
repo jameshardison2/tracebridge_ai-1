@@ -57,6 +57,8 @@ export interface GapResult {
     section: string;
     quote: string;
   }>;
+  reasoning?: string;
+  missingEvidence?: string;
   geminiResponse?: string;
   estimatedCost?: string;
   estimatedTimeline?: string;
