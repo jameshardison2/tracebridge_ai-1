@@ -94,9 +94,9 @@ export async function queryGemini(
     console.log(`[DEBUG] API Key present: ${!!process.env.GEMINI_API_KEY}`);
     console.log(`[DEBUG] Mock mode: ${MOCK_MODE}`);
     
-    // Try gemini-1.5-flash-001 which should work with v1beta API
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-001" });
-    console.log(`[DEBUG] Model initialized: gemini-1.5-flash-001`);
+    // Try gemini-2.5-flash which is the latest default model
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    console.log(`[DEBUG] Model initialized: gemini-2.5-flash`);
 
     const prompt = `You are a regulatory compliance auditor reviewing medical device documentation.
 
