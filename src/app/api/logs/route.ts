@@ -5,19 +5,21 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const uploadId = searchParams.get("uploadId");
 
-    if (!uploadId) {
-        return NextResponse.json({ success: false, error: "Missing uploadId" }, { status: 400 });
-    }
 
     try {
         if (!adminDb) {
             return NextResponse.json({ success: true, data: [] });
         }
 
-        const logsSnapshot = await adminDb.collection("activity_logs")
-            .where("uploadId", "==", uploadId)
+        let query: FirebaseFirestore.Query = adminDb.collection("auditLogs");
+        
+        if (uploadId) {
+            query = query.where("details.uploadId", "==", uploadId);
+        }
+        
+        const logsSnapshot = await query
             .orderBy("createdAt", "desc")
-            .limit(10)
+            .limit(100)
             .get();
 
         const logs = [];

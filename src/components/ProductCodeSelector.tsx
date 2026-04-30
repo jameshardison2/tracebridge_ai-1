@@ -14,12 +14,19 @@ interface ProductCode {
 
 interface ProductCodeSelectorProps {
     onSelect: (code: ProductCode | null) => void;
+    value?: ProductCode | null;
 }
 
-export function ProductCodeSelector({ onSelect }: ProductCodeSelectorProps) {
+export function ProductCodeSelector({ onSelect, value }: ProductCodeSelectorProps) {
     const [search, setSearch] = useState("");
     const [isOpen, setIsOpen] = useState(false);
-    const [selected, setSelected] = useState<ProductCode | null>(null);
+    const [internalSelected, setInternalSelected] = useState<ProductCode | null>(null);
+    
+    const selected = value !== undefined ? value : internalSelected;
+    
+    const setSelected = (val: ProductCode | null) => {
+        if (value === undefined) setInternalSelected(val);
+    };
 
     const filteredCodes = fdaCodes.filter(
         c => 

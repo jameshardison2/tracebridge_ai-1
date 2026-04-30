@@ -22,6 +22,7 @@ import {
     Eye,
     FileSearch,
     Printer,
+    Loader2,
 } from "lucide-react";
 
 interface GapResult {
@@ -139,6 +140,8 @@ function ReportsContent() {
     const [reviewerName, setReviewerName] = useState("Sarah Richardson");
     const [reviewerTitle, setReviewerTitle] = useState("RA Director");
 
+    const [isSavingPrefs, setIsSavingPrefs] = useState(false);
+
     const handleSort = (key: string) => {
         let direction: 'asc' | 'desc' = 'asc';
         if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -168,6 +171,33 @@ function ReportsContent() {
     const getInitials = (nameStr: string) => nameStr.split(' ').map(n => n.replace(/[^a-zA-Z]/g, '')[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
 
     useEffect(() => {
+        const fetchPreferences = async () => {
+            if (!user) return;
+            try {
+                const token = await user.getIdToken();
+                const res = await fetch("/api/preferences", {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                const json = await res.json();
+                if (json.success && json.data) {
+                    const p = json.data;
+                    if (p.authorName) setAuthorName(p.authorName);
+                    if (p.authorTitle) setAuthorTitle(p.authorTitle);
+                    if (p.reviewerName) setReviewerName(p.reviewerName);
+                    if (p.reviewerTitle) setReviewerTitle(p.reviewerTitle);
+                    if (p.engineMitigations !== undefined) setEngineMitigations(p.engineMitigations);
+                    if (p.engineRedact !== undefined) setEngineRedact(p.engineRedact);
+                    if (p.engineRta !== undefined) setEngineRta(p.engineRta);
+                    if (p.teamQaName) setTeamQaName(p.teamQaName);
+                    if (p.teamEngName) setTeamEngName(p.teamEngName);
+                    if (p.teamRaName) setTeamRaName(p.teamRaName);
+                }
+            } catch (e) {
+                console.error("Failed to load preferences", e);
+            }
+        };
+        fetchPreferences();
+
         const savedNames = localStorage.getItem('tracebridge_assignee_names');
         if (savedNames) {
             try {
@@ -177,7 +207,33 @@ function ReportsContent() {
                 if (parsed.raName) setTeamRaName(parsed.raName);
             } catch(e){}
         }
-    }, []);
+    }, [user]);
+
+    const handleSavePreferences = async () => {
+        if (!user) return;
+        setIsSavingPrefs(true);
+        try {
+            const token = await user.getIdToken();
+            await fetch("/api/preferences", {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    authorName, authorTitle, reviewerName, reviewerTitle,
+                    engineMitigations, engineRedact, engineRta,
+                    teamQaName, teamEngName, teamRaName
+                })
+            });
+            alert("Preferences saved successfully!");
+        } catch (e) {
+            console.error(e);
+            alert("Failed to save preferences.");
+        } finally {
+            setIsSavingPrefs(false);
+        }
+    };
 
     useEffect(() => {
         if (selectedResult) {
@@ -1139,6 +1195,15 @@ function ReportsContent() {
                                     <label className="text-xs font-bold text-slate-500 uppercase">Reviewed By (Title)</label>
                                     <input type="text" value={reviewerTitle} onChange={e => setReviewerTitle(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all" />
                                 </div>
+                            </div>
+                            <div className="mt-6 flex justify-end">
+                                <button
+                                    onClick={handleSavePreferences}
+                                    disabled={isSavingPrefs}
+                                    className="flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 font-bold text-xs uppercase tracking-widest rounded-lg hover:bg-indigo-100 transition-colors border border-indigo-200 disabled:opacity-50"
+                                >
+                                    {isSavingPrefs ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Defaults"}
+                                </button>
                             </div>
                         </div>
 

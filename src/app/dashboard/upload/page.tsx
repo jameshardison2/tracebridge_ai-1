@@ -20,6 +20,8 @@ import {
     ArrowRight,
 } from "lucide-react";
 import { ProductCodeSelector } from "@/components/ProductCodeSelector";
+import fdaCodes from "@/lib/fda-product-codes.json";
+import { Sparkles } from "lucide-react";
 
 // Per-file limit: 50MB to support large real-world protocols (like Omnipod SAW)
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
@@ -46,6 +48,7 @@ export default function UploadPage() {
     const [analysisProgress, setAnalysisProgress] = useState({ current: 0, total: 0 });
     const [error, setError] = useState("");
     const [uploadId, setUploadId] = useState("");
+    const [isExtracting, setIsExtracting] = useState(false);
     
     // Scan theater state
     const [currentScanText, setCurrentScanText] = useState("Initializing compliance engine...");
@@ -112,6 +115,45 @@ export default function UploadPage() {
             new File(["Dummy payload"], "Cybersecurity_Threat_Model_SBOM.pdf", { type: "application/pdf" }),
         ];
         handleFiles(demoFiles as unknown as FileList);
+    };
+
+    const handleAutoDetect = async () => {
+        if (files.length === 0) {
+            setError("Please upload at least one document first to auto-detect.");
+            return;
+        }
+
+        setIsExtracting(true);
+        setError("");
+        
+        try {
+            const formData = new FormData();
+            formData.append("file", files[0]);
+
+            const res = await fetch("/api/extract-metadata", {
+                method: "POST",
+                body: formData
+            });
+
+            const json = await res.json();
+            if (!json.success) throw new Error(json.error);
+
+            const { deviceName, productCode } = json.data;
+            const matchedCode = fdaCodes.find((c: any) => c.code === productCode);
+            
+            if (matchedCode) {
+                // If the user changed the description dynamically based on the AI guess
+                const newCode = { ...matchedCode, description: deviceName || matchedCode.description };
+                setSelectedCode(newCode);
+            } else {
+                setError(`AI extracted a Product Code (${productCode}) that is not in our database.`);
+            }
+        } catch (err) {
+            console.error(err);
+            setError("Failed to auto-detect metadata. Please select manually.");
+        } finally {
+            setIsExtracting(false);
+        }
     };
 
     const handleSubmit = async () => {
@@ -356,9 +398,21 @@ export default function UploadPage() {
 
             <div className="space-y-6">
                 {/* Device Type Selector */}
-                <div className="bg-white border border-[var(--border)] p-6 rounded-md shadow-sm">
-                    <h3 className="text-sm font-bold text-[var(--foreground)] uppercase tracking-wider mb-4 border-b border-[var(--border)] pb-2">1. Device Classification</h3>
-                    <ProductCodeSelector onSelect={setSelectedCode} />
+                <div className="bg-white border border-[var(--border)] p-6 rounded-md shadow-sm relative">
+                    <div className="flex items-center justify-between mb-4 border-b border-[var(--border)] pb-2">
+                        <h3 className="text-sm font-bold text-[var(--foreground)] uppercase tracking-wider">1. Device Classification</h3>
+                        {files.length > 0 && (
+                            <button
+                                onClick={handleAutoDetect}
+                                disabled={isExtracting}
+                                className="flex items-center gap-2 text-xs font-bold text-indigo-600 bg-indigo-50 border border-indigo-200 px-3 py-1.5 rounded hover:bg-indigo-100 transition-colors disabled:opacity-50"
+                            >
+                                {isExtracting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                                AI Auto-Detect
+                            </button>
+                        )}
+                    </div>
+                    <ProductCodeSelector onSelect={setSelectedCode} value={selectedCode} />
                 </div>
 
                 {/* Enterprise Integrations & File Upload */}

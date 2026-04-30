@@ -16,6 +16,7 @@ import {
     ChevronLeft,
     ChevronRight,
     FileSearch,
+    Server,
 } from "lucide-react";
 
 const navItems = [
@@ -25,6 +26,7 @@ const navItems = [
     { href: "/dashboard/pipeline", label: "Pipeline (Triage)", icon: Kanban },
     { href: "/dashboard/reports", label: "Reports", icon: FileText },
     { href: "/dashboard/team", label: "Roster Config", icon: Users },
+    { href: "/dashboard/logs", label: "System Logs", icon: Server },
 ];
 
 export default function DashboardLayout({
