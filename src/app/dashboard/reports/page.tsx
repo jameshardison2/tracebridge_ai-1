@@ -133,6 +133,12 @@ function ReportsContent() {
     const [engineRta, setEngineRta] = useState(false);
     const [pendingExport, setPendingExport] = useState<'pdf' | 'csv' | null>(null);
 
+    // Custom Report Signatures State
+    const [authorName, setAuthorName] = useState("James N. Hardison II");
+    const [authorTitle, setAuthorTitle] = useState("Senior Regulatory Affairs");
+    const [reviewerName, setReviewerName] = useState("Sarah Richardson");
+    const [reviewerTitle, setReviewerTitle] = useState("RA Director");
+
     const handleSort = (key: string) => {
         let direction: 'asc' | 'desc' = 'asc';
         if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -428,13 +434,19 @@ function ReportsContent() {
     const exportCSV = () => {
         if (!report) return;
         
+        let reportTitle = "Gap_Analysis";
+        if (activeTemplate === '510k') reportTitle = "510k_Matrix";
+        else if (activeTemplate === 'capa') reportTitle = "CAPA_Action_Log";
+        else if (activeTemplate === 'complaint') reportTitle = "MAUDE_Signals";
+        else if (activeTemplate === 'executive') reportTitle = "Audit_Metrics";
+        
         const headers = [
             "GAP ID", "STANDARD", "§", "REQUIREMENT", "STATUS", 
             "CONFIDENCE", "EVIDENCE FOUND", "SOURCE DOC", "PG", 
             "ASSIGNEE", "STATE", "DETECTED", "PRIORITY"
         ];
         
-        const rows = report.upload.gapResults.map((r, i) => {
+        const rows = report.upload.gapResults.map((r: any, i: number) => {
             const priority = getPriority(r.status, r.severity).label;
             const gapId = `AIDS-${r.standard.replace(/[^A-Z0-9]/ig, "")}-${r.section.replace(/[^0-9.]/g, "")}-${String(i+1).padStart(3, '0')}`;
             
@@ -470,7 +482,7 @@ function ReportsContent() {
         const a = document.createElement("a");
         a.href = url;
         const dateStr = new Date().toISOString().split('T')[0].replace(/-/g, "");
-        a.download = `TraceBridge_Matrix_AIDS_${dateStr}_v3.csv`;
+        a.download = `TraceBridge_${reportTitle}_AIDS_${dateStr}_v3.csv`;
         a.click();
         URL.revokeObjectURL(url);
     };
@@ -483,6 +495,25 @@ function ReportsContent() {
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
 
+        // Theme Configuration Based on Active Template
+        let titleString = "PRE-SUBMISSION GAP ANALYSIS";
+        let fileNameSuffix = "510k-Matrix";
+        let themeColor = [79, 70, 229]; // Indigo
+
+        if (activeTemplate === 'capa') {
+            titleString = "CORRECTIVE AND PREVENTIVE ACTION (CAPA) REPORT";
+            fileNameSuffix = "CAPA-Report";
+            themeColor = [225, 29, 72]; // Rose
+        } else if (activeTemplate === 'complaint') {
+            titleString = "POST-MARKET SURVEILLANCE & MAUDE SIGNALS";
+            fileNameSuffix = "Sentinel-Signals";
+            themeColor = [5, 150, 105]; // Emerald
+        } else if (activeTemplate === 'executive') {
+            titleString = "EXECUTIVE AUDIT ATTESTATION BRIEF";
+            fileNameSuffix = "Executive-Brief";
+            themeColor = [245, 158, 11]; // Amber
+        }
+
         // ==========================================
         // 1. COVER PAGE
         // ==========================================
@@ -490,7 +521,7 @@ function ReportsContent() {
         doc.rect(0, 0, pageWidth, pageHeight * 0.45, "F");
         
         // Brand logo
-        doc.setFillColor(239, 68, 68); // Red
+        doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
         doc.rect(14, 20, 8, 8, "F");
         doc.setTextColor(255, 255, 255);
         doc.setFontSize(16);
@@ -500,20 +531,21 @@ function ReportsContent() {
         doc.text("AI COMPLIANCE COPILOT", 26, 30);
         
         // Confidential badge
-        doc.setDrawColor(239, 68, 68);
+        doc.setDrawColor(themeColor[0], themeColor[1], themeColor[2]);
         doc.setLineWidth(0.5);
         doc.roundedRect(pageWidth - 45, 22, 31, 6, 3, 3, "D");
-        doc.setTextColor(239, 68, 68);
+        doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
         doc.setFontSize(7);
         doc.text("CONFIDENTIAL DRAFT", pageWidth - 30, 26, { align: "center" });
 
         // Title Block
         doc.setTextColor(156, 163, 175);
         doc.setFontSize(10);
-        doc.text("PRE-SUBMISSION GAP ANALYSIS", 14, 60);
+        doc.text(titleString, 14, 60);
         doc.setTextColor(255, 255, 255);
         doc.setFontSize(28);
-        doc.text("Automated Insulin\nDelivery System", 14, 75);
+        const splitTitle = doc.splitTextToSize(report.upload.deviceName, 150);
+        doc.text(splitTitle, 14, 75);
         doc.setFontSize(12);
         doc.setTextColor(203, 213, 225);
         doc.text("Device Class II • 510(k) submission pathway", 14, 98);
@@ -521,15 +553,23 @@ function ReportsContent() {
         // Pills
         doc.setDrawColor(255, 255, 255);
         doc.setLineWidth(0.3);
-        ["ISO 13485:2016", "ISO 14971:2019", "IEC 62304:2006"].forEach((std, i) => {
-            doc.roundedRect(14 + (i * 35), 105, 32, 7, 1, 1, "D");
+        const displayStandards = report.upload.standards && report.upload.standards.length > 0 
+            ? report.upload.standards.slice(0, 3) 
+            : ["ISO 13485:2016", "ISO 14971:2019", "IEC 62304:2006"];
+        
+        let pillX = 14;
+        displayStandards.forEach((std: string) => {
+            const shortStd = std.length > 30 ? std.substring(0, 27) + "..." : std;
+            const width = doc.getTextWidth(shortStd) + 6;
+            doc.roundedRect(pillX, 105, width, 7, 1, 1, "D");
             doc.setFontSize(8);
             doc.setTextColor(255, 255, 255);
-            doc.text(std, 16 + (i * 35), 109.5);
+            doc.text(shortStd, pillX + 3, 109.5);
+            pillX += width + 4;
         });
 
-        // Orange Border
-        doc.setFillColor(234, 88, 12);
+        // Dynamic Theme Border
+        doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
         doc.rect(0, pageHeight * 0.45, pageWidth, 2, "F");
 
         // Stats Block
@@ -580,10 +620,10 @@ function ReportsContent() {
         doc.text("PREPARED BY", 14, 236);
         doc.setTextColor(15, 23, 42);
         doc.setFontSize(10);
-        doc.text("James N. Hardison II", 14, 241);
+        doc.text(authorName || "James N. Hardison II", 14, 241);
         doc.setFontSize(8);
         doc.setTextColor(100, 116, 139);
-        doc.text("Senior Regulatory Affairs", 14, 245);
+        doc.text(authorTitle || "Senior Regulatory Affairs", 14, 245);
         doc.setDrawColor(203, 213, 225);
         doc.line(14, 255, 60, 255);
         doc.setFontSize(7);
@@ -593,10 +633,10 @@ function ReportsContent() {
         doc.text("REVIEWED BY", 80, 236);
         doc.setTextColor(15, 23, 42);
         doc.setFontSize(10);
-        doc.text("Sarah Richardson", 80, 241);
+        doc.text(reviewerName || "Sarah Richardson", 80, 241);
         doc.setFontSize(8);
         doc.setTextColor(100, 116, 139);
-        doc.text("RA Director", 80, 245);
+        doc.text(reviewerTitle || "RA Director", 80, 245);
         doc.line(80, 255, 126, 255);
         doc.setFontSize(7);
         doc.text("Signature", 80, 260);
@@ -616,137 +656,270 @@ function ReportsContent() {
         doc.text(`TARGET: MAY 1, ${new Date().getFullYear()}`, 167.5, 254, { align: "center" });
 
         // ==========================================
-        // 2. GAP DETAILS (Following Mockup 04 exactly)
+        // 2. DYNAMIC CONTENT BASED ON TEMPLATE
         // ==========================================
-        const gaps = report.upload.gapResults.filter((r: GapResult) => r.status !== "compliant");
-        for (let i = 0; i < gaps.length; i++) {
+        const gaps = report.upload.gapResults.filter((r: any) => r.status !== "compliant");
+
+        if (activeTemplate === 'executive') {
+            // No additional pages needed. The cover page serves as the complete executive brief.
+        } else if (activeTemplate === '510k') {
+            // 510(k) Traceability Matrix (Data Table)
             doc.addPage();
-            const gap = gaps[i];
-            
-            // Header bar
-            doc.setDrawColor(239, 68, 68);
-            doc.setLineWidth(2);
-            doc.line(14, 14, pageWidth - 14, 14);
-            
-            doc.setFillColor(254, 226, 226);
-            doc.rect(14, 18, 15, 6, "F");
-            doc.setTextColor(239, 68, 68);
-            doc.setFontSize(8);
-            doc.text(`${i+1}/${gaps.length}`, 21.5, 22.5, { align: "center" });
-            
-            doc.setTextColor(71, 85, 105);
-            doc.text("CRITICAL GAP • PRIORITY 1 OF 7", 33, 22.5);
-            
-            doc.setTextColor(15, 23, 42);
-            doc.text("✓ TraceBridge", pageWidth - 14, 22.5, { align: "right" });
-
-            // Title section
-            doc.setTextColor(100, 116, 139);
-            doc.setFontSize(10);
-            doc.text(`${gap.standard.toUpperCase()} • SECTION ${gap.section}`, 14, 35);
-            doc.setTextColor(15, 23, 42);
-            doc.setFontSize(20);
-            const reqTitle = gap.requirement.length > 50 ? gap.requirement.substring(0,47) + "..." : gap.requirement;
-            doc.text(reqTitle.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase()))), 14, 45); // Title case the requirement
-            
-            doc.setFontSize(9);
-            doc.setTextColor(100, 116, 139);
-            doc.text(`Gap Identifier: AIDS-${gap.standard.replace(/\s/g,"")}-${gap.section.replace(/\./g,"")}-${String(i+1).padStart(3,'0')} • Detected ${new Date().toLocaleDateString()}`, 14, 52);
-
-            // Block: WHAT FDA REQUIRES
-            doc.setTextColor(56, 189, 248);
-            doc.setFontSize(9);
-            doc.text("WHAT FDA REQUIRES", 14, 65);
-            doc.setFontSize(10);
-            doc.setTextColor(71, 85, 105);
-            const reqBlockTxt = doc.splitTextToSize(`The regulations mandate that manufacturers must strictly establish and maintain procedures addressing the following requirement relative to ${gap.requirement.toLowerCase()}:\n\n• Device requirements must be completely and transparently documented.\n• Risk management protocols must establish traceability from inputs to validations.\n• Continuous verification methods must be proven.\n\nSource: ${gap.standard} § ${gap.section}`, 140);
-            doc.text(reqBlockTxt, 14, 75);
-
-            // Block: TRACE LINEAGE
-            let y = 75 + reqBlockTxt.length * 5;
-            doc.setDrawColor(226, 232, 240);
-            doc.setLineWidth(0.5);
-            doc.line(14, y, 150, y);
-            
-            y += 10;
-            doc.setTextColor(56, 189, 248);
-            doc.setFontSize(9);
-            doc.text("TRACE LINEAGE - WHAT WAS ANALYZED", 14, y);
-            
-            y += 8;
-            doc.setFillColor(248, 250, 252);
-            doc.setDrawColor(226, 232, 240);
-            doc.rect(14, y, 140, 20, "FD");
-            doc.setTextColor(15, 23, 42);
-            doc.setFontSize(10);
-            const citeSrc = gap.citations?.[0]?.source || "TraceGlow_Comprehensive_Submission_V3.pdf";
-            doc.text(citeSrc, 18, y + 8);
-            doc.setTextColor(100, 116, 139);
-            doc.setFontSize(8);
-            doc.text(`Pages 32-47 - Target section analysis - No matching evidence found that resolves this standard.`, 18, y + 14);
-
-            y += 28;
-            doc.setFontSize(10);
-            doc.setTextColor(15, 23, 42);
-            const aiLines = doc.splitTextToSize(`AI Analysis: The submitted documents reference general operational procedures but do not contain a specific ${gap.requirement} or evidence of formal verification meetings. The closest match is a stakeholder signoff template, which is insufficient under ${gap.standard}.`, 140);
-            doc.text(aiLines, 14, y);
-
-            y += aiLines.length * 5 + 6;
-            doc.setFillColor(254, 226, 226);
-            doc.rect(14, y, 45, 6, "F");
-            doc.setFillColor(239, 68, 68);
-            doc.rect(16, y + 1.5, 3, 3, "F");
-            doc.setTextColor(185, 28, 28);
-            doc.setFontSize(8);
-            doc.text("AI Confidence: 0% • None", 22, y + 4.5);
-
-            // Block: REMEDIATION DRAFT
-            y += 18;
-            doc.setFillColor(240, 253, 244);
-            doc.setDrawColor(187, 247, 208);
-            doc.roundedRect(14, y, 140, 45, 3, 3, "FD");
-            doc.setFillColor(34, 197, 94);
-            doc.roundedRect(18, y + 4, 38, 6, 1, 1, "F");
+            doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
+            doc.rect(14, 14, pageWidth - 28, 8, "F");
             doc.setTextColor(255, 255, 255);
-            doc.setFontSize(8);
-            doc.text("AI REMEDIATION DRAFT", 21, y + 8.2);
-            doc.setTextColor(21, 128, 61);
-            doc.text("Ready for legal review • 1-click to accept", 60, y + 8.2);
-            
             doc.setFontSize(10);
-            doc.setTextColor(15, 23, 42);
-            doc.text("Recommended action", 18, y + 18);
-            doc.setTextColor(71, 85, 105);
-            const remLines = doc.splitTextToSize(`Author a standalone regulatory report per ${gap.standard} that explicitly documents the resolution of ${gap.requirement.toLowerCase()}. Ensure cross-functional review meetings are evidenced, residual risk acceptability vs. intended use is clear, and the governing procedure is referenced.`, 130);
-            doc.setFontSize(9);
-            doc.text(remLines, 18, y + 24);
-
-            y += 48;
+            doc.text("REQUIREMENT TRACEABILITY MATRIX", 18, 19);
+            
+            let y = 30;
+            doc.setTextColor(100, 116, 139);
+            doc.setFontSize(8);
+            doc.text("STANDARD §", 14, y);
+            doc.text("REQUIREMENT", 45, y);
+            doc.text("STATUS", 135, y);
+            doc.text("EVIDENCE LOCATOR", 155, y);
+            y += 4;
             doc.setDrawColor(226, 232, 240);
-            doc.line(14, y, 150, y);
+            doc.line(14, y, pageWidth - 14, y);
             y += 6;
-            
-            doc.setFontSize(8);
-            doc.setTextColor(148, 163, 184);
-            doc.text("EFFORT (INDUSTRY AVG)", 18, y);
-            doc.text("COMPLEXITY", 65, y);
-            doc.text("OWNER (SUGGESTED)", 105, y);
-            doc.text("Industry avg, not quote", 150, y, { align: "right" });
-            
-            doc.setTextColor(15, 23, 42);
+
+            for (let i = 0; i < report.upload.gapResults.length; i++) {
+                const item = report.upload.gapResults[i];
+                if (y > pageHeight - 20) {
+                    doc.addPage();
+                    y = 20;
+                    doc.setDrawColor(226, 232, 240);
+                    doc.line(14, y, pageWidth - 14, y);
+                    y += 6;
+                }
+                
+                doc.setTextColor(15, 23, 42);
+                doc.setFontSize(8);
+                
+                // Standard
+                doc.text(`${item.standard} § ${item.section}`, 14, y);
+                
+                // Requirement
+                const reqLines = doc.splitTextToSize(item.requirement, 85);
+                doc.text(reqLines, 45, y);
+                
+                // Status
+                let statusColor = [100, 116, 139];
+                if (item.status === 'compliant') statusColor = [16, 185, 129];
+                else if (item.status === 'gap_detected') statusColor = [239, 68, 68];
+                else statusColor = [245, 158, 11];
+                
+                doc.setFillColor(statusColor[0], statusColor[1], statusColor[2]);
+                doc.rect(135, y - 3, 2, 2, "F");
+                doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
+                doc.text(item.status.toUpperCase().replace('_', ' '), 139, y);
+                
+                // Evidence
+                doc.setTextColor(100, 116, 139);
+                const cite = item.citations?.[0]?.source || (item.status === 'gap_detected' ? "MISSING" : "TraceGlow_V3.pdf");
+                const evLines = doc.splitTextToSize(cite, 40);
+                doc.text(evLines, 155, y);
+                
+                const blockHeight = Math.max(reqLines.length, evLines.length) * 4 + 4;
+                y += blockHeight;
+                doc.setDrawColor(241, 245, 249);
+                doc.line(14, y - 2, pageWidth - 14, y - 2);
+            }
+        } else if (activeTemplate === 'complaint') {
+            // Post-Market Sentinel Events (Complaint)
+            doc.addPage();
+            doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
+            doc.setFontSize(16);
+            doc.text("POST-MARKET SENTINEL EVENTS", 14, 20);
             doc.setFontSize(10);
-            doc.text("6-10 weeks", 18, y + 5);
-            doc.text("HIGH • doc + review", 65, y + 5);
-            doc.text("RA + QE lead", 105, y + 5);
+            doc.setTextColor(100, 116, 139);
+            doc.text("The following non-conformances represent critical risks derived from post-market signals.", 14, 26);
+            
+            let y = 40;
+            for (let i = 0; i < gaps.length; i++) {
+                const gap = gaps[i];
+                if (y > pageHeight - 60) {
+                    doc.addPage();
+                    y = 20;
+                }
+                
+                doc.setFillColor(209, 250, 229);
+                doc.rect(14, y, pageWidth - 28, 6, "F");
+                doc.setTextColor(5, 150, 105);
+                doc.setFontSize(8);
+                doc.text(`SENTINEL EVENT ${i+1}: HIGH SEVERITY RISK DETECTED`, 16, y + 4);
+                
+                y += 12;
+                doc.setTextColor(15, 23, 42);
+                doc.setFontSize(10);
+                const desc = doc.splitTextToSize(`Failure Mode: ${gap.requirement}`, pageWidth - 28);
+                doc.text(desc, 14, y);
+                
+                y += desc.length * 5 + 4;
+                doc.setTextColor(100, 116, 139);
+                doc.setFontSize(9);
+                const inv = doc.splitTextToSize(`Post-Market Impact: Evidence suggests similar deviations resulted in MAUDE database warnings. Mitigation strategies must explicitly address ${gap.standard} § ${gap.section}.`, pageWidth - 28);
+                doc.text(inv, 14, y);
+                
+                y += inv.length * 5 + 10;
+            }
             
             // Footer
             doc.setTextColor(148, 163, 184);
             doc.setFontSize(8);
             doc.text(`TraceBridge AI • Generated ${new Date().toLocaleDateString()}`, 14, pageHeight - 10);
-            doc.text(`${i+2}/${gaps.length + 1}`, pageWidth - 14, pageHeight - 10, { align: "right" });
+        } else {
+            // CAPA or default detailed layout
+            for (let i = 0; i < gaps.length; i++) {
+                doc.addPage();
+                const gap = gaps[i];
+                
+                // Header bar
+                doc.setDrawColor(themeColor[0], themeColor[1], themeColor[2]);
+                doc.setLineWidth(2);
+                doc.line(14, 14, pageWidth - 14, 14);
+                
+                doc.setFillColor(241, 245, 249);
+                doc.rect(14, 18, 15, 6, "F");
+                doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
+                doc.setFontSize(8);
+                doc.text(`${i+1}/${gaps.length}`, 21.5, 22.5, { align: "center" });
+                
+                doc.setTextColor(71, 85, 105);
+                doc.text("CRITICAL GAP • PRIORITY 1 OF 7", 33, 22.5);
+                
+                doc.setTextColor(15, 23, 42);
+                doc.text("✓ TraceBridge", pageWidth - 14, 22.5, { align: "right" });
+
+                // Title section
+                doc.setTextColor(100, 116, 139);
+                doc.setFontSize(10);
+                doc.text(`${gap.standard.toUpperCase()} • SECTION ${gap.section}`, 14, 35);
+                doc.setTextColor(15, 23, 42);
+                doc.setFontSize(20);
+                const reqTitle = gap.requirement.length > 50 ? gap.requirement.substring(0,47) + "..." : gap.requirement;
+                doc.text(reqTitle.replace(/\w\S*/g, (w: string) => (w.replace(/^\w/, (c: string) => c.toUpperCase()))), 14, 45);
+                
+                doc.setFontSize(9);
+                doc.setTextColor(100, 116, 139);
+                doc.text(`Gap Identifier: AIDS-${gap.standard.replace(/\s/g,"")}-${gap.section.replace(/\./g,"")}-${String(i+1).padStart(3,'0')} • Detected ${new Date().toLocaleDateString()}`, 14, 52);
+
+                // Block: NON-CONFORMANCE DESCRIPTION (Renamed)
+                doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
+                doc.setFontSize(9);
+                doc.text("NON-CONFORMANCE DESCRIPTION", 14, 65);
+                doc.setFontSize(10);
+                doc.setTextColor(71, 85, 105);
+                const reqBlockTxt = doc.splitTextToSize(`The regulations mandate that manufacturers must strictly establish and maintain procedures addressing the following requirement relative to ${gap.requirement.toLowerCase()}:\n\n• Device requirements must be completely and transparently documented.\n• Risk management protocols must establish traceability from inputs to validations.\n• Continuous verification methods must be proven.\n\nSource: ${gap.standard} § ${gap.section}`, 140);
+                doc.text(reqBlockTxt, 14, 75);
+
+                // Block: ROOT CAUSE INVESTIGATION (Renamed)
+                let y = 75 + reqBlockTxt.length * 5;
+                doc.setDrawColor(226, 232, 240);
+                doc.setLineWidth(0.5);
+                doc.line(14, y, 150, y);
+                
+                y += 10;
+                doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
+                doc.setFontSize(9);
+                doc.text("ROOT CAUSE INVESTIGATION (AI ANALYSIS)", 14, y);
+                
+                y += 8;
+                doc.setFillColor(248, 250, 252);
+                doc.setDrawColor(226, 232, 240);
+                doc.rect(14, y, 140, 20, "FD");
+                doc.setTextColor(15, 23, 42);
+                doc.setFontSize(10);
+                const citeSrc = gap.citations?.[0]?.source || "TraceGlow_Comprehensive_Submission_V3.pdf";
+                doc.text(citeSrc, 18, y + 8);
+                doc.setTextColor(100, 116, 139);
+                doc.setFontSize(8);
+                doc.text(`Pages 32-47 - Target section analysis - No matching evidence found that resolves this standard.`, 18, y + 14);
+
+                y += 28;
+                doc.setFontSize(10);
+                doc.setTextColor(15, 23, 42);
+                const quoteText = gap.citations?.[0]?.quote || `The submitted documents reference general operational procedures but do not contain a specific ${gap.requirement} or evidence of formal verification meetings. The closest match is a stakeholder signoff template, which is insufficient under ${gap.standard}.`;
+                const aiLines = doc.splitTextToSize(`AI Analysis: ${quoteText}`, 140);
+                doc.text(aiLines, 14, y);
+
+                y += aiLines.length * 5 + 6;
+                doc.setFillColor(254, 226, 226);
+                doc.rect(14, y, 45, 6, "F");
+                doc.setFillColor(239, 68, 68);
+                doc.rect(16, y + 1.5, 3, 3, "F");
+                doc.setTextColor(185, 28, 28);
+                doc.setFontSize(8);
+                doc.text("AI Confidence: 0% • None", 22, y + 4.5);
+
+                // Block: CORRECTIVE ACTION PLAN (Renamed)
+                y += 18;
+                if (gap.remediationSteps) {
+                    doc.setFillColor(240, 253, 244);
+                    doc.setDrawColor(187, 247, 208);
+                    doc.roundedRect(14, y, 140, 45, 3, 3, "FD");
+                    doc.setFillColor(34, 197, 94);
+                    doc.roundedRect(18, y + 4, 38, 6, 1, 1, "F");
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(8);
+                    doc.text("PROPOSED CORRECTIVE ACTION", 21, y + 8.2);
+                    doc.setTextColor(21, 128, 61);
+                    doc.text("Ready for legal review • 1-click to accept", 60, y + 8.2);
+                    
+                    doc.setFontSize(10);
+                    doc.setTextColor(15, 23, 42);
+                    doc.text("Recommended action", 18, y + 18);
+                    doc.setTextColor(71, 85, 105);
+                    const remText = typeof gap.remediationSteps === 'string' 
+                        ? gap.remediationSteps 
+                        : (Array.isArray(gap.remediationSteps) ? gap.remediationSteps.join(' ') : `Author a standalone regulatory report per ${gap.standard}.`);
+                    const remLines = doc.splitTextToSize(remText, 130);
+                    doc.setFontSize(9);
+                    doc.text(remLines, 18, y + 24);
+                } else {
+                    doc.setFillColor(241, 245, 249);
+                    doc.setDrawColor(203, 213, 225);
+                    doc.roundedRect(14, y, 140, 25, 3, 3, "FD");
+                    doc.setFillColor(100, 116, 139);
+                    doc.roundedRect(18, y + 4, 45, 6, 1, 1, "F");
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(8);
+                    doc.text("AI MITIGATIONS DISABLED", 21, y + 8.2);
+                    
+                    doc.setTextColor(71, 85, 105);
+                    doc.setFontSize(9);
+                    doc.text("AI-generated remediation strategies were omitted per user configuration.", 18, y + 18);
+                    
+                    y -= 20; // Adjust y so the effort metrics block below doesn't float too far away
+                }
+
+                y += 48;
+                doc.setDrawColor(226, 232, 240);
+                doc.line(14, y, 150, y);
+                y += 6;
+                
+                doc.setFontSize(8);
+                doc.setTextColor(148, 163, 184);
+                doc.text("EFFORT (INDUSTRY AVG)", 18, y);
+                doc.text("COMPLEXITY", 65, y);
+                doc.text("OWNER (SUGGESTED)", 105, y);
+                doc.text("Industry avg, not quote", 150, y, { align: "right" });
+                
+                doc.setTextColor(15, 23, 42);
+                doc.setFontSize(10);
+                doc.text("6-10 weeks", 18, y + 5);
+                doc.text("HIGH • doc + review", 65, y + 5);
+                doc.text("RA + QE lead", 105, y + 5);
+                
+                // Footer
+                doc.setTextColor(148, 163, 184);
+                doc.setFontSize(8);
+                doc.text(`TraceBridge AI • Generated ${new Date().toLocaleDateString()}`, 14, pageHeight - 10);
+                doc.text(`${i+2}/${gaps.length + 1}`, pageWidth - 14, pageHeight - 10, { align: "right" });
+            }
         }
 
-        doc.save(`TraceBridge-Report-${report.upload.deviceName.replace(/\s+/g, "-")}.pdf`);
+        doc.save(`TraceBridge-${fileNameSuffix}-${report.upload.deviceName.replace(/\s+/g, "-")}.pdf`);
     };
 
     // Navigate between gaps in modal
@@ -940,6 +1113,33 @@ function ReportsContent() {
                                 </div>
                             )}
                         </div>
+
+                        {/* 3. Customization */}
+                        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 shrink-0">
+                            <h2 className="text-sm font-bold text-slate-800 uppercase tracking-widest mb-6 flex items-center justify-between">
+                                <span>3. Report Customization</span>
+                                <span className="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded font-medium">OPTIONAL</span>
+                            </h2>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-slate-500 uppercase">Prepared By (Name)</label>
+                                    <input type="text" value={authorName} onChange={e => setAuthorName(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all" />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-slate-500 uppercase">Prepared By (Title)</label>
+                                    <input type="text" value={authorTitle} onChange={e => setAuthorTitle(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all" />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-slate-500 uppercase">Reviewed By (Name)</label>
+                                    <input type="text" value={reviewerName} onChange={e => setReviewerName(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all" />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-slate-500 uppercase">Reviewed By (Title)</label>
+                                    <input type="text" value={reviewerTitle} onChange={e => setReviewerTitle(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all" />
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
                     {/* RIGHT COLUMN: STICKY PREVIEW */}
@@ -1098,13 +1298,44 @@ function ReportsContent() {
 
                                 {/* Action Buttons Fixed at Bottom of Preview */}
                                 <div className="mt-auto pt-6 bg-[#0f172a] relative z-20">
-                                    <div className="grid grid-cols-2 gap-3 pb-2">
-                                        <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm">
-                                            <Download className="w-[1.125rem] h-[1.125rem]" /> FDA eCopy (.csv)
-                                        </button>
-                                        <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] transition-all">
-                                            <ExternalLink className="w-[1.125rem] h-[1.125rem]" /> Report (.pdf)
-                                        </button>
+                                    <div className="grid gap-3 pb-2">
+                                        {activeTemplate === '510k' && (
+                                            <div className="grid grid-cols-2 gap-3">
+                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm">
+                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> FDA eCopy (.csv)
+                                                </button>
+                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] transition-all">
+                                                    <ExternalLink className="w-[1.125rem] h-[1.125rem]" /> 510(k) Report (.pdf)
+                                                </button>
+                                            </div>
+                                        )}
+                                        {activeTemplate === 'capa' && (
+                                            <div className="grid grid-cols-2 gap-3">
+                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm">
+                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> Action Log (.csv)
+                                                </button>
+                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-rose-600 hover:bg-rose-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(225,29,72,0.3)] hover:shadow-[0_0_25px_rgba(225,29,72,0.5)] transition-all">
+                                                    <ExternalLink className="w-[1.125rem] h-[1.125rem]" /> CAPA Report (.pdf)
+                                                </button>
+                                            </div>
+                                        )}
+                                        {activeTemplate === 'complaint' && (
+                                            <div className="grid grid-cols-2 gap-3">
+                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm">
+                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> MAUDE Data (.csv)
+                                                </button>
+                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(5,150,105,0.3)] hover:shadow-[0_0_25px_rgba(5,150,105,0.5)] transition-all">
+                                                    <ExternalLink className="w-[1.125rem] h-[1.125rem]" /> Signals Report (.pdf)
+                                                </button>
+                                            </div>
+                                        )}
+                                        {activeTemplate === 'executive' && (
+                                            <div className="grid grid-cols-1 gap-3">
+                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] transition-all">
+                                                    <ExternalLink className="w-[1.125rem] h-[1.125rem]" /> Generate Audit Attestation (.pdf)
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>

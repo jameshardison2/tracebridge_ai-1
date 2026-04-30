@@ -13,7 +13,8 @@ import {
     CheckCircle2,
     Clock,
     Search,
-    Loader2
+    Loader2,
+    Trash2
 } from "lucide-react";
 
 interface Upload {
@@ -91,6 +92,29 @@ export default function DashboardPage() {
             console.error(err);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleDelete = async (e: React.MouseEvent, id: string) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!user || !window.confirm("Are you sure you want to permanently delete this audit record?")) return;
+        
+        try {
+            const token = await user.getIdToken();
+            const res = await fetch(`/api/reports?uploadId=${id}`, {
+                method: "DELETE",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            const data = await res.json();
+            if (data.success) {
+                setSubmissions(prev => prev.filter(s => s.id !== id));
+            } else {
+                alert("Failed to delete: " + data.error);
+            }
+        } catch (err) {
+            console.error(err);
+            alert("An error occurred while deleting.");
         }
     };
 
@@ -307,16 +331,25 @@ export default function DashboardPage() {
                                             </span>
                                         </td>
                                         <td className="px-4 py-3 text-right">
-                                            {sub.status === "complete" ? (
-                                                <Link 
-                                                    href={`/dashboard/results?id=${sub.id}`}
-                                                    className="inline-flex items-center gap-1 text-xs font-bold text-[var(--primary)] hover:text-[var(--primary-hover)] transition-colors"
+                                            <div className="flex items-center justify-end gap-3">
+                                                {sub.status === "complete" ? (
+                                                    <Link 
+                                                        href={`/dashboard/results?id=${sub.id}`}
+                                                        className="inline-flex items-center gap-1 text-xs font-bold text-[var(--primary)] hover:text-[var(--primary-hover)] transition-colors"
+                                                    >
+                                                        View Matrix <ArrowRight className="w-3 h-3" />
+                                                    </Link>
+                                                ) : (
+                                                    <span className="text-xs text-slate-400 font-medium">Processing...</span>
+                                                )}
+                                                <button 
+                                                    onClick={(e) => handleDelete(e, sub.id)}
+                                                    className="text-slate-400 hover:text-rose-500 transition-colors p-1.5 rounded-md hover:bg-rose-50"
+                                                    title="Delete Audit"
                                                 >
-                                                    View Matrix <ArrowRight className="w-3 h-3" />
-                                                </Link>
-                                            ) : (
-                                                <span className="text-xs text-slate-400 font-medium">Processing...</span>
-                                            )}
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}

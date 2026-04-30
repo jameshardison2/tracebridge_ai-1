@@ -21,8 +21,8 @@ import {
 } from "lucide-react";
 import { ProductCodeSelector } from "@/components/ProductCodeSelector";
 
-// Per-file limit: 20MB
-const MAX_FILE_SIZE = 20 * 1024 * 1024;
+// Per-file limit: 50MB to support large real-world protocols (like Omnipod SAW)
+const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
 // Analysis steps for the step-by-step UI
 const ANALYSIS_STEPS = [
@@ -86,7 +86,7 @@ export default function UploadPage() {
 
         const oversized = fileArray.filter(f => f.size > MAX_FILE_SIZE);
         if (oversized.length > 0) {
-            setError(`File "${oversized[0].name}" is ${(oversized[0].size / 1024 / 1024).toFixed(1)}MB. Max file size is 20MB.`);
+            setError(`File "${oversized[0].name}" is ${(oversized[0].size / 1024 / 1024).toFixed(1)}MB. Max file size is 50MB.`);
             return;
         }
 
@@ -434,7 +434,7 @@ export default function UploadPage() {
                             Drag & drop regulatory files or click to browse
                         </p>
                         <p className="text-xs text-[var(--muted)]">
-                            Supports highly unstructured PDF, DOCX, and TXT files up to 20MB each
+                            Supports highly unstructured PDF, DOCX, and TXT files up to 50MB each
                         </p>
                         <input
                             ref={fileInputRef}
