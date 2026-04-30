@@ -246,7 +246,7 @@ function ResultsContent() {
                     });
                 }
                 localStorage.setItem('tracebridge_pipeline_tasks', JSON.stringify(parsed));
-                setLocalPipelineStatus(val);
+                setLocalPipelineStatus(targetStatus);
                 // Optional: Force toast notification for UX polish
                 const event = new CustomEvent("pipeline-sync", { detail: { msg: `Action synced to board as ${targetStatus}` } });
                 window.dispatchEvent(event);
@@ -341,8 +341,9 @@ function ResultsContent() {
                     section: "Triage",
                     requirement: title,
                     status: "gap_detected",
-                    confidence: 0,
-                    severity: "high",
+                    severity: "major",
+                    gapTitle: title,
+                    missingRequirement: "Missing",
                     citations: [{ source: "Pipeline State", quote: "No matching trace lineage mapped for this pipeline action.", section: "N/A" }]
                 });
             }
@@ -351,11 +352,11 @@ function ResultsContent() {
 
     // Secondary Effect: Fetch FDA Precedents when Product Code is available
     useEffect(() => {
-        if (!report?.upload?.productCode) return;
+        if (!(report?.upload as any)?.productCode) return;
         const fetchPrecedents = async () => {
             setLoadingPrecedents(true);
             try {
-                const res = await fetch(`/api/precedents?code=${report.upload.productCode}`);
+                const res = await fetch(`/api/precedents?code=${(report?.upload as any)?.productCode}`);
                 const data = await res.json();
                 if (data.success) {
                     setPrecedents(data.data);
@@ -367,7 +368,7 @@ function ResultsContent() {
             }
         };
         fetchPrecedents();
-    }, [report?.upload?.productCode]);
+    }, [(report?.upload as any)?.productCode]);
 
     // Secondary Effect: Fetch Drift Events
     useEffect(() => {
@@ -811,7 +812,7 @@ function ResultsContent() {
             
             if (sortConfig.key === 'category') { aVal = a.standard; bVal = b.standard; }
             if (sortConfig.key === 'requirement') { aVal = a.requirement; bVal = b.requirement; }
-            if (sortConfig.key === 'confidence') { aVal = a.confidence || 0; bVal = b.confidence || 0; }
+            if (sortConfig.key === 'confidence') { aVal = (a as any).confidence || 0; bVal = (b as any).confidence || 0; }
             if (sortConfig.key === 'state') { aVal = a.status; bVal = b.status; }
             if (sortConfig.key === 'action') { aVal = a.status === 'compliant' ? 1 : 0; bVal = b.status === 'compliant' ? 1 : 0; }
             
@@ -1254,7 +1255,7 @@ function ResultsContent() {
                                             </p>
                                         </div>
                                         <p className="text-sm text-emerald-900 leading-relaxed font-medium mb-3">
-                                            {selectedResult.reasoning || "The system mathematically verified the compliance string by statically mapping the document boundary against strict FDA parameters."}
+                                            {(selectedResult as any).reasoning || "The system mathematically verified the compliance string by statically mapping the document boundary against strict FDA parameters."}
                                         </p>
                                         {selectedResult.citations && selectedResult.citations.length > 0 && (
                                             <div className="bg-white/60 p-3 rounded-lg border border-emerald-500/20">
