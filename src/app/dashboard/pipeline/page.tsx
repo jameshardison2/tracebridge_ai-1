@@ -89,19 +89,19 @@ export default function PipelinePage() {
                     }));
                     
                     let finalTasks = newTasks;
-                    const savedTasks = localStorage.getItem('tracebridge_pipeline_tasks');
-                    if (savedTasks) {
-                        try {
-                            const parsed = JSON.parse(savedTasks);
-                            if (parsed.length > 0 && parsed[0].uploadId === latest.id) {
-                                finalTasks = newTasks.map((t) => {
-                                    const stored = parsed.find((p: any) => p.id === t.id);
-                                    return stored ? { ...t, ...stored, title: t.title, standard: t.standard } : t;
-                                });
-                            }
-                        } catch (e) {
-                            console.error("Local pipeline storage unparseable");
+                    try {
+                        const pipelineRes = await fetch(`/api/pipeline?uploadId=${latest.id}`, { headers: { Authorization: `Bearer ${token}` } });
+                        const pipelineData = await pipelineRes.json();
+                        
+                        if (pipelineData.success && pipelineData.data && pipelineData.data.length > 0) {
+                            const storedTasks = pipelineData.data;
+                            finalTasks = newTasks.map((t) => {
+                                const stored = storedTasks.find((p: any) => p.id === t.id);
+                                return stored ? { ...t, ...stored, title: t.title, standard: t.standard } : t;
+                            });
                         }
+                    } catch (e) {
+                        console.error("Failed to load pipeline DB state", e);
                     }
                     setTasks(finalTasks);
                 }
@@ -115,11 +115,24 @@ export default function PipelinePage() {
 
 
 
-    useEffect(() => {
-        if (isMounted) {
-            localStorage.setItem('tracebridge_pipeline_tasks', JSON.stringify(tasks));
+    // Helper to persist task state to DB
+    const persistTasks = async (updatedTasks: Task[]) => {
+        if (!user || !activeUploadId) return;
+        try {
+            const token = await user.getIdToken();
+            await fetch("/api/pipeline", {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({ uploadId: activeUploadId, tasks: updatedTasks })
+            });
+        } catch (e) {
+            console.error("Failed to persist pipeline tasks:", e);
         }
-    }, [tasks, isMounted]);
+    };
+
 
     const detected = tasks.filter(t => t.status === 'DETECTED');
     const triaged = tasks.filter(t => t.status === 'TRIAGED');
@@ -148,7 +161,7 @@ export default function PipelinePage() {
                 triggerSlackToast(`Task "${task.title}" synced to Jira as DONE and posted to #compliance.`);
             }
 
-            return prev.map(t => {
+            const updatedTasks = prev.map(t => {
                 if (t.id === id) {
                     const extraFields: Partial<Task> = {};
                     if (targetStatus === 'ASSIGNED') {
@@ -170,6 +183,11 @@ export default function PipelinePage() {
                 }
                 return t;
             });
+            
+            // Fire API call asynchronously
+            persistTasks(updatedTasks);
+            
+            return updatedTasks;
         });
     };
 

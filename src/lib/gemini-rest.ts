@@ -30,70 +30,6 @@ const fetchWithTimeout = async (url: string, options: RequestInit & { timeout?: 
 };
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
-const MOCK_MODE = process.env.GEMINI_MOCK_MODE === "true";
-
-/**
- * Mock response generator for testing
- */
-function generateMockResponse(
-    requirement: string,
-    standard: string,
-    section: string
-): {
-    found: boolean;
-    confidence: "high" | "medium" | "low";
-    citations: { source: string; section: string; quote: string }[];
-    rawResponse: string;
-    estimatedCost: string;
-    estimatedTimeline: string;
-    remediationSteps: string[];
-} {
-    const random = Math.random();
-
-    if (random < 0.4) {
-        return {
-            found: true,
-            confidence: "high",
-            citations: [
-                {
-                    source: "TraceGlow_Comprehensive_Submission_V3.txt",
-                    section: section,
-                    quote: `The system complies with ${standard} by structurally embedding cryptographic risk matrices in the Core logic bounds. Phase-gate verification mathematically fulfilled requirement parameters: ${requirement.substring(0, 45)}...`
-                }
-            ],
-            rawResponse: `The Language Model mathematically verified the compliance string by statically mapping the document boundary against strict FDA ISO sub-clause parameters. Perfect evidentiary tracing located.`,
-            estimatedCost: "—",
-            estimatedTimeline: "—",
-            remediationSteps: [],
-        };
-    } else if (random < 0.7) {
-        return {
-            found: true,
-            confidence: "medium",
-            citations: [
-                {
-                    source: "TraceGlow_Comprehensive_Submission_V3.txt",
-                    section: section,
-                    quote: `Partial heuristic validation confirmed for ${requirement.substring(0, 45)}... Additional mathematical boundary testing may be required during Stage 2 clinical audits.`
-                }
-            ],
-            rawResponse: `AI Engine detected a partial probabilistic match for ${standard} ${section}. The engineering payload contains relevant keywords but lacks strict mathematical absolute limits.`,
-            estimatedCost: "—",
-            estimatedTimeline: "—",
-            remediationSteps: [],
-        };
-    } else {
-        return {
-            found: false,
-            confidence: "low",
-            citations: [],
-            rawResponse: `The Hostile Auditor pipeline systematically traversed the entire 45-page document context and failed to isolate any mathematically quantifiable proof. The regulatory affairs team must explicitly dictate specific physical bounds for ${standard}.`,
-            estimatedCost: "$3,000 - $8,000",
-            estimatedTimeline: "4-8 weeks",
-            remediationSteps: ["Draft missing documentation", "Engage regulatory consultant", "Conduct testing if required"],
-        };
-    }
-}
 
 /**
  * Query Gemini using direct REST API (v1)
@@ -105,19 +41,9 @@ export async function queryGeminiRESTArray(
 ): Promise<any[]> {
     console.log(`[DEBUG] Querying Gemini REST API for batch of ${rules.length} rules!`);
     console.log(`[DEBUG] API Key present: ${!!GEMINI_API_KEY}`);
-    console.log(`[DEBUG] Mock mode: ${MOCK_MODE}`);
 
     // Build the rules payload string
     const rulesListString = rules.map(r => `ruleId: ${r.id}\nSTANDARD: ${r.standard}\nSECTION: ${r.section}\nREQUIREMENT: ${r.requirement}\nEXPECTED DOCUMENT: ${r.expectedDocument}`).join('\n\n');
-
-    if (MOCK_MODE) {
-        console.log(`[MOCK MODE] Analyzing ${rules.length} rules (Batch)`);
-        await new Promise(resolve => setTimeout(resolve, 100));
-        return rules.map(r => {
-            const mock = generateMockResponse(r.requirement, r.standard, r.section);
-            return { ruleId: r.id, ...mock };
-        });
-    }
 
     const prompt = `You are a regulatory compliance auditor reviewing medical device documentation.
 
@@ -351,17 +277,6 @@ RESPOND IN EXACTLY THIS JSON FORMAT (you MUST return a JSON array containing one
         }
     } catch (error) {
         console.error("[DEBUG] Gemini REST API error:", error);
-        console.warn("[DEMO FAILSAFE] Catching fatal API error and injecting mock recovery dataset to preserve presentation state.");
-        
-        // Return perfect mock data so the UI continues seamlessly during a live pitch if Google goes down.
-        return rules.map(r => {
-            const mock = generateMockResponse(r.requirement, r.standard, r.section);
-            return { 
-                ruleId: r.id, 
-                ...mock,
-                analytical_reasoning: "[AUTO-RECOVERY OVERRIDE] " + mock.rawResponse,
-                exact_missing_evidence: mock.found ? undefined : "Verification artifact not detected during offline heuristics.",
-            };
-        });
+        throw new Error(`Analysis failed or timed out: ${error instanceof Error ? error.message : 'Unknown API error'}`);
     }
 }
