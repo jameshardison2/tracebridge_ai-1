@@ -149,16 +149,15 @@ export async function POST(request: Request) {
             );
         }
 
-        // Kick off analysis in background — DO NOT await
-        // This lets the HTTP response return immediately, avoiding Vercel's timeout
-        void runAnalysisInBackground(uploadId);
+        // Await the analysis. Vercel maxDuration is 300s, which is enough time.
+        // We cannot use 'void' fire-and-forget in Vercel because the container freezes when the response is sent.
+        await runAnalysisInBackground(uploadId);
 
-        // Return 202 Accepted immediately — client will poll for completion
         return NextResponse.json({
             success: true,
-            status: "processing",
+            status: "complete",
             uploadId,
-            message: "Analysis started. Poll /api/reports?uploadId= for status.",
+            message: "Analysis complete.",
         });
     } catch (error) {
         console.error("Analyze route error:", error);
