@@ -336,34 +336,13 @@ function ReportsContent() {
         }
     };
 
+
+
     useEffect(() => {
-        if (!uploadId || !user) {
+        if (!user) {
             setLoading(false);
             return;
         }
-
-        const fetchReport = async () => {
-            try {
-                const token = await user.getIdToken();
-                const r = await fetch(`/api/reports?uploadId=${uploadId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-                const data = await r.json();
-                if (data.success) setReport(data.data);
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchReport();
-    }, [uploadId, user]);
-
-    useEffect(() => {
-        if (!user) return;
         const fetchAll = async () => {
             try {
                 const token = await user.getIdToken();
@@ -378,7 +357,12 @@ function ReportsContent() {
                     }, []);
                     
                     setAvailableSubmissions(uniqueUploads);
-                    setEnginePayload(uniqueUploads[0].id);
+                    
+                    if (uploadId) {
+                        setEnginePayload(uploadId);
+                    } else {
+                        setEnginePayload(uniqueUploads[0].id);
+                    }
                 }
             } catch (e) {
                 console.error(e);
@@ -388,7 +372,7 @@ function ReportsContent() {
         };
 
         fetchAll();
-    }, [user]);
+    }, [user, uploadId]);
 
     // Pipeline Link Interceptor
     useEffect(() => {
@@ -1369,10 +1353,13 @@ function ReportsContent() {
                                         {activeTemplate === '510k' && (
                                             <div className="grid grid-cols-2 gap-3">
                                                 <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm">
-                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> FDA eCopy (.csv)
+                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> eCopy (.csv)
                                                 </button>
-                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] transition-all">
-                                                    <ExternalLink className="w-[1.125rem] h-[1.125rem]" /> 510(k) Report (.pdf)
+                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm">
+                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> Report (.pdf)
+                                                </button>
+                                                <button onClick={() => generateLiveReport()} className="col-span-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] transition-all">
+                                                    <ExternalLink className="w-[1.125rem] h-[1.125rem]" /> View Interactive Matrix
                                                 </button>
                                             </div>
                                         )}
@@ -1381,18 +1368,24 @@ function ReportsContent() {
                                                 <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm">
                                                     <Download className="w-[1.125rem] h-[1.125rem]" /> Action Log (.csv)
                                                 </button>
-                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-rose-600 hover:bg-rose-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(225,29,72,0.3)] hover:shadow-[0_0_25px_rgba(225,29,72,0.5)] transition-all">
-                                                    <ExternalLink className="w-[1.125rem] h-[1.125rem]" /> CAPA Report (.pdf)
+                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm">
+                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> Report (.pdf)
+                                                </button>
+                                                <button onClick={() => generateLiveReport()} className="col-span-2 bg-rose-600 hover:bg-rose-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(225,29,72,0.3)] hover:shadow-[0_0_25px_rgba(225,29,72,0.5)] transition-all">
+                                                    <ExternalLink className="w-[1.125rem] h-[1.125rem]" /> View Interactive Action Log
                                                 </button>
                                             </div>
                                         )}
                                         {activeTemplate === 'complaint' && (
                                             <div className="grid grid-cols-2 gap-3">
                                                 <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm">
-                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> MAUDE Data (.csv)
+                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> MAUDE (.csv)
                                                 </button>
-                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(5,150,105,0.3)] hover:shadow-[0_0_25px_rgba(5,150,105,0.5)] transition-all">
-                                                    <ExternalLink className="w-[1.125rem] h-[1.125rem]" /> Signals Report (.pdf)
+                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm">
+                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> Report (.pdf)
+                                                </button>
+                                                <button onClick={() => generateLiveReport()} className="col-span-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(5,150,105,0.3)] hover:shadow-[0_0_25px_rgba(5,150,105,0.5)] transition-all">
+                                                    <ExternalLink className="w-[1.125rem] h-[1.125rem]" /> View Interactive Signals Board
                                                 </button>
                                             </div>
                                         )}
@@ -1444,9 +1437,13 @@ function ReportsContent() {
         <div className="flex flex-col pb-12">
             {/* Top Workspace Header (Qualio Style) */}
             <div className="shrink-0 mb-6 flex flex-col gap-6">
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-2xl font-bold flex items-center gap-3 text-slate-900">
+                <div>
+                    <button onClick={() => setReport(null)} className="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors mb-4 bg-slate-100 hover:bg-indigo-50 w-fit px-3 py-1.5 rounded-lg border border-slate-200 hover:border-indigo-200">
+                        <ArrowLeft className="w-4 h-4" /> Back to Artifact Hub
+                    </button>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-2xl font-bold flex items-center gap-3 text-slate-900">
                             Compliance Intelligence
                             <span className="px-2.5 py-0.5 rounded-full bg-green-100 text-green-700 border border-green-200 text-xs font-bold flex items-center gap-1.5">
                                 <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
@@ -1466,6 +1463,7 @@ function ReportsContent() {
                             <ExternalLink className="w-4 h-4" /> Report (PDF)
                         </button>
                     </div>
+                </div>
                 </div>
 
                 {/* Scorecards Grid */}

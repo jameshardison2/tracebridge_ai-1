@@ -90,7 +90,8 @@ function determineSeverity(
 export async function runGapAnalysis(
     uploadId: string,
     standards: string[],
-    fileBuffers: { data: Buffer; mimeType: string; name: string }[]
+    fileBuffers: { data: Buffer; mimeType: string; name: string }[],
+    aiEngine: "gemini" | "local" = "gemini"
 ): Promise<GapReportItem[]> {
     // Step A: Get all applicable rules
     const rules = await getRulesForStandards(standards);
@@ -177,7 +178,7 @@ export async function runGapAnalysis(
                     standard: r.standard,
                     section: r.section,
                     expectedDocument: r.expectedDocument
-                })));
+                })), aiEngine);
                 
                 return chunkResults;
                 

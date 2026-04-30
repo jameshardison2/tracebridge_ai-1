@@ -73,13 +73,22 @@ export async function POST(request: Request) {
             );
         }
 
+        const uploadDoc = await adminDb.collection("uploads").doc(uploadId).get();
+        if (!uploadDoc.exists) {
+            return NextResponse.json(
+                { success: false, error: "Upload not found" },
+                { status: 404 }
+            );
+        }
+        const aiEngine = uploadDoc.data()?.aiEngine || "gemini";
+
         const geminiResultArray = await queryGeminiRESTArray(fileBuffers, [{
             id: rule.id || "",
             requirement: rule.requirement,
             standard: rule.standard,
             section: rule.section,
             expectedDocument: rule.expectedDocument
-        }]);
+        }], aiEngine);
         const geminiResult = geminiResultArray[0];
 
         // Determine compliance status

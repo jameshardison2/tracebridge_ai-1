@@ -21,6 +21,8 @@ export interface Upload {
   };
   standards: string[];
   status: "pending" | "analyzing" | "complete" | "failed";
+  zdrEnabled?: boolean;
+  aiEngine?: "gemini" | "local";
   createdAt: Timestamp | Date;
   updatedAt: Timestamp | Date;
 }

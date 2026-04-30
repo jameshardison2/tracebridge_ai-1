@@ -18,6 +18,9 @@ import {
     BarChart3,
     FileSearch,
     ArrowRight,
+    Lock,
+    FileX,
+    Server,
 } from "lucide-react";
 import { ProductCodeSelector } from "@/components/ProductCodeSelector";
 import fdaCodes from "@/lib/fda-product-codes.json";
@@ -49,6 +52,10 @@ export default function UploadPage() {
     const [error, setError] = useState("");
     const [uploadId, setUploadId] = useState("");
     const [isExtracting, setIsExtracting] = useState(false);
+    
+    // Security & Engine settings
+    const [zdrEnabled, setZdrEnabled] = useState(true);
+    const [aiEngine, setAiEngine] = useState<"gemini" | "local">("gemini");
     
     // Scan theater state
     const [currentScanText, setCurrentScanText] = useState("Initializing compliance engine...");
@@ -220,6 +227,8 @@ export default function UploadPage() {
                     },
                     files: uploadedFiles,
                     idToken,
+                    zdrEnabled,
+                    aiEngine,
                 }),
             });
 
@@ -466,10 +475,10 @@ export default function UploadPage() {
                             <Upload className="w-6 h-6" />
                         </div>
                         <p className="text-sm font-bold text-slate-700 mb-1">
-                            Drag & drop regulatory files or click to browse
+                            Drop entire 1,500+ page DHF Submissions
                         </p>
                         <p className="text-xs text-[var(--muted)]">
-                            Supports highly unstructured PDF, DOCX, and TXT files up to 50MB each
+                            Powered by a 1M+ Token Processing Window. Supports unstructured PDF, DOCX, and TXT.
                         </p>
                         <input
                             ref={fileInputRef}
@@ -510,15 +519,81 @@ export default function UploadPage() {
                     )}
                 </div>
 
+                {/* Engine Configuration */}
+                <div className="bg-slate-50 border border-slate-200 p-6 rounded-md shadow-sm relative overflow-hidden">
+                    <h3 className="text-sm font-bold text-[var(--foreground)] uppercase tracking-wider mb-4 border-b border-[var(--border)] pb-2">3. Security & Execution Parameters</h3>
+                    
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h4 className="text-[13px] font-bold text-slate-800 flex items-center gap-2"><FileX className="w-4 h-4 text-emerald-500" /> Zero Data Retention (ZDR)</h4>
+                                <p className="text-[11px] text-slate-500 mt-1 max-w-[80%]">Permanently destroy file artifacts from the database immediately following the gap analysis. Disables Trace Inspection.</p>
+                            </div>
+                            <label className="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" checked={zdrEnabled} onChange={(e) => setZdrEnabled(e.target.checked)} className="sr-only peer" />
+                                <div className="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+                            </label>
+                        </div>
+                        
+                        <div className="pt-4 border-t border-slate-200">
+                            <h4 className="text-[13px] font-bold text-slate-800 flex items-center gap-2 mb-2"><Server className="w-4 h-4 text-indigo-500" /> AI Inference Engine</h4>
+                            <select 
+                                value={aiEngine} 
+                                onChange={(e) => setAiEngine(e.target.value as "gemini" | "local")}
+                                className="w-full text-sm font-bold bg-white border border-slate-200 rounded-lg px-3 py-2.5 outline-none text-slate-700 hover:border-indigo-300 focus:ring-2 focus:ring-indigo-500/20 shadow-sm transition-all"
+                            >
+                                <option value="gemini">Google Gemini Cloud (Enterprise ZDR API)</option>
+                                <option value="local">Air-Gapped Local Server (LLaMA 3 - localhost:11434)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Submit */}
                 <button
                     onClick={handleSubmit}
                     disabled={!selectedCode || files.length === 0}
-                    className="btn-primary w-full py-4 text-lg disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:transform-none flex items-center justify-center gap-2"
+                    className="btn-primary w-full py-4 text-lg disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:transform-none flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20"
                 >
                     <Shield className="w-5 h-5" />
                     Run Gap Analysis
                 </button>
+
+                {/* Security & Compliance Guarantee */}
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 mt-4 shadow-inner">
+                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2 mb-4">
+                        <Lock className="w-4 h-4 text-emerald-500" /> Enterprise Security & Data Privacy
+                    </h4>
+                    <div className="space-y-4">
+                        <div className="flex gap-3">
+                            <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                                <Shield className="w-3.5 h-3.5 text-emerald-600" />
+                            </div>
+                            <div>
+                                <p className="text-[13px] font-bold text-slate-800">Transit & Inference (RAM)</p>
+                                <p className="text-xs text-slate-600 leading-relaxed mt-0.5">The document is encrypted and sent to Google Cloud. The Gemini LLM reads the document in temporary memory (RAM) to generate the gap analysis.</p>
+                            </div>
+                        </div>
+                        <div className="flex gap-3">
+                            <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                                <FileX className="w-3.5 h-3.5 text-emerald-600" />
+                            </div>
+                            <div>
+                                <p className="text-[13px] font-bold text-slate-800">Zero Data Retention (ZDR)</p>
+                                <p className="text-xs text-slate-600 leading-relaxed mt-0.5">The moment the analysis is returned to the user, Google completely purges the data. It is never written to a disk, never saved to a database, and never used to train future models.</p>
+                            </div>
+                        </div>
+                        <div className="flex gap-3">
+                            <div className="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
+                                <Server className="w-3.5 h-3.5 text-indigo-600" />
+                            </div>
+                            <div>
+                                <p className="text-[13px] font-bold text-slate-800">Enterprise Air-Gapped Available</p>
+                                <p className="text-xs text-slate-600 leading-relaxed mt-0.5">Need absolute control? Deploy TraceBridge locally on your own private, air-gapped servers using open-source Foundational Models.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );

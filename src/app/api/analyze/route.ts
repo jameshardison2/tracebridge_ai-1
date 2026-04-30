@@ -76,7 +76,8 @@ async function runAnalysisInBackground(uploadId: string): Promise<void> {
         const results = await runGapAnalysis(
             uploadId,
             upload.standards as string[],
-            fileBuffers
+            fileBuffers,
+            upload.aiEngine
         );
 
         const summary = getGapSummary(results);
@@ -86,6 +87,26 @@ async function runAnalysisInBackground(uploadId: string): Promise<void> {
             status: "complete",
             updatedAt: Timestamp.now(),
         });
+
+        // Zero Data Retention (ZDR) Execution
+        if (upload.zdrEnabled) {
+            console.log(`[ZDR] Zero Data Retention active for ${uploadId}. Purging file artifacts...`);
+            const bucket = adminStorage.bucket();
+            for (const doc of documentsSnapshot.docs) {
+                const { storagePath } = doc.data();
+                if (storagePath) {
+                    try {
+                        await bucket.file(storagePath).delete();
+                        console.log(`[ZDR] Deleted ${storagePath} from bucket.`);
+                    } catch (e) {
+                        console.error(`[ZDR] Failed to delete ${storagePath}`, e);
+                    }
+                }
+                // Also delete the metadata document to prevent broken links
+                await doc.ref.delete();
+            }
+            console.log(`[ZDR] Purge complete.`);
+        }
 
         // Audit log
         const auditLog: AuditLog = {

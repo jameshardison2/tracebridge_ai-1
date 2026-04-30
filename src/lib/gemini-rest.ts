@@ -37,7 +37,8 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
  */
 export async function queryGeminiRESTArray(
     fileBuffers: { data: Buffer; mimeType: string; name: string }[],
-    rules: { id: string; requirement: string; standard: string; section: string; expectedDocument: string }[]
+    rules: { id: string; requirement: string; standard: string; section: string; expectedDocument: string }[],
+    aiEngine: "gemini" | "local" = "gemini"
 ): Promise<any[]> {
     console.log(`[DEBUG] Querying Gemini REST API for batch of ${rules.length} rules!`);
     console.log(`[DEBUG] API Key present: ${!!GEMINI_API_KEY}`);
@@ -194,6 +195,12 @@ RESPOND IN EXACTLY THIS JSON FORMAT (you MUST return a JSON array containing one
                 }
             }
         }
+    }
+
+    // Enterprise Air-Gapped Simulation Block
+    if (aiEngine === "local") {
+        console.log(`[DEBUG] Attempting to connect to Air-Gapped Local Server (localhost:11434)...`);
+        throw new Error("Air-Gapped Connection Refused: Local LLaMA 3 inference engine (localhost:11434) is offline or unreachable from this environment. Please start the local Ollama service.");
     }
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;

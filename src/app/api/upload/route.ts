@@ -19,7 +19,7 @@ export async function POST(request: Request) {
         }
 
         const body = await request.json();
-        const { deviceName, productCode, files, idToken } = body;
+        const { deviceName, productCode, files, idToken, zdrEnabled, aiEngine } = body;
 
         // Authoritative FDA Code Lookup
         let fdaData = null;
@@ -82,6 +82,8 @@ export async function POST(request: Request) {
             features: safeFeatures,
             standards,
             status: "pending",
+            zdrEnabled: zdrEnabled ?? true,
+            aiEngine: aiEngine || "gemini",
             createdAt: Timestamp.now(),
             updatedAt: Timestamp.now(),
         };
