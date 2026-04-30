@@ -155,21 +155,19 @@ export async function runGapAnalysis(
         );
 
     const ruleChunks = chunkArray(applicableRules, 15);
-    let geminiBatchResults: any[] = [];
-
-    for (let c = 0; c < ruleChunks.length; c++) {
-        const chunk = ruleChunks[c];
+    
+    // Process all chunks concurrently without the 35-second artificial throttle
+    const chunkPromises = ruleChunks.map(async (chunk, c) => {
         let chunkSuccess = false;
         let retryCount = 0;
         const maxRetries = 3;
-
+        
         while (!chunkSuccess && retryCount <= maxRetries) {
             try {
-                // STRICT FREE TIER TOKEN LIMIT THROTTLING: 1 Million Tokens / Min
-                // We MUST mathematically pace massive documents over a minute to survive the Token quota.
-                if (c > 0 || retryCount > 0) {
-                    const delay = 35000 + (retryCount > 0 ? Math.pow(2, retryCount) * 8000 : 0);
-                    console.log(`[Gap Engine] Strict Token Rate Limit Pause for ${delay}ms... (Chunk ${c+1}/${ruleChunks.length}, Attempt ${retryCount+1})`);
+                // If retrying due to a transient API failure, add a small exponential backoff
+                if (retryCount > 0) {
+                    const delay = Math.pow(2, retryCount) * 2000; // 4s, 8s, 16s
+                    console.log(`[Gap Engine] Transient error retry pause for ${delay}ms... (Chunk ${c+1}/${ruleChunks.length}, Attempt ${retryCount+1})`);
                     await new Promise(resolve => setTimeout(resolve, delay));
                 }
 
@@ -181,8 +179,7 @@ export async function runGapAnalysis(
                     expectedDocument: r.expectedDocument
                 })));
                 
-                geminiBatchResults = geminiBatchResults.concat(chunkResults);
-                chunkSuccess = true; // Escapes loop
+                return chunkResults;
                 
             } catch(err: any) {
                 console.error(`[Gap Engine] Chunk Analysis Crash (Attempt ${retryCount+1}): `, err.message);
@@ -191,7 +188,6 @@ export async function runGapAnalysis(
                     console.warn(`[Gap Engine] Transient API failure caught. Escalating backoff and retrying chunk ${c+1}...`);
                     retryCount++;
                 } else {
-                    // Fallback: entire chunk failed permanently after max retries
                     console.error(`[Gap Engine] EXHAUSTED RETRIES. Chunk ${c+1} failed permanently. Defaulting to Gap.`);
                     const chunkFails = chunk.map(r => ({
                         ruleId: r.id,
@@ -200,12 +196,16 @@ export async function runGapAnalysis(
                         citations: [],
                         reasoning: `Fatal API Error after ${maxRetries} retries: ${err instanceof Error ? err.message : "Capacity failure"}`,
                     }));
-                    geminiBatchResults = geminiBatchResults.concat(chunkFails);
-                    chunkSuccess = true; // Escapes loop safely
+                    return chunkFails;
                 }
             }
         }
-    }
+        return [];
+    });
+
+    // Await all chunks in parallel
+    const chunkResultsArrays = await Promise.all(chunkPromises);
+    const geminiBatchResults = chunkResultsArrays.flat();
 
     // Map AI output back to individual Firestore records
     for (const rule of rules) {
