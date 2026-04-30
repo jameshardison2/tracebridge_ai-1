@@ -34,7 +34,7 @@ const EXHAUSTIVE_RULES = [
         requirement: "Premarket submissions must contain a comprehensive Software Bill of Materials (SBOM)",
         expectedDocument: "Cybersecurity Management Plan",
         posPassText: "AI Trace Confirmed: All third-party SBOM components mapped strictly to CVE vulnerability feeds.",
-        negFailText: "Root Cause Analysis: Hostile Audit Trap Triggered. Document relies on buzzwords ('secure', 'encryption') but explicitly failed to provide the mathematical SBOM risk ledger.",
+        negFailText: "Root Cause Analysis: Critical Non-Conformance Detected. Document relies on buzzwords ('secure', 'encryption') but explicitly failed to provide the mathematical SBOM risk ledger.",
         missingArtifact: "Software Bill of Materials (SBOM) mapped to exact CVE numbers."
     },
     {
@@ -54,7 +54,7 @@ const EXHAUSTIVE_RULES = [
         requirement: "Risk evaluation must implement a deterministic threshold comparing the calculated risk index (Probability x Severity matrix) against pre-defined acceptability criteria.",
         expectedDocument: "Risk Management File",
         posPassText: "AI Trace Confirmed: All residual risk calculations deterministically resolve below the accepted threshold algorithm (PxS < 0.05).",
-        negFailText: "Root Cause Analysis: Hostile Audit Trap Triggered. Management accepted 'risk vs reward' philosophically but physically failed to compute Probability multiplied by Severity scales.",
+        negFailText: "Root Cause Analysis: Critical Non-Conformance Detected. Management accepted 'risk vs reward' philosophically but physically failed to compute Probability multiplied by Severity scales.",
         missingArtifact: "Mathematical Probability (P) x Severity (S) calculation chart."
     },
     {
@@ -94,7 +94,7 @@ const EXHAUSTIVE_RULES = [
         requirement: "Formative usability testing MUST include subjects representative of the actual intended user population, not internal engineers.",
         expectedDocument: "Usability Engineering Report",
         posPassText: "AI Trace Confirmed: Patient demographics verified against target medical persona constraints mapping correctly to naive test cases.",
-        negFailText: "Root Cause Analysis: Hostile Audit Trap Triggered. Testing demographics exclusively surveyed 25-30 year old internal engineers. Failure to evaluate target 60+ year old nurse personas.",
+        negFailText: "Root Cause Analysis: Critical Non-Conformance Detected. Testing demographics exclusively surveyed 25-30 year old internal engineers. Failure to evaluate target 60+ year old nurse personas.",
         missingArtifact: "Demographic breakdown of formative testing pool explicitly isolating target groups."
     }
 ];

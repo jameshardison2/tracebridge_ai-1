@@ -1102,7 +1102,7 @@ function ResultsContent() {
                 <div className="flex items-center gap-3">
                     <div className="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs">✓</div>
                     <p className="text-sm font-semibold text-emerald-800">
-                        Hostile Auditor Agent: Completed gap analysis and generated FDA eCopy matrices.
+                        Compliance AI Agent: Completed gap analysis and generated FDA eCopy matrices.
                     </p>
                 </div>
                 <div className="flex items-center gap-4 text-emerald-600 text-sm font-medium">
@@ -1201,7 +1201,7 @@ function ResultsContent() {
                                                     <button 
                                                         onClick={() => {
                                                             showToast(`Opening ${cite.source || "document"} in viewer...`, "info");
-                                                            const docUrl = report?.upload?.documents?.[0]?.storageUrl || "/demo_data/Live_510k_Hostile_Audit_18_Docs.txt";
+                                                            const docUrl = report?.upload?.documents?.[0]?.storageUrl || "/demo_data/Live_510k_Submission_Artifacts.txt";
                                                             window.open(docUrl, '_blank');
                                                         }}
                                                         className="mt-2 w-full bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-600 hover:text-slate-800 rounded-lg py-2 px-3 text-[11px] font-bold transition-all shadow-sm"
@@ -1220,7 +1220,7 @@ function ResultsContent() {
                                                     <button 
                                                         onClick={() => {
                                                             showToast(`Opening document securely...`, "info");
-                                                            const docUrl = report?.upload?.documents?.[0]?.storageUrl || "/demo_data/Live_510k_Hostile_Audit_18_Docs.txt";
+                                                            const docUrl = report?.upload?.documents?.[0]?.storageUrl || "/demo_data/Live_510k_Submission_Artifacts.txt";
                                                             window.open(docUrl, '_blank');
                                                         }}
                                                         className="mt-2 w-full bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-600 hover:text-slate-800 rounded-lg py-2 px-3 text-[11px] font-bold transition-all shadow-sm"

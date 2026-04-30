@@ -1150,7 +1150,7 @@ function ReportsContent() {
                                     <div className="bg-rose-50 text-rose-800 border border-rose-200 p-4 rounded-lg flex gap-3 shadow-inner">
                                         <Eye className="w-5 h-5 text-rose-500 shrink-0 mt-0.5" />
                                         <div>
-                                            <p className="text-sm font-bold">Hostile Auditor Vector Connected</p>
+                                            <p className="text-sm font-bold">Regulatory AI Vector Connected</p>
                                             <p className="text-xs text-rose-700 mt-1 leading-relaxed text-balance">This template is dynamically linked to 18 live adverse event reports and the MAUDE database to triangulate post-market anomaly signals for your exact product code.</p>
                                         </div>
                                     </div>
@@ -1158,7 +1158,7 @@ function ReportsContent() {
                                         <label className="flex items-center gap-4 p-3 border border-emerald-100/50 bg-emerald-50/20 rounded-lg cursor-pointer">
                                             <input type="checkbox" checked={true} readOnly className="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500" />
                                             <div className="flex-1">
-                                                <div className="text-sm font-bold text-slate-800">Cross-reference 18 Hostile Audit Artifacts</div>
+                                                <div className="text-sm font-bold text-slate-800">Cross-reference 18 Compliance Artifacts</div>
                                             </div>
                                         </label>
                                         <label className="flex items-center gap-4 p-3 border border-emerald-100/50 bg-emerald-50/20 rounded-lg cursor-pointer">
@@ -1715,7 +1715,7 @@ function ReportsContent() {
                 <div className="flex items-center gap-3">
                     <div className="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs">✓</div>
                     <p className="text-sm font-semibold text-emerald-800">
-                        Hostile Auditor Agent: Completed gap analysis and generated FDA eCopy matrices.
+                        Compliance AI Agent: Completed gap analysis and generated FDA eCopy matrices.
                     </p>
                 </div>
                 <div className="flex items-center gap-4 text-emerald-600 text-sm font-medium">
