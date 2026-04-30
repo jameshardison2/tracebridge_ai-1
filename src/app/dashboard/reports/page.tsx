@@ -228,7 +228,7 @@ function ReportsContent() {
                     });
                 }
                 localStorage.setItem('tracebridge_pipeline_tasks', JSON.stringify(parsed));
-                setLocalPipelineStatus(val);
+                setLocalPipelineStatus(targetStatus);
                 // Optional: Force toast notification for UX polish
                 const event = new CustomEvent("pipeline-sync", { detail: { msg: `Action synced to board as ${targetStatus}` } });
                 window.dispatchEvent(event);
