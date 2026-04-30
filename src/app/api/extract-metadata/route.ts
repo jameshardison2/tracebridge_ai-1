@@ -3,6 +3,7 @@ import { GoogleAIFileManager } from "@google/generative-ai/server";
 import * as fs from "fs/promises";
 import * as path from "path";
 import * as os from "os";
+import mammoth from "mammoth";
 
 export const maxDuration = 60;
 export const dynamic = "force-dynamic";
@@ -23,18 +24,33 @@ export async function POST(request: Request) {
         }
 
         const buffer = Buffer.from(await file.arrayBuffer());
-        const tempFilePath = path.join(os.tmpdir(), `tracebridge_extract_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`);
         
-        let uploadResponse;
-        try {
-            await fs.writeFile(tempFilePath, buffer);
-            const fileManager = new GoogleAIFileManager(GEMINI_API_KEY);
-            uploadResponse = await fileManager.uploadFile(tempFilePath, {
-                mimeType: file.type || "application/pdf",
-                displayName: file.name,
-            });
-        } finally {
-            try { await fs.unlink(tempFilePath); } catch (e) { }
+        let documentParts: any[] = [];
+        const isDocx = file.name.endsWith(".docx") || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+        
+        if (isDocx) {
+            try {
+                const result = await mammoth.extractRawText({ buffer });
+                // Limit to first 50000 chars (approx 10000 words) for metadata extraction to save tokens and prevent huge payload errors
+                documentParts.push({ text: `\n\n--- Document: ${file.name} ---\n${result.value.substring(0, 50000)}\n--- End of ${file.name} ---\n` });
+            } catch (error) {
+                console.error("Mammoth extract error:", error);
+                documentParts.push({ text: `[Error extracting text from ${file.name}]` });
+            }
+        } else {
+            const tempFilePath = path.join(os.tmpdir(), `tracebridge_extract_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`);
+            let uploadResponse;
+            try {
+                await fs.writeFile(tempFilePath, buffer);
+                const fileManager = new GoogleAIFileManager(GEMINI_API_KEY);
+                uploadResponse = await fileManager.uploadFile(tempFilePath, {
+                    mimeType: file.type || "application/pdf",
+                    displayName: file.name,
+                });
+                documentParts.push({ file_data: { file_uri: uploadResponse.file.uri, mime_type: file.type || "application/pdf" } });
+            } finally {
+                try { await fs.unlink(tempFilePath); } catch (e) { }
+            }
         }
 
         // We load the valid FDA product codes so Gemini can select the right one
@@ -72,7 +88,7 @@ Respond ONLY with a JSON object in this exact format:
                 contents: [{
                     parts: [
                         { text: prompt },
-                        { file_data: { file_uri: uploadResponse.file.uri, mime_type: file.type || "application/pdf" } }
+                        ...documentParts
                     ]
                 }],
                 generationConfig: {
