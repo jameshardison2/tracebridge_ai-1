@@ -237,43 +237,24 @@ export default function UploadPage() {
 
             // Step 3: Kick off Native Batch Gap Engine
             setActiveStep(3);
-            const analyzeRes = await fetch("/api/analyze", {
+            
+            // Start the fetch but do NOT await it immediately so we can advance to the Scan Theater
+            const analyzePromise = fetch("/api/analyze", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ uploadId: newUploadId }),
             });
+
+            // Step 4: Show Scan Theater (This keeps the user entertained while Vercel processes the PDFs)
+            setActiveStep(4);
+            setAnalysisProgress({ current: 0, total: 0 }); 
+
+            // Now we wait for the long-running analysis to actually finish
+            const analyzeRes = await analyzePromise;
             const analyzeJson = await analyzeRes.json();
             if (!analyzeJson.success) throw new Error(analyzeJson.error);
 
-            // Step 4: Poll backend for completion (The Batch engine finishes in seconds)
-            setActiveStep(4);
-            setAnalysisProgress({ current: 0, total: 0 }); // Use generic Step 5 UI
-            
-            let isComplete = false;
-            let pollingCounter = 0;
-            while (!isComplete) {
-                await new Promise(r => setTimeout(r, 3000)); // Poll every 3s
-                pollingCounter++;
-                
-                const headers: Record<string, string> = {};
-                if (idToken) headers["Authorization"] = `Bearer ${idToken}`;
-                
-                const reportRes = await fetch(`/api/reports?uploadId=${newUploadId}`, { headers });
-                if (reportRes.ok) {
-                    const reportJson = await reportRes.json();
-                    if (reportJson.success) {
-                        if (reportJson.data.upload.status === "complete") {
-                            isComplete = true;
-                        } else if (reportJson.data.upload.status === "failed") {
-                            throw new Error(reportJson.data.upload.errorMessage || "Analysis failed in the background batch processor.");
-                        }
-                    }
-                }
-                
-                if (pollingCounter > 300) { // 15 minute maximum timeout to account for exponential API backoffs
-                    throw new Error("Analysis timed out. Please check your document sizes or API rate limits.");
-                }
-            }
+
 
             setStep("done");
             setTimeout(() => {
