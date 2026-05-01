@@ -149,6 +149,31 @@ export async function runGapAnalysis(
         }
     }
 
+    // PRECEDENT INJECTION: Fetch real FDA warning letters for this device class
+    let fdaPrecedents: any[] = [];
+    if (uploadData?.productCode) {
+        try {
+            console.log(`[Gap Engine] Fetching FDA precedents for product code: ${uploadData.productCode}`);
+            // Use longer timeout and handle failures gracefully
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+            
+            const res = await fetch(`https://api.fda.gov/device/enforcement.json?search=product_code:${uploadData.productCode}&limit=3`, { signal: controller.signal });
+            clearTimeout(timeoutId);
+            
+            if (res.ok) {
+                const data = await res.json();
+                fdaPrecedents = (data.results || []).map((item: any) => ({
+                    firm: item.recalling_firm || "Unknown Firm",
+                    reason: item.reason_for_recall || ""
+                }));
+                console.log(`[Gap Engine] Successfully loaded ${fdaPrecedents.length} FDA precedents.`);
+            }
+        } catch (e) {
+            console.warn("[Gap Engine] OpenFDA API unavailable, continuing without live precedents.");
+        }
+    }
+
     // Chunking function to prevent MAX_TOKENS output limits
     const chunkArray = (arr: any[], size: number) =>
         Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
@@ -178,7 +203,7 @@ export async function runGapAnalysis(
                     standard: r.standard,
                     section: r.section,
                     expectedDocument: r.expectedDocument
-                })), aiEngine);
+                })), aiEngine, fdaPrecedents);
                 
                 return chunkResults;
                 
@@ -209,6 +234,9 @@ export async function runGapAnalysis(
     const geminiBatchResults = chunkResultsArrays.flat();
 
     // Map AI output back to individual Firestore records
+    let batch = adminDb ? adminDb.batch() : null;
+    let batchCount = 0;
+
     for (const rule of rules) {
         // Find if this rule was skipped because of "(Not applicable)"
         const isApplicable = applicableRules.some(r => r.id === rule.id);
@@ -265,9 +293,22 @@ export async function runGapAnalysis(
             createdAt: Timestamp.now(),
         };
 
-        if (adminDb) {
-            await adminDb.collection("gapResults").add(gapResultData);
+        if (batch) {
+            const docRef = adminDb!.collection("gapResults").doc();
+            batch.set(docRef, gapResultData);
+            batchCount++;
+
+            // Firestore batch limit is 500
+            if (batchCount === 490) {
+                await batch.commit();
+                batch = adminDb!.batch();
+                batchCount = 0;
+            }
         }
+    }
+
+    if (batch && batchCount > 0) {
+        await batch.commit();
     }
 
     return results;

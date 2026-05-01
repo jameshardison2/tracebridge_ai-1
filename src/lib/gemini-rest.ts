@@ -38,13 +38,21 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
 export async function queryGeminiRESTArray(
     fileBuffers: { data: Buffer; mimeType: string; name: string }[],
     rules: { id: string; requirement: string; standard: string; section: string; expectedDocument: string }[],
-    aiEngine: "gemini" | "local" = "gemini"
+    aiEngine: "gemini" | "local" = "gemini",
+    fdaPrecedents: any[] = []
 ): Promise<any[]> {
     console.log(`[DEBUG] Querying Gemini REST API for batch of ${rules.length} rules!`);
     console.log(`[DEBUG] API Key present: ${!!GEMINI_API_KEY}`);
 
     // Build the rules payload string
     const rulesListString = rules.map(r => `ruleId: ${r.id}\nSTANDARD: ${r.standard}\nSECTION: ${r.section}\nREQUIREMENT: ${r.requirement}\nEXPECTED DOCUMENT: ${r.expectedDocument}`).join('\n\n');
+
+    const precedentsString = fdaPrecedents.length > 0 
+        ? `\n--- RECENT FDA WARNING LETTERS (ANTI-PATTERNS) ---\n` + 
+          `The following are real enforcement actions taken against this device type. Use these as a baseline for strictness. Do NOT accept evidence that repeats these mistakes:\n` +
+          fdaPrecedents.map((p, i) => `${i+1}. Firm: ${p.firm}\nReason for Recall: ${p.reason}`).join('\n\n') +
+          `\n--------------------------------------------------\n`
+        : "";
 
     const prompt = `You are a regulatory compliance auditor reviewing medical device documentation.
 
@@ -53,7 +61,7 @@ TASK: Determine if the uploaded documents contain sufficient evidence for EACH o
 --- RULES TO EVALUATE ---
 ${rulesListString}
 -------------------------
-
+${precedentsString}
 DOCUMENT SYNONYM GUIDE:
 Companies often use different names for the same regulatory document. Match on CONTENT, not just filename.
 - "Software Development Plan" = SDP, Dev Plan, Development Plan, SDLC Plan, SRS (when it contains planning sections)
