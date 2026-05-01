@@ -25,6 +25,7 @@ import {
     Kanban,
     Copy,
     Brain,
+    Trash2,
 } from "lucide-react";
 
 interface GapResult {
@@ -142,6 +143,47 @@ function ResultsContent() {
             direction = 'desc';
         }
         setSortConfig({ key, direction });
+    };
+
+    const handleDeleteGap = async (gapId: string) => {
+        if (!confirm("Are you sure you want to permanently remove this gap from the compliance matrix?")) return;
+        if (!report || !user) return;
+        
+        try {
+            const token = await user.getIdToken();
+            const res = await fetch(`/api/gap?id=${gapId}`, {
+                method: "DELETE",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            const data = await res.json();
+            
+            if (data.success) {
+                const updatedGaps = report.upload.gapResults.filter(r => r.id !== gapId);
+                const newTotal = updatedGaps.length;
+                const newCompliant = updatedGaps.filter(r => r.status === "compliant").length;
+                const newGaps = updatedGaps.filter(r => r.status === "gap_detected").length;
+                const newNeedsReview = updatedGaps.filter(r => r.status === "needs_review").length;
+                const newComplianceScore = newTotal > 0 ? Math.round((newCompliant / newTotal) * 100) : 0;
+                
+                setReport({
+                    ...report,
+                    upload: { ...report.upload, gapResults: updatedGaps },
+                    summary: {
+                        total: newTotal,
+                        compliant: newCompliant,
+                        gaps: newGaps,
+                        needsReview: newNeedsReview,
+                        complianceScore: newComplianceScore
+                    }
+                });
+                showToast("Regulatory rule removed successfully.", "success");
+            } else {
+                showToast("Failed to remove rule: " + data.error, "error");
+            }
+        } catch (error) {
+            console.error(error);
+            showToast("Server communication failed.", "error");
+        }
     };
 
     // Feature States
@@ -1083,12 +1125,21 @@ function ResultsContent() {
                                     </td>
                                     {/* Action */}
                                     <td className="px-5 py-4">
-                                        <button
-                                            onClick={() => setSelectedResult(result)}
-                                            className="text-[10px] font-bold text-indigo-700 bg-white hover:bg-indigo-600 hover:text-white px-3 py-1.5 rounded border border-indigo-200 hover:border-indigo-600 transition-colors shadow-sm whitespace-nowrap opacity-90 group-hover:opacity-100"
-                                        >
-                                            Inspect Trace
-                                        </button>
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                onClick={() => setSelectedResult(result)}
+                                                className="text-[10px] font-bold text-indigo-700 bg-white hover:bg-indigo-600 hover:text-white px-3 py-1.5 rounded border border-indigo-200 hover:border-indigo-600 transition-colors shadow-sm whitespace-nowrap opacity-90 group-hover:opacity-100"
+                                            >
+                                                Inspect Trace
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteGap(result.id)}
+                                                className="p-1.5 rounded border border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 transition-colors opacity-0 group-hover:opacity-100"
+                                                title="Remove this rule"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>                            );
                         })}
