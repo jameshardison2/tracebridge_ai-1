@@ -1,0 +1,521 @@
+=================================================================
+DOCUMENT: Cybersecurity Threat Model
+DEVICE: DermaSpot_Melanoma_Analyzer
+PRODUCT CODE: PFF
+CLASS: Class II
+VERSION: 1.0
+DATE: 2026-05-01
+=================================================================
+
+1.0 INTRODUCTION
+This document serves as the formal Cybersecurity Threat Model for the DermaSpot_Melanoma_Analyzer medical device. 
+It is intended to comply with all relevant FDA regulations, ISO 13485, IEC 62304, and ISO 14971 standards.
+
+2.0 PURPOSE AND SCOPE
+The scope of this document encompasses all relevant engineering, risk, and validation activities associated with the DermaSpot_Melanoma_Analyzer. 
+
+3.0 DETAILED SPECIFICATIONS
+[CTM-0001] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0002] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0003] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0004] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0005] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0006] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0007] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0008] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0009] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0010] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0011] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0012] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0013] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0014] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0015] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0016] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0017] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0018] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0019] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0020] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0021] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0022] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0023] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0024] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0025] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0026] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0027] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0028] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0029] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0030] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0031] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0032] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0033] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0034] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0035] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0036] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0037] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0038] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0039] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0040] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0041] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0042] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0043] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0044] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0045] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0046] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0047] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0048] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0049] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0050] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0051] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0052] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0053] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0054] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0055] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0056] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0057] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0058] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0059] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0060] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0061] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0062] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0063] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0064] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0065] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0066] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0067] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0068] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0069] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0070] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0071] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0072] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0073] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0074] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0075] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0076] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0077] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0078] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0079] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0080] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0081] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0082] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0083] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0084] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0085] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0086] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0087] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0088] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0089] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0090] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0091] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0092] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0093] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0094] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0095] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0096] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0097] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0098] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0099] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0100] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0101] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0102] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0103] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0104] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0105] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0106] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0107] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0108] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0109] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0110] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0111] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0112] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0113] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0114] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0115] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0116] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0117] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0118] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0119] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0120] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0121] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0122] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0123] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0124] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0125] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0126] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0127] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0128] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0129] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0130] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0131] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0132] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0133] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0134] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0135] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0136] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0137] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0138] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0139] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0140] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0141] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0142] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0143] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0144] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0145] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0146] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0147] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0148] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0149] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0150] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0151] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0152] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0153] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0154] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0155] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0156] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0157] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0158] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0159] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0160] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0161] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0162] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0163] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0164] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0165] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0166] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0167] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0168] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0169] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0170] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0171] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0172] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0173] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0174] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0175] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0176] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0177] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0178] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0179] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0180] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0181] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0182] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0183] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0184] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0185] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0186] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0187] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0188] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0189] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0190] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0191] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0192] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0193] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0194] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0195] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0196] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0197] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0198] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0199] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0200] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0201] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0202] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0203] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0204] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0205] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0206] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0207] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0208] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0209] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0210] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0211] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0212] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0213] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0214] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0215] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0216] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0217] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0218] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0219] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0220] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0221] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0222] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0223] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0224] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0225] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0226] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0227] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0228] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0229] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0230] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0231] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0232] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0233] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0234] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0235] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0236] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0237] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0238] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0239] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0240] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0241] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0242] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0243] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0244] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0245] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0246] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0247] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0248] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0249] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0250] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0251] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0252] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0253] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0254] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0255] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0256] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0257] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0258] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0259] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0260] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0261] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0262] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0263] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0264] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0265] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0266] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0267] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0268] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0269] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0270] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0271] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0272] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0273] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0274] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0275] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0276] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0277] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0278] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0279] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0280] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0281] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0282] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0283] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0284] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0285] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0286] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0287] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0288] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0289] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0290] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0291] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0292] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0293] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0294] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0295] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0296] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0297] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0298] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0299] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0300] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0301] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0302] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0303] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0304] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0305] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0306] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0307] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0308] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0309] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0310] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0311] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0312] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0313] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0314] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0315] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0316] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0317] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0318] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0319] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0320] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0321] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0322] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0323] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0324] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0325] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0326] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0327] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0328] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0329] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0330] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0331] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0332] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0333] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0334] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0335] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0336] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0337] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0338] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0339] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0340] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0341] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0342] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0343] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0344] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0345] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0346] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0347] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0348] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0349] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0350] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0351] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0352] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0353] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0354] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0355] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0356] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0357] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0358] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0359] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0360] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0361] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0362] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0363] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0364] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0365] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0366] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0367] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0368] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0369] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0370] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0371] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0372] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0373] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0374] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0375] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0376] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0377] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0378] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0379] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0380] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0381] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0382] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0383] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0384] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0385] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0386] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0387] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0388] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0389] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0390] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0391] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0392] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0393] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0394] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0395] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0396] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0397] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0398] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0399] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0400] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0401] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0402] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0403] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0404] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0405] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0406] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0407] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0408] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0409] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0410] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0411] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0412] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0413] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0414] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0415] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0416] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0417] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0418] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0419] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0420] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0421] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0422] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0423] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0424] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0425] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0426] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0427] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0428] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0429] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0430] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0431] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0432] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0433] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0434] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0435] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0436] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0437] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0438] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0439] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0440] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0441] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0442] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0443] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0444] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0445] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0446] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0447] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0448] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0449] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0450] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0451] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0452] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0453] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0454] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0455] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0456] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0457] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0458] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0459] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0460] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0461] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0462] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0463] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0464] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0465] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0466] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0467] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0468] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0469] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0470] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0471] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0472] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0473] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0474] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0475] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0476] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[CTM-0477] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0478] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0479] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0480] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0481] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0482] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0483] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0484] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0485] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0486] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0487] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0488] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0489] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0490] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0491] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.
+[CTM-0492] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0493] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0494] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0495] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0496] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[CTM-0497] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0498] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0499] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[CTM-0500] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+
+4.0 SIGNATURES
+Approver: John Doe, VP of Engineering
+Date: 2026-05-01

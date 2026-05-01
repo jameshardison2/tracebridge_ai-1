@@ -1,0 +1,521 @@
+=================================================================
+DOCUMENT: Human Factors Engineering Report
+DEVICE: GastroCam_Swallowable_Endoscope
+PRODUCT CODE: NEK
+CLASS: Class II
+VERSION: 1.0
+DATE: 2026-05-01
+=================================================================
+
+1.0 INTRODUCTION
+This document serves as the formal Human Factors Engineering Report for the GastroCam_Swallowable_Endoscope medical device. 
+It is intended to comply with all relevant FDA regulations, ISO 13485, IEC 62304, and ISO 14971 standards.
+
+2.0 PURPOSE AND SCOPE
+The scope of this document encompasses all relevant engineering, risk, and validation activities associated with the GastroCam_Swallowable_Endoscope. 
+
+3.0 DETAILED SPECIFICATIONS
+[HFE-0001] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0002] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0003] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0004] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0005] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0006] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0007] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0008] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0009] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0010] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0011] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0012] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0013] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0014] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0015] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0016] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0017] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0018] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0019] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0020] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0021] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0022] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0023] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0024] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0025] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0026] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0027] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0028] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0029] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0030] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0031] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0032] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0033] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0034] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0035] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0036] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0037] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0038] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0039] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0040] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0041] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0042] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0043] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0044] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0045] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0046] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0047] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0048] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0049] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0050] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0051] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0052] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0053] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0054] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0055] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0056] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0057] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0058] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0059] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0060] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0061] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0062] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0063] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0064] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0065] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0066] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0067] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0068] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0069] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0070] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0071] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0072] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0073] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0074] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0075] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0076] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0077] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0078] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0079] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0080] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0081] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0082] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0083] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0084] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0085] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0086] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0087] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0088] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0089] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0090] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0091] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0092] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0093] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0094] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0095] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0096] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0097] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0098] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0099] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0100] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0101] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0102] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0103] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0104] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0105] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0106] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0107] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0108] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0109] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0110] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0111] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0112] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0113] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0114] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0115] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0116] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0117] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0118] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0119] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0120] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0121] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0122] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0123] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0124] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0125] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0126] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0127] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0128] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0129] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0130] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0131] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0132] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0133] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0134] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0135] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0136] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0137] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0138] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0139] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0140] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0141] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0142] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0143] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0144] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0145] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0146] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0147] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0148] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0149] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0150] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0151] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0152] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0153] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0154] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0155] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0156] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0157] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0158] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0159] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0160] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0161] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0162] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0163] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0164] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0165] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0166] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0167] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0168] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0169] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0170] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0171] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0172] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0173] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0174] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0175] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0176] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0177] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0178] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0179] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0180] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0181] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0182] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0183] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0184] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0185] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0186] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0187] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0188] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0189] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0190] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0191] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0192] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0193] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0194] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0195] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0196] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0197] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0198] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0199] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0200] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0201] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0202] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0203] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0204] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0205] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0206] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0207] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0208] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0209] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0210] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0211] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0212] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0213] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0214] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0215] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0216] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0217] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0218] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0219] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0220] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0221] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0222] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0223] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0224] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0225] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0226] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0227] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0228] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0229] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0230] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0231] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0232] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0233] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0234] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0235] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0236] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0237] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0238] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0239] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0240] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0241] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0242] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0243] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0244] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0245] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0246] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0247] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0248] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0249] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0250] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0251] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0252] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0253] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0254] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0255] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0256] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0257] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0258] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0259] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0260] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0261] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0262] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0263] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0264] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0265] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0266] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0267] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0268] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0269] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0270] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0271] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0272] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0273] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0274] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0275] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0276] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0277] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0278] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0279] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0280] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0281] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0282] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0283] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0284] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0285] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0286] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0287] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0288] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0289] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0290] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0291] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0292] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0293] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0294] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0295] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0296] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0297] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0298] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0299] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0300] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0301] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0302] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0303] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0304] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0305] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0306] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0307] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0308] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0309] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0310] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0311] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0312] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0313] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0314] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0315] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0316] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0317] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0318] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0319] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0320] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0321] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0322] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0323] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0324] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0325] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0326] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0327] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0328] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0329] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0330] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0331] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0332] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0333] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0334] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0335] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0336] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0337] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0338] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0339] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0340] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0341] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0342] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0343] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0344] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0345] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0346] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0347] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0348] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0349] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0350] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0351] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0352] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0353] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0354] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0355] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0356] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0357] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0358] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0359] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0360] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0361] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0362] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0363] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0364] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0365] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0366] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0367] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0368] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0369] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0370] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0371] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0372] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0373] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0374] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0375] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0376] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0377] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0378] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0379] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0380] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0381] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0382] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0383] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0384] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0385] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0386] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0387] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0388] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0389] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0390] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0391] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0392] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0393] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0394] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0395] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0396] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0397] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0398] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0399] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0400] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0401] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0402] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0403] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0404] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0405] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0406] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0407] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0408] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0409] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0410] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0411] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0412] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0413] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0414] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0415] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0416] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0417] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0418] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0419] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0420] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0421] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0422] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0423] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0424] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0425] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0426] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0427] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0428] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0429] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0430] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0431] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0432] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0433] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0434] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0435] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0436] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0437] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0438] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0439] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0440] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0441] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0442] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0443] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0444] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0445] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0446] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0447] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0448] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0449] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0450] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0451] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0452] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0453] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0454] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0455] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0456] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0457] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0458] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0459] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0460] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0461] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0462] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0463] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0464] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0465] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0466] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0467] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0468] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0469] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0470] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0471] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0472] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0473] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0474] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0475] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0476] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0477] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0478] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0479] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0480] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0481] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0482] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0483] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0484] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0485] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0486] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0487] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0488] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0489] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0490] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0491] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0492] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0493] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0494] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[HFE-0495] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0496] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0497] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[HFE-0498] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0499] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[HFE-0500] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+
+4.0 SIGNATURES
+Approver: John Doe, VP of Engineering
+Date: 2026-05-01

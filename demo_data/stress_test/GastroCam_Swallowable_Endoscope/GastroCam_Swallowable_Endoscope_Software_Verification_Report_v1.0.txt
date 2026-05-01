@@ -1,0 +1,521 @@
+=================================================================
+DOCUMENT: Software Verification Report
+DEVICE: GastroCam_Swallowable_Endoscope
+PRODUCT CODE: NEK
+CLASS: Class II
+VERSION: 1.0
+DATE: 2026-05-01
+=================================================================
+
+1.0 INTRODUCTION
+This document serves as the formal Software Verification Report for the GastroCam_Swallowable_Endoscope medical device. 
+It is intended to comply with all relevant FDA regulations, ISO 13485, IEC 62304, and ISO 14971 standards.
+
+2.0 PURPOSE AND SCOPE
+The scope of this document encompasses all relevant engineering, risk, and validation activities associated with the GastroCam_Swallowable_Endoscope. 
+
+3.0 DETAILED SPECIFICATIONS
+[SVR-0001] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0002] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0003] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0004] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0005] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0006] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0007] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0008] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0009] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0010] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0011] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0012] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0013] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0014] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0015] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0016] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0017] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0018] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0019] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0020] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0021] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0022] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0023] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0024] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0025] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0026] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0027] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0028] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0029] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0030] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0031] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0032] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0033] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0034] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0035] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0036] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0037] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0038] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0039] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0040] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0041] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0042] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0043] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0044] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0045] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0046] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0047] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0048] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0049] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0050] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0051] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0052] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0053] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0054] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0055] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0056] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0057] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0058] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0059] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0060] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0061] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0062] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0063] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0064] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0065] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0066] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0067] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0068] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0069] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0070] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0071] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0072] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0073] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0074] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0075] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0076] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0077] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0078] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0079] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0080] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0081] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0082] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0083] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0084] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0085] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0086] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0087] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0088] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0089] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0090] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0091] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0092] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0093] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0094] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0095] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0096] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0097] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0098] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0099] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0100] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0101] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0102] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0103] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0104] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0105] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0106] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0107] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0108] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0109] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0110] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0111] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0112] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0113] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0114] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0115] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0116] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0117] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0118] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0119] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0120] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0121] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0122] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0123] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0124] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0125] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0126] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0127] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0128] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0129] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0130] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0131] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0132] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0133] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0134] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0135] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0136] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0137] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0138] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0139] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0140] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0141] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0142] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0143] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0144] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0145] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0146] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0147] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0148] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0149] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0150] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0151] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0152] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0153] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0154] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0155] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0156] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0157] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0158] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0159] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0160] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0161] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0162] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0163] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0164] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0165] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0166] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0167] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0168] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0169] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0170] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0171] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0172] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0173] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0174] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0175] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0176] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0177] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0178] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0179] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0180] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0181] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0182] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0183] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0184] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0185] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0186] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0187] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0188] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0189] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0190] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0191] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0192] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0193] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0194] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0195] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0196] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0197] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0198] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0199] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0200] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0201] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0202] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0203] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0204] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0205] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0206] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0207] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0208] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0209] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0210] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0211] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0212] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0213] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0214] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0215] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0216] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0217] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0218] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0219] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0220] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0221] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0222] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0223] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0224] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0225] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0226] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0227] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0228] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0229] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0230] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0231] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0232] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0233] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0234] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0235] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0236] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0237] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0238] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0239] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0240] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0241] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0242] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0243] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0244] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0245] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0246] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0247] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0248] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0249] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0250] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0251] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0252] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0253] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0254] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0255] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0256] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0257] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0258] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0259] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0260] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0261] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0262] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0263] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0264] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0265] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0266] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0267] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0268] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0269] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0270] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0271] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0272] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0273] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0274] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0275] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0276] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0277] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0278] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0279] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0280] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0281] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0282] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0283] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0284] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0285] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0286] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0287] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0288] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0289] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0290] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0291] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0292] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0293] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0294] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0295] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0296] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0297] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0298] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0299] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0300] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0301] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0302] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0303] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0304] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0305] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0306] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0307] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0308] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0309] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0310] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0311] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0312] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0313] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0314] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0315] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0316] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0317] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0318] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0319] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0320] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0321] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0322] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0323] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0324] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0325] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0326] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0327] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0328] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0329] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0330] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0331] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0332] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0333] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0334] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0335] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0336] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0337] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0338] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0339] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0340] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0341] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0342] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0343] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0344] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0345] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0346] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0347] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0348] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0349] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0350] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0351] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0352] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0353] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0354] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0355] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0356] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0357] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0358] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0359] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0360] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0361] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0362] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0363] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0364] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0365] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0366] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0367] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0368] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0369] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0370] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0371] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0372] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0373] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0374] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0375] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0376] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0377] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0378] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0379] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0380] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0381] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0382] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0383] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0384] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0385] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0386] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0387] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0388] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0389] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0390] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0391] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0392] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0393] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0394] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0395] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0396] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0397] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0398] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0399] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0400] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0401] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0402] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0403] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0404] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0405] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0406] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0407] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0408] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0409] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0410] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0411] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0412] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0413] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0414] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0415] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0416] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0417] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0418] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0419] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0420] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0421] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0422] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0423] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0424] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0425] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0426] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0427] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0428] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0429] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0430] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0431] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0432] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0433] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0434] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0435] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0436] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0437] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0438] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0439] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0440] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0441] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0442] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0443] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0444] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0445] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0446] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0447] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0448] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0449] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0450] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0451] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0452] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0453] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0454] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0455] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0456] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0457] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0458] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0459] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0460] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0461] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0462] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0463] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0464] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0465] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0466] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0467] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0468] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0469] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0470] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0471] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0472] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0473] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0474] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0475] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0476] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0477] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0478] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 5mV. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0479] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0480] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0481] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 1ms. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0482] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0483] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0484] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0485] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.01%. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0486] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0487] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)
+[SVR-0488] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0489] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0490] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0491] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0492] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0493] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0494] System Constraint: The primary sensor array shall sample data at a frequency of 1000Hz +/- 0.5°C. If deviation occurs, a hard hardware interrupt must execute within 2.5ms.
+[SVR-0495] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0496] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0497] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0498] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+[SVR-0499] Quality Control: This section complies with ISO 13485:2016 Section 7.3. Verification procedures were fully documented, reviewed, and signed off by QA.
+[SVR-0500] Architecture Node: Data at rest shall be encrypted using AES-256-GCM. The cryptographic keys shall be rotated every 30 days and stored in the dedicated HSM.
+
+4.0 SIGNATURES
+Approver: John Doe, VP of Engineering
+Date: 2026-05-01

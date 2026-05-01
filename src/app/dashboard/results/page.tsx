@@ -1013,20 +1013,24 @@ function ResultsContent() {
                                     {/* Confidence Pill */}
                                     <td className="px-5 py-4">
                                         {(() => {
-                                            const score = result.status === 'compliant' ? Math.floor(Math.random() * (99 - 90 + 1) + 90) : 
-                                                          result.status === 'gap_detected' ? Math.floor(Math.random() * (45 - 0 + 1) + 0) :
-                                                          Math.floor(Math.random() * (85 - 55 + 1) + 55);
-                                            
                                             let pillColor = 'bg-emerald-100 text-emerald-800 border-emerald-200';
-                                            let label = 'Strong';
-                                            if (score < 50) { pillColor = 'bg-rose-100 text-rose-800 border-rose-200'; label = 'None'; }
-                                            else if (score < 75) { pillColor = 'bg-amber-100 text-amber-800 border-amber-200'; label = 'Weak'; }
-                                            else if (score < 90) { pillColor = 'bg-amber-100 text-amber-800 border-amber-200'; label = 'Partial'; }
+                                            let label = 'High Confidence';
+                                            let dotColor = 'bg-emerald-500';
+                                            
+                                            if (result.status === 'gap_detected') { 
+                                                pillColor = 'bg-rose-100 text-rose-800 border-rose-200'; 
+                                                label = 'No Evidence'; 
+                                                dotColor = 'bg-rose-500';
+                                            } else if (result.status === 'needs_review') { 
+                                                pillColor = 'bg-amber-100 text-amber-800 border-amber-200'; 
+                                                label = 'Medium Confidence'; 
+                                                dotColor = 'bg-amber-500';
+                                            }
                                             
                                             return (
                                                 <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded text-[10px] font-bold border whitespace-nowrap shadow-sm ${pillColor}`}>
-                                                    <span className={`w-1.5 h-1.5 rounded-full ${score < 50 ? 'bg-rose-500' : score < 90 ? 'bg-amber-500' : 'bg-emerald-500'}`}></span>
-                                                    {score}% • {label}
+                                                    <span className={`w-1.5 h-1.5 rounded-full ${dotColor}`}></span>
+                                                    {label}
                                                 </span>
                                             )
                                         })()}

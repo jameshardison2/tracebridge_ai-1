@@ -40,9 +40,19 @@ export async function POST(request: Request) {
         const regulationNumber = fdaData?.regulationNumber || "Unknown";
 
         // Dynamically build applicable standards
-        const standards = ["ISO 13485:2016", "ISO 14971:2019"];
+        const standards = [
+            "ISO 13485:2016",
+            "ISO 14971:2019",
+            "IEC 62366-1",
+            "Class I Exemption Protocol"
+        ];
         if (safeFeatures.requiresSoftware) {
-            standards.push("IEC 62304:2006");
+            standards.push("IEC 62304"); // Fixed from :2006
+            standards.push("FDA Cybersecurity Guidance");
+            standards.push("FDA SaMD Guidance");
+        }
+        if (safeFeatures.requiresBiocompatibility) {
+            standards.push("ISO 10993-1");
         }
 
         // Validate required fields
@@ -84,6 +94,7 @@ export async function POST(request: Request) {
             status: "pending",
             zdrEnabled: zdrEnabled ?? true,
             aiEngine: aiEngine || "gemini",
+            documentCount: files.length, // FIX: Track file count for dashboard
             createdAt: Timestamp.now(),
             updatedAt: Timestamp.now(),
         };

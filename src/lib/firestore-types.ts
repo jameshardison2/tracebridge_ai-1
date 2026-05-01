@@ -23,6 +23,7 @@ export interface Upload {
   status: "pending" | "analyzing" | "complete" | "failed";
   zdrEnabled?: boolean;
   aiEngine?: "gemini" | "local";
+  documentCount?: number;
   createdAt: Timestamp | Date;
   updatedAt: Timestamp | Date;
 }
