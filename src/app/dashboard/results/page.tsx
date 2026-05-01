@@ -1134,7 +1134,7 @@ function ResultsContent() {
                                             </button>
                                             <button
                                                 onClick={() => handleDeleteGap(result.id)}
-                                                className="p-1.5 rounded border border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 transition-colors opacity-0 group-hover:opacity-100"
+                                                className="p-1.5 rounded border border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 transition-colors"
                                                 title="Remove this rule"
                                             >
                                                 <Trash2 className="w-4 h-4" />
