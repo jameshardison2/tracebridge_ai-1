@@ -122,3 +122,16 @@ export interface TeamMember {
   role: "admin" | "member";
   joinedAt: Timestamp | Date;
 }
+
+/**
+ * Customer Discovery Feedback stored in Firestore
+ */
+export interface Feedback {
+  id?: string;
+  userId: string;
+  teamId?: string;
+  type: "feature_vote" | "open_feedback";
+  content: string;
+  featureRequest?: string;
+  createdAt: Timestamp | Date;
+}
