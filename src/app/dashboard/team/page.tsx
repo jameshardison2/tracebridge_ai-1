@@ -319,46 +319,55 @@ export default function TeamPage() {
             ) : (
                 /* Team exists — show dashboard */
                 <div className="space-y-8">
-                    {/* QMS Workspace Explanation / Welcome Banner */}
-                    <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 rounded-2xl p-8 text-white shadow-lg relative overflow-hidden">
-                        <div className="absolute right-0 top-0 w-64 h-64 bg-indigo-500 rounded-full blur-3xl opacity-20 transform translate-x-1/2 -translate-y-1/2"></div>
-                        <div className="relative z-10 max-w-3xl">
-                            <h2 className="text-2xl font-bold mb-3 flex items-center gap-2">
-                                <Shield className="w-6 h-6 text-emerald-400" />
+                    {/* Premium QMS Environment Banner */}
+                    <div className="bg-slate-900 rounded-[2rem] p-8 sm:p-10 text-white shadow-2xl relative overflow-hidden border border-slate-800 group">
+                        {/* High-tech animated background elements */}
+                        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3 group-hover:bg-indigo-500/30 transition-colors duration-700"></div>
+                        <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-emerald-500/10 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/4 group-hover:bg-emerald-500/20 transition-colors duration-700"></div>
+                        
+                        {/* Subtle Grid Pattern */}
+                        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
+
+                        <div className="relative z-10 max-w-4xl">
+                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 mb-6 backdrop-blur-md">
+                                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                <span className="text-[10px] uppercase tracking-widest font-bold text-slate-300">System Active</span>
+                            </div>
+                            
+                            <h2 className="text-3xl sm:text-4xl font-extrabold mb-4 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400">
                                 TraceBridge QMS Environment
                             </h2>
-                            <p className="text-indigo-100 text-sm leading-relaxed mb-6">
-                                Centralized compliance infrastructure for MedTech engineering and regulatory affairs. Configure active regulatory frameworks, manage cross-functional triage, and maintain an immutable 21 CFR Part 11 Audit Trail to streamline 510(k) clearance.
+                            <p className="text-slate-400 text-sm sm:text-base leading-relaxed mb-10 max-w-2xl font-light">
+                                Centralized compliance infrastructure for MedTech engineering and regulatory affairs. Configure active regulatory frameworks, manage cross-functional triage, and maintain an immutable <strong className="text-white font-medium">21 CFR Part 11 Audit Trail</strong> to streamline 510(k) clearance.
                             </p>
                             
-                            {/* Condensed Impact Metrics */}
+                            {/* Premium Impact Metrics */}
                             <div className="flex flex-wrap gap-4">
-                                <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-5 py-3 flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                                        <Clock className="w-4 h-4 text-white" />
+                                <div className="bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 transition-all rounded-2xl px-6 py-4 flex flex-col gap-2 relative overflow-hidden group/metric">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent opacity-0 group-hover/metric:opacity-100 transition-opacity"></div>
+                                    <div className="flex items-center gap-2">
+                                        <Clock className="w-4 h-4 text-indigo-400" />
+                                        <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold">Hours Saved</p>
                                     </div>
-                                    <div>
-                                        <p className="text-[10px] uppercase tracking-wider text-indigo-200 font-bold">Hours Saved</p>
-                                        <p className="text-lg font-bold">{(stats.totalUploads * 4.5).toFixed(1)} hrs</p>
-                                    </div>
+                                    <p className="text-3xl font-black tracking-tight text-white">{(stats.totalUploads * 4.5).toFixed(1)} <span className="text-sm font-medium text-slate-500 ml-1">hrs</span></p>
                                 </div>
-                                <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-5 py-3 flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                                        <FileText className="w-4 h-4 text-emerald-300" />
+                                
+                                <div className="bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 transition-all rounded-2xl px-6 py-4 flex flex-col gap-2 relative overflow-hidden group/metric">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent opacity-0 group-hover/metric:opacity-100 transition-opacity"></div>
+                                    <div className="flex items-center gap-2">
+                                        <FileText className="w-4 h-4 text-emerald-400" />
+                                        <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold">Analyses Run</p>
                                     </div>
-                                    <div>
-                                        <p className="text-[10px] uppercase tracking-wider text-indigo-200 font-bold">Analyses Run</p>
-                                        <p className="text-lg font-bold">{stats.totalUploads}</p>
-                                    </div>
+                                    <p className="text-3xl font-black tracking-tight text-white">{stats.totalUploads}</p>
                                 </div>
-                                <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-5 py-3 flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center">
-                                        <span className="text-amber-300 font-bold text-sm">$</span>
+                                
+                                <div className="bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 transition-all rounded-2xl px-6 py-4 flex flex-col gap-2 relative overflow-hidden group/metric">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-transparent opacity-0 group-hover/metric:opacity-100 transition-opacity"></div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-amber-400 font-bold text-sm">$</span>
+                                        <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold">ROI Generated</p>
                                     </div>
-                                    <div>
-                                        <p className="text-[10px] uppercase tracking-wider text-indigo-200 font-bold">ROI Generated</p>
-                                        <p className="text-lg font-bold">${(stats.totalUploads * 750).toLocaleString()}</p>
-                                    </div>
+                                    <p className="text-3xl font-black tracking-tight text-white"><span className="text-slate-500 mr-1">$</span>{(stats.totalUploads * 750).toLocaleString()}</p>
                                 </div>
                             </div>
                         </div>
@@ -474,33 +483,42 @@ export default function TeamPage() {
                                 )}
                             </div>
 
-                            {/* Beta Pilot Survey */}
-                            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm relative overflow-hidden">
-                                <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
-                                <h3 className="text-lg font-bold text-slate-900 mb-1 flex items-center gap-2">
-                                    <MessageSquare className="w-5 h-5 text-indigo-500" />
-                                    Early Access Partner Feedback
-                                </h3>
-                                <p className="text-sm text-slate-500 mb-5">
-                                    TraceBridge is actively expanding enterprise workflows. Submit operational feedback, integration requests, or feature enhancements directly to the founding team.
-                                </p>
+                            {/* Premium Early Access Survey */}
+                            <div className="bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 rounded-full blur-[50px] group-hover:bg-indigo-500/30 transition-colors"></div>
                                 
-                                <div className="space-y-4">
-                                    <textarea
-                                        value={feedbackText}
-                                        onChange={(e) => setFeedbackText(e.target.value)}
-                                        placeholder="e.g., The hazard matrix export needs ISO 14971 mapping..."
-                                        className="w-full h-32 p-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all resize-none placeholder:text-slate-400"
-                                    ></textarea>
+                                <div className="relative z-10">
+                                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded border border-indigo-500/30 bg-indigo-500/10 mb-4">
+                                        <Lightbulb className="w-3 h-3 text-indigo-400" />
+                                        <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-300">Partner Program</span>
+                                    </div>
                                     
-                                    <button
-                                        onClick={() => submitFeedback("open_feedback", feedbackText)}
-                                        disabled={submittingFeedback || !feedbackText.trim()}
-                                        className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold px-6 py-3 rounded-xl text-sm flex items-center justify-center gap-2 disabled:opacity-50 transition-all shadow-sm"
-                                    >
-                                        {submittingFeedback ? <Loader2 className="w-4 h-4 animate-spin" /> : <MessageSquare className="w-4 h-4" />}
-                                        Submit Feedback
-                                    </button>
+                                    <h3 className="text-xl font-bold text-white mb-2 tracking-tight">
+                                        Shape the Roadmap
+                                    </h3>
+                                    <p className="text-sm text-slate-400 mb-6 leading-relaxed font-light">
+                                        TraceBridge is actively expanding enterprise workflows. Submit operational feedback, integration requests, or feature enhancements directly to the founding team.
+                                    </p>
+                                    
+                                    <div className="space-y-4">
+                                        <div className="relative">
+                                            <textarea
+                                                value={feedbackText}
+                                                onChange={(e) => setFeedbackText(e.target.value)}
+                                                placeholder="e.g., The hazard matrix export needs ISO 14971 mapping..."
+                                                className="w-full h-32 p-4 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:bg-white/10 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition-all resize-none placeholder:text-slate-600"
+                                            ></textarea>
+                                        </div>
+                                        
+                                        <button
+                                            onClick={() => submitFeedback("open_feedback", feedbackText)}
+                                            disabled={submittingFeedback || !feedbackText.trim()}
+                                            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-3.5 rounded-xl text-sm flex items-center justify-center gap-2 disabled:opacity-50 transition-all shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)]"
+                                        >
+                                            {submittingFeedback ? <Loader2 className="w-4 h-4 animate-spin" /> : <MessageSquare className="w-4 h-4" />}
+                                            Submit Secure Feedback
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -509,17 +527,19 @@ export default function TeamPage() {
                         <div className="lg:col-span-7 space-y-6">
                             
                             {/* QMS Compliance Frameworks */}
-                            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm relative overflow-hidden">
-                                <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
-                                <h3 className="text-lg font-bold text-slate-900 mb-1 flex items-center gap-2">
-                                    <Shield className="w-5 h-5 text-emerald-500" />
+                            <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+                                <div className="absolute top-0 left-0 w-1.5 h-full bg-emerald-500"></div>
+                                <div className="absolute -right-10 -top-10 w-40 h-40 bg-emerald-500/5 rounded-full blur-3xl group-hover:bg-emerald-500/10 transition-colors duration-700"></div>
+                                
+                                <h3 className="text-xl font-bold text-slate-900 mb-1 flex items-center gap-2">
+                                    <Shield className="w-6 h-6 text-emerald-500" />
                                     Active Compliance Frameworks
                                 </h3>
-                                <p className="text-sm text-slate-500 mb-6">
+                                <p className="text-sm text-slate-500 mb-8 max-w-lg">
                                     Select the regulatory standards your team is currently tracking against. TraceBridge AI will automatically cross-reference these during gap analysis.
                                 </p>
                                 
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     {[
                                         { id: 'iso13485', name: 'ISO 13485:2016', active: true },
                                         { id: 'fda820', name: 'FDA 21 CFR Part 820', active: true },
@@ -530,18 +550,20 @@ export default function TeamPage() {
                                     ].map((framework) => (
                                         <div 
                                             key={framework.id}
-                                            className={`text-left p-4 rounded-xl border flex items-center justify-between gap-3 ${
+                                            className={`text-left p-4 rounded-xl border flex items-center justify-between gap-3 cursor-pointer transition-all duration-300 ${
                                                 framework.active 
-                                                    ? 'bg-emerald-50 border-emerald-200 ring-1 ring-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.1)]' 
-                                                    : 'bg-white border-slate-200 opacity-60'
+                                                    ? 'bg-gradient-to-r from-emerald-50 to-white border-emerald-200 ring-1 ring-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.15)] hover:shadow-[0_0_20px_rgba(16,185,129,0.25)] hover:border-emerald-300' 
+                                                    : 'bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-300'
                                             }`}
                                         >
                                             <div>
                                                 <p className={`text-sm font-bold ${framework.active ? 'text-emerald-900' : 'text-slate-700'}`}>{framework.name}</p>
-                                                <p className="text-[10px] text-slate-500 uppercase mt-0.5">{framework.active ? 'Monitoring Active' : 'Disabled'}</p>
+                                                <p className={`text-[10px] uppercase mt-1 font-semibold tracking-wider ${framework.active ? 'text-emerald-600' : 'text-slate-400'}`}>
+                                                    {framework.active ? 'Monitoring Active' : 'Disabled'}
+                                                </p>
                                             </div>
-                                            <div className={`w-10 h-5 rounded-full flex items-center px-1 ${framework.active ? 'bg-emerald-500 justify-end' : 'bg-slate-300 justify-start'}`}>
-                                                <div className="w-3.5 h-3.5 rounded-full bg-white shadow-sm"></div>
+                                            <div className={`w-11 h-6 rounded-full flex items-center px-1 transition-colors duration-300 ${framework.active ? 'bg-emerald-500 justify-end shadow-inner' : 'bg-slate-200 justify-start'}`}>
+                                                <div className="w-4 h-4 rounded-full bg-white shadow-sm transition-all duration-300"></div>
                                             </div>
                                         </div>
                                     ))}
@@ -549,17 +571,23 @@ export default function TeamPage() {
                             </div>
 
                             {/* Immutable Audit Log */}
-                            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm relative overflow-hidden">
-                                <div className="absolute top-0 left-0 w-1 h-full bg-slate-800"></div>
+                            <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+                                <div className="absolute top-0 left-0 w-1.5 h-full bg-slate-800"></div>
+                                <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-slate-800/5 rounded-full blur-3xl group-hover:bg-slate-800/10 transition-colors duration-700"></div>
+
                                 <div className="flex justify-between items-center mb-1">
-                                    <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                                        <FileText className="w-5 h-5 text-slate-700" />
+                                    <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                                        <FileText className="w-6 h-6 text-slate-700" />
                                         Recent QMS Activity (Part 11 Log)
                                     </h3>
-                                    <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2 py-1 rounded border border-emerald-200">Recording</span>
+                                    <div className="flex items-center gap-2">
+                                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                        <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200 shadow-sm">Recording</span>
+                                    </div>
                                 </div>
-                                <p className="text-sm text-slate-500 mb-5">
+                                <p className="text-sm text-slate-500 mb-8 max-w-lg">
                                     A cryptographically secure, immutable ledger of all team actions, gap dismissals, and approvals.
+
                                 </p>
                                 
                                 <div className="space-y-4">
