@@ -570,55 +570,57 @@ export default function TeamPage() {
                                 </div>
                             </div>
 
-                            {/* Immutable Audit Log */}
-                            <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
-                                <div className="absolute top-0 left-0 w-1.5 h-full bg-slate-800"></div>
-                                <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-slate-800/5 rounded-full blur-3xl group-hover:bg-slate-800/10 transition-colors duration-700"></div>
+                            {/* Immutable Audit Log - Restricted to Owner */}
+                            {isOwner && (
+                                <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+                                    <div className="absolute top-0 left-0 w-1.5 h-full bg-slate-800"></div>
+                                    <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-slate-800/5 rounded-full blur-3xl group-hover:bg-slate-800/10 transition-colors duration-700"></div>
 
-                                <div className="flex justify-between items-center mb-1">
-                                    <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                                        <FileText className="w-6 h-6 text-slate-700" />
-                                        Recent QMS Activity (Part 11 Log)
-                                    </h3>
-                                    <div className="flex items-center gap-2">
-                                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                        <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200 shadow-sm">Recording</span>
+                                    <div className="flex justify-between items-center mb-1">
+                                        <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                                            <FileText className="w-6 h-6 text-slate-700" />
+                                            Recent QMS Activity (Part 11 Log)
+                                        </h3>
+                                        <div className="flex items-center gap-2">
+                                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                            <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200 shadow-sm">Recording</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <p className="text-sm text-slate-500 mb-8 max-w-lg">
-                                    A cryptographically secure, immutable ledger of all team actions, gap dismissals, and approvals.
+                                    <p className="text-sm text-slate-500 mb-8 max-w-lg">
+                                        A cryptographically secure, immutable ledger of all team actions, gap dismissals, and approvals.
 
-                                </p>
-                                
-                                <div className="space-y-4">
-                                    {logs.length > 0 ? logs.map((log, idx) => (
-                                        <div key={log.id || idx} className="flex gap-4 p-3 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-colors">
-                                            <div className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${log.action === 'upload' ? 'bg-blue-500' : log.action === 'resolve' ? 'bg-emerald-500' : 'bg-amber-500'}`}></div>
-                                            <div>
-                                                <p className="text-sm font-bold text-slate-900 capitalize">{log.action.replace('_', ' ')}</p>
-                                                <p className="text-xs text-slate-500 mt-0.5">
-                                                    {log.action === 'upload' ? `${log.details.deviceName} document uploaded.` : JSON.stringify(log.details)}
-                                                </p>
-                                                <div className="flex items-center gap-2 mt-2">
-                                                    <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-medium">{log.userId === 'system' ? 'System' : 'QA User'}</span>
-                                                    <span className="text-[10px] text-slate-400">
-                                                        {log.createdAt?._seconds ? new Date(log.createdAt._seconds * 1000).toLocaleString() : "Just now"}
-                                                    </span>
+                                    </p>
+                                    
+                                    <div className="space-y-4">
+                                        {logs.length > 0 ? logs.map((log, idx) => (
+                                            <div key={log.id || idx} className="flex gap-4 p-3 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-colors">
+                                                <div className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${log.action === 'upload' ? 'bg-blue-500' : log.action === 'resolve' ? 'bg-emerald-500' : 'bg-amber-500'}`}></div>
+                                                <div>
+                                                    <p className="text-sm font-bold text-slate-900 capitalize">{log.action.replace('_', ' ')}</p>
+                                                    <p className="text-xs text-slate-500 mt-0.5">
+                                                        {log.action === 'upload' ? `${log.details.deviceName} document uploaded.` : JSON.stringify(log.details)}
+                                                    </p>
+                                                    <div className="flex items-center gap-2 mt-2">
+                                                        <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-medium">{log.userId === 'system' ? 'System' : 'QA User'}</span>
+                                                        <span className="text-[10px] text-slate-400">
+                                                            {log.createdAt?._seconds ? new Date(log.createdAt._seconds * 1000).toLocaleString() : "Just now"}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    )) : (
-                                        <div className="p-6 text-center text-sm text-slate-500 bg-slate-50 rounded-xl border border-slate-100 border-dashed">
-                                            No audit events recorded yet. Upload a document to trigger the Part 11 log.
-                                        </div>
-                                    )}
-                                    
-                                    <button className="w-full mt-2 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold py-2.5 rounded-xl border border-slate-200 text-sm transition-all flex items-center justify-center gap-2">
-                                        <FileText className="w-4 h-4" />
-                                        Export Full Audit Log (.CSV)
-                                    </button>
+                                        )) : (
+                                            <div className="p-6 text-center text-sm text-slate-500 bg-slate-50 rounded-xl border border-slate-100 border-dashed">
+                                                No audit events recorded yet. Upload a document to trigger the Part 11 log.
+                                            </div>
+                                        )}
+                                        
+                                        <button className="w-full mt-2 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold py-2.5 rounded-xl border border-slate-200 text-sm transition-all flex items-center justify-center gap-2">
+                                            <FileText className="w-4 h-4" />
+                                            Export Full Audit Log (.CSV)
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                            )}
 
                         </div>
                     </div>
