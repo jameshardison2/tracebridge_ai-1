@@ -503,7 +503,7 @@ function ReportsContent() {
         const rows = report.upload.gapResults.map((r: any, i: number) => {
             const priority = getPriority(r.status, r.severity).label;
             const devicePrefix = (report.upload.deviceName || 'TB').split(/[\s-]+/).map((w: string) => w[0]).join('').toUpperCase().substring(0, 4);
-            const gapId = `${devicePrefix}-${r.standard.replace(/[^A-Z0-9]/ig, "")}-${r.section.replace(/[^0-9.]/g, "")}-${String(i+1).padStart(3, '0')}`;
+            const gapId = `${devicePrefix}-${r.standard.replace(/[^A-Z0-9]/ig, "")}-${r.section.replace(/[^a-zA-Z0-9]/g, "")}-${String(i+1).padStart(3, '0')}`;
             
             const humanStatus = r.status === "compliant" ? "PASS" : r.status === "gap_detected" ? "GAP" : "REVIEW";
             const conf = r.status === 'compliant' ? '94% (Strong)' : r.status === 'gap_detected' ? '0% (None)' : '54% (Weak)';
