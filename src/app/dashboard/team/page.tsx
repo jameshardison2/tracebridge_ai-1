@@ -15,7 +15,8 @@ import {
     Lightbulb,
     Calendar,
     CheckCircle2,
-    FileText
+    FileText,
+    Clock
 } from "lucide-react";
 
 interface TeamMember {
@@ -318,22 +319,50 @@ export default function TeamPage() {
             ) : (
                 /* Team exists — show dashboard */
                 <div className="space-y-8">
-                    {/* Impact Metrics (Value Anchoring) */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="p-6 rounded-2xl bg-gradient-to-br from-indigo-50 to-white border border-indigo-100 flex flex-col justify-between shadow-sm relative overflow-hidden">
-                            <div className="absolute -right-4 -top-4 w-24 h-24 bg-indigo-100/50 rounded-full blur-2xl"></div>
-                            <h4 className="text-xs font-bold text-indigo-500 uppercase tracking-widest mb-2 relative z-10">Hours Saved by AI</h4>
-                            <p className="text-4xl font-extrabold text-indigo-900 tracking-tight relative z-10">{(stats.totalUploads * 4.5).toFixed(1)} <span className="text-base font-bold text-indigo-500 ml-1">hrs</span></p>
-                        </div>
-                        <div className="p-6 rounded-2xl bg-gradient-to-br from-emerald-50 to-white border border-emerald-100 flex flex-col justify-between shadow-sm relative overflow-hidden">
-                            <div className="absolute -right-4 -top-4 w-24 h-24 bg-emerald-100/50 rounded-full blur-2xl"></div>
-                            <h4 className="text-xs font-bold text-emerald-500 uppercase tracking-widest mb-2 relative z-10">Analyses Completed</h4>
-                            <p className="text-4xl font-extrabold text-emerald-900 tracking-tight relative z-10">{stats.totalUploads}</p>
-                        </div>
-                        <div className="p-6 rounded-2xl bg-gradient-to-br from-amber-50 to-white border border-amber-100 flex flex-col justify-between shadow-sm relative overflow-hidden">
-                            <div className="absolute -right-4 -top-4 w-24 h-24 bg-amber-100/50 rounded-full blur-2xl"></div>
-                            <h4 className="text-xs font-bold text-amber-500 uppercase tracking-widest mb-2 relative z-10">Est. Consultant Savings</h4>
-                            <p className="text-4xl font-extrabold text-amber-900 tracking-tight relative z-10"><span className="text-2xl text-amber-500 mr-1">$</span>{(stats.totalUploads * 750).toLocaleString()}</p>
+                    {/* QMS Workspace Explanation / Welcome Banner */}
+                    <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 rounded-2xl p-8 text-white shadow-lg relative overflow-hidden">
+                        <div className="absolute right-0 top-0 w-64 h-64 bg-indigo-500 rounded-full blur-3xl opacity-20 transform translate-x-1/2 -translate-y-1/2"></div>
+                        <div className="relative z-10 max-w-3xl">
+                            <h2 className="text-2xl font-bold mb-3 flex items-center gap-2">
+                                <Shield className="w-6 h-6 text-emerald-400" />
+                                Your QMS Command Center
+                            </h2>
+                            <p className="text-indigo-100 text-sm leading-relaxed mb-6">
+                                Welcome to your centralized regulatory workspace. This hub is designed to eliminate the silos between Engineering and Quality Assurance. 
+                                Use the tools below to invite cross-functional team members, configure your automated compliance frameworks, and maintain an FDA-compliant Part 11 audit log of all system activity. 
+                                Every action you take here automatically builds traceability for your 510(k) submission.
+                            </p>
+                            
+                            {/* Condensed Impact Metrics */}
+                            <div className="flex flex-wrap gap-4">
+                                <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-5 py-3 flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                                        <Clock className="w-4 h-4 text-white" />
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] uppercase tracking-wider text-indigo-200 font-bold">Hours Saved</p>
+                                        <p className="text-lg font-bold">{(stats.totalUploads * 4.5).toFixed(1)} hrs</p>
+                                    </div>
+                                </div>
+                                <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-5 py-3 flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                                        <FileText className="w-4 h-4 text-emerald-300" />
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] uppercase tracking-wider text-indigo-200 font-bold">Analyses Run</p>
+                                        <p className="text-lg font-bold">{stats.totalUploads}</p>
+                                    </div>
+                                </div>
+                                <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-5 py-3 flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center">
+                                        <span className="text-amber-300 font-bold text-sm">$</span>
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] uppercase tracking-wider text-indigo-200 font-bold">ROI Generated</p>
+                                        <p className="text-lg font-bold">${(stats.totalUploads * 750).toLocaleString()}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -445,6 +474,36 @@ export default function TeamPage() {
                                         </div>
                                     </div>
                                 )}
+                            </div>
+
+                            {/* Beta Pilot Survey */}
+                            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm relative overflow-hidden">
+                                <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
+                                <h3 className="text-lg font-bold text-slate-900 mb-1 flex items-center gap-2">
+                                    <MessageSquare className="w-5 h-5 text-indigo-500" />
+                                    Beta Pilot Feedback
+                                </h3>
+                                <p className="text-sm text-slate-500 mb-5">
+                                    Help us refine our value proposition. What did you like? What didn't you like? What needs to be changed for you to buy this today?
+                                </p>
+                                
+                                <div className="space-y-4">
+                                    <textarea
+                                        value={feedbackText}
+                                        onChange={(e) => setFeedbackText(e.target.value)}
+                                        placeholder="I loved the automated traceability, but I wish it also..."
+                                        className="w-full h-32 p-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all resize-none placeholder:text-slate-400"
+                                    ></textarea>
+                                    
+                                    <button
+                                        onClick={() => submitFeedback("open_feedback", feedbackText)}
+                                        disabled={submittingFeedback || !feedbackText.trim()}
+                                        className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold px-6 py-3 rounded-xl text-sm flex items-center justify-center gap-2 disabled:opacity-50 transition-all shadow-sm"
+                                    >
+                                        {submittingFeedback ? <Loader2 className="w-4 h-4 animate-spin" /> : <MessageSquare className="w-4 h-4" />}
+                                        Submit Feedback
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
