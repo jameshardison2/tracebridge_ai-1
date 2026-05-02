@@ -127,6 +127,8 @@ function ResultsContent() {
     const [remediationLoading, setRemediationLoading] = useState(false);
     const [remediationDrafts, setRemediationDrafts] = useState<Record<string, string>>({});
     const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
+    const [executiveSummary, setExecutiveSummary] = useState<string | null>(null);
+    const [summaryLoading, setSummaryLoading] = useState(false);
 
     // Customization Engine State
     const [enginePayload, setEnginePayload] = useState<string>('');
@@ -355,7 +357,33 @@ function ResultsContent() {
                     }
                 });
                 const data = await r.json();
-                if (data.success) setReport(data.data);
+                if (data.success) {
+                    setReport(data.data);
+                    
+                    // Trigger Executive Summary Generation
+                    setSummaryLoading(true);
+                    const gapNames = data.data.upload.gapResults.filter((g: any) => g.status !== 'compliant').map((g: any) => g.requirement.substring(0, 40));
+                    const passedNames = data.data.upload.gapResults.filter((g: any) => g.status === 'compliant').map((g: any) => g.requirement.substring(0, 40));
+                    
+                    fetch('/api/summary', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            deviceName: data.data.upload.deviceName,
+                            complianceScore: data.data.summary.complianceScore,
+                            gaps: gapNames,
+                            passed: passedNames
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(summaryData => {
+                        if (summaryData.success) {
+                            setExecutiveSummary(summaryData.summary);
+                        }
+                    })
+                    .catch(err => console.error("Summary fetch failed:", err))
+                    .finally(() => setSummaryLoading(false));
+                }
             } catch (error) {
                 console.error(error);
             } finally {
@@ -982,6 +1010,31 @@ function ResultsContent() {
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Target: {new Date(auditTargetDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' })}
                         </p>
                     </button>
+                </div>
+            </div>
+
+            {/* AI Executive Summary Block */}
+            <div className="mb-6 relative group overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-indigo-500/30 shadow-lg shrink-0">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl translate-x-1/3 -translate-y-1/2"></div>
+                <div className="relative p-6 flex flex-col md:flex-row gap-6 items-start md:items-center">
+                    <div className="w-12 h-12 rounded-xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(99,102,241,0.2)]">
+                        <Brain className="w-6 h-6 text-indigo-300 animate-pulse" />
+                    </div>
+                    <div className="flex-1">
+                        <h2 className="text-[11px] font-bold text-indigo-300 uppercase tracking-widest mb-1.5 flex items-center gap-2">
+                            AI Executive Summary
+                        </h2>
+                        {summaryLoading ? (
+                            <div className="space-y-2 mt-2">
+                                <div className="h-4 bg-indigo-800/50 rounded-full w-full animate-pulse"></div>
+                                <div className="h-4 bg-indigo-800/50 rounded-full w-5/6 animate-pulse"></div>
+                            </div>
+                        ) : (
+                            <p className="text-[15px] font-medium text-slate-200 leading-relaxed drop-shadow-sm">
+                                {executiveSummary || "The compliance engine has successfully processed the documentation. Review the traceability matrix below to verify regulatory states and deploy remediations."}
+                            </p>
+                        )}
+                    </div>
                 </div>
             </div>
 
