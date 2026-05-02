@@ -1258,296 +1258,277 @@ function ResultsContent() {
 
                         {/* Scroll Component */}
                         <div className="flex-1 overflow-y-auto w-full custom-scrollbar bg-slate-50/50">
-                            {/* Deep Evaluation Grid */}
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 p-6 min-h-[500px]">
-                            
-                            {/* Column 1: What FDA Requires */}
-                            <div className="bg-white rounded-xl border border-slate-200/70 shadow-sm p-6 relative group/req flex flex-col">
-                                <div className="flex items-center justify-between mb-5 pb-4 border-b border-slate-100">
-                                    <h3 className="text-[11px] font-extrabold text-slate-800 uppercase tracking-widest flex items-center gap-2">
-                                        <div className="w-2 h-2 rounded-full bg-indigo-400"></div> What FDA Requires
-                                    </h3>
-                                    <button 
-                                        onClick={() => {
-                                            navigator.clipboard.writeText(`${selectedResult.standard} § ${selectedResult.section}\n${selectedResult.requirement}`);
-                                            setCopiedField('req');
-                                            setTimeout(() => setCopiedField(null), 2000);
-                                        }}
-                                        className="text-slate-400 hover:text-indigo-600 transition-colors p-1.5 rounded-md hover:bg-indigo-50"
-                                        title="Copy Requirement to Clipboard"
-                                    >
-                                        {copiedField === 'req' ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                                    </button>
+                            <div className="flex flex-col gap-6 p-6 min-h-[500px]">
+                                {/* TOP HEADER: Requirement & Verdict */}
+                                <div className="bg-white rounded-xl border border-slate-200/70 shadow-sm p-6 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+                                    {/* Requirement */}
+                                    <div className="flex-1 relative z-10 group">
+                                        <div className="flex items-center gap-3 mb-3">
+                                            <h3 className="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest flex items-center">
+                                                FDA Requirement <span className="text-indigo-400/50 mx-2">•</span> {selectedResult.standard} § {selectedResult.section}
+                                            </h3>
+                                            <button 
+                                                onClick={() => {
+                                                    navigator.clipboard.writeText(`${selectedResult.standard} § ${selectedResult.section}\n${selectedResult.requirement}`);
+                                                    setCopiedField('req');
+                                                    setTimeout(() => setCopiedField(null), 2000);
+                                                }}
+                                                className="text-slate-300 hover:text-indigo-600 transition-colors opacity-0 group-hover:opacity-100"
+                                                title="Copy Requirement"
+                                            >
+                                                {copiedField === 'req' ? <CheckCircle2 className="w-4 h-4 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                                            </button>
+                                        </div>
+                                        <p className="text-[15px] text-slate-800 leading-relaxed font-medium">
+                                            {selectedResult.requirement}
+                                        </p>
+                                    </div>
+                                    
+                                    {/* Verdict Box */}
+                                    <div className={`shrink-0 flex items-center gap-4 px-6 py-4 rounded-xl border relative z-10 ${selectedResult.status === "compliant" ? "bg-emerald-50 border-emerald-200/60" : "bg-rose-50 border-rose-200/60"}`}>
+                                        {selectedResult.status === "compliant" ? (
+                                            <>
+                                                <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center border border-emerald-200 shadow-sm">
+                                                    <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+                                                </div>
+                                                <div>
+                                                    <h4 className="text-[14px] font-bold text-emerald-900 uppercase tracking-wide">Audit Passed</h4>
+                                                    <p className="text-[11px] font-bold text-emerald-700/80 uppercase tracking-widest">Requirement Met</p>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <div className="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center border border-rose-200 shadow-sm">
+                                                    <AlertTriangle className="w-6 h-6 text-rose-600" />
+                                                </div>
+                                                <div>
+                                                    <h4 className="text-[14px] font-bold text-rose-900 uppercase tracking-wide">Gap Identified</h4>
+                                                    <p className="text-[11px] font-bold text-rose-700/80 uppercase tracking-widest">Remediation Required</p>
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
-                                <div className="flex-1">
-                                    <p className="text-[13px] font-bold text-indigo-900 bg-indigo-50/50 px-3 py-1.5 rounded-md inline-block mb-3 border border-indigo-100">
-                                        {selectedResult.standard} § {selectedResult.section}
-                                    </p>
-                                    <p className="text-sm text-slate-600 leading-relaxed font-medium mb-6">
-                                        {selectedResult.requirement}
-                                    </p>
-                                </div>
-                                <p className="text-[10px] uppercase font-bold tracking-widest text-slate-400 mt-4 pt-4 border-t border-slate-100">
-                                    Source: {selectedResult.standard.split(':')[0]}
-                                </p>
-                            </div>
 
-                            {/* Column 2: What You Submitted */}
-                            <div className="bg-white rounded-xl border border-slate-200/70 shadow-sm p-6 flex flex-col">
-                                <div className="mb-5 pb-4 border-b border-slate-100 flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
-                                    <h3 className="text-[11px] font-extrabold text-slate-800 uppercase tracking-widest">
-                                        What You Submitted
-                                    </h3>
-                                </div>
-                                
-                                <div className="flex-1">
-                                    <div className="space-y-4">
-                                        {selectedResult.citations && selectedResult.citations.length > 0 ? selectedResult.citations.map((cite, i) => (
-                                            <div key={i} className="bg-slate-50 border border-slate-200/60 rounded-lg p-3">
-                                                <div className="flex flex-col items-center justify-center h-full text-center py-4 gap-3">
-                                                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200 shadow-inner">
-                                                        <FileText className="w-4 h-4 text-slate-500" />
+                                {/* BOTTOM SECTION: 2 Columns */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
+                                    
+                                    {/* LEFT COLUMN: Evidence & Analysis */}
+                                    <div className="bg-white rounded-xl border border-slate-200/70 shadow-sm p-6 flex flex-col h-full">
+                                        <h3 className="text-[11px] font-extrabold text-slate-800 uppercase tracking-widest mb-5 pb-4 border-b border-slate-100 flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-indigo-400"></div> Submitted Evidence
+                                        </h3>
+                                        
+                                        <div className="space-y-3 mb-6">
+                                            {selectedResult.citations && selectedResult.citations.length > 0 ? selectedResult.citations.map((cite, i) => (
+                                                <div key={i} className="flex items-center justify-between p-3.5 rounded-lg border border-slate-200/60 bg-slate-50 hover:bg-slate-100 transition-colors shadow-sm group">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-slate-200 shadow-sm">
+                                                            <FileText className="w-3.5 h-3.5 text-slate-500" />
+                                                        </div>
+                                                        <span className="text-[12px] font-bold text-slate-700">{cite.source || "Verification_Artifact.pdf"}</span>
                                                     </div>
-                                                    <p className="text-[12px] font-bold text-slate-800 leading-tight">{cite.source || "Verification_Artifact.pdf"}</p>
                                                     <button 
                                                         onClick={() => {
                                                             showToast(`Opening ${cite.source || "document"} in viewer...`, "info");
                                                             const docUrl = report?.upload?.documents?.[0]?.storageUrl || "/demo_data/Live_510k_Submission_Artifacts.txt";
                                                             window.open(docUrl, '_blank');
                                                         }}
-                                                        className="mt-2 w-full bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-600 hover:text-slate-800 rounded-lg py-2 px-3 text-[11px] font-bold transition-all shadow-sm"
+                                                        className="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 uppercase tracking-widest px-3 py-2 rounded-md bg-indigo-50 hover:bg-indigo-100 transition-colors border border-indigo-100 opacity-0 group-hover:opacity-100"
                                                     >
                                                         View Document
                                                     </button>
                                                 </div>
-                                            </div>
-                                        )) : (
-                                            <div className="bg-slate-50 border border-slate-200/60 rounded-lg p-3">
-                                                <div className="flex flex-col items-center justify-center h-full text-center py-4 gap-3">
-                                                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200 shadow-inner">
-                                                        <FileText className="w-4 h-4 text-slate-500" />
+                                            )) : (
+                                                <div className="flex items-center justify-between p-3.5 rounded-lg border border-slate-200/60 bg-slate-50 hover:bg-slate-100 transition-colors shadow-sm group">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-slate-200 shadow-sm">
+                                                            <FileText className="w-3.5 h-3.5 text-slate-500" />
+                                                        </div>
+                                                        <span className="text-[12px] font-bold text-slate-700">ISO_{selectedResult.standard.replace(/[^0-9]/g, '')}_Assessment.pdf</span>
                                                     </div>
-                                                    <p className="text-[12px] font-bold text-slate-800 leading-tight">ISO_{selectedResult.standard.replace(/[^0-9]/g, '')}_Assessment.pdf</p>
                                                     <button 
                                                         onClick={() => {
                                                             showToast(`Opening document securely...`, "info");
                                                             const docUrl = report?.upload?.documents?.[0]?.storageUrl || "/demo_data/Live_510k_Submission_Artifacts.txt";
                                                             window.open(docUrl, '_blank');
                                                         }}
-                                                        className="mt-2 w-full bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-600 hover:text-slate-800 rounded-lg py-2 px-3 text-[11px] font-bold transition-all shadow-sm"
+                                                        className="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 uppercase tracking-widest px-3 py-2 rounded-md bg-indigo-50 hover:bg-indigo-100 transition-colors border border-indigo-100 opacity-0 group-hover:opacity-100"
                                                     >
                                                         View Document
                                                     </button>
                                                 </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* Engine reasoning moved to Column 3 final output view */}
-
-                            </div>
-
-                            {/* Column 3: Audit Result */}
-                            <div className="bg-white rounded-xl border border-slate-200/70 shadow-sm p-6 flex flex-col">
-                                <div className="mb-5 pb-4 border-b border-slate-100 flex items-center gap-2">
-                                    <div className={`w-2 h-2 rounded-full ${selectedResult.status === "compliant" ? "bg-emerald-500" : "bg-rose-500"}`}></div>
-                                    <h3 className="text-[11px] font-extrabold text-slate-800 uppercase tracking-widest">
-                                        {selectedResult.status === "compliant" ? "Audit Clearance" : "Gap Identified"}
-                                    </h3>
-                                </div>
-
-                                {selectedResult.status === "compliant" ? (
-                                    <div className="p-4 rounded-xl bg-[var(--success)]/10 border border-[var(--success)]/20 mb-4">
-                                        <div className="flex items-center gap-2 mb-3 border-b border-[var(--success)]/20 pb-2">
-                                            <CheckCircle2 className="w-5 h-5 text-[var(--success)]" />
-                                            <p className="text-sm font-bold text-[var(--success)] tracking-wide">
-                                                AI ENGINE: REQUIREMENT MET
-                                            </p>
+                                            )}
                                         </div>
-                                        <p className="text-sm text-emerald-900 leading-relaxed font-medium mb-3">
-                                            {(selectedResult as any).reasoning || "The system mathematically verified the compliance string by statically mapping the document boundary against strict FDA parameters."}
-                                        </p>
-                                        {selectedResult.citations && selectedResult.citations.length > 0 && (
-                                            <div className="bg-white/60 p-3 rounded-lg border border-emerald-500/20">
-                                                <p className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest mb-1 shadow-sm">Extracted Legal Trace:</p>
-                                                <p className="text-xs text-emerald-800 font-mono italic">"{selectedResult.citations[0].quote}"</p>
-                                            </div>
-                                        )}
-                                    </div>
-                                ) : (
-                                    <></>
-                                )}
 
-                                {/* Engine Reasoning Feedback - Visible on PASS and FAIL */}
-                                {selectedResult.geminiResponse && (
-                                    <div className="mb-6 p-4 bg-slate-50 rounded-xl border border-slate-200/60 shadow-sm max-h-[350px] overflow-y-auto custom-scrollbar relative group/feed">
-                                        <div className="flex items-center justify-between mb-3 border-b border-slate-200/60 pb-2">
-                                            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
-                                                <Brain className="w-3.5 h-3.5 text-indigo-500"/>
-                                                Engine Analysis Parameters
-                                            </p>
-                                            <button 
-                                                onClick={() => {
-                                                    try {
-                                                        const data = JSON.parse(selectedResult.geminiResponse!);
-                                                        const reasoning = data.analytical_reasoning || data.reasoning || data.rawResponse;
-                                                        const missing = data.exact_missing_evidence ? `\nMissing Evidence: ${data.exact_missing_evidence}` : '';
-                                                        navigator.clipboard.writeText(`Engine Analysis Tooling:\n${reasoning}${missing}`);
-                                                        setCopiedField('feed');
-                                                        setTimeout(() => setCopiedField(null), 2000);
-                                                    } catch(e) {}
-                                                }}
-                                                className="text-slate-400 hover:text-indigo-600 transition-colors p-1"
-                                                title="Copy Technical Feedback for Jira"
-                                            >
-                                                {copiedField === 'feed' ? <CheckCircle2 className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
-                                            </button>
-                                        </div>
-                                        <div className="text-sm">
-                                            {(() => {
-                                                try {
-                                                    const data = JSON.parse(selectedResult.geminiResponse);
-                                                    const reasoning = data.analytical_reasoning || data.reasoning || data.rawResponse || "The engine could not isolate a definitive reason for this gap.";
-                                                    return (
-                                                        <div className="flex flex-col gap-3">
-                                                            <div className="text-[13px] leading-relaxed text-slate-700 bg-slate-100/50 p-3.5 rounded-lg border border-slate-200">
-                                                                {reasoning}
-                                                            </div>
-                                                            {data.exact_missing_evidence && (
-                                                                <div className="bg-rose-50/80 border border-rose-200 rounded-lg p-3.5 shadow-sm">
-                                                                    <p className="text-[10px] font-bold text-rose-700 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
-                                                                        <AlertTriangle className="w-3 h-3"/> 
-                                                                        Missing Verification Evidence
-                                                                    </p>
-                                                                    <p className="text-[12px] text-rose-950 font-medium leading-relaxed">
-                                                                        {data.exact_missing_evidence}
-                                                                    </p>
+                                        {/* Hidden/Subtle AI Analysis details */}
+                                        <div className="mt-auto pt-4 border-t border-slate-100">
+                                            <details className="group">
+                                                <summary className="text-[10px] font-bold text-slate-500 hover:text-indigo-600 cursor-pointer uppercase tracking-widest flex items-center gap-2 list-none transition-colors">
+                                                    <Brain className="w-3.5 h-3.5" /> View Technical AI Analysis
+                                                    <ChevronDown className="w-4 h-4 ml-auto transition-transform group-open:rotate-180" />
+                                                </summary>
+                                                <div className="mt-4 p-4 bg-slate-50 rounded-lg border border-slate-200/60 shadow-inner max-h-[200px] overflow-y-auto custom-scrollbar relative">
+                                                    <button 
+                                                        onClick={() => {
+                                                            try {
+                                                                const data = JSON.parse(selectedResult.geminiResponse!);
+                                                                const reasoning = data.analytical_reasoning || data.reasoning || data.rawResponse;
+                                                                const missing = data.exact_missing_evidence ? `\nMissing Evidence: ${data.exact_missing_evidence}` : '';
+                                                                navigator.clipboard.writeText(`Engine Analysis Tooling:\n${reasoning}${missing}`);
+                                                                setCopiedField('feed');
+                                                                setTimeout(() => setCopiedField(null), 2000);
+                                                            } catch(e) {}
+                                                        }}
+                                                        className="absolute top-2 right-2 text-slate-400 hover:text-indigo-600 transition-colors p-1"
+                                                        title="Copy Technical Feedback"
+                                                    >
+                                                        {copiedField === 'feed' ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                                                    </button>
+                                                    {(() => {
+                                                        try {
+                                                            if (!selectedResult.geminiResponse) return <p className="text-xs text-slate-500 italic">No detailed analysis available.</p>;
+                                                            const data = JSON.parse(selectedResult.geminiResponse);
+                                                            const reasoning = data.analytical_reasoning || data.reasoning || data.rawResponse || "The engine mathematically verified the compliance string.";
+                                                            return (
+                                                                <div className="space-y-3">
+                                                                    <p className="text-xs text-slate-600 leading-relaxed font-medium">{reasoning}</p>
+                                                                    {data.exact_missing_evidence && (
+                                                                        <div className="bg-rose-50 border border-rose-100 rounded-md p-3">
+                                                                            <span className="text-[10px] font-bold text-rose-700 uppercase tracking-widest block mb-1">Missing Evidence</span>
+                                                                            <span className="text-xs text-rose-900 font-medium">{data.exact_missing_evidence}</span>
+                                                                        </div>
+                                                                    )}
                                                                 </div>
-                                                            )}
+                                                            );
+                                                        } catch(e) {
+                                                            return <p className="text-xs text-slate-500 italic">{(selectedResult as any).reasoning || "Technical payload unavailable."}</p>;
+                                                        }
+                                                    })()}
+                                                    {selectedResult.citations && selectedResult.citations.length > 0 && selectedResult.status === "compliant" && (
+                                                        <div className="mt-4 pt-3 border-t border-slate-200">
+                                                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Extracted Legal Trace</span>
+                                                            <span className="text-xs text-slate-600 font-mono italic">"{selectedResult.citations[0].quote}"</span>
                                                         </div>
-                                                    );
-                                                } catch(e) {
-                                                    return <p className="text-slate-500 italic">Analysis details unavailable. JSON parse failed.</p>;
-                                                }
-                                            })()}
+                                                    )}
+                                                </div>
+                                            </details>
                                         </div>
                                     </div>
-                                )}
-                            </div>
-                            {/* Column 4: AI Co-Pilot Remediation */}
-                            <div className="bg-indigo-50/30 rounded-xl border border-indigo-100/70 shadow-sm p-6 flex flex-col relative overflow-hidden group/remedy">
-                                {/* Decorative Background Glow */}
-                                <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl mix-blend-multiply opacity-50 transition-opacity duration-700 group-hover/remedy:opacity-100 pointer-events-none" />
-                                
-                                <div className="mb-5 pb-4 border-b border-indigo-100/60 flex items-center gap-2 relative z-10">
-                                    <Brain className="w-4 h-4 text-indigo-500 animate-pulse" />
-                                    <h3 className="text-[11px] font-extrabold text-indigo-900 uppercase tracking-widest">
-                                        AI Copilot Guidance
-                                    </h3>
-                                </div>
-                                
-                                <div className="flex-1 flex flex-col relative z-10">
-                                    {remediationDrafts[selectedResult.id] ? (
-                                        <div className="rounded-xl bg-white border border-indigo-200 shadow-sm max-h-[400px] overflow-hidden flex flex-col h-full ring-4 ring-indigo-500/5">
-                                            <div className="bg-indigo-50/80 px-4 py-3 border-b border-indigo-100 flex items-center justify-between shrink-0">
-                                                <span className="text-[10px] font-bold text-indigo-700 uppercase tracking-widest flex items-center gap-1.5">
-                                                    <Brain className="w-3.5 h-3.5 text-indigo-500" /> Synthesized Remediation Protocol
-                                                </span>
-                                            </div>
-                                            <div className="p-4 overflow-y-auto custom-scrollbar flex-1 text-left bg-white">
-                                                {remediationDrafts[selectedResult.id].split('\n').map((line, idx) => {
-                                                    const trimmed = line.trim();
-                                                    if (!trimmed) return null;
-                                                    
-                                                    const headingMatch = trimmed.match(/^(#{1,4})\s+(.*)$/);
-                                                    if (headingMatch || trimmed.startsWith('**') || trimmed.match(/^[A-Z][a-zA-Z\s]+:\*\*$/)) {
-                                                        const cleanText = headingMatch ? headingMatch[2].replace(/\*\*/g, '') : trimmed.replace(/\*\*/g, '');
-                                                        return <h4 key={idx} className="text-[11px] font-extrabold text-slate-800 mt-5 first:mt-0 mb-2 uppercase tracking-wide border-b border-slate-100 pb-1.5">{cleanText}</h4>;
-                                                    }
-                                                    if (trimmed.startsWith('* ') || trimmed.startsWith('- ')) {
-                                                        return (
-                                                            <div key={idx} className="flex gap-2.5 mb-2 ml-1">
-                                                                <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5 shrink-0 shadow-sm"></div>
-                                                                <p className="text-xs text-slate-700 leading-relaxed font-medium">{trimmed.substring(2).replace(/\*\*/g, '')}</p>
-                                                            </div>
-                                                        );
-                                                    }
-                                                    return <p key={idx} className="text-xs text-slate-600 mb-2 leading-relaxed">{trimmed.replace(/\*\*/g, '')}</p>;
-                                                })}
-                                            </div>
-                                            <div className="p-3 bg-slate-50/80 border-t border-slate-100 shrink-0">
-                                                <button 
-                                                    onClick={() => {
-                                                        showToast("CAPA Engineering Epic created in QMS.", 'success');
-                                                        setSelectedResult(null);
-                                                    }}
-                                                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[12px] py-3.5 px-4 flex items-center justify-center gap-2 border border-emerald-500 transition-all font-bold shadow-md shadow-emerald-600/20 active:scale-[0.98] animate-in slide-in-from-bottom-2 fade-in duration-300"
-                                                >
-                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                                    Publish Epic to Jira
-                                                </button>
-                                            </div>
+
+                                    {/* RIGHT COLUMN: AI Copilot Guidance */}
+                                    <div className="bg-indigo-50/30 rounded-xl border border-indigo-100/70 shadow-sm p-6 flex flex-col relative overflow-hidden group/remedy h-full">
+                                        <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl mix-blend-multiply opacity-50 transition-opacity duration-700 group-hover/remedy:opacity-100 pointer-events-none" />
+                                        
+                                        <div className="mb-6 pb-4 border-b border-indigo-100/60 flex items-center gap-2 relative z-10">
+                                            <Brain className="w-4 h-4 text-indigo-500 animate-pulse" />
+                                            <h3 className="text-[11px] font-extrabold text-indigo-900 uppercase tracking-widest">
+                                                AI Copilot Guidance
+                                            </h3>
                                         </div>
-                                    ) : (
-                                        <div className="h-full flex flex-col pt-2">
-                                            {selectedResult.status === "compliant" ? (
-                                                <div className="flex flex-col items-start justify-start h-full px-1">
-                                                    <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center mb-4 border border-emerald-100 shadow-sm">
-                                                        <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                                        
+                                        <div className="flex-1 flex flex-col relative z-10">
+                                            {remediationDrafts[selectedResult.id] ? (
+                                                <div className="rounded-xl bg-white border border-indigo-200 shadow-sm max-h-[400px] overflow-hidden flex flex-col h-full ring-4 ring-indigo-500/5">
+                                                    <div className="bg-indigo-50/80 px-4 py-3 border-b border-indigo-100 flex items-center justify-between shrink-0">
+                                                        <span className="text-[10px] font-bold text-indigo-700 uppercase tracking-widest flex items-center gap-1.5">
+                                                            <Brain className="w-3.5 h-3.5 text-indigo-500" /> Synthesized Remediation Protocol
+                                                        </span>
                                                     </div>
-                                                    <h4 className="text-[13px] font-bold text-slate-800 mb-2">Audit Cleared</h4>
-                                                    <p className="text-xs font-medium text-slate-500 leading-relaxed mb-4">
-                                                        The AI has mathematically verified that your submitted documentation fully satisfies this FDA requirement. This artifact is submission-ready.
-                                                    </p>
-                                                    <div className="bg-slate-50 border border-slate-100 rounded-lg p-3 w-full">
-                                                        <p className="text-[10px] uppercase font-bold text-slate-400 mb-1">Recommended Action</p>
-                                                        <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                                                            No remediation is required. Use the <strong className="text-slate-700">Prev/Next</strong> navigation below to continue your review, or close this window to return to the Pipeline overview.
-                                                        </p>
+                                                    <div className="p-4 overflow-y-auto custom-scrollbar flex-1 text-left bg-white">
+                                                        {remediationDrafts[selectedResult.id].split('\n').map((line, idx) => {
+                                                            const trimmed = line.trim();
+                                                            if (!trimmed) return null;
+                                                            
+                                                            const headingMatch = trimmed.match(/^(#{1,4})\s+(.*)$/);
+                                                            if (headingMatch || trimmed.startsWith('**') || trimmed.match(/^[A-Z][a-zA-Z\s]+:\*\*$/)) {
+                                                                const cleanText = headingMatch ? headingMatch[2].replace(/\*\*/g, '') : trimmed.replace(/\*\*/g, '');
+                                                                return <h4 key={idx} className="text-[11px] font-extrabold text-slate-800 mt-5 first:mt-0 mb-2 uppercase tracking-wide border-b border-slate-100 pb-1.5">{cleanText}</h4>;
+                                                            }
+                                                            if (trimmed.startsWith('* ') || trimmed.startsWith('- ')) {
+                                                                return (
+                                                                    <div key={idx} className="flex gap-2.5 mb-2 ml-1">
+                                                                        <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5 shrink-0 shadow-sm"></div>
+                                                                        <p className="text-xs text-slate-700 leading-relaxed font-medium">{trimmed.substring(2).replace(/\*\*/g, '')}</p>
+                                                                    </div>
+                                                                );
+                                                            }
+                                                            return <p key={idx} className="text-xs text-slate-600 mb-2 leading-relaxed">{trimmed.replace(/\*\*/g, '')}</p>;
+                                                        })}
                                                     </div>
-                                                </div>
-                                            ) : (
-                                                <div className="flex flex-col h-full justify-between px-1">
-                                                    <div>
-                                                        <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center mb-4 border border-indigo-100 shadow-sm">
-                                                            <AlertTriangle className="w-5 h-5 text-indigo-600" />
-                                                        </div>
-                                                        <h4 className="text-[13px] font-bold text-slate-800 mb-2">Remediation Required</h4>
-                                                        <p className="text-xs font-medium text-slate-500 leading-relaxed mb-4">
-                                                            This gap introduces regulatory risk. To prevent an FDA Additional Information (AI) request, the missing evidence must be generated by your engineering team.
-                                                        </p>
-                                                        <div className="bg-slate-50 border border-slate-100 rounded-lg p-3 w-full mb-4">
-                                                            <p className="text-[10px] uppercase font-bold text-slate-400 mb-1">How this tool helps</p>
-                                                            <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                                                                Clicking the button below commands the AI to automatically draft a highly technical CAPA ticket that can be assigned directly to Jira for resolution.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    <div className="mt-auto">
+                                                    <div className="p-3 bg-slate-50/80 border-t border-slate-100 shrink-0">
                                                         <button 
-                                                            onClick={handleRemediate}
-                                                            disabled={remediationLoading}
-                                                            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[12px] py-4 px-4 flex items-center justify-center gap-2 border border-indigo-500 transition-all shadow-md shadow-indigo-600/20 active:scale-[0.98]"
+                                                            onClick={() => {
+                                                                showToast("CAPA Engineering Epic created in QMS.", 'success');
+                                                                setSelectedResult(null);
+                                                            }}
+                                                            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[12px] py-3.5 px-4 flex items-center justify-center gap-2 border border-emerald-500 transition-all font-bold shadow-md shadow-emerald-600/20 active:scale-[0.98] animate-in slide-in-from-bottom-2 fade-in duration-300"
                                                         >
-                                                            {remediationLoading ? (
-                                                                <>
-                                                                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                                                    Synthesizing CAPA...
-                                                                </>
-                                                            ) : (
-                                                                <>
-                                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                                                    <span className="font-bold tracking-wide">Draft Engineering CAPA</span>
-                                                                </>
-                                                            )}
+                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                                            Publish Epic to Jira
                                                         </button>
                                                     </div>
                                                 </div>
+                                            ) : (
+                                                <div className="h-full flex flex-col pt-2">
+                                                    {selectedResult.status === "compliant" ? (
+                                                        <div className="flex flex-col items-start justify-start h-full px-1">
+                                                            <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center mb-4 border border-emerald-100 shadow-sm">
+                                                                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                                                            </div>
+                                                            <h4 className="text-[13px] font-bold text-slate-800 mb-2">Audit Cleared</h4>
+                                                            <p className="text-xs font-medium text-slate-500 leading-relaxed mb-6">
+                                                                The AI has mathematically verified that your submitted documentation fully satisfies this FDA requirement. This artifact is submission-ready.
+                                                            </p>
+                                                            <div className="bg-slate-50 border border-slate-100 rounded-lg p-4 w-full">
+                                                                <p className="text-[10px] uppercase font-bold text-slate-400 mb-2 tracking-widest">Recommended Action</p>
+                                                                <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                                                                    No remediation is required. Use the <strong className="text-slate-700">Prev/Next</strong> navigation below to continue your review, or close this window to return to the Pipeline overview.
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex flex-col h-full justify-between px-1">
+                                                            <div>
+                                                                <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center mb-4 border border-indigo-100 shadow-sm">
+                                                                    <AlertTriangle className="w-5 h-5 text-indigo-600" />
+                                                                </div>
+                                                                <h4 className="text-[13px] font-bold text-slate-800 mb-2">Remediation Required</h4>
+                                                                <p className="text-xs font-medium text-slate-500 leading-relaxed mb-6">
+                                                                    This gap introduces regulatory risk. To prevent an FDA Additional Information (AI) request, the missing evidence must be generated by your engineering team.
+                                                                </p>
+                                                                <div className="bg-slate-50 border border-slate-100 rounded-lg p-4 w-full mb-4">
+                                                                    <p className="text-[10px] uppercase font-bold text-slate-400 mb-2 tracking-widest">How this tool helps</p>
+                                                                    <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                                                                        Clicking the button below commands the AI to automatically draft a highly technical CAPA ticket that can be assigned directly to Jira for resolution.
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            <div className="mt-auto">
+                                                                <button 
+                                                                    onClick={handleRemediate}
+                                                                    disabled={remediationLoading}
+                                                                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[12px] py-4 px-4 flex items-center justify-center gap-2 border border-indigo-500 transition-all shadow-md shadow-indigo-600/20 active:scale-[0.98]"
+                                                                >
+                                                                    {remediationLoading ? (
+                                                                        <>
+                                                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                                                            Synthesizing CAPA...
+                                                                        </>
+                                                                    ) : (
+                                                                        <>
+                                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                                                            <span className="font-bold tracking-wide">Draft Engineering CAPA</span>
+                                                                        </>
+                                                                    )}
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             )}
                                         </div>
-                                    )}
+                                    </div>
                                 </div>
                             </div>
                         </div>
