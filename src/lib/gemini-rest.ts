@@ -48,9 +48,9 @@ export async function queryGeminiRESTArray(
     const rulesListString = rules.map(r => `ruleId: ${r.id}\nSTANDARD: ${r.standard}\nSECTION: ${r.section}\nREQUIREMENT: ${r.requirement}\nEXPECTED DOCUMENT: ${r.expectedDocument}`).join('\n\n');
 
     const precedentsString = fdaPrecedents.length > 0 
-        ? `\n--- RECENT FDA WARNING LETTERS (ANTI-PATTERNS) ---\n` + 
-          `The following are real enforcement actions taken against this device type. Use these as a baseline for strictness. Do NOT accept evidence that repeats these mistakes:\n` +
-          fdaPrecedents.map((p, i) => `${i+1}. Firm: ${p.firm}\nReason for Recall: ${p.reason}`).join('\n\n') +
+        ? `\n--- RECENT FDA DENIAL LETTERS (NSE PRECEDENTS) ---\n` + 
+          `The following are real FDA Non-Substantial Equivalence (NSE) rejections for devices exactly like the one under review. Use these as your absolute baseline for strictness. If the uploaded evidence repeats ANY of these mistakes, you MUST fail the requirement and cite the precedent.\n` +
+          fdaPrecedents.map((p, i) => `${i+1}. K-Number: ${p.k_number}\nDevice: ${p.device_name}\nDeficiencies Cited by FDA:\n${p.text_content}`).join('\n\n') +
           `\n--------------------------------------------------\n`
         : "";
 
@@ -139,7 +139,8 @@ RESPOND IN EXACTLY THIS JSON FORMAT (you MUST return a JSON array containing one
     ],
     "estimatedCost": "$X,XXX - $X,XXX" or "—",
     "estimatedTimeline": "X-X weeks" or "—",
-    "remediationSteps": ["step 1", "step 2"]
+    "remediationSteps": ["step 1", "step 2"],
+    "fdaPrecedent": "Kxxxxx - The FDA rejected this because..." or ""
   }
 ]`;
 

@@ -63,6 +63,7 @@ export interface GapResult {
   reasoning?: string;
   missingEvidence?: string;
   geminiResponse?: string;
+  fdaPrecedent?: string;
   estimatedCost?: string;
   estimatedTimeline?: string;
   remediationSteps?: string[];

@@ -3,6 +3,8 @@ import { adminDb, adminStorage } from "@/lib/firebase-admin";
 import { runGapAnalysis, getGapSummary } from "@/lib/gap-engine";
 import { Timestamp } from "firebase-admin/firestore";
 import { AuditLog } from "@/lib/firestore-types";
+import * as fs from "fs";
+import * as path from "path";
 
 export const maxDuration = 300;
 export const dynamic = "force-dynamic";
@@ -72,12 +74,30 @@ async function runAnalysisInBackground(uploadId: string): Promise<void> {
             await batch.commit();
         }
 
+        // ─────────────────────────────────────────────────────────────────
+        // RAG PIPELINE: Inject Live FDA Precedent Data
+        // ─────────────────────────────────────────────────────────────────
+        let fdaPrecedents: any[] = [];
+        try {
+            const chunksPath = path.join(process.cwd(), 'src/pipeline/rag-chunks.jsonl');
+            if (fs.existsSync(chunksPath)) {
+                const fileContent = fs.readFileSync(chunksPath, 'utf8');
+                const chunks = fileContent.split('\n').filter(Boolean).map(line => JSON.parse(line));
+                // For the MVP demo, grab the NSE records as anti-patterns
+                fdaPrecedents = chunks.filter((c: any) => c.category === 'nse');
+                console.log(`[RAG Engine] Loaded ${fdaPrecedents.length} FDA historical precedents into memory.`);
+            }
+        } catch (err) {
+            console.error("[RAG Engine] Failed to load RAG chunks:", err);
+        }
+
         // Run gap analysis (this is the slow part — Gemini calls)
         const results = await runGapAnalysis(
             uploadId,
             upload.standards as string[],
             fileBuffers,
-            upload.aiEngine
+            upload.aiEngine,
+            fdaPrecedents
         );
 
         const summary = getGapSummary(results);

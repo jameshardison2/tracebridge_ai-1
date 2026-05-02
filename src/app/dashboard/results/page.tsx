@@ -1505,6 +1505,18 @@ function ResultsContent() {
                                                                             <span className="text-xs text-rose-900 font-medium">{data.exact_missing_evidence}</span>
                                                                         </div>
                                                                     )}
+                                                                    {data.fdaPrecedent && (
+                                                                        <div className="bg-amber-50 border border-amber-200 rounded-md p-3 mt-3 relative overflow-hidden group">
+                                                                            <div className="absolute top-0 left-0 w-1 h-full bg-amber-400" />
+                                                                            <div className="flex items-start gap-2">
+                                                                                <AlertTriangle className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
+                                                                                <div>
+                                                                                    <span className="text-[10px] font-bold text-amber-800 uppercase tracking-widest block mb-1">FDA Historical Precedent</span>
+                                                                                    <span className="text-xs text-amber-900 font-medium leading-relaxed">{data.fdaPrecedent}</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    )}
                                                                 </div>
                                                             );
                                                         } catch(e) {

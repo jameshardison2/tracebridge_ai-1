@@ -13,6 +13,7 @@ export interface GapReportItem {
     status: "compliant" | "gap_detected" | "needs_review";
     reasoning?: string;
     missingEvidence?: string;
+    fdaPrecedent?: string;
 }
 
 /**
@@ -91,7 +92,8 @@ export async function runGapAnalysis(
     uploadId: string,
     standards: string[],
     fileBuffers: { data: Buffer; mimeType: string; name: string }[],
-    aiEngine: "gemini" | "local" = "gemini"
+    aiEngine: "gemini" | "local" = "gemini",
+    fdaPrecedents: any[] = []
 ): Promise<GapReportItem[]> {
     // Step A: Get all applicable rules
     const rules = await getRulesForStandards(standards);
@@ -146,31 +148,6 @@ export async function runGapAnalysis(
                     );
                 }
             }
-        }
-    }
-
-    // PRECEDENT INJECTION: Fetch real FDA warning letters for this device class
-    let fdaPrecedents: any[] = [];
-    if (uploadData?.productCode) {
-        try {
-            console.log(`[Gap Engine] Fetching FDA precedents for product code: ${uploadData.productCode}`);
-            // Use longer timeout and handle failures gracefully
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 5000);
-            
-            const res = await fetch(`https://api.fda.gov/device/enforcement.json?search=product_code:${uploadData.productCode}&limit=3`, { signal: controller.signal });
-            clearTimeout(timeoutId);
-            
-            if (res.ok) {
-                const data = await res.json();
-                fdaPrecedents = (data.results || []).map((item: any) => ({
-                    firm: item.recalling_firm || "Unknown Firm",
-                    reason: item.reason_for_recall || ""
-                }));
-                console.log(`[Gap Engine] Successfully loaded ${fdaPrecedents.length} FDA precedents.`);
-            }
-        } catch (e) {
-            console.warn("[Gap Engine] OpenFDA API unavailable, continuing without live precedents.");
         }
     }
 
@@ -248,7 +225,8 @@ export async function runGapAnalysis(
             confidence: "low",
             citations: [],
             analytical_reasoning: "Missing ruleId in AI batch output.",
-            exact_missing_evidence: "System failure rendering evidence."
+            exact_missing_evidence: "System failure rendering evidence.",
+            fdaPrecedent: ""
         };
 
         let status: "compliant" | "gap_detected" | "needs_review";
@@ -272,7 +250,8 @@ export async function runGapAnalysis(
             citations: geminiResult.citations || [],
             status,
             reasoning: geminiResult.analytical_reasoning,
-            missingEvidence: geminiResult.exact_missing_evidence
+            missingEvidence: geminiResult.exact_missing_evidence,
+            fdaPrecedent: geminiResult.fdaPrecedent || ""
         };
 
         results.push(gapItem);
@@ -291,6 +270,7 @@ export async function runGapAnalysis(
             missingEvidence: geminiResult.exact_missing_evidence || "No specific missing evidence identified.",
             geminiResponse: JSON.stringify(geminiResult, null, 2),
             createdAt: Timestamp.now(),
+            fdaPrecedent: geminiResult.fdaPrecedent || ""
         };
 
         if (batch) {
