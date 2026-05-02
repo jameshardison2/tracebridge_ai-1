@@ -70,6 +70,10 @@ test.describe('TraceBridge AI - E2E Core Workflow', () => {
     await page.waitForTimeout(1000);
     await takeScreenshot(page, '06_Results_Triage_Modal');
     
+    // Expand Technical AI Analysis
+    await page.locator('summary', { hasText: 'View Technical AI Analysis' }).click();
+    await page.waitForTimeout(500);
+
     // Verify FDA Precedent badge is visible in modal
     await expect(page.locator('text=FDA Historical Precedent')).toBeVisible();
 
@@ -102,6 +106,6 @@ test.describe('TraceBridge AI - E2E Core Workflow', () => {
     await page.waitForLoadState('networkidle');
     await takeScreenshot(page, '10_Customer_Discovery_Hub');
     
-    await expect(page.locator('text=Platform ROI Metrics')).toBeVisible();
+    await expect(page.locator('text=Team Workspace').first()).toBeVisible();
   });
 });

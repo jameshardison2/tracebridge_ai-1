@@ -16,136 +16,190 @@ Test timeout of 180000ms exceeded.
 ```
 
 ```
-Error: page.waitForURL: Test timeout of 180000ms exceeded.
-=========================== logs ===========================
-waiting for navigation to "**/dashboard/upload" until "load"
-  navigated to "https://www.tracebridge.ai/dashboard"
-============================================================
+Error: locator.click: Test timeout of 180000ms exceeded.
+Call log:
+  - waiting for locator('button').filter({ hasText: 'Run Gap Analysis' })
+    - locator resolved to <button disabled class="btn-primary w-full py-4 text-lg disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:transform-none flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20">…</button>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not enabled
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not enabled
+    - retrying click action
+      - waiting 100ms
+    336 × waiting for element to be visible, enabled and stable
+        - element is not enabled
+      - retrying click action
+        - waiting 500ms
+
 ```
 
 # Page snapshot
 
 ```yaml
 - generic [ref=e1]:
-  - alert [ref=e2]
-  - generic [ref=e3]:
-    - complementary [ref=e4]:
-      - button [ref=e5]:
-        - img [ref=e6]
-      - link "TraceBridge UI" [ref=e9] [cursor=pointer]:
+  - button "Open Next.js Dev Tools" [ref=e7] [cursor=pointer]:
+    - img [ref=e8]
+  - alert [ref=e11]
+  - generic [ref=e12]:
+    - complementary [ref=e13]:
+      - button [ref=e14]:
+        - img [ref=e15]
+      - link "TraceBridge UI" [ref=e18] [cursor=pointer]:
         - /url: /
-        - img [ref=e10]
-        - generic [ref=e12]: TraceBridge UI
-      - navigation [ref=e13]:
-        - link "Overview" [ref=e14] [cursor=pointer]:
+        - img [ref=e19]
+        - generic [ref=e21]: TraceBridge UI
+      - navigation [ref=e22]:
+        - link "Overview" [ref=e23] [cursor=pointer]:
           - /url: /dashboard
-          - img [ref=e15]
-          - generic [ref=e20]: Overview
-        - link "Submit Audit" [ref=e21] [cursor=pointer]:
+          - img [ref=e24]
+          - generic [ref=e29]: Overview
+        - link "Submit Audit" [ref=e30] [cursor=pointer]:
           - /url: /dashboard/upload
-          - img [ref=e22]
-          - generic [ref=e25]: Submit Audit
-        - link "Compliance Intelligence" [ref=e26] [cursor=pointer]:
+          - img [ref=e31]
+          - generic [ref=e34]: Submit Audit
+        - link "Compliance Intelligence" [ref=e35] [cursor=pointer]:
           - /url: /dashboard/results
-          - img [ref=e27]
-          - generic [ref=e32]: Compliance Intelligence
-        - link "Pipeline (Triage)" [ref=e33] [cursor=pointer]:
+          - img [ref=e36]
+          - generic [ref=e41]: Compliance Intelligence
+        - link "Pipeline (Triage)" [ref=e42] [cursor=pointer]:
           - /url: /dashboard/pipeline
-          - img [ref=e34]
-          - generic [ref=e35]: Pipeline (Triage)
-        - link "Reports" [ref=e36] [cursor=pointer]:
+          - img [ref=e43]
+          - generic [ref=e44]: Pipeline (Triage)
+        - link "Reports" [ref=e45] [cursor=pointer]:
           - /url: /dashboard/reports
-          - img [ref=e37]
-          - generic [ref=e40]: Reports
-        - link "Roster Config" [ref=e41] [cursor=pointer]:
+          - img [ref=e46]
+          - generic [ref=e49]: Reports
+        - link "Roster Config" [ref=e50] [cursor=pointer]:
           - /url: /dashboard/team
-          - img [ref=e42]
-          - generic [ref=e47]: Roster Config
-        - link "System Logs" [ref=e48] [cursor=pointer]:
+          - img [ref=e51]
+          - generic [ref=e56]: Roster Config
+        - link "System Logs" [ref=e57] [cursor=pointer]:
           - /url: /dashboard/logs
-          - img [ref=e49]
-          - generic [ref=e52]: System Logs
-      - generic [ref=e53]:
-        - generic [ref=e54]:
-          - generic [ref=e56]: T
-          - generic [ref=e57]:
-            - paragraph [ref=e58]: User
-            - paragraph [ref=e59]: test1777749409006@tracebridge.ai
-        - button "Sign Out" [ref=e60]:
-          - img [ref=e61]
-          - generic [ref=e64]: Sign Out
-    - main [ref=e65]:
-      - generic [ref=e67]:
-        - generic [ref=e68]:
-          - generic [ref=e69]:
-            - heading "Quality Regulatory Dashboard" [level=1] [ref=e70]
-            - paragraph [ref=e71]: Master index of IEC 62304 and ISO 14971 active compliance audits.
-          - generic [ref=e72]:
-            - button "Inject 30 Demo Audits" [ref=e73]:
-              - img [ref=e74]
-              - text: Inject 30 Demo Audits
-            - link "Initiate Device Audit" [active] [ref=e76] [cursor=pointer]:
-              - /url: /dashboard/upload
-              - img [ref=e77]
-              - text: Initiate Device Audit
+          - img [ref=e58]
+          - generic [ref=e61]: System Logs
+      - generic [ref=e62]:
+        - generic [ref=e63]:
+          - generic [ref=e65]: AT
+          - generic [ref=e66]:
+            - paragraph [ref=e67]: Automation Tester
+            - paragraph [ref=e68]: test1777754315700@tracebridge.ai
+        - button "Sign Out" [ref=e69]:
+          - img [ref=e70]
+          - generic [ref=e73]: Sign Out
+    - main [ref=e74]:
+      - generic [ref=e76]:
+        - generic [ref=e77]:
+          - heading "New Analysis" [level=1] [ref=e78]
+          - paragraph [ref=e79]: Upload your V&V documents for automatic compliance gap detection.
         - generic [ref=e80]:
-          - heading "TraceBridge Operating Mechanism" [level=2] [ref=e81]: TraceBridge Operating Mechanism
-          - generic [ref=e83]:
-            - link "1 Submit Audit Upload MedTech documentation to directly target ISO/FDA protocols." [ref=e84] [cursor=pointer]:
-              - /url: /dashboard/upload
-              - generic [ref=e85]: "1"
-              - generic [ref=e86]:
-                - heading "Submit Audit" [level=3] [ref=e87]
-                - paragraph [ref=e88]: Upload MedTech documentation to directly target ISO/FDA protocols.
-              - img [ref=e89]
-            - generic [ref=e91]:
-              - generic [ref=e92]: "2"
-              - generic [ref=e93]:
-                - heading "AI Detection" [level=3] [ref=e94]
-                - paragraph [ref=e95]: Google Gemini systematically parses architecture and intelligently flags gaps.
-              - img [ref=e96]
-            - link "3 Execute Triage Formally assign and remediate issues using the interactive Pipeline Tracker." [ref=e98] [cursor=pointer]:
-              - /url: /dashboard/pipeline
-              - generic [ref=e99]: "3"
-              - generic [ref=e100]:
-                - heading "Execute Triage" [level=3] [ref=e101]
-                - paragraph [ref=e102]: Formally assign and remediate issues using the interactive Pipeline Tracker.
-              - img [ref=e103]
-            - generic [ref=e105]:
-              - generic [ref=e106]: "4"
-              - generic [ref=e107]:
-                - heading "FDA Checkout" [level=3] [ref=e108]
-                - paragraph [ref=e109]: Export your signed-off trace items flawlessly to the FDA eCopy CSV Format.
-        - generic [ref=e111]:
-          - generic [ref=e112]:
-            - generic [ref=e113]:
-              - img [ref=e114]
-              - generic [ref=e116]: Total Audits
-            - text: "0"
-          - generic [ref=e117]:
-            - generic [ref=e118]:
-              - img [ref=e119]
-              - generic [ref=e122]: Approved Scans
-            - text: "0"
-          - generic [ref=e123]:
-            - generic [ref=e124]:
-              - img [ref=e125]
-              - generic [ref=e128]: Pending
-            - text: "0"
-          - generic [ref=e129]:
-            - generic [ref=e130]:
-              - img [ref=e131]
-              - generic [ref=e133]: Active Processing
-            - text: "0"
-        - generic [ref=e134]:
-          - heading "Master System Query List" [level=2] [ref=e136]:
-            - img [ref=e137]
-            - text: Master System Query List
-          - generic [ref=e140]:
-            - img [ref=e141]
-            - paragraph [ref=e144]: No audit records found in the current index.
-            - link "Start Initial Record Ingestion →" [ref=e145] [cursor=pointer]:
-              - /url: /dashboard/upload
+          - generic [ref=e81]:
+            - generic [ref=e82]:
+              - heading "1. Device Classification" [level=3] [ref=e83]
+              - button "AI Auto-Detect" [ref=e84]:
+                - img [ref=e85]
+                - text: AI Auto-Detect
+            - generic [ref=e88]:
+              - heading "1. Select Medical Device Type" [level=2] [ref=e89]
+              - paragraph [ref=e90]: TraceBridge uses the FDA Product Code to automatically optimize your gap analysis algorithm.
+              - generic [ref=e91]:
+                - generic:
+                  - img
+                - textbox "Search for a medical device (e.g. Glucose Monitor, Scalpel)..." [ref=e92]
+          - generic [ref=e93]:
+            - heading "2. Data Ingestion Stream" [level=3] [ref=e94]
+            - generic [ref=e95]:
+              - button "ɢ Greenlight Guru API Sync Master DHR/QMS Records" [active] [ref=e96]:
+                - generic [ref=e97]:
+                  - generic [ref=e98]: ɢ
+                  - generic [ref=e99]:
+                    - heading "Greenlight Guru API" [level=4] [ref=e100]
+                    - paragraph [ref=e101]: Sync Master DHR/QMS Records
+                - img [ref=e102]
+              - button "Atlassian Jira Sync SaMD Spec & Test Cases" [ref=e104]:
+                - generic [ref=e105]:
+                  - img [ref=e107]
+                  - generic [ref=e109]:
+                    - heading "Atlassian Jira" [level=4] [ref=e110]
+                    - paragraph [ref=e111]: Sync SaMD Spec & Test Cases
+                - img [ref=e112]
+            - generic [ref=e116]: Or upload manually
+            - generic [ref=e118]: Local File Drive Array
+            - generic [ref=e119] [cursor=pointer]:
+              - img [ref=e121]
+              - paragraph [ref=e124]: Drop entire 1,500+ page DHF Submissions
+              - paragraph [ref=e125]: Powered by a 1M+ Token Processing Window. Supports unstructured PDF, DOCX, and TXT.
+            - generic [ref=e126]:
+              - generic [ref=e127]:
+                - img [ref=e128]
+                - generic [ref=e131]:
+                  - paragraph [ref=e132]: FDA_510k_Executive_Summary_v3.pdf
+                  - paragraph [ref=e133]: 0.00 MB
+                - button [ref=e134]:
+                  - img [ref=e135]
+              - generic [ref=e138]:
+                - img [ref=e139]
+                - generic [ref=e142]:
+                  - paragraph [ref=e143]: ISO_14971_Risk_Management_Report.pdf
+                  - paragraph [ref=e144]: 0.00 MB
+                - button [ref=e145]:
+                  - img [ref=e146]
+              - generic [ref=e149]:
+                - img [ref=e150]
+                - generic [ref=e153]:
+                  - paragraph [ref=e154]: IEC_62304_Software_Architecture_Spec.docx
+                  - paragraph [ref=e155]: 0.00 MB
+                - button [ref=e156]:
+                  - img [ref=e157]
+              - generic [ref=e160]:
+                - img [ref=e161]
+                - generic [ref=e164]:
+                  - paragraph [ref=e165]: Cybersecurity_Threat_Model_SBOM.pdf
+                  - paragraph [ref=e166]: 0.00 MB
+                - button [ref=e167]:
+                  - img [ref=e168]
+          - generic [ref=e171]:
+            - heading "3. Security & Execution Parameters" [level=3] [ref=e172]
+            - generic [ref=e173]:
+              - generic [ref=e174]:
+                - generic [ref=e175]:
+                  - heading "Zero Data Retention (ZDR)" [level=4] [ref=e176]:
+                    - img [ref=e177]
+                    - text: Zero Data Retention (ZDR)
+                  - paragraph [ref=e182]: Permanently destroy file artifacts from the database immediately following the gap analysis. Disables Trace Inspection.
+                - checkbox [checked] [ref=e184]
+              - generic [ref=e186]:
+                - heading "AI Inference Engine" [level=4] [ref=e187]:
+                  - img [ref=e188]
+                  - text: AI Inference Engine
+                - combobox [ref=e191]:
+                  - option "Google Gemini Cloud (Enterprise ZDR API)" [selected]
+                  - option "Air-Gapped Local Server (LLaMA 3 - localhost:11434)"
+          - button "Run Gap Analysis" [disabled] [ref=e192] [cursor=pointer]:
+            - img [ref=e193]
+            - text: Run Gap Analysis
+          - generic [ref=e195]:
+            - heading "Enterprise Security & Data Privacy" [level=4] [ref=e196]:
+              - img [ref=e197]
+              - text: Enterprise Security & Data Privacy
+            - generic [ref=e200]:
+              - generic [ref=e201]:
+                - img [ref=e203]
+                - generic [ref=e205]:
+                  - paragraph [ref=e206]: Transit & Inference (RAM)
+                  - paragraph [ref=e207]: The document is encrypted and sent to Google Cloud. The Gemini LLM reads the document in temporary memory (RAM) to generate the gap analysis.
+              - generic [ref=e208]:
+                - img [ref=e210]
+                - generic [ref=e215]:
+                  - paragraph [ref=e216]: Zero Data Retention (ZDR)
+                  - paragraph [ref=e217]: The moment the analysis is returned to the user, Google completely purges the data. It is never written to a disk, never saved to a database, and never used to train future models.
+              - generic [ref=e218]:
+                - img [ref=e220]
+                - generic [ref=e223]:
+                  - paragraph [ref=e224]: Enterprise Air-Gapped Available
+                  - paragraph [ref=e225]: Need absolute control? Deploy TraceBridge locally on your own private, air-gapped servers using open-source Foundational Models.
 ```
 
 # Test source
@@ -192,8 +246,7 @@ waiting for navigation to "**/dashboard/upload" until "load"
   39  |     // 2. Data Ingestion Stream (Upload)
   40  |     // Use the UI button to navigate instead of goto to prevent interrupt loops
   41  |     await page.locator('text=Initiate Device Audit').click();
-> 42  |     await page.waitForURL('**/dashboard/upload');
-      |                ^ Error: page.waitForURL: Test timeout of 180000ms exceeded.
+  42  |     await page.waitForURL('**/dashboard/upload');
   43  |     await page.waitForLoadState('networkidle');
   44  |     await takeScreenshot(page, '02_Upload_Page_Initial');
   45  | 
@@ -211,7 +264,8 @@ waiting for navigation to "**/dashboard/upload" until "load"
   57  |     await takeScreenshot(page, '04_Upload_Page_ZDR_Enabled');
   58  | 
   59  |     // Run Gap Analysis
-  60  |     await page.locator('button', { hasText: 'Run Gap Analysis' }).click();
+> 60  |     await page.locator('button', { hasText: 'Run Gap Analysis' }).click();
+      |                                                                   ^ Error: locator.click: Test timeout of 180000ms exceeded.
   61  |     
   62  |     // 3. Results / Triage Pipeline
   63  |     // Waiting for the progress bar to finish and redirect to results
@@ -224,40 +278,44 @@ waiting for navigation to "**/dashboard/upload" until "load"
   70  |     await page.waitForTimeout(1000);
   71  |     await takeScreenshot(page, '06_Results_Triage_Modal');
   72  |     
-  73  |     // Verify FDA Precedent badge is visible in modal
-  74  |     await expect(page.locator('text=FDA Historical Precedent')).toBeVisible();
-  75  | 
-  76  |     // Close Modal
-  77  |     await page.keyboard.press('Escape');
-  78  |     await page.waitForTimeout(500);
+  73  |     // Expand Technical AI Analysis
+  74  |     await page.locator('summary', { hasText: 'View Technical AI Analysis' }).click();
+  75  |     await page.waitForTimeout(500);
+  76  | 
+  77  |     // Verify FDA Precedent badge is visible in modal
+  78  |     await expect(page.locator('text=FDA Historical Precedent')).toBeVisible();
   79  | 
-  80  |     // 4. Regulatory Artifact Hub (Reports)
-  81  |     await page.locator('text=Reports').click();
-  82  |     await page.waitForURL('**/dashboard/reports');
-  83  |     await page.waitForLoadState('networkidle');
-  84  |     await takeScreenshot(page, '07_Reports_Hub_Initial');
-  85  | 
-  86  |     // Switch to CAPA Template
-  87  |     await page.locator('button', { hasText: 'CAPA' }).click();
-  88  |     await page.waitForTimeout(500);
-  89  |     await takeScreenshot(page, '08_Reports_Hub_CAPA');
-  90  | 
-  91  |     // Switch to 510(k) Template
-  92  |     await page.locator('button', { hasText: '510(k)' }).click();
-  93  |     await page.waitForTimeout(500);
-  94  |     await takeScreenshot(page, '09_Reports_Hub_510k');
-  95  |     
-  96  |     // Verify the Export buttons exist
-  97  |     await expect(page.locator('button', { hasText: '510k-Matrix' }).first()).toBeVisible();
-  98  | 
-  99  |     // 5. Customer Discovery Hub
-  100 |     await page.locator('text=Roster Config').click();
-  101 |     await page.waitForURL('**/dashboard/team');
-  102 |     await page.waitForLoadState('networkidle');
-  103 |     await takeScreenshot(page, '10_Customer_Discovery_Hub');
-  104 |     
-  105 |     await expect(page.locator('text=Platform ROI Metrics')).toBeVisible();
-  106 |   });
-  107 | });
-  108 | 
+  80  |     // Close Modal
+  81  |     await page.keyboard.press('Escape');
+  82  |     await page.waitForTimeout(500);
+  83  | 
+  84  |     // 4. Regulatory Artifact Hub (Reports)
+  85  |     await page.locator('text=Reports').click();
+  86  |     await page.waitForURL('**/dashboard/reports');
+  87  |     await page.waitForLoadState('networkidle');
+  88  |     await takeScreenshot(page, '07_Reports_Hub_Initial');
+  89  | 
+  90  |     // Switch to CAPA Template
+  91  |     await page.locator('button', { hasText: 'CAPA' }).click();
+  92  |     await page.waitForTimeout(500);
+  93  |     await takeScreenshot(page, '08_Reports_Hub_CAPA');
+  94  | 
+  95  |     // Switch to 510(k) Template
+  96  |     await page.locator('button', { hasText: '510(k)' }).click();
+  97  |     await page.waitForTimeout(500);
+  98  |     await takeScreenshot(page, '09_Reports_Hub_510k');
+  99  |     
+  100 |     // Verify the Export buttons exist
+  101 |     await expect(page.locator('button', { hasText: '510k-Matrix' }).first()).toBeVisible();
+  102 | 
+  103 |     // 5. Customer Discovery Hub
+  104 |     await page.locator('text=Roster Config').click();
+  105 |     await page.waitForURL('**/dashboard/team');
+  106 |     await page.waitForLoadState('networkidle');
+  107 |     await takeScreenshot(page, '10_Customer_Discovery_Hub');
+  108 |     
+  109 |     await expect(page.locator('text=Team Workspace').first()).toBeVisible();
+  110 |   });
+  111 | });
+  112 | 
 ```

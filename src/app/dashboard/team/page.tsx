@@ -14,7 +14,8 @@ import {
     MessageSquare,
     Lightbulb,
     Calendar,
-    CheckCircle2
+    CheckCircle2,
+    FileText
 } from "lucide-react";
 
 interface TeamMember {

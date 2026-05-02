@@ -8,7 +8,7 @@ export default defineConfig({
   workers: 1,
   reporter: 'list',
   use: {
-    baseURL: 'https://www.tracebridge.ai',
+    baseURL: 'http://localhost:3000',
     trace: 'off',
     screenshot: 'on',
     video: 'off',
