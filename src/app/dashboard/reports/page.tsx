@@ -502,7 +502,8 @@ function ReportsContent() {
         
         const rows = report.upload.gapResults.map((r: any, i: number) => {
             const priority = getPriority(r.status, r.severity).label;
-            const gapId = `AIDS-${r.standard.replace(/[^A-Z0-9]/ig, "")}-${r.section.replace(/[^0-9.]/g, "")}-${String(i+1).padStart(3, '0')}`;
+            const devicePrefix = (report.upload.deviceName || 'TB').split(/[\s-]+/).map((w: string) => w[0]).join('').toUpperCase().substring(0, 4);
+            const gapId = `${devicePrefix}-${r.standard.replace(/[^A-Z0-9]/ig, "")}-${r.section.replace(/[^0-9.]/g, "")}-${String(i+1).padStart(3, '0')}`;
             
             const humanStatus = r.status === "compliant" ? "PASS" : r.status === "gap_detected" ? "GAP" : "REVIEW";
             const conf = r.status === 'compliant' ? '94% (Strong)' : r.status === 'gap_detected' ? '0% (None)' : '54% (Weak)';
@@ -536,7 +537,8 @@ function ReportsContent() {
         const a = document.createElement("a");
         a.href = url;
         const dateStr = new Date().toISOString().split('T')[0].replace(/-/g, "");
-        a.download = `TraceBridge_${reportTitle}_AIDS_${dateStr}_v3.csv`;
+        const deviceNameClean = report.upload.deviceName ? report.upload.deviceName.replace(/\s+/g, "-") : "Export";
+        a.download = `TraceBridge-${reportTitle}-${deviceNameClean}_${dateStr}_v3.csv`;
         a.click();
         URL.revokeObjectURL(url);
     };
@@ -856,7 +858,8 @@ function ReportsContent() {
                 
                 doc.setFontSize(9);
                 doc.setTextColor(100, 116, 139);
-                doc.text(`Gap Identifier: AIDS-${gap.standard.replace(/\s/g,"")}-${gap.section.replace(/\./g,"")}-${String(i+1).padStart(3,'0')} • Detected ${new Date().toLocaleDateString()}`, 14, 52);
+                const devicePrefix = (report.upload.deviceName || 'TB').split(/[\s-]+/).map((w: string) => w[0]).join('').toUpperCase().substring(0, 4);
+                doc.text(`Gap Identifier: ${devicePrefix}-${gap.standard.replace(/\s/g,"")}-${gap.section.replace(/\./g,"")}-${String(i+1).padStart(3,'0')} • Detected ${new Date().toLocaleDateString()}`, 14, 52);
 
                 // Block: NON-CONFORMANCE DESCRIPTION (Renamed)
                 doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
