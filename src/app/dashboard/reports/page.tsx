@@ -98,6 +98,18 @@ function getCategory(standard: string): string {
     return "General";
 }
 
+// Map standards to official 510(k) eSTAR Volumes
+function getESTARSection(standard: string): { vol: string, title: string } {
+    if (standard.includes("62304")) return { vol: "Vol 11", title: "Software" };
+    if (standard.includes("14971")) return { vol: "Vol 09", title: "Risk Management" };
+    if (standard.includes("13485")) return { vol: "Vol 09", title: "Declarations of Conformity" };
+    if (standard.includes("10993")) return { vol: "Vol 15", title: "Biocompatibility" };
+    if (standard.includes("11135") || standard.includes("Steril")) return { vol: "Vol 14", title: "Sterilization" };
+    if (standard.includes("Cyber") || standard.includes("AAMI TIR57")) return { vol: "Vol 16", title: "Cybersecurity" };
+    if (standard.includes("Bench") || standard.includes("Performance")) return { vol: "Vol 18", title: "Performance Testing" };
+    return { vol: "Vol 20", title: "Miscellaneous" };
+}
+
 // Get priority label and color
 function getPriority(status: string, severity?: string) {
     if (status === "compliant") {
@@ -1214,31 +1226,71 @@ function ReportsContent() {
 
                             <div className="flex-1 p-6 relative z-10 flex flex-col overflow-y-auto custom-scrollbar">
                                 {/* Preview Dynamic Rendering */}
-                                {activeTemplate === '510k' && (
-                                    <div className="space-y-4 animate-in fade-in zoom-in-95 duration-300">
-                                        <div className="bg-slate-800/40 border border-slate-700/50 p-4 rounded-xl backdrop-blur-sm">
-                                            <div className="h-4 w-3/4 bg-slate-600/50 rounded mb-2.5"></div>
-                                            <div className="h-2 w-1/2 bg-slate-600/30 rounded"></div>
-                                        </div>
-                                        <div className="border border-slate-700/50 rounded-xl overflow-hidden shadow-inner">
-                                            <div className="flex bg-slate-800/90 p-3 gap-3 border-b border-slate-700/50">
-                                                <div className="h-2.5 w-12 bg-slate-500/50 rounded"></div>
-                                                <div className="h-2.5 w-24 bg-slate-500/50 rounded"></div>
-                                                <div className="h-2.5 w-12 bg-slate-500/50 rounded ml-auto"></div>
+                                {activeTemplate === '510k' && (() => {
+                                    const mockGaps = [
+                                        { id: '1', standard: "IEC 62304", section: "5.1", requirement: "Software Development Plan", status: "compliant" },
+                                        { id: '2', standard: "IEC 62304", section: "5.2", requirement: "Software Requirements Spec", status: "gap_detected" },
+                                        { id: '3', standard: "ISO 14971", section: "4.1", requirement: "Risk Management Plan", status: "compliant" },
+                                        { id: '4', standard: "ISO 10993", section: "1", requirement: "Biological Evaluation", status: "needs_review" },
+                                        { id: '5', standard: "FDA Cybersecurity", section: "V.A", requirement: "Threat Modeling", status: "gap_detected" },
+                                        { id: '6', standard: "Performance Testing", section: "1", requirement: "Bench Verification", status: "compliant" }
+                                    ];
+                                    const grouped = mockGaps.reduce((acc: any, gap: any) => {
+                                        const { vol, title } = getESTARSection(gap.standard);
+                                        if (!acc[vol]) acc[vol] = { title, gaps: [] };
+                                        acc[vol].gaps.push(gap);
+                                        return acc;
+                                    }, {});
+
+                                    return (
+                                        <div className="space-y-4 animate-in fade-in zoom-in-95 duration-300">
+                                            <div className="bg-indigo-900/40 border border-indigo-500/30 p-4 rounded-xl backdrop-blur-sm">
+                                                <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-1 flex items-center gap-2">
+                                                    <FileText className="w-4 h-4" /> eSTAR Mapping Active
+                                                </h3>
+                                                <p className="text-[10px] text-indigo-200/70">
+                                                    Evidence automatically mapped to FDA 510(k) electronic submission volumes.
+                                                </p>
                                             </div>
-                                            {[1,2,3,4,5,6].map(i => (
-                                                <div key={i} className="flex p-3 gap-3 border-b border-slate-700/30 border-dashed hover:bg-slate-800/30 transition-colors">
-                                                    <div className="h-2.5 w-8 bg-indigo-500/30 rounded mt-0.5 shrink-0"></div>
-                                                    <div className="space-y-2 flex-1">
-                                                        <div className="h-2.5 w-full bg-slate-600/30 rounded"></div>
-                                                        <div className="h-2.5 w-4/5 bg-slate-600/30 rounded"></div>
+                                            
+                                            {Object.keys(grouped).sort().map(vol => (
+                                                <div key={vol} className="border border-slate-700/50 rounded-xl overflow-hidden shadow-inner bg-slate-800/20">
+                                                    <div className="flex items-center justify-between bg-slate-800/90 p-3 border-b border-slate-700/50 cursor-pointer hover:bg-slate-700/80 transition-colors">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="bg-slate-700 text-slate-300 text-[10px] font-bold px-2 py-0.5 rounded uppercase">{vol}</div>
+                                                            <div className="text-xs font-bold text-white">{grouped[vol].title}</div>
+                                                        </div>
+                                                        <div className="text-[10px] text-slate-400">
+                                                            {grouped[vol].gaps.filter((g: any) => g.status === 'compliant').length} / {grouped[vol].gaps.length} Ready
+                                                        </div>
                                                     </div>
-                                                    <div className="h-3.5 w-10 bg-emerald-500/20 rounded-full shrink-0"></div>
+                                                    <div className="divide-y divide-slate-700/30">
+                                                        {grouped[vol].gaps.slice(0, 3).map((gap: any) => (
+                                                            <div key={gap.id} className="flex items-start p-3 gap-3 hover:bg-slate-800/40 transition-colors">
+                                                                <div className="mt-0.5 shrink-0">
+                                                                    {gap.status === 'compliant' ? (
+                                                                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                                                                    ) : (
+                                                                        <AlertTriangle className="w-3.5 h-3.5 text-rose-500" />
+                                                                    )}
+                                                                </div>
+                                                                <div className="flex-1 min-w-0">
+                                                                    <div className="text-[10px] font-bold text-slate-300 truncate">{gap.standard} § {gap.section}</div>
+                                                                    <div className="text-[9px] text-slate-500 truncate mt-0.5">{gap.requirement}</div>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                        {grouped[vol].gaps.length > 3 && (
+                                                            <div className="p-2 text-center bg-slate-800/50">
+                                                                <span className="text-[9px] font-bold text-indigo-400 uppercase tracking-widest">+ {grouped[vol].gaps.length - 3} More</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             ))}
                                         </div>
-                                    </div>
-                                )}
+                                    );
+                                })()}
 
                                 {activeTemplate === 'capa' && (
                                     <div className="space-y-4 animate-in fade-in zoom-in-95 duration-300">
@@ -1353,10 +1405,10 @@ function ReportsContent() {
                                         {activeTemplate === '510k' && (
                                             <div className="grid grid-cols-2 gap-3">
                                                 <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm">
-                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> eCopy (.csv)
+                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> eSTAR Mapping (.csv)
                                                 </button>
                                                 <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm">
-                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> Report (.pdf)
+                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> 510(k) Submission Matrix (.pdf)
                                                 </button>
                                                 <button onClick={() => generateLiveReport()} className="col-span-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] transition-all">
                                                     <ExternalLink className="w-[1.125rem] h-[1.125rem]" /> View Interactive Matrix
