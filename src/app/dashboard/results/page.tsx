@@ -481,7 +481,7 @@ function ResultsContent() {
     }, [uploadId, report]);
 
     
-    const handleFinalAction = async (actionType: "sign-off" | "assign") => {
+    const handleFinalAction = async (actionType: "sign-off" | "assign" | "dismiss") => {
         setIsActionLoading(true);
         const currentId = selectedResult?.id;
         const currentTitle = selectedResult?.gapTitle || selectedResult?.requirement;
@@ -493,7 +493,7 @@ function ResultsContent() {
             await fetch("/api/gap", {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                body: JSON.stringify({ id: currentId, status: actionType === "sign-off" ? "CLOSED" : "ASSIGNED" })
+                body: JSON.stringify({ id: currentId, status: actionType === "assign" ? "ASSIGNED" : "CLOSED" })
             });
 
             let ticketUrl = null;
@@ -516,13 +516,13 @@ function ResultsContent() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    action: actionType === "assign" ? "jira_sync" : "vault_commit",
+                    action: actionType === "assign" ? "jira_sync" : (true ? "false_alarm" : "vault_commit"),
                     userId: user?.email || "auditor",
                     details: {
-                        event: actionType === "assign" ? "Epic Creation successful" : "Traceability verified",
+                        event: actionType === "assign" ? "Epic Creation successful" : (true ? "False positive dismissed" : "Traceability verified"),
                         traceId: currentId,
                         ticketUrl: ticketUrl,
-                        destination: actionType === "assign" ? "Jira Engineering Board (Live)" : "Immutable Audit Vault",
+                        destination: actionType === "assign" ? "Jira Engineering Board (Live)" : (true ? "Audit Log" : "Immutable Audit Vault"),
                         timestamp: new Date().toISOString()
                     }
                 })
@@ -538,6 +538,8 @@ function ResultsContent() {
             setIsActionLoading(false);
             if (actionType === "sign-off") {
                 showToast("Trace legally verified & pushed to vault.", 'success');
+            } else if (actionType === "dismiss") {
+                showToast("False alarm dismissed and logged.", 'success');
             } else {
                 if ((window as any).lastJiraTicketUrl) {
                     showToast(`CAPA Ticket Created in Live Jira Board!`, 'success');
@@ -1774,10 +1776,11 @@ function ResultsContent() {
                                     ) : (
                                         <>
                                             <button 
-                                                onClick={() => { setSelectedResult(null); }}
-                                                className="text-slate-500 hover:text-rose-600 bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-200/60 px-5 py-2.5 rounded-lg text-[11px] font-extrabold uppercase tracking-widest transition-colors flex items-center gap-2"
+                                                onClick={() => handleFinalAction("dismiss")}
+                                                disabled={isActionLoading}
+                                                className="text-slate-500 hover:text-rose-600 bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-200/60 px-5 py-2.5 rounded-lg text-[11px] font-extrabold uppercase tracking-widest transition-colors flex items-center gap-2 disabled:opacity-70"
                                             >
-                                                <X className="w-4 h-4" /> Dismiss False Alarm
+                                                {isActionLoading && true ? <div className="w-4 h-4 border-2 border-rose-500/30 border-t-rose-500 rounded-full animate-spin" /> : <X className="w-4 h-4" />} Dismiss False Alarm
                                             </button>
                                             <button 
                                                 onClick={() => handleFinalAction("assign")}
