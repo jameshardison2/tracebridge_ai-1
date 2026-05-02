@@ -1444,7 +1444,7 @@ function ResultsContent() {
                                 <div className="mb-5 pb-4 border-b border-indigo-100/60 flex items-center gap-2 relative z-10">
                                     <Brain className="w-4 h-4 text-indigo-500 animate-pulse" />
                                     <h3 className="text-[11px] font-extrabold text-indigo-900 uppercase tracking-widest">
-                                        {selectedResult.status === "compliant" ? "Next Steps" : "Recommended Action"}
+                                        AI Copilot Guidance
                                     </h3>
                                 </div>
                                 
@@ -1493,21 +1493,37 @@ function ResultsContent() {
                                     ) : (
                                         <div className="h-full flex flex-col pt-2">
                                             {selectedResult.status === "compliant" ? (
-                                                <div className="flex flex-col items-center justify-center h-full text-center px-4">
-                                                    <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-4">
-                                                        <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+                                                <div className="flex flex-col items-start justify-start h-full px-1">
+                                                    <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center mb-4 border border-emerald-100 shadow-sm">
+                                                        <CheckCircle2 className="w-5 h-5 text-emerald-600" />
                                                     </div>
-                                                    <p className="text-[13px] font-bold text-slate-800 mb-2">No Remediation Needed</p>
-                                                    <p className="text-xs font-medium text-slate-500 leading-relaxed">
-                                                        This requirement is fully satisfied. You can safely continue to the next finding.
+                                                    <h4 className="text-[13px] font-bold text-slate-800 mb-2">Audit Cleared</h4>
+                                                    <p className="text-xs font-medium text-slate-500 leading-relaxed mb-4">
+                                                        The AI has mathematically verified that your submitted documentation fully satisfies this FDA requirement. This artifact is submission-ready.
                                                     </p>
+                                                    <div className="bg-slate-50 border border-slate-100 rounded-lg p-3 w-full">
+                                                        <p className="text-[10px] uppercase font-bold text-slate-400 mb-1">Recommended Action</p>
+                                                        <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                                                            No remediation is required. Use the <strong className="text-slate-700">Prev/Next</strong> navigation below to continue your review, or close this window to return to the Pipeline overview.
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             ) : (
-                                                <div className="flex flex-col h-full justify-between">
-                                                    <div className="mb-6 space-y-3">
-                                                       <p className="text-xs font-medium text-indigo-900/80 leading-relaxed text-center px-2">
-                                                          The AI can draft a Corrective and Preventive Action (CAPA) ticket based on the exact missing evidence.
-                                                       </p>
+                                                <div className="flex flex-col h-full justify-between px-1">
+                                                    <div>
+                                                        <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center mb-4 border border-indigo-100 shadow-sm">
+                                                            <AlertTriangle className="w-5 h-5 text-indigo-600" />
+                                                        </div>
+                                                        <h4 className="text-[13px] font-bold text-slate-800 mb-2">Remediation Required</h4>
+                                                        <p className="text-xs font-medium text-slate-500 leading-relaxed mb-4">
+                                                            This gap introduces regulatory risk. To prevent an FDA Additional Information (AI) request, the missing evidence must be generated by your engineering team.
+                                                        </p>
+                                                        <div className="bg-slate-50 border border-slate-100 rounded-lg p-3 w-full mb-4">
+                                                            <p className="text-[10px] uppercase font-bold text-slate-400 mb-1">How this tool helps</p>
+                                                            <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                                                                Clicking the button below commands the AI to automatically draft a highly technical CAPA ticket that can be assigned directly to Jira for resolution.
+                                                            </p>
+                                                        </div>
                                                     </div>
                                                     <div className="mt-auto">
                                                         <button 
