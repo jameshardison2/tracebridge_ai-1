@@ -1444,7 +1444,7 @@ function ResultsContent() {
                                 <div className="mb-5 pb-4 border-b border-indigo-100/60 flex items-center gap-2 relative z-10">
                                     <Brain className="w-4 h-4 text-indigo-500 animate-pulse" />
                                     <h3 className="text-[11px] font-extrabold text-indigo-900 uppercase tracking-widest">
-                                        Automated Remediation
+                                        {selectedResult.status === "compliant" ? "Next Steps" : "Recommended Action"}
                                     </h3>
                                 </div>
                                 
@@ -1491,31 +1491,45 @@ function ResultsContent() {
                                             </div>
                                         </div>
                                     ) : (
-                                        <div className="h-full flex flex-col justify-between pt-2">
-                                            <div className="mb-6 space-y-3">
-                                               <p className="text-xs font-semibold text-indigo-900/60 leading-relaxed text-center px-2">
-                                                  Automate resolution pathways directly into your QMS. The engine synthesizes precise Jira tasks based strictly on the missing heuristic matrix.
-                                               </p>
-                                            </div>
-                                            <div className="mt-auto">
-                                                <button 
-                                                    onClick={handleRemediate}
-                                                    disabled={remediationLoading}
-                                                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[12px] py-4 px-4 flex items-center justify-center gap-2 border border-indigo-500 transition-all shadow-md shadow-indigo-600/20 active:scale-[0.98]"
-                                                >
-                                                    {remediationLoading ? (
-                                                        <>
-                                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                                            Synthesizing CAPA...
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                                            <span className="font-bold tracking-wide">Draft Engineering CAPA</span>
-                                                        </>
-                                                    )}
-                                                </button>
-                                            </div>
+                                        <div className="h-full flex flex-col pt-2">
+                                            {selectedResult.status === "compliant" ? (
+                                                <div className="flex flex-col items-center justify-center h-full text-center px-4">
+                                                    <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-4">
+                                                        <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+                                                    </div>
+                                                    <p className="text-[13px] font-bold text-slate-800 mb-2">No Remediation Needed</p>
+                                                    <p className="text-xs font-medium text-slate-500 leading-relaxed">
+                                                        This requirement is fully satisfied. You can safely continue to the next finding.
+                                                    </p>
+                                                </div>
+                                            ) : (
+                                                <div className="flex flex-col h-full justify-between">
+                                                    <div className="mb-6 space-y-3">
+                                                       <p className="text-xs font-medium text-indigo-900/80 leading-relaxed text-center px-2">
+                                                          The AI can draft a Corrective and Preventive Action (CAPA) ticket based on the exact missing evidence.
+                                                       </p>
+                                                    </div>
+                                                    <div className="mt-auto">
+                                                        <button 
+                                                            onClick={handleRemediate}
+                                                            disabled={remediationLoading}
+                                                            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[12px] py-4 px-4 flex items-center justify-center gap-2 border border-indigo-500 transition-all shadow-md shadow-indigo-600/20 active:scale-[0.98]"
+                                                        >
+                                                            {remediationLoading ? (
+                                                                <>
+                                                                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                                                    Synthesizing CAPA...
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                                                    <span className="font-bold tracking-wide">Draft Engineering CAPA</span>
+                                                                </>
+                                                            )}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </div>
@@ -1524,15 +1538,13 @@ function ResultsContent() {
                         </div>
 
                         {/* Contextual Workflow Guide */}
-                        <div className="bg-slate-50/80 border-t border-slate-200 px-6 py-2.5 flex flex-wrap items-center justify-between text-[9px] uppercase font-bold tracking-widest text-slate-500 gap-y-2">
+                        <div className="bg-slate-50/80 border-t border-slate-200 px-6 py-3 flex flex-wrap items-center justify-between text-[10px] uppercase font-bold tracking-widest text-slate-500 gap-y-2">
                             <div className="flex flex-wrap items-center gap-4 md:gap-6">
-                                <span className="flex items-center gap-1.5"><Kanban className="w-3.5 h-3.5 text-indigo-400"/> PIPELINE: RETURN TO MAIN LIST</span>
-                                <span className="flex items-center gap-1.5"><ChevronRight className="w-3.5 h-3.5 text-slate-400"/> PREV/NEXT: NAVIGATE FINDINGS</span>
+                                <span className="flex items-center gap-1.5"><ChevronRight className="w-4 h-4 text-slate-400"/> USE PREV/NEXT TO REVIEW ALL FINDINGS</span>
                             </div>
                             <div className="flex flex-wrap items-center gap-4 md:gap-6 text-slate-400">
-                                <span><strong className="text-slate-600">SKIP [S]:</strong> BYPASS GAP</span>
-                                <span><strong className="text-rose-500">DISMISS:</strong> OVERRIDE FALSE POSITIVE</span>
-                                <span><strong className="text-indigo-500">ASSIGN:</strong> MANUAL BLANK TICKET</span>
+                                <span><strong className="text-rose-500">DISMISS:</strong> REMOVE FALSE ALARM</span>
+                                <span><strong className="text-indigo-500">ASSIGN:</strong> SEND TICKET TO JIRA</span>
                             </div>
                         </div>
 
