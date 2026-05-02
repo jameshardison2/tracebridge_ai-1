@@ -126,6 +126,7 @@ function ResultsContent() {
     const [selectedResult, setSelectedResult] = useState<GapResult | null>(null);
     const [remediationLoading, setRemediationLoading] = useState(false);
     const [remediationDrafts, setRemediationDrafts] = useState<Record<string, string>>({});
+    const [isActionLoading, setIsActionLoading] = useState(false);
     const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
     const [executiveSummary, setExecutiveSummary] = useState<string | null>(null);
     const [summaryLoading, setSummaryLoading] = useState(false);
@@ -479,6 +480,21 @@ function ResultsContent() {
         return () => clearInterval(interval);
     }, [uploadId, report]);
 
+    
+    const handleFinalAction = (actionType: "sign-off" | "assign") => {
+        setIsActionLoading(true);
+        setTimeout(() => {
+            setIsActionLoading(false);
+            if (actionType === "sign-off") {
+                showToast("Trace legally verified & pushed to vault.", 'success');
+            } else {
+                showToast("CAPA Engineering Epic created in QMS.", 'success');
+            }
+            setSelectedResult(null);
+            router.push(`/dashboard/pipeline${uploadId ? '?id='+uploadId : ''}`);
+        }, 1200);
+    };
+
     // Keyboard Shortcuts for Modal Actions
     useEffect(() => {
         if (!selectedResult) return;
@@ -491,12 +507,7 @@ function ResultsContent() {
                 navigateGap("next");
             } else if (key === 'a') {
                 e.preventDefault();
-                if (selectedResult.status === "compliant") {
-                    showToast("Trace legally verified & pushed to vault.", 'success');
-                } else {
-                    showToast("CAPA Engineering Epic created in QMS.", 'success');
-                }
-                setSelectedResult(null);
+                handleFinalAction(selectedResult.status === "compliant" ? "sign-off" : "assign");
             }
         };
         
@@ -1559,10 +1570,10 @@ function ResultsContent() {
                         </div>
 
                         {/* Modal Footer — Sticky Bottom Action Bar */}
-                        <div className="shrink-0 z-10 bg-white border-t border-slate-200 px-6 py-4 flex flex-col xl:flex-row items-center justify-between gap-6 shadow-[0_-15px_40px_-15px_rgba(0,0,0,0.1)] rounded-b-2xl">
+                        <div className="shrink-0 z-10 bg-white border-t border-slate-200 px-6 py-4 flex flex-wrap items-center justify-between gap-y-4 gap-x-6 shadow-[0_-15px_40px_-15px_rgba(0,0,0,0.1)] rounded-b-2xl">
                             
                             {/* Left: Context Navigation & Pipeline */}
-                            <div className="flex items-center gap-3 w-full xl:w-auto overflow-x-auto custom-scrollbar pb-2 xl:pb-0 shrink-0">
+                            <div className="flex flex-wrap items-center gap-3 w-full xl:w-auto">
                                 <button 
                                     onClick={() => router.push(`/dashboard/pipeline${uploadId ? '?id='+uploadId : ''}`)}
                                     className="text-slate-500 hover:text-indigo-600 transition-colors flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-widest bg-slate-50 hover:bg-indigo-50 px-4 py-2.5 rounded-lg border border-slate-200/60 whitespace-nowrap"
@@ -1593,10 +1604,10 @@ function ResultsContent() {
                             </div>
 
                             {/* Right: Operational Triage & Actions */}
-                            <div className="flex flex-wrap xl:flex-nowrap items-center justify-center xl:justify-end gap-5 w-full xl:w-auto">
+                            <div className="flex flex-wrap items-center justify-center xl:justify-end gap-5 w-full xl:w-auto">
                                 
                                 {/* Triage Meta (Status & Assignee) */}
-                                <div className="flex items-center gap-4 xl:border-r xl:border-slate-200 xl:pr-5 shrink-0">
+                                <div className="flex flex-wrap items-center gap-4 xl:border-r xl:border-slate-200 xl:pr-5">
                                     <div className="flex items-center gap-2 group cursor-pointer relative">
                                         <span className="text-[10px] font-bold text-slate-400 group-hover:text-indigo-500 uppercase tracking-widest transition-colors hidden sm:inline-block">Status</span>
                                         <div className="relative">
@@ -1642,7 +1653,7 @@ function ResultsContent() {
                                 </div>
 
                                 {/* Core Actions */}
-                                <div className="flex items-center gap-3 shrink-0">
+                                <div className="flex flex-wrap items-center gap-3">
                                     <button onClick={() => navigateGap("next")} className="text-slate-400 hover:text-slate-700 bg-white hover:bg-slate-50 text-[10px] font-extrabold px-3 py-2.5 rounded-lg transition-colors uppercase tracking-widest border border-slate-200/60 hidden sm:inline-block">
                                         Skip <kbd className="ml-1 bg-slate-100 border border-slate-200 rounded px-1.5 py-0.5 text-[9px] font-mono text-slate-500 font-extrabold shadow-sm">S</kbd>
                                     </button>
@@ -1656,13 +1667,15 @@ function ResultsContent() {
                                                 <AlertTriangle className="w-4 h-4" /> Flag Issue
                                             </button>
                                             <button 
-                                                onClick={() => {
-                                                    showToast("Trace legally verified & pushed to vault.", 'success');
-                                                    setSelectedResult(null);
-                                                }}
-                                                className="text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-500/20 px-6 py-2.5 rounded-lg text-[11px] font-extrabold uppercase tracking-widest transition-all flex items-center gap-2 active:scale-95"
+                                                onClick={() => handleFinalAction("sign-off")}
+                                                disabled={isActionLoading}
+                                                className="text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-500/20 px-6 py-2.5 rounded-lg text-[11px] font-extrabold uppercase tracking-widest transition-all flex items-center gap-2 active:scale-95 disabled:opacity-70"
                                             >
-                                                <CheckCircle2 className="w-4 h-4" /> Sign-Off Trace <kbd className="ml-1.5 bg-emerald-500/30 border border-emerald-400/50 rounded px-1.5 py-0.5 text-[9px] font-mono text-white font-extrabold shadow-sm">A</kbd>
+                                                {isActionLoading ? (
+                                                    <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Verifying...</>
+                                                ) : (
+                                                    <><CheckCircle2 className="w-4 h-4" /> Sign-Off Trace <kbd className="ml-1.5 bg-emerald-500/30 border border-emerald-400/50 rounded px-1.5 py-0.5 text-[9px] font-mono text-white font-extrabold shadow-sm">A</kbd></>
+                                                )}
                                             </button>
                                         </>
                                     ) : (
@@ -1674,14 +1687,15 @@ function ResultsContent() {
                                                 <X className="w-4 h-4" /> Dismiss False Alarm
                                             </button>
                                             <button 
-                                                onClick={() => {
-                                                    showToast("CAPA Engineering Epic created in QMS.", 'success');
-                                                    setSelectedResult(null);
-                                                }}
-                                                className="text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 px-6 py-2.5 rounded-lg text-[11px] font-extrabold uppercase tracking-widest transition-all flex items-center gap-2 active:scale-95"
+                                                onClick={() => handleFinalAction("assign")}
+                                                disabled={isActionLoading}
+                                                className="text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 px-6 py-2.5 rounded-lg text-[11px] font-extrabold uppercase tracking-widest transition-all flex items-center gap-2 active:scale-95 disabled:opacity-70"
                                             >
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> 
-                                                Assign to eQMS/Jira <kbd className="ml-1.5 bg-indigo-500/30 border border-indigo-400/50 rounded px-1.5 py-0.5 text-[9px] font-mono text-white font-extrabold shadow-sm">A</kbd>
+                                                {isActionLoading ? (
+                                                    <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Syncing Jira...</>
+                                                ) : (
+                                                    <><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> Assign to eQMS/Jira <kbd className="ml-1.5 bg-indigo-500/30 border border-indigo-400/50 rounded px-1.5 py-0.5 text-[9px] font-mono text-white font-extrabold shadow-sm">A</kbd></>
+                                                )}
                                             </button>
                                         </>
                                     )}
