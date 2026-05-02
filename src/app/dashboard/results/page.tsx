@@ -1049,7 +1049,7 @@ function ResultsContent() {
                                     </td>
                                     {/* FDA Requirement */}
                                     <td className="px-5 py-4">
-                                        <p className="text-[13px] font-medium text-slate-800 truncate max-w-[15vw] leading-tight">{result.requirement}</p>
+                                        <p className="text-[13px] font-medium text-slate-800 line-clamp-2 max-w-[20vw] leading-tight" title={result.requirement}>{result.requirement}</p>
                                         <p className="text-[10px] text-slate-500 mt-0.5 tracking-tight pr-4">§ {result.section}</p>
                                     </td>
                                     {/* Confidence Pill */}
@@ -1116,12 +1116,12 @@ function ResultsContent() {
                                     </td>
                                     {/* Trace Lineage */}
                                     <td className="px-5 py-4">
-                                        <p className="text-[9px] text-slate-400 font-mono tracking-tighter truncate max-w-[150px] uppercase">
+                                        <p className="text-[9px] text-slate-500 font-mono tracking-tight line-clamp-2 max-w-[180px] uppercase font-semibold">
                                             {result.status !== "gap_detected" ? 
-                                                (result.citations && result.citations.length > 0 ? `${result.citations[0].source.split('.').slice(0, -1).join('.')}` : "TRACEGLOW_V3.PDF") 
+                                                (result.citations && result.citations.length > 0 ? `${result.citations[0].source.replace(/^[^_]+_[^_]+_/, '').replace(/_v[0-9.]+\.(txt|pdf|docx)$/i, '').replace(/_/g, ' ')}` : "TRACEGLOW V3") 
                                             : "No evidence found"}
                                         </p>
-                                        {result.status !== "gap_detected" && result.citations && result.citations.length > 0 && (
+                                        {result.status !== "gap_detected" && result.citations && result.citations.length > 0 && result.citations[0].section && (
                                             <p className="text-[9px] text-slate-400 mt-0.5 font-bold tracking-widest flex items-center gap-1">
                                                 Sec {result.citations[0].section}
                                             </p>

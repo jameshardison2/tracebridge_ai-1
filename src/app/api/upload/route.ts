@@ -43,9 +43,11 @@ export async function POST(request: Request) {
         const standards = [
             "ISO 13485:2016",
             "ISO 14971:2019",
-            "IEC 62366-1",
-            "Class I Exemption Protocol"
+            "IEC 62366-1"
         ];
+        if (deviceClass === "Class I") {
+            standards.push("Class I Exemption Protocol");
+        }
         if (safeFeatures.requiresSoftware) {
             standards.push("IEC 62304"); // Fixed from :2006
             standards.push("FDA Cybersecurity Guidance");
