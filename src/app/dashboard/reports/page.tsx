@@ -299,6 +299,7 @@ function ReportsContent() {
             const currentAssignee = getAssigneeKey(selectedResult.id, selectedResult.status);
             if (currentAssignee === "UN") {
                 showToast("QA Validation Error: You must select an Assignee before marking this gap as ASSIGNED.", "error");
+                e.target.value = localPipelineStatus; // Force revert UI
                 return;
             }
         }

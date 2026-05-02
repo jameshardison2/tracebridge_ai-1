@@ -278,6 +278,7 @@ function ResultsContent() {
             const currentAssignee = getAssigneeKey(selectedResult.id, selectedResult.status);
             if (currentAssignee === "UN") {
                 showToast("QA Validation Error: You must select an Assignee before marking this gap as ASSIGNED.", "error");
+                e.target.value = localPipelineStatus; // Force revert UI
                 return;
             }
         }
@@ -1753,7 +1754,7 @@ function ResultsContent() {
                                     </div>
                                     <div className="flex items-center gap-2 group cursor-pointer relative">
                                         <span className="text-[10px] font-bold text-slate-400 group-hover:text-indigo-500 uppercase tracking-widest transition-colors hidden sm:inline-block">Assignee</span>
-                                        <div className="relative flex items-center gap-1.5 bg-slate-50 border border-slate-200/80 rounded-lg pl-2 pr-7 py-1.5 shadow-sm hover:border-indigo-300 transition-all">
+                                        <div className={`relative flex items-center gap-1.5 rounded-lg pl-2 pr-7 py-1.5 shadow-sm transition-all border ${localPipelineStatus === 'ASSIGNED' && getAssigneeKey(selectedResult.id, selectedResult.status) === 'UN' ? 'border-rose-500 bg-rose-50/50 ring-2 ring-rose-500/20' : 'bg-slate-50 border-slate-200/80 hover:border-indigo-300'}`}>
                                             <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center text-[9px] font-bold text-slate-600 shrink-0 border border-slate-200 shadow-sm">
                                                 {getAssigneeInitials(getAssigneeKey(selectedResult.id, selectedResult.status))}
                                             </div>
@@ -1762,6 +1763,14 @@ function ResultsContent() {
                                                 value={getAssigneeKey(selectedResult.id, selectedResult.status)}
                                                 onChange={(e) => {
                                                     const val = e.target.value;
+                                                    
+                                                    // QA Validation: Cannot unassign if status is ASSIGNED
+                                                    if (localPipelineStatus === "ASSIGNED" && val === "UN") {
+                                                        showToast("QA Validation Error: You cannot remove the assignee while the gap is in the ASSIGNED state.", "error");
+                                                        e.target.value = getAssigneeKey(selectedResult.id, selectedResult.status); // Force revert UI
+                                                        return;
+                                                    }
+
                                                     const name = e.target.options[e.target.selectedIndex].text;
                                                     setAssigneeMap(prev => ({ ...prev, [selectedResult.id]: val }));
                                                     showToast(`Webhook Sync: Task completely reassigned to ${name} in Jira`, 'success');
