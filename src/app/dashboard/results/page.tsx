@@ -1532,7 +1532,6 @@ function ResultsContent() {
                                 </div>
                             </div>
                         </div>
-                        </div>
 
                         {/* Contextual Workflow Guide */}
                         <div className="bg-slate-50/80 border-t border-slate-200 px-6 py-3 flex flex-wrap items-center justify-between text-[10px] uppercase font-bold tracking-widest text-slate-500 gap-y-2">
