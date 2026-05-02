@@ -483,6 +483,7 @@ function ResultsContent() {
     
     const handleFinalAction = async (actionType: "sign-off" | "assign") => {
         setIsActionLoading(true);
+        const currentId = selectedResult?.id;
         
         try {
             await fetch("/api/logs", {
@@ -493,7 +494,7 @@ function ResultsContent() {
                     userId: user?.email || "auditor",
                     details: {
                         event: actionType === "assign" ? "Epic Creation webhook fired" : "Traceability verified",
-                        traceId: selectedResult?.id,
+                        traceId: currentId,
                         destination: actionType === "assign" ? "Jira Engineering Board" : "Immutable Audit Vault",
                         timestamp: new Date().toISOString()
                     }
@@ -508,8 +509,20 @@ function ResultsContent() {
             } else {
                 showToast("CAPA Engineering Epic created in QMS.", 'success');
             }
-            setSelectedResult(null);
-            router.push(`/dashboard/pipeline${uploadId ? '?id='+uploadId : ''}`);
+            
+            if (report && currentId) {
+                const results = report.upload.gapResults;
+                const currentIdx = results.findIndex((r: any) => r.id === currentId);
+                if (currentIdx !== -1 && currentIdx < results.length - 1) {
+                    setSelectedResult(results[currentIdx + 1]);
+                } else {
+                    setSelectedResult(null);
+                    router.push(`/dashboard/pipeline${uploadId ? '?id='+uploadId : ''}`);
+                }
+            } else {
+                setSelectedResult(null);
+                router.push(`/dashboard/pipeline${uploadId ? '?id='+uploadId : ''}`);
+            }
         }, 1200);
     };
 
