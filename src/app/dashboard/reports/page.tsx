@@ -615,7 +615,7 @@ function ReportsContent() {
         
         let pillX = 14;
         displayStandards.forEach((std: string) => {
-            const shortStd = std.length > 30 ? std.substring(0, 27) + "..." : std;
+            const shortStd = std.length > 30 ? std.substring(0, 27).trim() + "..." : std;
             const width = doc.getTextWidth(shortStd) + 6;
             doc.roundedRect(pillX, 105, width, 7, 1, 1, "D");
             doc.setFontSize(8);
@@ -731,9 +731,9 @@ function ReportsContent() {
             doc.setTextColor(100, 116, 139);
             doc.setFontSize(8);
             doc.text("STANDARD §", 14, y);
-            doc.text("REQUIREMENT", 45, y);
-            doc.text("STATUS", 135, y);
-            doc.text("EVIDENCE LOCATOR", 155, y);
+            doc.text("REQUIREMENT", 65, y);
+            doc.text("STATUS", 140, y);
+            doc.text("EVIDENCE LOCATOR", 165, y);
             y += 4;
             doc.setDrawColor(226, 232, 240);
             doc.line(14, y, pageWidth - 14, y);
@@ -753,11 +753,12 @@ function ReportsContent() {
                 doc.setFontSize(8);
                 
                 // Standard
-                doc.text(`${item.standard} § ${item.section}`, 14, y);
+                const stdLines = doc.splitTextToSize(`${item.standard} § ${item.section}`, 48);
+                doc.text(stdLines, 14, y);
                 
                 // Requirement
-                const reqLines = doc.splitTextToSize(item.requirement, 85);
-                doc.text(reqLines, 45, y);
+                const reqLines = doc.splitTextToSize(item.requirement, 70);
+                doc.text(reqLines, 65, y);
                 
                 // Status
                 let statusColor = [100, 116, 139];
@@ -766,17 +767,17 @@ function ReportsContent() {
                 else statusColor = [245, 158, 11];
                 
                 doc.setFillColor(statusColor[0], statusColor[1], statusColor[2]);
-                doc.rect(135, y - 3, 2, 2, "F");
+                doc.rect(140, y - 3, 2, 2, "F");
                 doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
-                doc.text(item.status.toUpperCase().replace('_', ' '), 139, y);
+                doc.text(item.status.toUpperCase().replace('_', ' '), 144, y);
                 
                 // Evidence
                 doc.setTextColor(100, 116, 139);
                 const cite = item.citations?.[0]?.source || (item.status === 'gap_detected' ? "MISSING" : "TraceGlow_V3.pdf");
-                const evLines = doc.splitTextToSize(cite, 40);
-                doc.text(evLines, 155, y);
+                const evLines = doc.splitTextToSize(cite, 35);
+                doc.text(evLines, 165, y);
                 
-                const blockHeight = Math.max(reqLines.length, evLines.length) * 4 + 4;
+                const blockHeight = Math.max(stdLines.length, reqLines.length, evLines.length) * 4 + 4;
                 y += blockHeight;
                 doc.setDrawColor(241, 245, 249);
                 doc.line(14, y - 2, pageWidth - 14, y - 2);
