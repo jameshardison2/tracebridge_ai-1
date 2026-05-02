@@ -273,6 +273,15 @@ function ResultsContent() {
         if (!selectedResult) return;
         const targetStatus = e.target.value;
 
+        // QA Validation: Cannot mark as ASSIGNED without an Assignee
+        if (targetStatus === "ASSIGNED") {
+            const currentAssignee = getAssigneeKey(selectedResult.id, selectedResult.status);
+            if (currentAssignee === "UN") {
+                showToast("QA Validation Error: You must select an Assignee before marking this gap as ASSIGNED.", "error");
+                return;
+            }
+        }
+
         const saved = localStorage.getItem('tracebridge_pipeline_tasks');
         if (saved) {
             try {
@@ -482,8 +491,37 @@ function ResultsContent() {
 
     
     const handleFinalAction = async (actionType: "sign-off" | "assign" | "dismiss") => {
-        setIsActionLoading(true);
         const currentId = selectedResult?.id;
+        
+        // QA Validation: Cannot assign to Jira without an Assignee
+        if (actionType === "assign") {
+            const currentAssignee = getAssigneeKey(currentId || "", selectedResult?.status || "");
+            if (currentAssignee === "UN") {
+                showToast("QA Validation Error: You must select an Assignee before routing to Jira.", "error");
+                return;
+            }
+        }
+
+        // QA Validation: Segregation of Duties (No Self-Approvals)
+        if (actionType === "sign-off") {
+            const currentAssignee = getAssigneeKey(currentId || "", selectedResult?.status || "");
+            if (currentAssignee === "JM") { // Assuming JM is the logged in user
+                showToast("Segregation of Duties Error: You cannot legally sign-off on a gap assigned to yourself. Peer review required.", "error");
+                return;
+            }
+        }
+        // QA Validation: Mandatory Justification for Dismissal
+        let justification = "";
+        if (actionType === "dismiss") {
+            const reason = window.prompt("FDA 21 CFR Part 11: Please provide a mandatory justification for dismissing this regulatory finding:");
+            if (!reason || reason.trim().length < 5) {
+                showToast("QA Validation Error: A detailed justification is required to dismiss a finding.", "error");
+                return;
+            }
+            justification = reason.trim();
+        }
+
+        setIsActionLoading(true);
         const currentTitle = selectedResult?.gapTitle || selectedResult?.requirement;
         const currentStandard = selectedResult?.standard;
         const currentSubNote = selectedResult?.missingRequirement;
@@ -516,14 +554,15 @@ function ResultsContent() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    action: actionType === "assign" ? "jira_sync" : (true ? "false_alarm" : "vault_commit"),
+                    action: actionType === "assign" ? "jira_sync" : (actionType === "dismiss" ? "false_alarm" : "vault_commit"),
                     userId: user?.email || "auditor",
                     details: {
-                        event: actionType === "assign" ? "Epic Creation successful" : (true ? "False positive dismissed" : "Traceability verified"),
+                        event: actionType === "assign" ? "Epic Creation successful" : (actionType === "dismiss" ? "False positive dismissed" : "Traceability verified"),
                         traceId: currentId,
                         ticketUrl: ticketUrl,
-                        destination: actionType === "assign" ? "Jira Engineering Board (Live)" : (true ? "Audit Log" : "Immutable Audit Vault"),
-                        timestamp: new Date().toISOString()
+                        destination: actionType === "assign" ? "Jira Engineering Board (Live)" : (actionType === "dismiss" ? "Audit Log" : "Immutable Audit Vault"),
+                        timestamp: new Date().toISOString(),
+                        justification: actionType === "dismiss" ? justification : undefined
                     }
                 })
             });
@@ -1577,6 +1616,11 @@ function ResultsContent() {
                                                     <div className="p-3 bg-slate-50/80 border-t border-slate-100 shrink-0">
                                                         <button 
                                                             onClick={() => {
+                                                                const currentAssignee = getAssigneeKey(selectedResult.id, selectedResult.status);
+                                                                if (currentAssignee === "UN") {
+                                                                    showToast("QA Validation Error: You must select an Assignee before routing to Jira.", "error");
+                                                                    return;
+                                                                }
                                                                 showToast("CAPA Engineering Epic created in QMS.", 'success');
                                                                 setSelectedResult(null);
                                                             }}

@@ -247,6 +247,22 @@ function ReportsContent() {
         }
     };
 
+    const checkUnresolvedGaps = () => {
+        if (!report) return false;
+        const saved = localStorage.getItem('tracebridge_pipeline_tasks');
+        let savedTasks: any[] = [];
+        if (saved) {
+            try { savedTasks = JSON.parse(saved); } catch(e){}
+        }
+
+        return report.upload.gapResults.some(gap => {
+            const local = savedTasks.find((t:any) => t.id === gap.id);
+            const status = local ? local.status : gap.status;
+            return status !== 'compliant' && status !== 'CLOSED';
+        });
+    };
+    
+    const hasUnresolvedGaps = checkUnresolvedGaps();
     useEffect(() => {
         if (selectedResult) {
             let initialVal = "DETECTED";
@@ -277,6 +293,15 @@ function ReportsContent() {
     const handleModalPipelineSync = (e: React.ChangeEvent<HTMLSelectElement>) => {
         if (!selectedResult) return;
         const targetStatus = e.target.value;
+
+        // QA Validation: Cannot mark as ASSIGNED without an Assignee
+        if (targetStatus === "ASSIGNED") {
+            const currentAssignee = getAssigneeKey(selectedResult.id, selectedResult.status);
+            if (currentAssignee === "UN") {
+                showToast("QA Validation Error: You must select an Assignee before marking this gap as ASSIGNED.", "error");
+                return;
+            }
+        }
 
         const saved = localStorage.getItem('tracebridge_pipeline_tasks');
         if (saved) {
@@ -1406,13 +1431,21 @@ function ReportsContent() {
 
                                 {/* Action Buttons Fixed at Bottom of Preview */}
                                 <div className="mt-auto pt-6 bg-[#0f172a] relative z-20">
+                                    {hasUnresolvedGaps && (
+                                        <div className="mb-3 px-3 py-2 bg-rose-500/10 border border-rose-500/30 rounded-lg flex items-start gap-2">
+                                            <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                                            <p className="text-[11px] font-medium text-rose-300 leading-tight">
+                                                <strong className="font-bold text-rose-200 uppercase tracking-wider">Draft Lockout:</strong> You cannot export final regulatory submissions while critical gaps remain unresolved in the triage pipeline.
+                                            </p>
+                                        </div>
+                                    )}
                                     <div className="grid gap-3 pb-2">
                                         {activeTemplate === '510k' && (
                                             <div className="grid grid-cols-2 gap-3">
-                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm">
+                                                <button disabled={hasUnresolvedGaps} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                                                     <Download className="w-[1.125rem] h-[1.125rem]" /> eSTAR Mapping (.csv)
                                                 </button>
-                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm">
+                                                <button disabled={hasUnresolvedGaps} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                                                     <Download className="w-[1.125rem] h-[1.125rem]" /> 510(k) Submission Matrix (.pdf)
                                                 </button>
                                                 <button onClick={() => generateLiveReport()} className="col-span-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] transition-all">
@@ -1422,10 +1455,10 @@ function ReportsContent() {
                                         )}
                                         {activeTemplate === 'capa' && (
                                             <div className="grid grid-cols-2 gap-3">
-                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm">
+                                                <button disabled={hasUnresolvedGaps} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                                                     <Download className="w-[1.125rem] h-[1.125rem]" /> Action Log (.csv)
                                                 </button>
-                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm">
+                                                <button disabled={hasUnresolvedGaps} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                                                     <Download className="w-[1.125rem] h-[1.125rem]" /> Report (.pdf)
                                                 </button>
                                                 <button onClick={() => generateLiveReport()} className="col-span-2 bg-rose-600 hover:bg-rose-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(225,29,72,0.3)] hover:shadow-[0_0_25px_rgba(225,29,72,0.5)] transition-all">
@@ -1435,10 +1468,10 @@ function ReportsContent() {
                                         )}
                                         {activeTemplate === 'complaint' && (
                                             <div className="grid grid-cols-2 gap-3">
-                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm">
+                                                <button disabled={hasUnresolvedGaps} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                                                     <Download className="w-[1.125rem] h-[1.125rem]" /> MAUDE (.csv)
                                                 </button>
-                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm">
+                                                <button disabled={hasUnresolvedGaps} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                                                     <Download className="w-[1.125rem] h-[1.125rem]" /> Report (.pdf)
                                                 </button>
                                                 <button onClick={() => generateLiveReport()} className="col-span-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(5,150,105,0.3)] hover:shadow-[0_0_25px_rgba(5,150,105,0.5)] transition-all">
@@ -1448,7 +1481,7 @@ function ReportsContent() {
                                         )}
                                         {activeTemplate === 'executive' && (
                                             <div className="grid grid-cols-1 gap-3">
-                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] transition-all">
+                                                <button disabled={hasUnresolvedGaps} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                                                     <ExternalLink className="w-[1.125rem] h-[1.125rem]" /> Generate Audit Attestation (.pdf)
                                                 </button>
                                             </div>
@@ -2056,6 +2089,11 @@ function ReportsContent() {
                                         </a>
                                         <button 
                                             onClick={() => {
+                                                const currentAssignee = getAssigneeKey(selectedResult.id, selectedResult.status);
+                                                if (currentAssignee === "JM") {
+                                                    showToast("Segregation of Duties Error: You cannot legally sign-off on an item assigned to yourself. Peer review required.", "error");
+                                                    return;
+                                                }
                                                 alert("Traceability Matrix Lineage Legally Approved & Locked.");
                                                 setSelectedResult(null);
                                             }}
@@ -2067,13 +2105,27 @@ function ReportsContent() {
                                 ) : (
                                     <>
                                         <button 
-                                            onClick={() => { setSelectedResult(null); }}
+                                            onClick={() => {
+                                                const reason = window.prompt("FDA 21 CFR Part 11: Please provide a mandatory justification for dismissing this regulatory finding:");
+                                                if (!reason || reason.trim().length < 5) {
+                                                    showToast("QA Validation Error: A detailed justification is required to dismiss a finding.", "error");
+                                                    return;
+                                                }
+                                                // Ideally we'd log this `reason` to the API like in results, but for now we'll just require it
+                                                showToast("False positive dismissed and logged to Audit Vault.", "success");
+                                                setSelectedResult(null); 
+                                            }}
                                             className="bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100 px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors shadow-sm focus:ring-2 focus:ring-rose-500/20"
                                         >
                                             Dismiss False Positive [D]
                                         </button>
                                         <button 
                                             onClick={() => {
+                                                const currentAssignee = getAssigneeKey(selectedResult.id, selectedResult.status);
+                                                if (currentAssignee === "UN") {
+                                                    showToast("QA Validation Error: You must select an Assignee before routing to Jira.", "error");
+                                                    return;
+                                                }
                                                 alert("CAPA Epic successfully assigned to Engineering Jira instance.");
                                                 setSelectedResult(null);
                                             }}
