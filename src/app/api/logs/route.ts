@@ -24,7 +24,7 @@ export async function GET(req: Request) {
             .limit(200)
             .get();
 
-        const logs = [];
+        const logs: any[] = [];
         for (const doc of logsSnapshot.docs) {
             logs.push({ id: doc.id, ...doc.data() });
         }
