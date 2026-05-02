@@ -294,11 +294,11 @@ function ReportsContent() {
         if (!selectedResult) return;
         const targetStatus = e.target.value;
 
-        // QA Validation: Cannot mark as ASSIGNED without an Assignee
-        if (targetStatus === "ASSIGNED") {
+        // QA Validation: Cannot mark as ASSIGNED or IN_REMEDIATION without an Assignee
+        if (targetStatus === "ASSIGNED" || targetStatus === "IN_REMEDIATION") {
             const currentAssignee = getAssigneeKey(selectedResult.id, selectedResult.status);
             if (currentAssignee === "UN") {
-                showToast("QA Validation Error: You must select an Assignee before marking this gap as ASSIGNED.", "error");
+                showToast(`QA Validation Error: You must select an Assignee before moving this gap to ${targetStatus}.`, "error");
                 e.target.value = localPipelineStatus; // Force revert UI
                 return;
             }

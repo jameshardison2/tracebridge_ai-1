@@ -273,11 +273,11 @@ function ResultsContent() {
         if (!selectedResult) return;
         const targetStatus = e.target.value;
 
-        // QA Validation: Cannot mark as ASSIGNED without an Assignee
-        if (targetStatus === "ASSIGNED") {
+        // QA Validation: Cannot mark as ASSIGNED or IN_REMEDIATION without an Assignee
+        if (targetStatus === "ASSIGNED" || targetStatus === "IN_REMEDIATION") {
             const currentAssignee = getAssigneeKey(selectedResult.id, selectedResult.status);
             if (currentAssignee === "UN") {
-                showToast("QA Validation Error: You must select an Assignee before marking this gap as ASSIGNED.", "error");
+                showToast(`QA Validation Error: You must select an Assignee before moving this gap to ${targetStatus}.`, "error");
                 e.target.value = localPipelineStatus; // Force revert UI
                 return;
             }
@@ -1754,7 +1754,7 @@ function ResultsContent() {
                                     </div>
                                     <div className="flex items-center gap-2 group cursor-pointer relative">
                                         <span className="text-[10px] font-bold text-slate-400 group-hover:text-indigo-500 uppercase tracking-widest transition-colors hidden sm:inline-block">Assignee</span>
-                                        <div className={`relative flex items-center gap-1.5 rounded-lg pl-2 pr-7 py-1.5 shadow-sm transition-all border ${localPipelineStatus === 'ASSIGNED' && getAssigneeKey(selectedResult.id, selectedResult.status) === 'UN' ? 'border-rose-500 bg-rose-50/50 ring-2 ring-rose-500/20' : 'bg-slate-50 border-slate-200/80 hover:border-indigo-300'}`}>
+                                        <div className={`relative flex items-center gap-1.5 rounded-lg pl-2 pr-7 py-1.5 shadow-sm transition-all border ${(localPipelineStatus === 'ASSIGNED' || localPipelineStatus === 'IN_REMEDIATION') && getAssigneeKey(selectedResult.id, selectedResult.status) === 'UN' ? 'border-rose-500 bg-rose-50/50 ring-2 ring-rose-500/20' : 'bg-slate-50 border-slate-200/80 hover:border-indigo-300'}`}>
                                             <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center text-[9px] font-bold text-slate-600 shrink-0 border border-slate-200 shadow-sm">
                                                 {getAssigneeInitials(getAssigneeKey(selectedResult.id, selectedResult.status))}
                                             </div>
@@ -1764,9 +1764,9 @@ function ResultsContent() {
                                                 onChange={(e) => {
                                                     const val = e.target.value;
                                                     
-                                                    // QA Validation: Cannot unassign if status is ASSIGNED
-                                                    if (localPipelineStatus === "ASSIGNED" && val === "UN") {
-                                                        showToast("QA Validation Error: You cannot remove the assignee while the gap is in the ASSIGNED state.", "error");
+                                                    // QA Validation: Cannot unassign if status is ASSIGNED or IN_REMEDIATION
+                                                    if ((localPipelineStatus === "ASSIGNED" || localPipelineStatus === "IN_REMEDIATION") && val === "UN") {
+                                                        showToast(`QA Validation Error: You cannot remove the assignee while the gap is in the ${localPipelineStatus} state.`, "error");
                                                         e.target.value = getAssigneeKey(selectedResult.id, selectedResult.status); // Force revert UI
                                                         return;
                                                     }
