@@ -432,81 +432,83 @@ export default function TeamPage() {
                         {/* Right Column: Customer Discovery Hub */}
                         <div className="lg:col-span-7 space-y-6">
                             
-                            {/* Feature Voting Board */}
+                            {/* QMS Compliance Frameworks */}
                             <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm relative overflow-hidden">
-                                <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
+                                <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
                                 <h3 className="text-lg font-bold text-slate-900 mb-1 flex items-center gap-2">
-                                    <Lightbulb className="w-5 h-5 text-indigo-500" />
-                                    Product Roadmap Voting
+                                    <Shield className="w-5 h-5 text-emerald-500" />
+                                    Active Compliance Frameworks
                                 </h3>
                                 <p className="text-sm text-slate-500 mb-6">
-                                    Help us prioritize our next major update. What feature would save your team the most time?
+                                    Select the regulatory standards your team is currently tracking against. TraceBridge AI will automatically cross-reference these during gap analysis.
                                 </p>
                                 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                    {featureOptions.map((opt) => {
-                                        const isVoted = votedFeature === opt;
-                                        return (
-                                            <button 
-                                                key={opt}
-                                                onClick={() => handleFeatureVote(opt)}
-                                                disabled={votedFeature !== null}
-                                                className={`text-left p-4 rounded-xl border transition-all flex items-start gap-3 ${
-                                                    isVoted 
-                                                        ? 'bg-indigo-50 border-indigo-200 ring-1 ring-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.15)]' 
-                                                        : 'bg-white border-slate-200 hover:border-indigo-300 hover:bg-slate-50'
-                                                } ${votedFeature !== null && !isVoted ? 'opacity-50 grayscale cursor-not-allowed' : ''}`}
-                                            >
-                                                <div className={`mt-0.5 flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center ${isVoted ? 'border-indigo-600 bg-indigo-600' : 'border-slate-300'}`}>
-                                                    {isVoted && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
-                                                </div>
-                                                <div>
-                                                    <p className={`text-sm font-bold ${isVoted ? 'text-indigo-900' : 'text-slate-700'}`}>{opt}</p>
-                                                </div>
-                                            </button>
-                                        );
-                                    })}
+                                    {[
+                                        { id: 'iso13485', name: 'ISO 13485:2016', active: true },
+                                        { id: 'fda820', name: 'FDA 21 CFR Part 820', active: true },
+                                        { id: 'iec62304', name: 'IEC 62304:2006', active: true },
+                                        { id: 'eumdr', name: 'EU MDR 2017/745', active: false },
+                                        { id: 'soc2', name: 'SOC 2 Type II', active: false },
+                                        { id: 'hipaa', name: 'HIPAA Security Rule', active: false }
+                                    ].map((framework) => (
+                                        <div 
+                                            key={framework.id}
+                                            className={`text-left p-4 rounded-xl border flex items-center justify-between gap-3 ${
+                                                framework.active 
+                                                    ? 'bg-emerald-50 border-emerald-200 ring-1 ring-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.1)]' 
+                                                    : 'bg-white border-slate-200 opacity-60'
+                                            }`}
+                                        >
+                                            <div>
+                                                <p className={`text-sm font-bold ${framework.active ? 'text-emerald-900' : 'text-slate-700'}`}>{framework.name}</p>
+                                                <p className="text-[10px] text-slate-500 uppercase mt-0.5">{framework.active ? 'Monitoring Active' : 'Disabled'}</p>
+                                            </div>
+                                            <div className={`w-10 h-5 rounded-full flex items-center px-1 ${framework.active ? 'bg-emerald-500 justify-end' : 'bg-slate-300 justify-start'}`}>
+                                                <div className="w-3.5 h-3.5 rounded-full bg-white shadow-sm"></div>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
 
-                            {/* Open Feedback & Call */}
-                            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-                                <h3 className="text-lg font-bold text-slate-900 mb-1 flex items-center gap-2">
-                                    <MessageSquare className="w-5 h-5 text-slate-700" />
-                                    Direct Feedback
-                                </h3>
+                            {/* Immutable Audit Log */}
+                            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm relative overflow-hidden">
+                                <div className="absolute top-0 left-0 w-1 h-full bg-slate-800"></div>
+                                <div className="flex justify-between items-center mb-1">
+                                    <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                                        <FileText className="w-5 h-5 text-slate-700" />
+                                        Recent QMS Activity (Part 11 Log)
+                                    </h3>
+                                    <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2 py-1 rounded border border-emerald-200">Recording</span>
+                                </div>
                                 <p className="text-sm text-slate-500 mb-5">
-                                    What is the biggest regulatory bottleneck your team is facing today? Your feedback goes directly to our founding team.
+                                    A cryptographically secure, immutable ledger of all team actions, gap dismissals, and approvals.
                                 </p>
                                 
                                 <div className="space-y-4">
-                                    <textarea
-                                        value={feedbackText}
-                                        onChange={(e) => setFeedbackText(e.target.value)}
-                                        placeholder="We are spending way too much time manually updating our hazard traceability matrix..."
-                                        className="w-full h-32 p-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all resize-none placeholder:text-slate-400"
-                                    ></textarea>
-                                    
-                                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                                        <button
-                                            onClick={() => submitFeedback("open_feedback", feedbackText)}
-                                            disabled={submittingFeedback || !feedbackText.trim()}
-                                            className="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white font-bold px-6 py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 disabled:opacity-50 transition-all shadow-sm"
-                                        >
-                                            {submittingFeedback ? <Loader2 className="w-4 h-4 animate-spin" /> : <MessageSquare className="w-4 h-4" />}
-                                            Submit Feedback
-                                        </button>
-
-                                        <div className="w-full sm:w-auto">
-                                            <a 
-                                                href="mailto:founders@tracebridge.ai?subject=Priority Feature Planning Call" 
-                                                className="w-full flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-sm hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm"
-                                            >
-                                                <Calendar className="w-4 h-4 text-indigo-500" />
-                                                Book Strategy Call
-                                            </a>
+                                    {[
+                                        { action: "Document Uploaded", details: "TraceGlow_V3_Architecture.pdf ingested for scanning.", user: user?.displayName || "Current User", time: "Just now", type: "upload" },
+                                        { action: "Gap Remediated", details: "Gap ID: IEC-62304-5.3 marked as Compliant.", user: "Aisha P. (QA)", time: "2 hours ago", type: "resolve" },
+                                        { action: "Non-Conformance Assigned", details: "Gap ID: ISO-13485-7.1 assigned to Engineering.", user: "Sarah R. (RA)", time: "Yesterday", type: "assign" },
+                                    ].map((log, idx) => (
+                                        <div key={idx} className="flex gap-4 p-3 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-colors">
+                                            <div className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${log.type === 'upload' ? 'bg-blue-500' : log.type === 'resolve' ? 'bg-emerald-500' : 'bg-amber-500'}`}></div>
+                                            <div>
+                                                <p className="text-sm font-bold text-slate-900">{log.action}</p>
+                                                <p className="text-xs text-slate-500 mt-0.5">{log.details}</p>
+                                                <div className="flex items-center gap-2 mt-2">
+                                                    <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-medium">{log.user}</span>
+                                                    <span className="text-[10px] text-slate-400">{log.time}</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
+                                    ))}
+                                    
+                                    <button className="w-full mt-2 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold py-2.5 rounded-xl border border-slate-200 text-sm transition-all flex items-center justify-center gap-2">
+                                        <FileText className="w-4 h-4" />
+                                        Export Full Audit Log (.CSV)
+                                    </button>
                                 </div>
                             </div>
 
