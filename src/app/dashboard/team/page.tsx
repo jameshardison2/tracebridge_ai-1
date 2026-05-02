@@ -211,7 +211,7 @@ export default function TeamPage() {
                     Team Workspace <span className="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold uppercase tracking-widest border border-indigo-200">Beta</span>
                 </h1>
                 <p className="text-[var(--muted)]">
-                    Collaborate with your team and help shape the future of TraceBridge AI.
+                    Centralize your QMS artifacts and streamline cross-functional remediation.
                 </p>
             </div>
 
@@ -228,30 +228,72 @@ export default function TeamPage() {
             )}
 
             {!team ? (
-                /* No team yet — create one */
-                <div className="glass-card p-8 text-center max-w-lg mx-auto gradient-border mt-12">
-                    <Users className="w-16 h-16 text-[var(--primary)] mx-auto mb-4 opacity-50" />
-                    <h2 className="text-xl font-bold mb-2">Create Your Team</h2>
-                    <p className="text-[var(--muted)] text-sm mb-6">
-                        Create a workspace to share uploads and compliance reports with your team members.
-                    </p>
-                    <div className="flex gap-3">
-                        <input
-                            type="text"
-                            value={teamName}
-                            onChange={(e) => setTeamName(e.target.value)}
-                            placeholder="Team name (e.g., Regulatory Affairs)"
-                            className="flex-1 px-4 py-3 rounded-xl bg-[var(--input)] border border-[var(--border)] text-slate-900 text-sm focus:outline-none focus:border-[var(--primary)]"
-                            onKeyDown={(e) => e.key === "Enter" && createTeam()}
-                        />
-                        <button
-                            onClick={createTeam}
-                            disabled={creating || !teamName.trim()}
-                            className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-3 rounded-xl text-sm flex items-center gap-2 disabled:opacity-50 transition-all shadow-md"
-                        >
-                            {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                            Create
-                        </button>
+                /* No team yet — Premium Onboarding / Empty State for RA Professionals */
+                <div className="max-w-4xl mx-auto mt-8">
+                    <div className="text-center mb-10">
+                        <div className="w-20 h-20 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center mx-auto mb-6 shadow-sm">
+                            <Users className="w-10 h-10 text-indigo-600" />
+                        </div>
+                        <h2 className="text-3xl font-bold text-slate-900 mb-4 tracking-tight">Establish Your QMS Workspace</h2>
+                        <p className="text-slate-500 text-lg max-w-2xl mx-auto">
+                            Stop chasing engineers for compliance evidence. Create a secure, 21 CFR Part 11 compliant workspace to centralize your audits and automate remediation tracking.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                            <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center mb-4 border border-emerald-100">
+                                <Shield className="w-5 h-5 text-emerald-600" />
+                            </div>
+                            <h3 className="font-bold text-slate-900 mb-2">Automated Part 11 Audit Trails</h3>
+                            <p className="text-sm text-slate-500 leading-relaxed">
+                                Prove your compliance. Every artifact dismissal, justification, and e-signature is cryptographically logged for ISO 13485 and FDA auditor review.
+                            </p>
+                        </div>
+                        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center mb-4 border border-blue-100">
+                                <MessageSquare className="w-5 h-5 text-blue-600" />
+                            </div>
+                            <h3 className="font-bold text-slate-900 mb-2">Eliminate Email Chains</h3>
+                            <p className="text-sm text-slate-500 leading-relaxed">
+                                Instantly assign AI-detected non-conformances directly to the specific engineering or clinical owners responsible for providing the missing evidence.
+                            </p>
+                        </div>
+                        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                            <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center mb-4 border border-amber-100">
+                                <Lightbulb className="w-5 h-5 text-amber-600" />
+                            </div>
+                            <h3 className="font-bold text-slate-900 mb-2">Direct Regulatory Support</h3>
+                            <p className="text-sm text-slate-500 leading-relaxed">
+                                Escalate complex regulatory bottlenecks directly to our MedTech experts. Vote on Jira integrations, CAPA templates, and new FDA protocol support.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="glass-card p-8 text-center max-w-xl mx-auto gradient-border shadow-xl relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+                        <h3 className="text-xl font-bold mb-2">Initialize Your Workspace</h3>
+                        <p className="text-slate-500 text-sm mb-6">
+                            Name your workspace to deploy the infrastructure. You can configure your Roster (QA, RA, Engineering) on the next screen.
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-3">
+                            <input
+                                type="text"
+                                value={teamName}
+                                onChange={(e) => setTeamName(e.target.value)}
+                                placeholder="Organization Name (e.g., Acme MedTech)"
+                                className="flex-1 px-4 py-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all shadow-inner"
+                                onKeyDown={(e) => e.key === "Enter" && createTeam()}
+                            />
+                            <button
+                                onClick={createTeam}
+                                disabled={creating || !teamName.trim()}
+                                className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-8 py-3.5 rounded-xl text-sm flex items-center justify-center gap-2 disabled:opacity-50 transition-all shadow-md sm:w-auto w-full"
+                            >
+                                {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-5 h-5" />}
+                                Deploy Workspace
+                            </button>
+                        </div>
                     </div>
                 </div>
             ) : (
