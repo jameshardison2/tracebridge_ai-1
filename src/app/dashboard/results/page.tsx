@@ -484,6 +484,9 @@ function ResultsContent() {
     const handleFinalAction = async (actionType: "sign-off" | "assign") => {
         setIsActionLoading(true);
         const currentId = selectedResult?.id;
+        const currentTitle = selectedResult?.gapTitle || selectedResult?.requirement;
+        const currentStandard = selectedResult?.standard;
+        const currentSubNote = selectedResult?.missingRequirement;
         
         try {
             const token = await user?.getIdToken();
@@ -493,6 +496,22 @@ function ResultsContent() {
                 body: JSON.stringify({ id: currentId, status: actionType === "sign-off" ? "CLOSED" : "ASSIGNED" })
             });
 
+            let ticketUrl = null;
+            if (actionType === "assign") {
+                const jiraRes = await fetch("/api/jira", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                    body: JSON.stringify({
+                        gapId: currentId,
+                        title: currentTitle,
+                        standard: currentStandard,
+                        subNote: currentSubNote
+                    })
+                });
+                const jiraData = await jiraRes.json();
+                if (jiraData.success) ticketUrl = jiraData.ticketUrl;
+            }
+
             await fetch("/api/logs", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -500,13 +519,19 @@ function ResultsContent() {
                     action: actionType === "assign" ? "jira_sync" : "vault_commit",
                     userId: user?.email || "auditor",
                     details: {
-                        event: actionType === "assign" ? "Epic Creation webhook fired" : "Traceability verified",
+                        event: actionType === "assign" ? "Epic Creation successful" : "Traceability verified",
                         traceId: currentId,
-                        destination: actionType === "assign" ? "Jira Engineering Board" : "Immutable Audit Vault",
+                        ticketUrl: ticketUrl,
+                        destination: actionType === "assign" ? "Jira Engineering Board (Live)" : "Immutable Audit Vault",
                         timestamp: new Date().toISOString()
                     }
                 })
             });
+            
+            if (ticketUrl) {
+                // Attach the ticket URL to the window so the user can see it in the toast!
+                (window as any).lastJiraTicketUrl = ticketUrl;
+            }
         } catch(e) {}
 
         setTimeout(() => {
@@ -514,7 +539,12 @@ function ResultsContent() {
             if (actionType === "sign-off") {
                 showToast("Trace legally verified & pushed to vault.", 'success');
             } else {
-                showToast("CAPA Engineering Epic created in QMS.", 'success');
+                if ((window as any).lastJiraTicketUrl) {
+                    showToast(`CAPA Ticket Created in Live Jira Board!`, 'success');
+                    (window as any).lastJiraTicketUrl = null;
+                } else {
+                    showToast("CAPA Engineering Epic created in QMS.", 'success');
+                }
             }
             
             if (report && currentId) {
