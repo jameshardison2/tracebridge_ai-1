@@ -7,11 +7,22 @@ export default defineConfig({
   retries: 0,
   workers: 1,
   reporter: 'list',
+  
+  /* Global timeout for tests - 3 minutes to accommodate Gemini API RAG latency */
+  timeout: 180 * 1000,
+  
+  expect: {
+    /* Timeout for individual assertions - 30 seconds */
+    timeout: 30 * 1000,
+  },
+
   use: {
     baseURL: 'http://localhost:3000',
     trace: 'off',
     screenshot: 'on',
     video: 'off',
+    /* Maximum time each action (e.g. click, fill) can take */
+    actionTimeout: 30 * 1000,
   },
   projects: [
     {
