@@ -17,18 +17,24 @@ export async function GET(req: Request) {
                 query = query.where("details.uploadId", "==", uploadId);
             }
             if (userId) {
-                query = query.where("userId", "==", userId);
+                query = query.where("userId", "in", [userId, "system"]);
             }
         
         const logsSnapshot = await query
-            .orderBy("createdAt", "desc")
-            .limit(100)
+            .limit(200)
             .get();
 
         const logs = [];
         for (const doc of logsSnapshot.docs) {
             logs.push({ id: doc.id, ...doc.data() });
         }
+
+        // Sort in memory to avoid Firebase Composite Index requirements
+        logs.sort((a, b) => {
+            const timeA = a.createdAt?._seconds || 0;
+            const timeB = b.createdAt?._seconds || 0;
+            return timeB - timeA;
+        });
 
         return NextResponse.json({ success: true, data: logs });
     } catch (error) {
