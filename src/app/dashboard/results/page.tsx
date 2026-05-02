@@ -486,6 +486,13 @@ function ResultsContent() {
         const currentId = selectedResult?.id;
         
         try {
+            const token = await user?.getIdToken();
+            await fetch("/api/gap", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                body: JSON.stringify({ id: currentId, status: actionType === "sign-off" ? "CLOSED" : "ASSIGNED" })
+            });
+
             await fetch("/api/logs", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -1695,6 +1702,12 @@ function ResultsContent() {
                                                 onClick={async () => {
                                                     showToast("Discrepancy flagged. QA team has been notified.", "warning");
                                                     try {
+                                                        const token = await user?.getIdToken();
+                                                        await fetch("/api/gap", {
+                                                            method: "PATCH",
+                                                            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                                                            body: JSON.stringify({ id: selectedResult?.id, status: "IN_REMEDIATION" })
+                                                        });
                                                         await fetch("/api/logs", {
                                                             method: "POST",
                                                             headers: { "Content-Type": "application/json" },
