@@ -180,6 +180,12 @@ function ReportsContent() {
     const [teamEngName, setTeamEngName] = useState("Mark K. (Core Eng)");
     const [teamRaName, setTeamRaName] = useState("Sarah R. (Regulatory)");
 
+    const [assigneeMap, setAssigneeMap] = useState<Record<string, string>>({});
+
+    const getAssigneeKey = (gapId: string, status: string) => {
+        return assigneeMap[gapId] || (status === 'compliant' ? 'AP' : status === 'needs_review' ? 'MK' : 'UN');
+    };
+
     const getInitials = (nameStr: string) => nameStr.split(' ').map(n => n.replace(/[^a-zA-Z]/g, '')[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
 
     useEffect(() => {
@@ -298,7 +304,7 @@ function ReportsContent() {
         if (targetStatus === "ASSIGNED" || targetStatus === "IN_REMEDIATION") {
             const currentAssignee = getAssigneeKey(selectedResult.id, selectedResult.status);
             if (currentAssignee === "UN") {
-                showToast(`QA Validation Error: You must select an Assignee before moving this gap to ${targetStatus}.`, "error");
+                alert(`QA Validation Error: You must select an Assignee before moving this gap to ${targetStatus}.`);
                 e.target.value = localPipelineStatus; // Force revert UI
                 return;
             }
@@ -533,7 +539,13 @@ function ReportsContent() {
             
             const humanStatus = r.status === "compliant" ? "PASS" : r.status === "gap_detected" ? "GAP" : "REVIEW";
             const conf = r.status === 'compliant' ? '94% (Strong)' : r.status === 'gap_detected' ? '0% (None)' : '54% (Weak)';
-            const assignee = r.status === 'compliant' ? 'Aisha P.' : r.status === 'needs_review' ? 'Mark K.' : 'Sarah R.';
+            const key = getAssigneeKey(r.id, r.status);
+            let assigneeName = "Unassigned";
+            if (key === 'AP') assigneeName = teamQaName.split('(')[0].trim();
+            else if (key === 'MK') assigneeName = teamEngName.split('(')[0].trim();
+            else if (key === 'SR') assigneeName = teamRaName.split('(')[0].trim();
+            else if (key === 'JM') assigneeName = "Jason M.";
+
             const state = r.status === 'compliant' ? 'CLOSE' : r.status === 'gap_detected' ? 'OPEN' : 'IN REV';
             
             const ev = r.status === "compliant" ? "Full traceability confirmed" : (r.missingRequirement || "Verification artifact not detected.");
@@ -543,14 +555,14 @@ function ReportsContent() {
             return [
                 gapId,
                 `"${r.standard}"`,
-                `"${r.section}"`,
+                `="${r.section}"`,
                 `"${r.requirement.replace(/"/g, '""')}"`,
                 humanStatus,
                 `"${conf}"`,
                 `"${ev.replace(/"/g, '""')}"`,
                 `"${sourceDoc}"`,
                 `"${pg}"`,
-                `"${assignee}"`,
+                `"${assigneeName}"`,
                 state,
                 new Date().toISOString().split('T')[0],
                 priority
@@ -2092,7 +2104,7 @@ function ReportsContent() {
                                             onClick={() => {
                                                 const currentAssignee = getAssigneeKey(selectedResult.id, selectedResult.status);
                                                 if (currentAssignee === "JM") {
-                                                    showToast("Segregation of Duties Error: You cannot legally sign-off on an item assigned to yourself. Peer review required.", "error");
+                                                    alert("Segregation of Duties Error: You cannot legally sign-off on an item assigned to yourself. Peer review required.");
                                                     return;
                                                 }
                                                 alert("Traceability Matrix Lineage Legally Approved & Locked.");
@@ -2109,11 +2121,11 @@ function ReportsContent() {
                                             onClick={() => {
                                                 const reason = window.prompt("FDA 21 CFR Part 11: Please provide a mandatory justification for dismissing this regulatory finding:");
                                                 if (!reason || reason.trim().length < 5) {
-                                                    showToast("QA Validation Error: A detailed justification is required to dismiss a finding.", "error");
+                                                    alert("QA Validation Error: A detailed justification is required to dismiss a finding.");
                                                     return;
                                                 }
                                                 // Ideally we'd log this `reason` to the API like in results, but for now we'll just require it
-                                                showToast("False positive dismissed and logged to Audit Vault.", "success");
+                                                alert("False positive dismissed and logged to Audit Vault.");
                                                 setSelectedResult(null); 
                                             }}
                                             className="bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100 px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors shadow-sm focus:ring-2 focus:ring-rose-500/20"
@@ -2124,7 +2136,7 @@ function ReportsContent() {
                                             onClick={() => {
                                                 const currentAssignee = getAssigneeKey(selectedResult.id, selectedResult.status);
                                                 if (currentAssignee === "UN") {
-                                                    showToast("QA Validation Error: You must select an Assignee before routing to Jira.", "error");
+                                                    alert("QA Validation Error: You must select an Assignee before routing to Jira.");
                                                     return;
                                                 }
                                                 alert("CAPA Epic successfully assigned to Engineering Jira instance.");
