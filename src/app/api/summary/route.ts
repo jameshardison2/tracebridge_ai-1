@@ -34,7 +34,8 @@ Instructions:
 1. Write in a highly professional, authoritative tone suitable for a VP of Engineering or Regulatory Affairs Director.
 2. If there are gaps, specifically name the most critical ones and state that they require immediate remediation before submission.
 3. If compliance is high/perfect, state that the device's documentation is robust and audit-ready.
-4. Keep it exactly 2-3 sentences. Do not use bullet points. Do not include greetings. Just the raw summary paragraph.
+4. Keep it exactly 3 sentences. Do not use bullet points. Do not include greetings. Just the raw summary paragraph.
+5. In your final sentence, provide a clear Call to Action (CTA). Explicitly tell the user to "assign the failed gaps to team members below," "click 'Inspect Trace' to view the AI reasoning," and/or "export the FDA eCopy report." Make it sound like standard operating procedure.
 `;
 
         const result = await model.generateContent(prompt);
