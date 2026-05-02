@@ -1533,72 +1533,70 @@ function ResultsContent() {
                             </div>
                         </div>
 
-                        {/* Contextual Workflow Guide */}
-                        <div className="bg-slate-50/80 border-t border-slate-200 px-6 py-3 flex flex-wrap items-center justify-between text-[10px] uppercase font-bold tracking-widest text-slate-500 gap-y-2">
-                            <div className="flex flex-wrap items-center gap-4 md:gap-6">
-                                <span className="flex items-center gap-1.5"><ChevronRight className="w-4 h-4 text-slate-400"/> USE PREV/NEXT TO REVIEW ALL FINDINGS</span>
-                            </div>
-                            <div className="flex flex-wrap items-center gap-4 md:gap-6 text-slate-400">
-                                <span><strong className="text-rose-500">DISMISS:</strong> REMOVE FALSE ALARM</span>
-                                <span><strong className="text-indigo-500">ASSIGN:</strong> SEND TICKET TO JIRA</span>
-                            </div>
-                        </div>
-
                         {/* Modal Footer — Sticky Bottom Action Bar */}
-                        <div className="shrink-0 z-10 bg-white border-t border-slate-200 px-6 py-4 flex flex-col xl:flex-row items-center justify-between gap-4 shadow-[0_-15px_40px_-15px_rgba(0,0,0,0.1)] rounded-b-2xl">
+                        <div className="shrink-0 z-10 bg-white border-t border-slate-200 px-6 py-4 flex flex-col xl:flex-row items-center justify-between gap-6 shadow-[0_-15px_40px_-15px_rgba(0,0,0,0.1)] rounded-b-2xl">
                             
                             {/* Left: Context Navigation & Pipeline */}
-                            <div className="flex flex-wrap items-center gap-2 w-full xl:w-auto justify-between xl:justify-start border-b xl:border-0 border-slate-100 pb-3 xl:pb-0">
+                            <div className="flex items-center gap-3 w-full xl:w-auto overflow-x-auto custom-scrollbar pb-2 xl:pb-0 shrink-0">
                                 <button 
                                     onClick={() => router.push(`/dashboard/pipeline${uploadId ? '?id='+uploadId : ''}`)}
-                                    className="text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 px-3 py-1.5 rounded-lg text-[10px] font-extrabold uppercase tracking-widest transition-colors flex items-center gap-1.5 xl:mr-2"
+                                    className="text-slate-500 hover:text-indigo-600 transition-colors flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-widest bg-slate-50 hover:bg-indigo-50 px-4 py-2.5 rounded-lg border border-slate-200/60 whitespace-nowrap"
                                 >
-                                    <Kanban className="w-3.5 h-3.5" /> Pipeline
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                                    Pipeline
                                 </button>
                                 
-                                <div className="flex items-center bg-slate-50 border border-slate-200 rounded-lg p-0.5">
-                                    <button
-                                        onClick={() => navigateGap("prev")}
-                                        className="py-1 px-2.5 text-slate-500 hover:text-slate-900 hover:bg-white hover:shadow-sm rounded transition-all flex items-center text-[10px] font-bold uppercase tracking-wider gap-1"
+                                <div className="h-6 w-[1px] bg-slate-200 mx-1 shrink-0"></div>
+                                
+                                <div className="flex items-center bg-slate-50 rounded-lg border border-slate-200/60 p-1 shrink-0">
+                                    <button 
+                                        onClick={() => navigateGap("prev")} 
+                                         
+                                        className="px-4 py-1.5 text-[11px] font-extrabold uppercase tracking-widest text-slate-500 hover:text-indigo-600 hover:bg-white rounded-md transition-all disabled:opacity-30 disabled:hover:bg-transparent flex items-center gap-1.5"
                                     >
-                                        <ChevronLeft className="w-3.5 h-3.5" /> Prev
+                                        <ChevronLeft className="w-4 h-4" /> Prev
                                     </button>
-                                    <div className="w-px h-3.5 bg-slate-200 mx-0.5"></div>
-                                    <button
-                                        onClick={() => navigateGap("next")}
-                                        className="py-1 px-2.5 text-slate-500 hover:text-slate-900 hover:bg-white hover:shadow-sm rounded transition-all flex items-center text-[10px] font-bold uppercase tracking-wider gap-1"
+                                    <div className="w-[1px] h-4 bg-slate-200 mx-1"></div>
+                                    <button 
+                                        onClick={() => navigateGap("next")} 
+                                         
+                                        className="px-4 py-1.5 text-[11px] font-extrabold uppercase tracking-widest text-slate-500 hover:text-indigo-600 hover:bg-white rounded-md transition-all disabled:opacity-30 disabled:hover:bg-transparent flex items-center gap-1.5"
                                     >
-                                        Next <ChevronRight className="w-3.5 h-3.5" />
+                                        Next <ChevronRight className="w-4 h-4" />
                                     </button>
                                 </div>
                             </div>
 
-                            {/* Right: Operational Triage */}
-                            <div className="flex flex-wrap items-center justify-center xl:justify-end gap-3 w-full xl:w-auto">
-                                {/* Configuration Block */}
-                                <div className="flex items-center gap-3 border-r border-slate-200 pr-3">
-                                    <div className="flex items-center gap-2 group cursor-pointer">
-                                        <span className="text-[10px] font-bold text-slate-400 group-hover:text-indigo-500 uppercase tracking-widest transition-colors hidden md:inline-block">Status:</span>
-                                        <select 
-                                            value={localPipelineStatus}
-                                            onChange={handleModalPipelineSync}
-                                            className="text-[11px] font-bold bg-white border border-slate-200 rounded px-2 py-1 outline-none text-slate-700 hover:border-indigo-300 focus:ring-2 focus:ring-indigo-500/20 cursor-pointer shadow-sm transition-all appearance-none"
-                                        >
-                                            <option value="DETECTED">DETECTED</option>
-                                            <option value="TRIAGED">TRIAGED</option>
-                                            <option value="ASSIGNED">ASSIGNED</option>
-                                            <option value="IN_REMEDIATION">WAITING QA</option>
-                                            <option value="CLOSED">CLOSED</option>
-                                        </select>
+                            {/* Right: Operational Triage & Actions */}
+                            <div className="flex flex-wrap xl:flex-nowrap items-center justify-center xl:justify-end gap-5 w-full xl:w-auto">
+                                
+                                {/* Triage Meta (Status & Assignee) */}
+                                <div className="flex items-center gap-4 xl:border-r xl:border-slate-200 xl:pr-5 shrink-0">
+                                    <div className="flex items-center gap-2 group cursor-pointer relative">
+                                        <span className="text-[10px] font-bold text-slate-400 group-hover:text-indigo-500 uppercase tracking-widest transition-colors hidden sm:inline-block">Status</span>
+                                        <div className="relative">
+                                            <select 
+                                                value={localPipelineStatus}
+                                                onChange={handleModalPipelineSync}
+                                                className="text-[11px] font-extrabold uppercase tracking-wider bg-slate-50 border border-slate-200/80 rounded-lg px-3 py-2 pr-8 outline-none text-slate-700 hover:border-indigo-300 focus:ring-2 focus:ring-indigo-500/20 cursor-pointer shadow-sm transition-all appearance-none"
+                                            >
+                                                <option value="DETECTED">DETECTED</option>
+                                                <option value="TRIAGED">TRIAGED</option>
+                                                <option value="ASSIGNED">ASSIGNED</option>
+                                                <option value="IN_REMEDIATION">WAITING QA</option>
+                                                <option value="CLOSED">CLOSED</option>
+                                            </select>
+                                            <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                        </div>
                                     </div>
-                                    <div className="flex items-center gap-2 group cursor-pointer">
-                                        <span className="text-[10px] font-bold text-slate-400 group-hover:text-indigo-500 uppercase tracking-widest transition-colors hidden md:inline-block">Assign:</span>
-                                        <div className="flex items-center gap-1 bg-white border border-slate-200 rounded pl-1 pr-1.5 py-1 shadow-sm hover:border-indigo-300 transition-all">
-                                            <div className="w-4 h-4 rounded-full bg-slate-100 flex items-center justify-center text-[8px] font-bold text-slate-600 shrink-0">
+                                    <div className="flex items-center gap-2 group cursor-pointer relative">
+                                        <span className="text-[10px] font-bold text-slate-400 group-hover:text-indigo-500 uppercase tracking-widest transition-colors hidden sm:inline-block">Assignee</span>
+                                        <div className="relative flex items-center gap-1.5 bg-slate-50 border border-slate-200/80 rounded-lg pl-2 pr-7 py-1.5 shadow-sm hover:border-indigo-300 transition-all">
+                                            <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center text-[9px] font-bold text-slate-600 shrink-0 border border-slate-200 shadow-sm">
                                                 {getAssigneeInitials(getAssigneeKey(selectedResult.id, selectedResult.status))}
                                             </div>
                                             <select 
-                                                className="bg-transparent text-[11px] font-bold text-slate-700 outline-none cursor-pointer appearance-none max-w-[85px] truncate"
+                                                className="bg-transparent text-[11px] font-extrabold uppercase tracking-wider text-slate-700 outline-none cursor-pointer appearance-none truncate max-w-[100px]"
                                                 value={getAssigneeKey(selectedResult.id, selectedResult.status)}
                                                 onChange={(e) => {
                                                     const val = e.target.value;
@@ -1613,13 +1611,14 @@ function ResultsContent() {
                                                 <option value="JM">Jason M.</option>
                                                 <option value="UN">Unassigned</option>
                                             </select>
+                                            <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Execution Action Group */}
-                                <div className="flex items-center gap-2">
-                                    <button onClick={() => navigateGap("next")} className="text-slate-400 hover:text-slate-700 hover:bg-slate-50 text-[10px] font-bold px-2.5 py-1.5 rounded transition-colors uppercase tracking-wider border border-transparent hidden sm:inline-block">
+                                {/* Core Actions */}
+                                <div className="flex items-center gap-3 shrink-0">
+                                    <button onClick={() => navigateGap("next")} className="text-slate-400 hover:text-slate-700 bg-white hover:bg-slate-50 text-[10px] font-extrabold px-3 py-2.5 rounded-lg transition-colors uppercase tracking-widest border border-slate-200/60 hidden sm:inline-block">
                                         Skip [S]
                                     </button>
                                     
@@ -1627,41 +1626,43 @@ function ResultsContent() {
                                         <>
                                             <button 
                                                 onClick={() => showToast("Discrepancy flagged. QA team has been notified.", "warning")}
-                                                className="bg-white text-orange-600 border border-orange-200 hover:bg-orange-50 px-3.5 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider transition-colors shadow-sm"
+                                                className="text-orange-600 bg-orange-50 hover:bg-orange-100 border border-orange-200/60 px-5 py-2.5 rounded-lg text-[11px] font-extrabold uppercase tracking-widest transition-colors flex items-center gap-2"
                                             >
-                                                Flag Issue
+                                                <AlertTriangle className="w-4 h-4" /> Flag Issue
                                             </button>
                                             <button 
                                                 onClick={() => {
                                                     showToast("Trace legally verified & pushed to vault.", 'success');
                                                     setSelectedResult(null);
                                                 }}
-                                                className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded text-[11px] font-bold uppercase tracking-wider transition-all shadow-md shadow-emerald-500/20 shadow-sm"
+                                                className="text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-500/20 px-6 py-2.5 rounded-lg text-[11px] font-extrabold uppercase tracking-widest transition-all flex items-center gap-2 active:scale-95"
                                             >
-                                                Sign-Off Trace [A]
+                                                <CheckCircle2 className="w-4 h-4" /> Sign-Off Trace [A]
                                             </button>
                                         </>
                                     ) : (
                                         <>
                                             <button 
                                                 onClick={() => { setSelectedResult(null); }}
-                                                className="bg-white text-rose-600 border border-rose-200 hover:bg-rose-50 px-3.5 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider transition-colors shadow-sm"
+                                                className="text-slate-500 hover:text-rose-600 bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-200/60 px-5 py-2.5 rounded-lg text-[11px] font-extrabold uppercase tracking-widest transition-colors flex items-center gap-2"
                                             >
-                                                Dismiss Tooling
+                                                <X className="w-4 h-4" /> Dismiss False Alarm
                                             </button>
                                             <button 
                                                 onClick={() => {
                                                     showToast("CAPA Engineering Epic created in QMS.", 'success');
                                                     setSelectedResult(null);
                                                 }}
-                                                className="bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-1.5 px-5 py-2 rounded text-[11px] font-bold uppercase tracking-wider transition-all shadow-md shadow-indigo-500/20"
+                                                className="text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 px-6 py-2.5 rounded-lg text-[11px] font-extrabold uppercase tracking-widest transition-all flex items-center gap-2 active:scale-95"
                                             >
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> 
                                                 Assign to eQMS/Jira
                                             </button>
                                         </>
                                     )}
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
