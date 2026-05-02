@@ -488,11 +488,11 @@ function ReportsContent() {
     const exportCSV = () => {
         if (!report) return;
         
-        let reportTitle = "Gap_Analysis";
-        if (activeTemplate === '510k') reportTitle = "510k_Matrix";
-        else if (activeTemplate === 'capa') reportTitle = "CAPA_Action_Log";
-        else if (activeTemplate === 'complaint') reportTitle = "MAUDE_Signals";
-        else if (activeTemplate === 'executive') reportTitle = "Audit_Metrics";
+        let reportTitle = "Gap-Analysis";
+        if (activeTemplate === '510k') reportTitle = "eSTAR-Mapping";
+        else if (activeTemplate === 'capa') reportTitle = "Action-Log";
+        else if (activeTemplate === 'complaint') reportTitle = "MAUDE-Signals";
+        else if (activeTemplate === 'executive') reportTitle = "Audit-Metrics";
         
         const headers = [
             "GAP ID", "STANDARD", "§", "REQUIREMENT", "STATUS", 
@@ -976,7 +976,8 @@ function ReportsContent() {
             }
         }
 
-        doc.save(`TraceBridge-${fileNameSuffix}-${report.upload.deviceName.replace(/\s+/g, "-")}.pdf`);
+        const dateStr = new Date().toISOString().split('T')[0].replace(/-/g, "");
+        doc.save(`TraceBridge-${fileNameSuffix}-${report.upload.deviceName.replace(/\s+/g, "-")}_${dateStr}_v3.pdf`);
     };
 
     // Navigate between gaps in modal
