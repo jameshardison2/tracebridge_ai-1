@@ -479,6 +479,31 @@ function ResultsContent() {
         return () => clearInterval(interval);
     }, [uploadId, report]);
 
+    // Keyboard Shortcuts for Modal Actions
+    useEffect(() => {
+        if (!selectedResult) return;
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+            
+            const key = e.key.toLowerCase();
+            if (key === 's') {
+                e.preventDefault();
+                navigateGap("next");
+            } else if (key === 'a') {
+                e.preventDefault();
+                if (selectedResult.status === "compliant") {
+                    showToast("Trace legally verified & pushed to vault.", 'success');
+                } else {
+                    showToast("CAPA Engineering Epic created in QMS.", 'success');
+                }
+                setSelectedResult(null);
+            }
+        };
+        
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [selectedResult]);
+
     const exportJSON = () => {
         if (!report) return;
         const blob = new Blob([JSON.stringify(report, null, 2)], {
@@ -1619,7 +1644,7 @@ function ResultsContent() {
                                 {/* Core Actions */}
                                 <div className="flex items-center gap-3 shrink-0">
                                     <button onClick={() => navigateGap("next")} className="text-slate-400 hover:text-slate-700 bg-white hover:bg-slate-50 text-[10px] font-extrabold px-3 py-2.5 rounded-lg transition-colors uppercase tracking-widest border border-slate-200/60 hidden sm:inline-block">
-                                        Skip [S]
+                                        Skip <kbd className="ml-1 bg-slate-100 border border-slate-200 rounded px-1.5 py-0.5 text-[9px] font-mono text-slate-500 font-extrabold shadow-sm">S</kbd>
                                     </button>
                                     
                                     {selectedResult.status === "compliant" ? (
@@ -1637,7 +1662,7 @@ function ResultsContent() {
                                                 }}
                                                 className="text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-500/20 px-6 py-2.5 rounded-lg text-[11px] font-extrabold uppercase tracking-widest transition-all flex items-center gap-2 active:scale-95"
                                             >
-                                                <CheckCircle2 className="w-4 h-4" /> Sign-Off Trace [A]
+                                                <CheckCircle2 className="w-4 h-4" /> Sign-Off Trace <kbd className="ml-1.5 bg-emerald-500/30 border border-emerald-400/50 rounded px-1.5 py-0.5 text-[9px] font-mono text-white font-extrabold shadow-sm">A</kbd>
                                             </button>
                                         </>
                                     ) : (
@@ -1656,7 +1681,7 @@ function ResultsContent() {
                                                 className="text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 px-6 py-2.5 rounded-lg text-[11px] font-extrabold uppercase tracking-widest transition-all flex items-center gap-2 active:scale-95"
                                             >
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> 
-                                                Assign to eQMS/Jira
+                                                Assign to eQMS/Jira <kbd className="ml-1.5 bg-indigo-500/30 border border-indigo-400/50 rounded px-1.5 py-0.5 text-[9px] font-mono text-white font-extrabold shadow-sm">A</kbd>
                                             </button>
                                         </>
                                     )}
