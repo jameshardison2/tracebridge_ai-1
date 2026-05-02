@@ -50,9 +50,27 @@ export default function TeamPage() {
     const [submittingFeedback, setSubmittingFeedback] = useState(false);
     const [votedFeature, setVotedFeature] = useState<string | null>(null);
 
+    const [logs, setLogs] = useState<any[]>([]);
+
     useEffect(() => {
-        if (user) fetchTeam();
+        if (user) {
+            fetchTeam();
+            fetchLogs();
+        }
     }, [user]);
+
+    const fetchLogs = async () => {
+        if (!user) return;
+        try {
+            const res = await fetch(`/api/logs?userId=${user?.uid}`);
+            const json = await res.json();
+            if (json.success) {
+                setLogs(json.data);
+            }
+        } catch (e) {
+            console.error("Failed to fetch logs", e);
+        }
+    }
 
     const fetchTeam = async () => {
         try {
@@ -488,23 +506,27 @@ export default function TeamPage() {
                                 </p>
                                 
                                 <div className="space-y-4">
-                                    {[
-                                        { action: "Document Uploaded", details: "TraceGlow_V3_Architecture.pdf ingested for scanning.", user: user?.displayName || "Current User", time: "Just now", type: "upload" },
-                                        { action: "Gap Remediated", details: "Gap ID: IEC-62304-5.3 marked as Compliant.", user: "Aisha P. (QA)", time: "2 hours ago", type: "resolve" },
-                                        { action: "Non-Conformance Assigned", details: "Gap ID: ISO-13485-7.1 assigned to Engineering.", user: "Sarah R. (RA)", time: "Yesterday", type: "assign" },
-                                    ].map((log, idx) => (
-                                        <div key={idx} className="flex gap-4 p-3 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-colors">
-                                            <div className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${log.type === 'upload' ? 'bg-blue-500' : log.type === 'resolve' ? 'bg-emerald-500' : 'bg-amber-500'}`}></div>
+                                    {logs.length > 0 ? logs.map((log, idx) => (
+                                        <div key={log.id || idx} className="flex gap-4 p-3 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-colors">
+                                            <div className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${log.action === 'upload' ? 'bg-blue-500' : log.action === 'resolve' ? 'bg-emerald-500' : 'bg-amber-500'}`}></div>
                                             <div>
-                                                <p className="text-sm font-bold text-slate-900">{log.action}</p>
-                                                <p className="text-xs text-slate-500 mt-0.5">{log.details}</p>
+                                                <p className="text-sm font-bold text-slate-900 capitalize">{log.action.replace('_', ' ')}</p>
+                                                <p className="text-xs text-slate-500 mt-0.5">
+                                                    {log.action === 'upload' ? `${log.details.deviceName} document uploaded.` : JSON.stringify(log.details)}
+                                                </p>
                                                 <div className="flex items-center gap-2 mt-2">
-                                                    <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-medium">{log.user}</span>
-                                                    <span className="text-[10px] text-slate-400">{log.time}</span>
+                                                    <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-medium">{log.userId === 'system' ? 'System' : 'QA User'}</span>
+                                                    <span className="text-[10px] text-slate-400">
+                                                        {log.createdAt?._seconds ? new Date(log.createdAt._seconds * 1000).toLocaleString() : "Just now"}
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
-                                    ))}
+                                    )) : (
+                                        <div className="p-6 text-center text-sm text-slate-500 bg-slate-50 rounded-xl border border-slate-100 border-dashed">
+                                            No audit events recorded yet. Upload a document to trigger the Part 11 log.
+                                        </div>
+                                    )}
                                     
                                     <button className="w-full mt-2 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold py-2.5 rounded-xl border border-slate-200 text-sm transition-all flex items-center justify-center gap-2">
                                         <FileText className="w-4 h-4" />

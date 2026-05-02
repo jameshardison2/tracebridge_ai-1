@@ -2,20 +2,23 @@ import { NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebase-admin";
 
 export async function GET(req: Request) {
-    const { searchParams } = new URL(req.url);
-    const uploadId = searchParams.get("uploadId");
+        const { searchParams } = new URL(req.url);
+        const uploadId = searchParams.get("uploadId");
+        const userId = searchParams.get("userId");
 
+        try {
+            if (!adminDb) {
+                return NextResponse.json({ success: true, data: [] });
+            }
 
-    try {
-        if (!adminDb) {
-            return NextResponse.json({ success: true, data: [] });
-        }
-
-        let query: FirebaseFirestore.Query = adminDb.collection("auditLogs");
-        
-        if (uploadId) {
-            query = query.where("details.uploadId", "==", uploadId);
-        }
+            let query: FirebaseFirestore.Query = adminDb.collection("auditLogs");
+            
+            if (uploadId) {
+                query = query.where("details.uploadId", "==", uploadId);
+            }
+            if (userId) {
+                query = query.where("userId", "==", userId);
+            }
         
         const logsSnapshot = await query
             .orderBy("createdAt", "desc")
