@@ -1121,7 +1121,11 @@ function ResultsContent() {
                                                 (result.citations && result.citations.length > 0 ? `${result.citations[0].source.split('.').slice(0, -1).join('.')}` : "TRACEGLOW_V3.PDF") 
                                             : "No evidence found"}
                                         </p>
-                                        {result.status !== "gap_detected" && <p className="text-[9px] text-slate-400 mt-0.5 font-bold tracking-widest flex items-center gap-1">Pg {Math.floor(Math.random() * 50) + 1}</p>}
+                                        {result.status !== "gap_detected" && result.citations && result.citations.length > 0 && (
+                                            <p className="text-[9px] text-slate-400 mt-0.5 font-bold tracking-widest flex items-center gap-1">
+                                                Sec {result.citations[0].section}
+                                            </p>
+                                        )}
                                     </td>
                                     {/* Action */}
                                     <td className="px-5 py-4">
