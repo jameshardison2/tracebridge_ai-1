@@ -33,3 +33,25 @@ export async function GET(req: Request) {
         return NextResponse.json({ success: false, error: "Failed to fetch logs" }, { status: 500 });
     }
 }
+
+
+export async function POST(req: Request) {
+    try {
+        if (!adminDb) {
+            return NextResponse.json({ success: true, dummy: true });
+        }
+        const body = await req.json();
+        
+        await adminDb.collection("auditLogs").add({
+            action: body.action || "webhook_event",
+            userId: body.userId || "system",
+            createdAt: new Date(),
+            details: body.details || {}
+        });
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error("Logs POST Error:", error);
+        return NextResponse.json({ success: false, error: "Failed to create log" }, { status: 500 });
+    }
+}

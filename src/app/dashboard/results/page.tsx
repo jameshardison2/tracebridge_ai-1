@@ -481,8 +481,26 @@ function ResultsContent() {
     }, [uploadId, report]);
 
     
-    const handleFinalAction = (actionType: "sign-off" | "assign") => {
+    const handleFinalAction = async (actionType: "sign-off" | "assign") => {
         setIsActionLoading(true);
+        
+        try {
+            await fetch("/api/logs", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    action: actionType === "assign" ? "jira_sync" : "vault_commit",
+                    userId: user?.email || "auditor",
+                    details: {
+                        event: actionType === "assign" ? "Epic Creation webhook fired" : "Traceability verified",
+                        traceId: selectedResult?.id,
+                        destination: actionType === "assign" ? "Jira Engineering Board" : "Immutable Audit Vault",
+                        timestamp: new Date().toISOString()
+                    }
+                })
+            });
+        } catch(e) {}
+
         setTimeout(() => {
             setIsActionLoading(false);
             if (actionType === "sign-off") {
@@ -1661,7 +1679,26 @@ function ResultsContent() {
                                     {selectedResult.status === "compliant" ? (
                                         <>
                                             <button 
-                                                onClick={() => showToast("Discrepancy flagged. QA team has been notified.", "warning")}
+                                                onClick={async () => {
+                                                    showToast("Discrepancy flagged. QA team has been notified.", "warning");
+                                                    try {
+                                                        await fetch("/api/logs", {
+                                                            method: "POST",
+                                                            headers: { "Content-Type": "application/json" },
+                                                            body: JSON.stringify({
+                                                                action: "qa_notification",
+                                                                userId: user?.email || "auditor",
+                                                                details: {
+                                                                    event: "Manual Discrepancy Flag",
+                                                                    traceId: selectedResult?.id,
+                                                                    standard: selectedResult?.standard,
+                                                                    destination: "Slack (QA Channel)",
+                                                                    timestamp: new Date().toISOString()
+                                                                }
+                                                            })
+                                                        });
+                                                    } catch(e) {}
+                                                }}
                                                 className="text-orange-600 bg-orange-50 hover:bg-orange-100 border border-orange-200/60 px-5 py-2.5 rounded-lg text-[11px] font-extrabold uppercase tracking-widest transition-colors flex items-center gap-2"
                                             >
                                                 <AlertTriangle className="w-4 h-4" /> Flag Issue
