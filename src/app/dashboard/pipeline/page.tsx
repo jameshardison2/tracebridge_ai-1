@@ -78,7 +78,7 @@ export default function PipelinePage() {
                     const newTasks: Task[] = (latest.gapResults || []).map((gap: any) => ({
                         id: gap.id,
                         uploadId: latest.id,
-                        status: gap.status === 'compliant' ? 'CLOSED' : (gap.status === 'gap_detected' ? 'DETECTED' : 'TRIAGED'),
+                        status: gap.pipelineStatus || (gap.status === 'compliant' ? 'CLOSED' : (gap.status === 'gap_detected' ? 'DETECTED' : 'TRIAGED')),
                         title: gap.requirement.substring(0,60) + (gap.requirement.length > 60 ? "..." : ""),
                         standard: gap.standard + (gap.section ? ` § ${gap.section}` : ""),
                         priority: gap.severity ? gap.severity.toUpperCase() : "MEDIUM",
@@ -205,6 +205,7 @@ export default function PipelinePage() {
         if (t.status === 'CLOSED') {
             return (
                 <div 
+                    id={`gap-${t.id}`}
                     key={t.id} draggable onDragStart={(e) => onDragStart(e, t.id)}
                     onClick={() => router.push(`/dashboard/results?id=${t.uploadId || 'demo-id'}&demoGap=${t.id}`)}
                     className="bg-white rounded-lg p-4 border border-emerald-100 shadow-sm mb-3 cursor-pointer hover:shadow-md transition-all active:cursor-grabbing"
@@ -222,6 +223,7 @@ export default function PipelinePage() {
         
         return (
             <div 
+                id={`gap-${t.id}`}
                 key={t.id} draggable onDragStart={(e) => onDragStart(e, t.id)}
                 onClick={() => router.push(`/dashboard/results?id=${t.uploadId || 'demo-id'}&demoGap=${t.id}`)}
                 className={`bg-white rounded-lg p-4 border shadow-sm mb-3 cursor-pointer hover:shadow-md hover:border-indigo-400 transition-all active:cursor-grabbing ${borderColor} relative group overflow-hidden`}

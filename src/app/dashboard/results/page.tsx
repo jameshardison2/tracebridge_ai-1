@@ -554,11 +554,11 @@ function ResultsContent() {
                     setSelectedResult(results[currentIdx + 1]);
                 } else {
                     setSelectedResult(null);
-                    router.push(`/dashboard/pipeline${uploadId ? '?id='+uploadId : ''}`);
+                    router.push(`/dashboard/pipeline${uploadId ? '?id='+uploadId : ''}#gap-${currentId}`);
                 }
             } else {
                 setSelectedResult(null);
-                router.push(`/dashboard/pipeline${uploadId ? '?id='+uploadId : ''}`);
+                router.push(`/dashboard/pipeline${uploadId ? '?id='+uploadId : ''}#gap-${currentId}`);
             }
         }, 1200);
     };
@@ -1643,7 +1643,7 @@ function ResultsContent() {
                             {/* Left: Context Navigation & Pipeline */}
                             <div className="flex flex-wrap items-center gap-3 w-full xl:w-auto">
                                 <button 
-                                    onClick={() => router.push(`/dashboard/pipeline${uploadId ? '?id='+uploadId : ''}`)}
+                                    onClick={() => router.push(`/dashboard/pipeline${uploadId ? '?id='+uploadId : ''}#gap-${selectedResult.id}`)}
                                     className="text-slate-500 hover:text-indigo-600 transition-colors flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-widest bg-slate-50 hover:bg-indigo-50 px-4 py-2.5 rounded-lg border border-slate-200/60 whitespace-nowrap"
                                 >
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
