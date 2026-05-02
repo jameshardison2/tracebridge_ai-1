@@ -1,5 +1,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // --- 1. DEVICE PROFILES ---
 const devices = [
@@ -66,15 +70,18 @@ const generateBoilerplate = (device: any, docType: any) => {
         // Randomly inject intentional "gaps" or realistic math
         const random = Math.random();
         
-        if (random < 0.05 && docType.prefix === "SVR") {
-            // Intentional Gap: Missing sample size justification
-            content += `[${id}] Test Execution: The unit was tested. Result: PASS. (Note: Only 1 unit tested due to cost constraints, statistical justification omitted.)\n`;
-        } else if (random < 0.1 && docType.prefix === "BIO") {
-             // Intentional Gap: Missing ISO 10993 cytotoxicity
-            content += `[${id}] Material Assessment: The housing material is ABS plastic. We assume it is biocompatible because it is used in toys. Cytotoxicity testing was waived.\n`;
-        } else if (random < 0.15 && docType.prefix === "CTM") {
-            // Intentional Gap: Insecure protocol
-            content += `[${id}] Network Transport: Telemetry data is transmitted to the cloud via raw HTTP on Port 80 to reduce CPU overhead on the microcontroller.\n`;
+        if (docType.prefix === "SVR" && i === 10) {
+            content += `[${id}] Test Execution: The unit was tested. Result: PASS. Statistical Justification: A sample size of N=30 was used, derived from a 95% confidence and 95% reliability (95/95) requirement for Class II devices.\n`;
+        } else if (docType.prefix === "BIO" && i === 10) {
+            content += `[${id}] Material Assessment: The housing material is ABS plastic. Cytotoxicity testing was performed per ISO 10993-5 using the MEM elution method. The cell viability was >70%, indicating passing results.\n`;
+        } else if (docType.prefix === "CTM" && i === 10) {
+            content += `[${id}] Network Transport: Telemetry data is transmitted to the cloud using TLS 1.3 with AES-256-GCM encryption. Port 80 is strictly disabled at the firewall level.\n`;
+        } else if (docType.prefix === "SBOM" && i === 10) {
+            content += `[${id}] Software Bill of Materials (SBOM): \n- Component: React, Version: 18.2.0, CVEs: None\n- Component: Express, Version: 4.18.2, CVEs: CVE-2022-24999 (Mitigated via WAF)\n`;
+        } else if (docType.prefix === "RMR" && i === 10) {
+            content += `[${id}] Risk Evaluation: A Probability x Severity (PxS) matrix was utilized. The hazard 'Battery Failure' was rated Probability=2, Severity=4. After mitigation, the residual risk was reduced to Probability=1, Severity=4, which is in the acceptable region.\n`;
+        } else if (docType.prefix === "HFE" && i === 10) {
+            content += `[${id}] Usability Testing: Formative usability testing included N=15 subjects representative of the actual intended user population, including 5 registered nurses, 5 physicians, and 5 elderly patients (age 65+).\n`;
         } else if (random < 0.3) {
             // Highly realistic, compliant math and specs
             const tolerances = ["+/- 0.01%", "+/- 1ms", "+/- 5mV", "+/- 0.5°C"];
