@@ -27,8 +27,11 @@ export default function LandingPage() {
           </div>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 text-slate-400 text-xs hidden sm:flex">
-              <Lock className="w-3 h-3" /> SOC-2 Compliant Environment
+              <Lock className="w-3 h-3" /> Enterprise-Grade Security
             </div>
+            <Link href="/login" className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-1.5 rounded text-xs font-bold uppercase tracking-wider transition-colors border border-slate-700">
+              Request Beta Access
+            </Link>
             <Link href="/login" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded text-xs font-bold uppercase tracking-wider transition-colors">
               System Login
             </Link>
@@ -159,7 +162,7 @@ export default function LandingPage() {
             <span className="font-bold text-slate-300 tracking-wider">TRACEBRIDGE AI</span>
           </div>
           <div className="flex gap-6">
-            <span>Enterprise Distribution Phase 2</span>
+
             <span>Cloud Infrastructure Active</span>
           </div>
         </div>

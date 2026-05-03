@@ -421,7 +421,7 @@ export default function UploadPage() {
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-700 rounded shadow-sm flex items-center justify-center text-white font-serif font-bold text-xl">ɢ</div>
                                 <div>
-                                    <h4 className="text-sm font-bold text-emerald-900">Greenlight Guru API</h4>
+                                    <h4 className="text-sm font-bold text-emerald-900">Greenlight Guru API <span className="text-[10px] text-emerald-600/70 font-normal uppercase tracking-wider ml-1">(Coming Soon)</span></h4>
                                     <p className="text-xs text-emerald-700">Sync Master DHR/QMS Records</p>
                                 </div>
                             </div>
@@ -440,7 +440,7 @@ export default function UploadPage() {
                                     <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M11.53 10.67l-5.5-5.5a1.47 1.47 0 00-2.06 0L0 9.11v9.64a1.47 1.47 0 001.47 1.47h9.64l4.03-4.03-3.61-5.52zM21.57 0h-9.64a1.47 1.47 0 00-1.47 1.47v9.64l1.37-1.37L10.6 8.52a2.02 2.02 0 012.86 0l8.11 8.11V1.47A1.47 1.47 0 0020.1 0z"/></svg>
                                 </div>
                                 <div>
-                                    <h4 className="text-sm font-bold text-blue-900">Atlassian Jira</h4>
+                                    <h4 className="text-sm font-bold text-blue-900">Atlassian Jira <span className="text-[10px] text-blue-600/70 font-normal uppercase tracking-wider ml-1">(Coming Soon)</span></h4>
                                     <p className="text-xs text-blue-700">Sync SaMD Spec & Test Cases</p>
                                 </div>
                             </div>
@@ -543,7 +543,7 @@ export default function UploadPage() {
                                 className="w-full text-sm font-bold bg-white border border-slate-200 rounded-lg px-3 py-2.5 outline-none text-slate-700 hover:border-indigo-300 focus:ring-2 focus:ring-indigo-500/20 shadow-sm transition-all"
                             >
                                 <option value="gemini">Google Gemini Cloud (Enterprise ZDR API)</option>
-                                <option value="local">Air-Gapped Local Server (LLaMA 3 - localhost:11434)</option>
+                                <option value="local" disabled>Air-Gapped Local Server (Coming Soon)</option>
                             </select>
                         </div>
                     </div>
@@ -588,7 +588,7 @@ export default function UploadPage() {
                                 <Server className="w-3.5 h-3.5 text-indigo-600" />
                             </div>
                             <div>
-                                <p className="text-[13px] font-bold text-slate-800">Enterprise Air-Gapped Available</p>
+                                <p className="text-[13px] font-bold text-slate-800">Enterprise Air-Gapped (Coming Soon)</p>
                                 <p className="text-xs text-slate-600 leading-relaxed mt-0.5">Need absolute control? Deploy TraceBridge locally on your own private, air-gapped servers using open-source Foundational Models.</p>
                             </div>
                         </div>

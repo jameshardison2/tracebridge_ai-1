@@ -297,7 +297,7 @@ export default function PipelinePage() {
                             Gap Lifecycle Pipeline
                         </h1>
                         <p className="text-sm font-medium text-slate-500 mt-1">
-                            Jira-style state machine • Drag gaps between columns • Real-time sync to Slack
+                            Kanban state machine • Drag gaps between columns • Jira sync (Coming Soon)
                         </p>
                     </div>
                     {isMounted && uploads.length > 0 && (

@@ -257,7 +257,7 @@ export default function TeamPage() {
     const isOwner = team?.ownerId === user?.uid;
 
     const featureOptions = [
-        "Bi-directional Jira Integration",
+        "Bi-directional Jira Integration (Coming Soon)",
         "EU MDR / CE Mark Support",
         "AI Image & Label Analysis",
         "SOC 2 / HIPAA Frameworks"
@@ -293,9 +293,9 @@ export default function TeamPage() {
                         <div className="w-20 h-20 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center mx-auto mb-6 shadow-sm">
                             <Users className="w-10 h-10 text-indigo-600" />
                         </div>
-                        <h2 className="text-3xl font-bold text-slate-900 mb-4 tracking-tight">Establish Your QMS Workspace</h2>
+                        <h2 className="text-3xl font-bold text-slate-900 mb-4 tracking-tight">Set Up Your Team Workspace</h2>
                         <p className="text-slate-500 text-lg max-w-2xl mx-auto">
-                            Deploy a secure, 21 CFR Part 11 compliant infrastructure to centralize gap analysis artifacts and automate cross-functional remediation.
+                            Centralize your compliance artifacts and invite your team to collaborate on resolving gaps.
                         </p>
                     </div>
 
@@ -331,9 +331,9 @@ export default function TeamPage() {
 
                     <div className="glass-card p-8 text-center max-w-xl mx-auto gradient-border shadow-xl relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
-                        <h3 className="text-xl font-bold text-slate-900 mb-2 tracking-tight">Initialize Your Workspace</h3>
+                        <h3 className="text-xl font-bold text-slate-900 mb-2 tracking-tight">Name Your Workspace</h3>
                         <p className="text-slate-500 text-sm mb-6">
-                            Name your workspace to deploy the infrastructure. You can configure your Roster (QA, RA, Engineering) on the next screen.
+                            Name your workspace to get started. You can configure your team roster on the next screen.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-3">
                             <input

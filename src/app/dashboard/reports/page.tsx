@@ -1198,7 +1198,7 @@ function ReportsContent() {
                                         <Eye className="w-5 h-5 text-rose-500 shrink-0 mt-0.5" />
                                         <div>
                                             <p className="text-sm font-bold">Regulatory AI Vector Connected</p>
-                                            <p className="text-xs text-rose-700 mt-1 leading-relaxed text-balance">This template is dynamically linked to 18 live adverse event reports and the MAUDE database to triangulate post-market anomaly signals for your exact product code.</p>
+                                            <p className="text-xs text-rose-700 mt-1 leading-relaxed text-balance">Aggregated simulated post-market anomaly signals from the MAUDE database to triangulate risks for your exact product code.</p>
                                         </div>
                                     </div>
                                     <div className="space-y-3">
@@ -1266,12 +1266,9 @@ function ReportsContent() {
                                     <h2 className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Layout Engine</h2>
                                     <p className="text-[10px] text-slate-500 mt-0.5">Wireframe updates dynamically.</p>
                                 </div>
-                                <div className="flex items-center gap-2 bg-slate-800 px-3 py-1 rounded-full border border-slate-700">
-                                    <span className="flex h-2 w-2 relative">
-                                        <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-emerald-400 opacity-75"></span>
-                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                                    </span>
-                                    <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Live</span>
+                                <div className="flex items-center gap-2 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
+                                    <span className="text-[9px] font-bold text-emerald-600 uppercase tracking-widest">Active</span>
                                 </div>
                             </div>
 
@@ -2222,7 +2219,7 @@ function ReportsContent() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
                     <div className="bg-white rounded-2xl border border-[var(--border)] w-[95vw] lg:max-w-2xl max-h-[80vh] flex flex-col shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
                         <div className="bg-slate-50 border-b border-[var(--border)] px-6 py-4 flex items-center justify-between shrink-0">
-                            <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-emerald-500"></span> Live Activity Stream</h2>
+                            <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-emerald-500"></span> Session Activity Stream</h2>
                             <button onClick={() => setLogsModalOpen(false)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
                         </div>
                         <div className="p-6 overflow-y-auto custom-scrollbar flex-1 space-y-4">

@@ -311,7 +311,7 @@ export default function DashboardPage() {
                                     <tr key={sub.id} className="hover:bg-slate-50 transition-colors">
                                         <td className="px-4 py-3">
                                             <div className="flex items-center gap-2 mb-0.5">
-                                                <span className="font-bold text-sm text-slate-900 block truncate max-w-[200px]">
+                                                <span className="font-bold text-sm text-slate-900 block max-w-[250px] leading-tight">
                                                     {sub.deviceName}
                                                 </span>
                                                 <span className="bg-slate-800 text-white text-[9px] font-bold px-1.5 py-0.5 rounded tracking-widest uppercase shadow-sm">

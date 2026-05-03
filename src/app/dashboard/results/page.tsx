@@ -1227,6 +1227,11 @@ function ResultsContent() {
 
             {/* Results Table */}
             <div className="bg-[var(--card)] w-full">
+                <div className="px-5 py-3 border-b border-[var(--border)] bg-slate-50 flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">
+                        Showing {sortedResults.length} requirements
+                    </span>
+                </div>
                 <table className="w-full text-left border-collapse">
                     <thead>
                         <tr className="border-b border-[var(--border)] bg-white select-none">
@@ -1322,7 +1327,7 @@ function ResultsContent() {
                                     <td className="px-5 py-4">
                                         <p className="text-[9px] text-slate-500 font-mono tracking-tight line-clamp-2 max-w-[180px] uppercase font-semibold">
                                             {result.status !== "gap_detected" ? 
-                                                (result.citations && result.citations.length > 0 ? `${result.citations[0].source.replace(/^[^_]+_[^_]+_/, '').replace(/_v[0-9.]+\.(txt|pdf|docx)$/i, '').replace(/_/g, ' ')}` : "TRACEGLOW V3") 
+                                                (result.citations && result.citations.length > 0 ? `${result.citations[0].source.replace(/^[^_]+_[^_]+_/, '').replace(/_v[0-9.]+\.(txt|pdf|docx)$/i, '').replace(/_/g, ' ')}` : "Source Document") 
                                             : "No evidence found"}
                                         </p>
                                         {result.status !== "gap_detected" && result.citations && result.citations.length > 0 && result.citations[0].section && (
@@ -1714,10 +1719,11 @@ function ResultsContent() {
                                                                 showToast("CAPA Engineering Epic created in QMS.", 'success');
                                                                 setSelectedResult(null);
                                                             }}
-                                                            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[12px] py-3.5 px-4 flex items-center justify-center gap-2 border border-emerald-500 transition-all font-bold shadow-md shadow-emerald-600/20 active:scale-[0.98] animate-in slide-in-from-bottom-2 fade-in duration-300"
+                                                            disabled
+                                                            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[12px] py-3.5 px-4 flex items-center justify-center gap-2 border border-emerald-500 transition-all font-bold shadow-md shadow-emerald-600/20 active:scale-[0.98] animate-in slide-in-from-bottom-2 fade-in duration-300 opacity-50 cursor-not-allowed"
                                                         >
                                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                                            Publish Epic to Jira
+                                                            Publish Epic to Jira (Coming Soon)
                                                         </button>
                                                     </div>
                                                 </div>
@@ -1938,13 +1944,13 @@ function ResultsContent() {
                                             </button>
                                             <button 
                                                 onClick={() => handleFinalAction("assign")}
-                                                disabled={isActionLoading}
-                                                className="text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 px-6 py-2.5 rounded-lg text-[11px] font-extrabold uppercase tracking-widest transition-all flex items-center gap-2 active:scale-95 disabled:opacity-70"
+                                                disabled={true}
+                                                className="text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 px-6 py-2.5 rounded-lg text-[11px] font-extrabold uppercase tracking-widest transition-all flex items-center gap-2 active:scale-95 opacity-50 cursor-not-allowed"
                                             >
                                                 {isActionLoading ? (
                                                     <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Syncing Jira...</>
                                                 ) : (
-                                                    <><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> Assign to eQMS/Jira <kbd className="ml-1.5 bg-indigo-500/30 border border-indigo-400/50 rounded px-1.5 py-0.5 text-[9px] font-mono text-white font-extrabold shadow-sm">A</kbd></>
+                                                    <><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> Assign to Jira (Coming Soon) <kbd className="ml-1.5 bg-indigo-500/30 border border-indigo-400/50 rounded px-1.5 py-0.5 text-[9px] font-mono text-white font-extrabold shadow-sm">A</kbd></>
                                                 )}
                                             </button>
                                         </>
