@@ -81,9 +81,13 @@ export default function DashboardPage() {
         try {
             setLoading(true);
             const token = await user.getIdToken();
-            const res = await fetch("/api/admin/seed", {
+            const res = await fetch("/api/admin/run-golden-dataset", {
                 method: "POST",
-                headers: { "Authorization": `Bearer ${token}` }
+                headers: { 
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ userId: user.uid })
             });
             const data = await res.json();
             if (data.success) {

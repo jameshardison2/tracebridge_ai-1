@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { adminDb } from "@/lib/firebase-admin";
+import { adminDb, verifyIdToken } from "@/lib/firebase-admin";
 import { Timestamp } from "firebase-admin/firestore";
 
 const DEVICE_VARIANTS = [
@@ -60,6 +60,17 @@ export async function POST(request: Request) {
     try {
         if (!adminDb) {
             return NextResponse.json({ success: false, error: "Firebase not configured" }, { status: 503 });
+        }
+        
+        const authHeader = request.headers.get("Authorization");
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+        }
+        
+        const idToken = authHeader.split("Bearer ")[1];
+        const verification = await verifyIdToken(idToken);
+        if (!verification.success || !verification.uid) {
+            return NextResponse.json({ success: false, error: "Invalid token" }, { status: 401 });
         }
 
         const body = await request.json();
