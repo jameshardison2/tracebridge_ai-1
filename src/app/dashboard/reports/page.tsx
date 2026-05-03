@@ -1216,7 +1216,7 @@ function ReportsContent() {
                             <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-6 flex items-center justify-between">
                                 <span>3. Report Customization</span>
                                 <span className="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded font-medium">OPTIONAL</span>
-                            </h2>
+                            </h4>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-slate-500 uppercase">Prepared By (Name)</label>

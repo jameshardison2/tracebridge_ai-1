@@ -263,7 +263,7 @@ export default function DashboardPage() {
                     <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
                         <Shield className="w-4 h-4 text-[var(--primary)]" />
                         Master System Query List
-                    </h2>
+                    </h4>
                 </div>
                 
                 <div className="overflow-x-auto w-full">
