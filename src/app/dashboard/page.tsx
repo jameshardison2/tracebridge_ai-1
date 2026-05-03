@@ -14,7 +14,9 @@ import {
     Clock,
     Search,
     Loader2,
-    Trash2
+    Trash2,
+    HelpCircle,
+    X
 } from "lucide-react";
 
 interface Upload {
@@ -32,6 +34,7 @@ export default function DashboardPage() {
     const [loading, setLoading] = useState(true);
     const { user } = useAuth();
     const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
+    const [showGuide, setShowGuide] = useState(false);
 
     const handleSort = (key: string) => {
         let direction: 'asc' | 'desc' = 'asc';
@@ -74,7 +77,7 @@ export default function DashboardPage() {
     };
 
     const handleSeedBackdoor = async () => {
-        if (!user || !window.confirm("DEVELOPER BACKDOOR: Seed 30 Demo Enterprise Documents?")) return;
+        if (!user || !window.confirm("This will load the TraceBridge Golden Demo Dataset into your workspace. Proceed?")) return;
         try {
             setLoading(true);
             const token = await user.getIdToken();
@@ -157,12 +160,19 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex gap-3">
                     <button
+                        onClick={() => setShowGuide(true)}
+                        className="bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 transition-colors px-4 py-2 rounded-md text-sm font-bold flex items-center gap-2 shadow-sm"
+                    >
+                        <HelpCircle className="w-4 h-4" />
+                        User Guide
+                    </button>
+                    <button
                         onClick={handleSeedBackdoor}
                         disabled={loading}
                         className="bg-indigo-600 text-white hover:bg-indigo-700 transition-colors px-4 py-2 rounded-md text-sm font-bold flex items-center gap-2 shadow-sm disabled:opacity-50"
                     >
                         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
-                        Inject 30 Demo Audits
+                        Load Golden Demo Dataset
                     </button>
                     <Link
                         href="/dashboard/upload"
@@ -359,6 +369,64 @@ export default function DashboardPage() {
                 </div>
             </div>
 
+            {/* Quick Start Guide Modal */}
+            {showGuide && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden border border-slate-200">
+                        <div className="flex justify-between items-center p-6 border-b border-slate-100 bg-slate-50">
+                            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                                <Shield className="w-5 h-5 text-[var(--primary)]" />
+                                TraceBridge Quick Start Guide
+                            </h2>
+                            <button onClick={() => setShowGuide(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
+                                <X className="w-6 h-6" />
+                            </button>
+                        </div>
+                        <div className="p-6 space-y-6 text-slate-600">
+                            <p className="text-sm">Welcome to the TraceBridge Enterprise Quality Management Beta. Here is how to evaluate the platform:</p>
+                            
+                            <div className="space-y-4">
+                                <div className="flex gap-4">
+                                    <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold shrink-0">1</div>
+                                    <div>
+                                        <h3 className="font-bold text-slate-800">Load the Golden Dataset</h3>
+                                        <p className="text-sm text-slate-500 mt-1">Click the <strong>Load Golden Demo Dataset</strong> button to instantly populate your workspace with pre-configured regulatory audits to see how the system handles complex data.</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4">
+                                    <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold shrink-0">2</div>
+                                    <div>
+                                        <h3 className="font-bold text-slate-800">Review the Pipeline</h3>
+                                        <p className="text-sm text-slate-500 mt-1">Navigate to the <strong>Pipeline Tracker</strong> to view the AI-driven gap detection. See how TraceBridge automatically flags missing ISO 13485 or FDA requirements.</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4">
+                                    <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold shrink-0">3</div>
+                                    <div>
+                                        <h3 className="font-bold text-slate-800">Export Traceability Matrices</h3>
+                                        <p className="text-sm text-slate-500 mt-1">Go to the <strong>Reports Hub</strong> to generate deterministic, FDA-ready Part 11 compliant traceability matrices with zero manual spreadsheet work.</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4">
+                                    <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold shrink-0">4</div>
+                                    <div>
+                                        <h3 className="font-bold text-slate-800">Explore the Team Workspace</h3>
+                                        <p className="text-sm text-slate-500 mt-1">Check out the <strong>Team Workspace</strong> to request new framework integrations (like SOC 2) and view the immutable background audit trail.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="p-6 bg-slate-50 border-t border-slate-100 flex justify-end">
+                            <button 
+                                onClick={() => setShowGuide(false)}
+                                className="bg-[var(--primary)] text-white px-6 py-2 rounded font-bold shadow hover:bg-blue-800 transition-colors"
+                            >
+                                Get Started
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
