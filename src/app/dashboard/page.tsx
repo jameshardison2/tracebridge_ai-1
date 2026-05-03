@@ -386,8 +386,17 @@ export default function DashboardPage() {
                                 <X className="w-6 h-6" />
                             </button>
                         </div>
-                        <div className="p-6 space-y-6 text-slate-600">
-                            <p className="text-sm">Welcome to the TraceBridge Enterprise Quality Management Beta. Here is how to evaluate the platform:</p>
+                        <div className="p-6 space-y-6 text-slate-600 max-h-[70vh] overflow-y-auto">
+                            <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-2">
+                                <h3 className="font-bold text-blue-900 flex items-center gap-2 mb-2">
+                                    <Shield className="w-4 h-4" /> Enterprise-Grade Security
+                                </h3>
+                                <p className="text-sm text-blue-800">
+                                    Your data is protected by a <strong>Zero-Trust Architecture</strong>. All uploads are processed in ephemeral, isolated containers, and system activities are permanently recorded in our <strong>Immutable Audit Vault</strong> to ensure strict <strong>FDA 21 CFR Part 11 Compliance</strong>.
+                                </p>
+                            </div>
+
+                            <p className="text-sm font-medium">Welcome to the TraceBridge Enterprise Quality Management Beta. Here is how to evaluate the platform:</p>
                             
                             <div className="space-y-4">
                                 <div className="flex gap-4">
