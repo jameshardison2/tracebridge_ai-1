@@ -23,6 +23,7 @@ import {
     FileSearch,
     Printer,
     Loader2,
+    Check
 } from "lucide-react";
 
 interface GapResult {
@@ -146,6 +147,7 @@ function ReportsContent() {
     const [engineRta, setEngineRta] = useState(false);
     const [pendingExport, setPendingExport] = useState<'pdf' | 'csv' | null>(null);
     const [viewMode, setViewMode] = useState<'builder' | 'preview'>('builder');
+    const [bypassLockout, setBypassLockout] = useState(false);
 
     // Custom Report Signatures State
     const [authorName, setAuthorName] = useState("James N. Hardison II");
@@ -1450,21 +1452,30 @@ function ReportsContent() {
 
                                 {/* Action Buttons Fixed at Bottom of Preview */}
                                 <div className="mt-auto pt-6 bg-[#0f172a] relative z-20">
-                                    {hasUnresolvedGaps && (
-                                        <div className="mb-3 px-3 py-2 bg-rose-500/10 border border-rose-500/30 rounded-lg flex items-start gap-2">
-                                            <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                                {hasUnresolvedGaps && (
+                                    <div className="mb-3 px-3 py-2 bg-rose-500/10 border border-rose-500/30 rounded-lg flex items-start gap-2">
+                                        <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                                        <div>
                                             <p className="text-[11px] font-medium text-rose-300 leading-tight">
                                                 <strong className="font-bold text-rose-200 uppercase tracking-wider">Draft Lockout:</strong> You cannot export final regulatory submissions while critical gaps remain unresolved in the triage pipeline.
                                             </p>
+                                            <label className="flex items-center gap-2 mt-2 cursor-pointer w-fit group">
+                                                <div className={`w-3.5 h-3.5 rounded-sm border flex items-center justify-center transition-colors ${bypassLockout ? 'bg-rose-500 border-rose-500' : 'bg-slate-900 border-slate-600 group-hover:border-rose-400'}`}>
+                                                    {bypassLockout && <Check className="w-2.5 h-2.5 text-white" />}
+                                                </div>
+                                                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider group-hover:text-slate-300">Bypass Lockout (Beta Only)</span>
+                                                <input type="checkbox" className="hidden" checked={bypassLockout} onChange={(e) => setBypassLockout(e.target.checked)} />
+                                            </label>
                                         </div>
-                                    )}
+                                    </div>
+                                )}
                                     <div className="grid gap-3 pb-2">
                                         {activeTemplate === '510k' && (
                                             <div className="grid grid-cols-2 gap-3">
-                                                <button disabled={hasUnresolvedGaps} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                                                <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                                                     <Download className="w-[1.125rem] h-[1.125rem]" /> eSTAR Mapping (.csv)
                                                 </button>
-                                                <button disabled={hasUnresolvedGaps} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                                                <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                                                     <Download className="w-[1.125rem] h-[1.125rem]" /> 510(k) Submission Matrix (.pdf)
                                                 </button>
                                                 <button onClick={() => { generateLiveReport(); setViewMode('preview'); }} className="col-span-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] transition-all">
@@ -1474,10 +1485,10 @@ function ReportsContent() {
                                         )}
                                         {activeTemplate === 'capa' && (
                                             <div className="grid grid-cols-2 gap-3">
-                                                <button disabled={hasUnresolvedGaps} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                                                <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                                                     <Download className="w-[1.125rem] h-[1.125rem]" /> Action Log (.csv)
                                                 </button>
-                                                <button disabled={hasUnresolvedGaps} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                                                <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                                                     <Download className="w-[1.125rem] h-[1.125rem]" /> Report (.pdf)
                                                 </button>
                                                 <button onClick={() => { generateLiveReport(); setViewMode('preview'); }} className="col-span-2 bg-rose-600 hover:bg-rose-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(225,29,72,0.3)] hover:shadow-[0_0_25px_rgba(225,29,72,0.5)] transition-all">
@@ -1487,10 +1498,10 @@ function ReportsContent() {
                                         )}
                                         {activeTemplate === 'complaint' && (
                                             <div className="grid grid-cols-2 gap-3">
-                                                <button disabled={hasUnresolvedGaps} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                                                <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                                                     <Download className="w-[1.125rem] h-[1.125rem]" /> MAUDE (.csv)
                                                 </button>
-                                                <button disabled={hasUnresolvedGaps} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                                                <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                                                     <Download className="w-[1.125rem] h-[1.125rem]" /> Report (.pdf)
                                                 </button>
                                                 <button onClick={() => { generateLiveReport(); setViewMode('preview'); }} className="col-span-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(5,150,105,0.3)] hover:shadow-[0_0_25px_rgba(5,150,105,0.5)] transition-all">
@@ -1500,7 +1511,7 @@ function ReportsContent() {
                                         )}
                                         {activeTemplate === 'executive' && (
                                             <div className="grid grid-cols-1 gap-3">
-                                                <button disabled={hasUnresolvedGaps} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                                                <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                                                     <ExternalLink className="w-[1.125rem] h-[1.125rem]" /> Generate Audit Attestation (.pdf)
                                                 </button>
                                             </div>
