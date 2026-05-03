@@ -1088,14 +1088,7 @@ function ResultsContent() {
                         </p>
                     </div>
 
-                    <div className="flex gap-2">
-                        <button onClick={exportCSV} className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 shadow-sm transition-colors">
-                            <Download className="w-4 h-4" /> eSTAR Mapping (.csv)
-                        </button>
-                        <button onClick={exportPDF} className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 shadow-sm transition-colors">
-                            <ExternalLink className="w-4 h-4" /> 510(k) Submission Matrix (.pdf)
-                        </button>
-                    </div>
+
                 </div>
 
                 {/* Scorecards Grid */}
