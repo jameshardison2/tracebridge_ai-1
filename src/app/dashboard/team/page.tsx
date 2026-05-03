@@ -517,20 +517,20 @@ export default function TeamPage() {
                             </div>
 
                             {/* Premium Early Access Survey */}
-                            <div className="bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 rounded-full blur-[50px] group-hover:bg-indigo-500/30 transition-colors"></div>
+                            <div className="bg-white border border-indigo-100 rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full blur-[50px] group-hover:bg-indigo-100 transition-colors"></div>
                                 
                                 <div className="relative z-10">
-                                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded border border-indigo-500/30 bg-indigo-500/10 mb-4">
-                                        <Lightbulb className="w-3 h-3 text-indigo-400" />
-                                        <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-300">Partner Program</span>
+                                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-indigo-200 bg-indigo-50 mb-4">
+                                        <Lightbulb className="w-3.5 h-3.5 text-indigo-600" />
+                                        <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-700">Feature Request</span>
                                     </div>
                                     
-                                    <h3 className="text-xl font-bold text-white mb-2 tracking-tight">
-                                        Shape the Roadmap
+                                    <h3 className="text-xl font-bold text-slate-900 mb-2 tracking-tight">
+                                        What should we build next?
                                     </h3>
-                                    <p className="text-sm text-slate-400 mb-6 leading-relaxed font-light">
-                                        TraceBridge is actively expanding enterprise workflows. Submit operational feedback, integration requests, or feature enhancements directly to the founding team.
+                                    <p className="text-sm text-slate-600 mb-6 leading-relaxed">
+                                        Tell us what features, integrations, or compliance frameworks would make TraceBridge perfect for your team. We build directly from user feedback.
                                     </p>
                                     
                                     <div className="space-y-4">
@@ -538,18 +538,18 @@ export default function TeamPage() {
                                             <textarea
                                                 value={feedbackText}
                                                 onChange={(e) => setFeedbackText(e.target.value)}
-                                                placeholder="e.g., The hazard matrix export needs ISO 14971 mapping..."
-                                                className="w-full h-32 p-4 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:bg-white/10 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition-all resize-none placeholder:text-slate-600"
+                                                placeholder="e.g., We really need an export to Jira feature..."
+                                                className="w-full h-32 p-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all resize-none placeholder:text-slate-400"
                                             ></textarea>
                                         </div>
                                         
                                         <button
                                             onClick={() => submitFeedback("open_feedback", feedbackText)}
                                             disabled={submittingFeedback || !feedbackText.trim()}
-                                            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-3.5 rounded-xl text-sm flex items-center justify-center gap-2 disabled:opacity-50 transition-all shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)]"
+                                            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3.5 rounded-xl text-sm flex items-center justify-center gap-2 disabled:opacity-50 transition-all shadow-sm hover:shadow"
                                         >
                                             {submittingFeedback ? <Loader2 className="w-4 h-4 animate-spin" /> : <MessageSquare className="w-4 h-4" />}
-                                            Submit Secure Feedback
+                                            Submit Request
                                         </button>
                                     </div>
                                 </div>
