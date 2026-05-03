@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import {
     BarChart3,
@@ -32,6 +33,7 @@ interface Upload {
 export default function DashboardPage() {
     const [submissions, setSubmissions] = useState<Upload[]>([]);
     const [loading, setLoading] = useState(true);
+    const router = useRouter();
     const { user } = useAuth();
     const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
     const [showGuide, setShowGuide] = useState(false);
@@ -392,53 +394,52 @@ export default function DashboardPage() {
                                     <Shield className="w-4 h-4" /> Enterprise-Grade Security
                                 </h3>
                                 <p className="text-sm text-blue-800">
-                                    Your data is protected by a <strong>Zero-Trust Architecture</strong>. All uploads are processed in ephemeral, isolated containers, and system activities are permanently recorded in our <strong>Immutable Audit Vault</strong> to ensure strict <strong>FDA 21 CFR Part 11 Compliance</strong>.
+                                    Your data is protected by a <strong>Zero-Trust Architecture</strong>. All uploads are processed in ephemeral, isolated containers, and system activities are permanently recorded in our <strong>Secure Audit Log</strong> to ensure strict <strong>FDA 21 CFR Part 11 Compliance</strong>.
                                 </p>
                             </div>
 
-                            <p className="text-sm font-medium">Welcome to the TraceBridge Enterprise Quality Management Beta. Here is how to evaluate the platform:</p>
+                            <p className="text-sm font-medium">
+                                Welcome to the TraceBridge Enterprise Quality Management Beta! This is a closed beta — your feedback directly shapes the product. Use the feedback button in the bottom right to flag anything unexpected. Here is how to evaluate the platform:
+                            </p>
                             
                             <div className="space-y-4">
                                 <div className="flex gap-4">
                                     <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold shrink-0">1</div>
                                     <div>
-                                        <h3 className="font-bold text-slate-800">Load the Golden Dataset (Optional)</h3>
-                                        <p className="text-sm text-slate-500 mt-1">Click the <strong>Load Golden Demo Dataset</strong> button to instantly populate your workspace with pre-configured regulatory audits to see how the system handles complex data.</p>
-                                    </div>
-                                </div>
-                                <div className="flex gap-4">
-                                    <div className="w-8 h-8 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center font-bold shrink-0">2</div>
-                                    <div>
                                         <h3 className="font-bold text-slate-800">Upload Your Own DHF / 510(k)</h3>
-                                        <p className="text-sm text-slate-500 mt-1">Click <strong>Initiate Device Audit</strong> to upload your own Design History File (DHF), Risk Management, or V&V documents to test the AI against your real-world data.</p>
+                                        <p className="text-sm text-slate-500 mt-1">Click <strong>Initiate Device Audit</strong> to upload your own Design History File, Risk Management, or V&V documents and test the AI against your real-world data.</p>
+                                        <p className="text-sm text-slate-500 mt-2"><em>Don't have a document ready?</em> Click <strong>Load Golden Demo Dataset</strong> on the dashboard to explore the platform using a pre-configured AED submission and see how TraceBridge handles a real device type.</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
-                                    <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold shrink-0">3</div>
+                                    <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold shrink-0">2</div>
                                     <div>
                                         <h3 className="font-bold text-slate-800">Review the Pipeline</h3>
                                         <p className="text-sm text-slate-500 mt-1">Navigate to the <strong>Pipeline Tracker</strong> to view the AI-driven gap detection. See how TraceBridge automatically flags missing ISO 13485 or FDA requirements.</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
-                                    <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold shrink-0">4</div>
+                                    <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold shrink-0">3</div>
                                     <div>
                                         <h3 className="font-bold text-slate-800">Export Traceability Matrices</h3>
                                         <p className="text-sm text-slate-500 mt-1">Go to the <strong>Reports Hub</strong> to generate deterministic, FDA-ready Part 11 compliant traceability matrices with zero manual spreadsheet work.</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
-                                    <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold shrink-0">5</div>
+                                    <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold shrink-0">4</div>
                                     <div>
                                         <h3 className="font-bold text-slate-800">Explore the Team Workspace</h3>
-                                        <p className="text-sm text-slate-500 mt-1">Check out the <strong>Team Workspace</strong> to request new framework integrations (like SOC 2) and view the immutable background audit trail.</p>
+                                        <p className="text-sm text-slate-500 mt-1">Check out the <strong>Team Workspace</strong> to request new framework integrations (like EU MDR) and view the background audit log.</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div className="p-6 bg-slate-50 border-t border-slate-100 flex justify-end">
                             <button 
-                                onClick={() => setShowGuide(false)}
+                                onClick={() => {
+                                    setShowGuide(false);
+                                    router.push('/dashboard/upload');
+                                }}
                                 className="bg-[var(--primary)] text-white px-6 py-2 rounded font-bold shadow hover:bg-blue-800 transition-colors"
                             >
                                 Get Started
