@@ -51,6 +51,15 @@ export default function TeamPage() {
     const [submittingFeedback, setSubmittingFeedback] = useState(false);
     const [votedFeature, setVotedFeature] = useState<string | null>(null);
 
+    const [frameworks, setFrameworks] = useState([
+        { id: 'iso13485', name: 'ISO 13485:2016', active: true, available: true },
+        { id: 'fda820', name: 'FDA 21 CFR Part 820', active: true, available: true },
+        { id: 'iec62304', name: 'IEC 62304:2006', active: true, available: true },
+        { id: 'eumdr', name: 'EU MDR 2017/745', active: false, available: false },
+        { id: 'soc2', name: 'SOC 2 Type II', active: false, available: false },
+        { id: 'hipaa', name: 'HIPAA Security Rule', active: false, available: false }
+    ]);
+
     const [logs, setLogs] = useState<any[]>([]);
 
     useEffect(() => {
@@ -205,6 +214,15 @@ export default function TeamPage() {
     const handleFeatureVote = (feature: string) => {
         setVotedFeature(feature);
         submitFeedback("feature_vote", `Voted for feature: ${feature}`, feature);
+    };
+
+    const toggleFramework = (id: string, name: string, available: boolean) => {
+        if (!available) {
+            handleFeatureVote(name);
+            setSuccess(`Thanks for the feedback! Your vote for ${name} has been recorded for the Q3 Roadmap.`);
+            return;
+        }
+        setFrameworks(prev => prev.map(f => f.id === id ? { ...f, active: !f.active } : f));
     };
 
     if (loading) {
@@ -540,16 +558,10 @@ export default function TeamPage() {
                                 </p>
                                 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    {[
-                                        { id: 'iso13485', name: 'ISO 13485:2016', active: true },
-                                        { id: 'fda820', name: 'FDA 21 CFR Part 820', active: true },
-                                        { id: 'iec62304', name: 'IEC 62304:2006', active: true },
-                                        { id: 'eumdr', name: 'EU MDR 2017/745', active: false },
-                                        { id: 'soc2', name: 'SOC 2 Type II', active: false },
-                                        { id: 'hipaa', name: 'HIPAA Security Rule', active: false }
-                                    ].map((framework) => (
+                                    {frameworks.map((framework) => (
                                         <div 
                                             key={framework.id}
+                                            onClick={() => toggleFramework(framework.id, framework.name, framework.available)}
                                             className={`text-left p-4 rounded-xl border flex items-center justify-between gap-3 cursor-pointer transition-all duration-300 ${
                                                 framework.active 
                                                     ? 'bg-gradient-to-r from-emerald-50 to-white border-emerald-200 ring-1 ring-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.15)] hover:shadow-[0_0_20px_rgba(16,185,129,0.25)] hover:border-emerald-300' 
