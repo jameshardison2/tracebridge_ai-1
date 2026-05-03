@@ -92,8 +92,8 @@ function getEstimates(result: GapResult) {
     }
 }
 
-// Get category from standard
 function getCategory(standard: string): string {
+    if (standard.toLowerCase().includes("cybersecurity")) return "Cybersecurity";
     if (standard.includes("62304")) return "V&V Documentation";
     if (standard.includes("14971")) return "Risk Management";
     if (standard.includes("13485")) return "Quality Systems";
@@ -1415,7 +1415,7 @@ function ResultsContent() {
                         <div className="sticky top-0 bg-slate-50 rounded-t-2xl px-6 py-5 flex items-start justify-between border-b border-[var(--border)]">
                             <div>
                                 <h2 className="text-xl font-bold mb-1">
-                                    Trace Verification: {getCategory(selectedResult.standard)} — {selectedResult.section}
+                                    Trace Verification: {getCategory(selectedResult.standard)} • {selectedResult.section}
                                 </h2>
                                 <span
                                     className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
@@ -1540,7 +1540,7 @@ function ResultsContent() {
                                                                 <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-slate-200 shadow-sm">
                                                                     <FileText className="w-3.5 h-3.5 text-slate-500" />
                                                                 </div>
-                                                                <span className="text-[12px] font-bold text-slate-700">ISO_{selectedResult.standard.replace(/[^0-9]/g, '')}_Assessment.pdf</span>
+                                                                <span className="text-[12px] font-bold text-slate-700">{report?.upload?.documents?.[0]?.fileName || "Assessment_Document.pdf"}</span>
                                                             </div>
                                                             <button 
                                                                 onClick={() => {
@@ -1634,7 +1634,7 @@ function ResultsContent() {
                                                             <p className="text-[10px] text-slate-400 font-mono">{(new Date(selectedResult.createdAt?.toDate ? selectedResult.createdAt.toDate() : (selectedResult.createdAt || new Date()))).toLocaleDateString()} {(new Date(selectedResult.createdAt?.toDate ? selectedResult.createdAt.toDate() : (selectedResult.createdAt || new Date()))).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
                                                         </div>
                                                         <p className="text-xs font-bold text-slate-700">AI Trace Analysis Executed</p>
-                                                        <p className="text-xs text-slate-500 mt-1">TraceBridge Engine analyzed requirement <span className="font-mono text-[10px] bg-slate-100 px-1 py-0.5 rounded border border-slate-200">{selectedResult.section}</span>.</p>
+                                                        <p className="text-xs text-slate-500 mt-1">TraceBridge Engine analyzed requirement <span className="font-mono text-[10px] bg-slate-100 px-1 py-0.5 rounded border border-slate-200">{selectedResult.section.trim()}</span>.</p>
                                                     </div>
 
                                                     {/* Event 2: Gap Triage (if not initially compliant) */}
@@ -1735,19 +1735,13 @@ function ResultsContent() {
                                                     <div className="p-3 bg-slate-50/80 border-t border-slate-100 shrink-0">
                                                         <button 
                                                             onClick={() => {
-                                                                const currentAssignee = getAssigneeKey(selectedResult.id, selectedResult.status);
-                                                                if (currentAssignee === "UN") {
-                                                                    showToast("QA Validation Error: You must select an Assignee before routing to Jira.", "error");
-                                                                    return;
-                                                                }
-                                                                showToast("CAPA Engineering Epic created in QMS.", 'success');
-                                                                setSelectedResult(null);
+                                                                navigator.clipboard.writeText(remediationDrafts[selectedResult.id]);
+                                                                showToast("Remediation Protocol copied to clipboard.", 'success');
                                                             }}
-                                                            disabled
-                                                            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[12px] py-3.5 px-4 flex items-center justify-center gap-2 border border-emerald-500 transition-all font-bold shadow-md shadow-emerald-600/20 active:scale-[0.98] animate-in slide-in-from-bottom-2 fade-in duration-300 opacity-50 cursor-not-allowed"
+                                                            className="w-full bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-[12px] py-3.5 px-4 flex items-center justify-center gap-2 border border-slate-700 transition-all font-bold shadow-md active:scale-[0.98] animate-in slide-in-from-bottom-2 fade-in duration-300"
                                                         >
-                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                                            Publish Epic to Jira (Coming Soon)
+                                                            <Copy className="w-4 h-4" />
+                                                            Copy Protocol to Clipboard
                                                         </button>
                                                     </div>
                                                 </div>
@@ -1782,7 +1776,7 @@ function ResultsContent() {
                                                                 <div className="bg-slate-50 border border-slate-100 rounded-lg p-4 w-full mb-4">
                                                                     <p className="text-[10px] uppercase font-bold text-slate-400 mb-2 tracking-widest">How this tool helps</p>
                                                                     <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                                                                        Clicking the button below commands the AI to automatically draft a highly technical CAPA ticket that can be assigned directly to Jira for resolution.
+                                                                        Clicking the button below directs the AI to automatically draft a highly technical CAPA ticket that can be assigned directly to Jira for resolution.
                                                                     </p>
                                                                 </div>
                                                             </div>
