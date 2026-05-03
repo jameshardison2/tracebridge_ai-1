@@ -625,7 +625,11 @@ export default function TeamPage() {
                                                 <div>
                                                     <p className="text-sm font-bold text-slate-900 capitalize">{log.action.replace('_', ' ')}</p>
                                                     <p className="text-xs text-slate-500 mt-0.5">
-                                                        {log.action === 'upload' ? `${log.details.deviceName} document uploaded.` : JSON.stringify(log.details)}
+                                                        {log.action === 'upload' 
+                                                            ? `${log.details.deviceName} document uploaded.` 
+                                                            : log.action === 'analyze'
+                                                                ? `${log.details.deviceName} compliance analysis completed. Evaluated ${log.details.rulesChecked} regulatory rules and identified ${log.details.gapsFound} gaps. Overall compliance score: ${log.details.complianceScore}%.`
+                                                                : JSON.stringify(log.details)}
                                                     </p>
                                                     <div className="flex items-center gap-2 mt-2">
                                                         <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-medium">{log.userId === 'system' ? 'System' : 'QA User'}</span>
