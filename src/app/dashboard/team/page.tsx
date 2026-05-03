@@ -260,7 +260,7 @@ export default function TeamPage() {
     return (
         <div className="space-y-8 pb-12">
             <div>
-                <h1 className="text-3xl font-bold mb-2 flex items-center gap-3">
+                <h1 className="text-3xl font-bold text-slate-900 mb-2 tracking-tight flex items-center gap-3">
                     Team Workspace <span className="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold uppercase tracking-widest border border-indigo-200">Beta</span>
                 </h1>
                 <p className="text-[var(--muted)]">
@@ -325,7 +325,7 @@ export default function TeamPage() {
 
                     <div className="glass-card p-8 text-center max-w-xl mx-auto gradient-border shadow-xl relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
-                        <h3 className="text-xl font-bold mb-2">Initialize Your Workspace</h3>
+                        <h3 className="text-xl font-bold text-slate-900 mb-2 tracking-tight">Initialize Your Workspace</h3>
                         <p className="text-slate-500 text-sm mb-6">
                             Name your workspace to deploy the infrastructure. You can configure your Roster (QA, RA, Engineering) on the next screen.
                         </p>
@@ -416,8 +416,8 @@ export default function TeamPage() {
                                             <Shield className="w-6 h-6 text-slate-700" />
                                         </div>
                                         <div>
-                                            <h2 className="text-xl font-bold text-slate-900">{team.name}</h2>
-                                            <p className="text-sm text-slate-500">
+                                            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">{team.name}</h2>
+                                            <p className="text-sm text-slate-500 mt-1">
                                                 {isOwner ? "Workspace Owner" : "Workspace Member"} • {stats.totalMembers} Members
                                             </p>
                                         </div>
@@ -482,11 +482,11 @@ export default function TeamPage() {
 
                                 {/* Invite member */}
                                 {isOwner && (
-                                    <div className="pt-4 border-t border-slate-100">
-                                        <h3 className="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
-                                            <UserPlus className="w-4 h-4 text-slate-500" />
+                                    <div className="pt-6 mt-2 border-t border-slate-100">
+                                        <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                            <UserPlus className="w-4 h-4" />
                                             Invite Teammate
-                                        </h3>
+                                        </h4>
                                         <div className="flex gap-2">
                                             <div className="flex-1 relative">
                                                 <Mail className="absolute left-3.5 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -564,7 +564,7 @@ export default function TeamPage() {
                                 <div className="absolute top-0 left-0 w-1.5 h-full bg-emerald-500"></div>
                                 <div className="absolute -right-10 -top-10 w-40 h-40 bg-emerald-500/5 rounded-full blur-3xl group-hover:bg-emerald-500/10 transition-colors duration-700"></div>
                                 
-                                <h3 className="text-xl font-bold text-slate-900 mb-1 flex items-center gap-2">
+                                <h3 className="text-xl font-bold text-slate-900 mb-2 tracking-tight flex items-center gap-2">
                                     <Shield className="w-6 h-6 text-emerald-500" />
                                     Active Compliance Frameworks
                                 </h3>
@@ -603,8 +603,8 @@ export default function TeamPage() {
                                     <div className="absolute top-0 left-0 w-1.5 h-full bg-slate-800"></div>
                                     <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-slate-800/5 rounded-full blur-3xl group-hover:bg-slate-800/10 transition-colors duration-700"></div>
 
-                                    <div className="flex justify-between items-center mb-1">
-                                        <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <h3 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
                                             <FileText className="w-6 h-6 text-slate-700" />
                                             Recent QMS Activity (Part 11 Log)
                                         </h3>
