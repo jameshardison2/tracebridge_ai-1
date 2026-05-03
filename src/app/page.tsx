@@ -19,7 +19,7 @@ export default function LandingPage() {
       <header className="bg-slate-900 text-white border-b border-slate-800 shrink-0">
         <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between text-sm">
           <div className="flex items-center gap-3">
-            <Shield className="w-5 h-5 text-blue-400" />
+            <Shield className="w-5 h-5 text-teal-400" />
             <span className="font-bold tracking-widest uppercase">TraceBridge AI Systems</span>
             <span className="hidden md:inline text-slate-400 ml-4 border-l border-slate-700 pl-4">
               Enterprise Regulatory Intelligence Engine
@@ -47,6 +47,7 @@ export default function LandingPage() {
           
           {/* Main Title Portal */}
           <div className="bg-white border border-slate-300 shadow-sm rounded-md p-8">
+            <div className="text-teal-600 text-xs font-bold uppercase tracking-widest mb-3">Find your 510(k) gaps before the FDA does.</div>
             <h1 className="text-3xl font-bold text-slate-900 mb-4 tracking-tight border-b border-slate-200 pb-4">
               Automated Traceability & Gap Detection
             </h1>
@@ -55,7 +56,7 @@ export default function LandingPage() {
             </p>
             <div className="flex gap-4">
               <Link href="/login" className="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 rounded text-sm font-bold flex items-center gap-2 transition-colors">
-                Initialize Audit Workflow <ArrowRight className="w-4 h-4" />
+                Initialize Audit Workflow <ArrowRight className="w-4 h-4 text-teal-400" />
               </Link>
             </div>
           </div>
@@ -101,21 +102,21 @@ export default function LandingPage() {
               <div className="p-4 hover:bg-slate-50 transition-colors">
                 <div className="flex justify-between items-center mb-1">
                   <span className="text-sm font-bold text-slate-900">IEC 62304:2006</span>
-                  <span className="text-[10px] bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded uppercase">Active</span>
+                  <span className="text-[10px] bg-teal-100 text-teal-800 font-bold px-2 py-0.5 rounded uppercase">Active</span>
                 </div>
                 <p className="text-xs text-slate-600">Medical Device Software Lifecycle</p>
               </div>
               <div className="p-4 hover:bg-slate-50 transition-colors">
                 <div className="flex justify-between items-center mb-1">
                   <span className="text-sm font-bold text-slate-900">ISO 14971:2019</span>
-                  <span className="text-[10px] bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded uppercase">Active</span>
+                  <span className="text-[10px] bg-teal-100 text-teal-800 font-bold px-2 py-0.5 rounded uppercase">Active</span>
                 </div>
                 <p className="text-xs text-slate-600">Risk Management Processing</p>
               </div>
               <div className="p-4 hover:bg-slate-50 transition-colors">
                 <div className="flex justify-between items-center mb-1">
                   <span className="text-sm font-bold text-slate-900">ISO 13485:2016</span>
-                  <span className="text-[10px] bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded uppercase">Active</span>
+                  <span className="text-[10px] bg-teal-100 text-teal-800 font-bold px-2 py-0.5 rounded uppercase">Active</span>
                 </div>
                 <p className="text-xs text-slate-600">Quality Management Systems</p>
               </div>
@@ -158,7 +159,7 @@ export default function LandingPage() {
       <footer className="bg-slate-900 text-slate-400 py-6 border-t border-slate-800">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-xs">
           <div className="flex items-center gap-2 mb-4 md:mb-0">
-            <Shield className="w-4 h-4 text-blue-500" />
+            <Shield className="w-4 h-4 text-teal-500" />
             <span className="font-bold text-slate-300 tracking-wider">TRACEBRIDGE AI</span>
           </div>
           <div className="flex gap-6">
