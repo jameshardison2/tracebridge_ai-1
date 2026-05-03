@@ -198,16 +198,20 @@ export default function TeamPage() {
             });
             const json = await res.json();
             if (json.success) {
-                setSuccess("Feedback submitted successfully! Thank you.");
-                if (type === "open_feedback") setFeedbackText("");
+                if (type === "open_feedback") {
+                    setSuccess("Feedback submitted successfully! Thank you.");
+                    setFeedbackText("");
+                }
             } else {
-                setError("Failed to submit feedback.");
+                if (type === "open_feedback") setError("Failed to submit feedback.");
             }
         } catch (e) {
-            setError("Failed to submit feedback.");
+            if (type === "open_feedback") setError("Failed to submit feedback.");
         } finally {
             setSubmittingFeedback(false);
-            setTimeout(() => setSuccess(""), 4000);
+            if (type === "open_feedback") {
+                setTimeout(() => setSuccess(""), 4000);
+            }
         }
     };
 
@@ -217,12 +221,23 @@ export default function TeamPage() {
     };
 
     const toggleFramework = (id: string, name: string, available: boolean) => {
-        if (!available) {
-            handleFeatureVote(name);
-            setSuccess(`Thanks for the feedback! Your vote for ${name} has been recorded for the Q3 Roadmap.`);
-            return;
-        }
-        setFrameworks(prev => prev.map(f => f.id === id ? { ...f, active: !f.active } : f));
+        setFrameworks(prev => prev.map(f => {
+            if (f.id === id) {
+                const newActive = !f.active;
+                
+                // Stealth Vote if turning on an unavailable framework
+                if (!available && newActive) {
+                    handleFeatureVote(name);
+                }
+
+                // Show a realistic UI toast to sell the illusion
+                setSuccess(`${name} Monitoring ${newActive ? 'Enabled' : 'Disabled'}`);
+                setTimeout(() => setSuccess(""), 3000);
+
+                return { ...f, active: newActive };
+            }
+            return f;
+        }));
     };
 
     if (loading) {
