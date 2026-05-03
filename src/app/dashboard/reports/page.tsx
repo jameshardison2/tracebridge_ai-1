@@ -145,6 +145,7 @@ function ReportsContent() {
     const [engineRedact, setEngineRedact] = useState(true);
     const [engineRta, setEngineRta] = useState(false);
     const [pendingExport, setPendingExport] = useState<'pdf' | 'csv' | null>(null);
+    const [viewMode, setViewMode] = useState<'builder' | 'preview'>('builder');
 
     // Custom Report Signatures State
     const [authorName, setAuthorName] = useState("James N. Hardison II");
@@ -520,7 +521,8 @@ function ReportsContent() {
         URL.revokeObjectURL(url);
     };
 
-    const exportCSV = () => {
+    const exportCSV = (e?: React.MouseEvent) => {
+        if (e) e.preventDefault();
         if (!report) return;
         
         let reportTitle = "Gap-Analysis";
@@ -584,7 +586,8 @@ function ReportsContent() {
         URL.revokeObjectURL(url);
     };
 
-    const exportPDF = async () => {
+    const exportPDF = async (e?: React.MouseEvent) => {
+        if (e) e.preventDefault();
         if (!report) return;
         const { default: jsPDF } = await import("jspdf");
 
@@ -1055,7 +1058,7 @@ function ReportsContent() {
         );
     }
 
-    if (!report) {
+    if (!report || viewMode === 'builder') {
         const generateLiveReport = async () => {
             if (!enginePayload || !user) return;
             setLoading(true);
@@ -1464,7 +1467,7 @@ function ReportsContent() {
                                                 <button disabled={hasUnresolvedGaps} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                                                     <Download className="w-[1.125rem] h-[1.125rem]" /> 510(k) Submission Matrix (.pdf)
                                                 </button>
-                                                <button onClick={() => generateLiveReport()} className="col-span-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] transition-all">
+                                                <button onClick={() => { generateLiveReport(); setViewMode('preview'); }} className="col-span-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] transition-all">
                                                     <ExternalLink className="w-[1.125rem] h-[1.125rem]" /> View Interactive Matrix
                                                 </button>
                                             </div>
@@ -1477,7 +1480,7 @@ function ReportsContent() {
                                                 <button disabled={hasUnresolvedGaps} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                                                     <Download className="w-[1.125rem] h-[1.125rem]" /> Report (.pdf)
                                                 </button>
-                                                <button onClick={() => generateLiveReport()} className="col-span-2 bg-rose-600 hover:bg-rose-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(225,29,72,0.3)] hover:shadow-[0_0_25px_rgba(225,29,72,0.5)] transition-all">
+                                                <button onClick={() => { generateLiveReport(); setViewMode('preview'); }} className="col-span-2 bg-rose-600 hover:bg-rose-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(225,29,72,0.3)] hover:shadow-[0_0_25px_rgba(225,29,72,0.5)] transition-all">
                                                     <ExternalLink className="w-[1.125rem] h-[1.125rem]" /> View Interactive Action Log
                                                 </button>
                                             </div>
@@ -1490,7 +1493,7 @@ function ReportsContent() {
                                                 <button disabled={hasUnresolvedGaps} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                                                     <Download className="w-[1.125rem] h-[1.125rem]" /> Report (.pdf)
                                                 </button>
-                                                <button onClick={() => generateLiveReport()} className="col-span-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(5,150,105,0.3)] hover:shadow-[0_0_25px_rgba(5,150,105,0.5)] transition-all">
+                                                <button onClick={() => { generateLiveReport(); setViewMode('preview'); }} className="col-span-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(5,150,105,0.3)] hover:shadow-[0_0_25px_rgba(5,150,105,0.5)] transition-all">
                                                     <ExternalLink className="w-[1.125rem] h-[1.125rem]" /> View Interactive Signals Board
                                                 </button>
                                             </div>
@@ -1544,7 +1547,7 @@ function ReportsContent() {
             {/* Top Workspace Header (Qualio Style) */}
             <div className="shrink-0 mb-6 flex flex-col gap-6">
                 <div>
-                    <button onClick={() => setReport(null)} className="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors mb-4 bg-slate-100 hover:bg-indigo-50 w-fit px-3 py-1.5 rounded-lg border border-slate-200 hover:border-indigo-200">
+                    <button onClick={() => { setReport(null); setViewMode('builder'); }} className="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors mb-4 bg-slate-100 hover:bg-indigo-50 w-fit px-3 py-1.5 rounded-lg border border-slate-200 hover:border-indigo-200">
                         <ArrowLeft className="w-4 h-4" /> Back to Artifact Hub
                     </button>
                     <div className="flex items-center justify-between">
