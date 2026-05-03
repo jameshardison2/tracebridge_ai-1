@@ -76,17 +76,6 @@ export async function POST(request: Request) {
         const body = await request.json();
         const tenantUid = verification.uid;
 
-        // Security Hardening: Restrict admin endpoints in production
-        if (process.env.NODE_ENV === "production") {
-            const { adminAuth } = await import("@/lib/firebase-admin");
-            if (adminAuth) {
-                const userRecord = await adminAuth.getUser(tenantUid);
-                if (process.env.ADMIN_EMAIL && userRecord.email !== process.env.ADMIN_EMAIL) {
-                    return NextResponse.json({ success: false, error: "Forbidden: Admin access required." }, { status: 403 });
-                }
-            }
-        }
-
         const uploadsCol = adminDb.collection("uploads");
         const gapsCol = adminDb.collection("gapResults");
         const docsCol = adminDb.collection("documents");
