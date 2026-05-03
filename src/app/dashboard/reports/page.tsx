@@ -940,9 +940,9 @@ function ReportsContent() {
             doc.setTextColor(100, 116, 139);
             doc.setFontSize(8);
             doc.text("STANDARD §", 14, y);
-            doc.text("REQUIREMENT", 65, y);
-            doc.text("STATUS", 140, y);
-            doc.text("EVIDENCE LOCATOR", 165, y);
+            doc.text("REQUIREMENT", 55, y);
+            doc.text("STATUS", 127, y);
+            doc.text("EVIDENCE LOCATOR", 155, y);
             y += 4;
             doc.setDrawColor(226, 232, 240);
             doc.line(14, y, pageWidth - 14, y);
@@ -962,12 +962,12 @@ function ReportsContent() {
                 doc.setFontSize(8);
                 
                 // Standard
-                const stdLines = doc.splitTextToSize(`${item.standard} § ${item.section}`, 48);
+                const stdLines = doc.splitTextToSize(`${item.standard} § ${item.section}`, 38);
                 doc.text(stdLines, 14, y);
                 
                 // Requirement
                 const reqLines = doc.splitTextToSize(item.requirement, 70);
-                doc.text(reqLines, 65, y);
+                doc.text(reqLines, 55, y);
                 
                 // Status
                 let statusColor = [100, 116, 139];
@@ -976,15 +976,15 @@ function ReportsContent() {
                 else statusColor = [245, 158, 11];
                 
                 doc.setFillColor(statusColor[0], statusColor[1], statusColor[2]);
-                doc.rect(140, y - 3, 2, 2, "F");
+                doc.rect(127, y - 3, 2, 2, "F");
                 doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
-                doc.text(item.status.toUpperCase().replace('_', ' '), 144, y);
+                doc.text(item.status.toUpperCase().replace('_', ' '), 131, y);
                 
                 // Evidence
                 doc.setTextColor(100, 116, 139);
                 const cite = item.citations?.[0]?.source?.replace(/_v\d+/i, '') || (item.status === 'gap_detected' ? "MISSING" : report.upload.documents?.[0]?.fileName?.replace(/_v\d+/i, '') || "Source_Document.pdf");
-                const evLines = doc.splitTextToSize(cite, 35);
-                doc.text(evLines, 165, y);
+                const evLines = doc.splitTextToSize(cite, 40);
+                doc.text(evLines, 155, y);
                 
                 const blockHeight = Math.max(stdLines.length, reqLines.length, evLines.length) * 4 + 4;
                 y += blockHeight;
