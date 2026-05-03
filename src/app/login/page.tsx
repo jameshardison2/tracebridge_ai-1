@@ -17,7 +17,7 @@ import {
     EyeOff,
 } from "lucide-react";
 
-type Mode = "login" | "signup" | "forgot";
+type Mode = "login" | "forgot";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -49,14 +49,6 @@ export default function LoginPage() {
         try {
             if (mode === "login") {
                 await signIn(email, password);
-                router.push("/dashboard");
-            } else if (mode === "signup") {
-                if (!displayName.trim()) {
-                    setError("Please enter your name.");
-                    setSubmitting(false);
-                    return;
-                }
-                await signUp(email, password, displayName);
                 router.push("/dashboard");
             } else if (mode === "forgot") {
                 await resetPassword(email);
@@ -112,7 +104,6 @@ export default function LoginPage() {
             <div className="w-full max-w-md bg-white border border-slate-300 shadow-sm rounded-md p-8">
                 <h2 className="text-xl font-bold text-slate-800 mb-6 text-center border-b border-slate-100 pb-4">
                     {mode === "login" && "Sign In to Active Directory"}
-                    {mode === "signup" && "Request Account Provisioning"}
                     {mode === "forgot" && "Reset Password Credential"}
                 </h2>
 
@@ -130,22 +121,6 @@ export default function LoginPage() {
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    {mode === "signup" && (
-                        <div>
-                            <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1">Full Name</label>
-                            <div className="relative">
-                                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <input
-                                    type="text"
-                                    value={displayName}
-                                    onChange={(e) => setDisplayName(e.target.value)}
-                                    placeholder="John Doe"
-                                    className="w-full pl-9 pr-3 py-2 rounded bg-slate-50 border border-slate-300 text-slate-900 text-sm focus:outline-none focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)]"
-                                />
-                            </div>
-                        </div>
-                    )}
-
                     <div>
                         <label className="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1">Corporate Email</label>
                         <div className="relative">
@@ -207,7 +182,6 @@ export default function LoginPage() {
                         ) : (
                             <>
                                 {mode === "login" && "Authenticate"}
-                                {mode === "signup" && "Submit Provision Request"}
                                 {mode === "forgot" && "Send Recovery Link"}
                             </>
                         )}
@@ -236,10 +210,7 @@ export default function LoginPage() {
             <div className="mt-8 text-center text-xs text-slate-500">
                 <div className="mb-4">
                     {mode === "login" && (
-                        <span>Require system access? <button onClick={() => { setMode("signup"); setError(""); setSuccess(""); }} className="text-[var(--primary)] font-bold hover:underline">Request Provisioning</button></span>
-                    )}
-                    {mode === "signup" && (
-                        <span>Already provisioned? <button onClick={() => { setMode("login"); setError(""); setSuccess(""); }} className="text-[var(--primary)] font-bold hover:underline">Authenticate Here</button></span>
+                        <span>Restricted System. Contact your compliance administrator for access.</span>
                     )}
                     {mode === "forgot" && (
                         <span><button onClick={() => { setMode("login"); setError(""); setSuccess(""); }} className="text-[var(--primary)] font-bold hover:underline">Return to Authentication module</button></span>
