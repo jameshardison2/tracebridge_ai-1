@@ -58,15 +58,15 @@ export default function LandingPage() {
           
           {/* Main Title Portal */}
           <div className="space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 border border-teal-100 text-teal-700 text-xs font-bold uppercase tracking-widest shadow-sm">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 border border-red-100 text-red-700 text-xs font-bold uppercase tracking-widest shadow-sm">
               <Activity className="w-3.5 h-3.5" />
-              <span>Find your 510(k) gaps before the FDA does.</span>
+              <span>32% of 510(k) Submissions Fail RTA.</span>
             </div>
             <h1 className="text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.1]">
-              Automated Traceability & Gap Detection
+              Will yours be one of the 1 in 3?
             </h1>
             <p className="text-slate-600 leading-relaxed text-lg max-w-2xl font-light">
-              TraceBridge AI directly ingests complex Medical Device Software documentation (Risk Management, DHR, SRS, V&V Protocols) and performs multi-layered deterministic audits against FDA 510(k) and ISO standards. 
+              The FDA is a black box. Submissions disappear into it, and a single administrative gap triggers a 90-day RTA clock reset. Never check your own work. TraceBridge is the objective, third-party Submission Intelligence layer built by practitioners with 15 years inside VELYS and HeartMate 3 to tell you whether you'll get cleared—before the FDA tells you you won't.
             </p>
             <div className="flex gap-4 pt-4">
               <Link href="/login" className="bg-slate-900 text-white hover:bg-slate-800 px-6 py-3 rounded-lg text-sm font-bold flex items-center gap-2 transition-all group shadow-lg shadow-slate-900/20">
