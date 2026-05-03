@@ -389,26 +389,33 @@ export default function DashboardPage() {
                                 <div className="flex gap-4">
                                     <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold shrink-0">1</div>
                                     <div>
-                                        <h3 className="font-bold text-slate-800">Load the Golden Dataset</h3>
+                                        <h3 className="font-bold text-slate-800">Load the Golden Dataset (Optional)</h3>
                                         <p className="text-sm text-slate-500 mt-1">Click the <strong>Load Golden Demo Dataset</strong> button to instantly populate your workspace with pre-configured regulatory audits to see how the system handles complex data.</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
-                                    <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold shrink-0">2</div>
+                                    <div className="w-8 h-8 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center font-bold shrink-0">2</div>
+                                    <div>
+                                        <h3 className="font-bold text-slate-800">Upload Your Own DHF / 510(k)</h3>
+                                        <p className="text-sm text-slate-500 mt-1">Click <strong>Initiate Device Audit</strong> to upload your own Design History File (DHF), Risk Management, or V&V documents to test the AI against your real-world data.</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4">
+                                    <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold shrink-0">3</div>
                                     <div>
                                         <h3 className="font-bold text-slate-800">Review the Pipeline</h3>
                                         <p className="text-sm text-slate-500 mt-1">Navigate to the <strong>Pipeline Tracker</strong> to view the AI-driven gap detection. See how TraceBridge automatically flags missing ISO 13485 or FDA requirements.</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
-                                    <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold shrink-0">3</div>
+                                    <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold shrink-0">4</div>
                                     <div>
                                         <h3 className="font-bold text-slate-800">Export Traceability Matrices</h3>
                                         <p className="text-sm text-slate-500 mt-1">Go to the <strong>Reports Hub</strong> to generate deterministic, FDA-ready Part 11 compliant traceability matrices with zero manual spreadsheet work.</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
-                                    <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold shrink-0">4</div>
+                                    <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold shrink-0">5</div>
                                     <div>
                                         <h3 className="font-bold text-slate-800">Explore the Team Workspace</h3>
                                         <p className="text-sm text-slate-500 mt-1">Check out the <strong>Team Workspace</strong> to request new framework integrations (like SOC 2) and view the immutable background audit trail.</p>
