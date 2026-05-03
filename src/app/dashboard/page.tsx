@@ -79,6 +79,10 @@ export default function DashboardPage() {
     };
 
     const handleSeedBackdoor = async () => {
+        if (submissions.length > 10) {
+            alert("Demo dataset has already been loaded. Please delete existing audits to load again.");
+            return;
+        }
         if (!user || !window.confirm("This will load the TraceBridge Golden Demo Dataset into your workspace. Proceed?")) return;
         try {
             setLoading(true);
@@ -164,7 +168,7 @@ export default function DashboardPage() {
                         Master index of IEC 62304 and ISO 14971 active compliance audits.
                     </p>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex flex-wrap gap-3 mt-4 md:mt-0">
                     <button
                         onClick={() => setShowGuide(true)}
                         className="bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 transition-colors px-4 py-2 rounded-md text-sm font-bold flex items-center gap-2 shadow-sm"
@@ -174,8 +178,9 @@ export default function DashboardPage() {
                     </button>
                     <button
                         onClick={handleSeedBackdoor}
-                        disabled={loading}
-                        className="bg-indigo-600 text-white hover:bg-indigo-700 transition-colors px-4 py-2 rounded-md text-sm font-bold flex items-center gap-2 shadow-sm disabled:opacity-50"
+                        disabled={loading || submissions.length > 10}
+                        className="bg-indigo-600 text-white hover:bg-indigo-700 transition-colors px-4 py-2 rounded-md text-sm font-bold flex items-center gap-2 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                        title={submissions.length > 10 ? "Dataset already loaded. Please delete existing audits to load again." : ""}
                     >
                         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
                         Load Golden Demo Dataset
@@ -240,7 +245,7 @@ export default function DashboardPage() {
             <div className="flex flex-col lg:flex-row gap-6">
                 
                 {/* Compact Stats Grid */}
-                <div className="grid grid-cols-4 border border-[var(--border)] rounded bg-white shadow-sm flex-1">
+                <div className="grid grid-cols-2 md:grid-cols-4 border border-[var(--border)] rounded bg-white shadow-sm flex-1">
                     <div className="p-4 border-r border-[var(--border)]">
                         <div className="flex items-center gap-2 text-slate-500 mb-1">
                             <BarChart3 className="w-4 h-4 text-[var(--primary)]" />
