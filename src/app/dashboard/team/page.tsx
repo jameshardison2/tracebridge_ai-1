@@ -75,7 +75,10 @@ export default function TeamPage() {
     const fetchLogs = async () => {
         if (!user) return;
         try {
-            const res = await fetch(`/api/logs?userId=${user?.uid}`);
+            const token = await user.getIdToken();
+            const res = await fetch(`/api/logs?userId=${user?.uid}`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
             const json = await res.json();
             if (json.success) {
                 setLogs(json.data);

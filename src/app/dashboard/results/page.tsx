@@ -477,7 +477,10 @@ function ResultsContent() {
         
         const fetchTeamLogs = async () => {
             try {
-                const res = await fetch(`/api/logs?uploadId=${currentUploadId}`);
+                const token = await user?.getIdToken();
+                const res = await fetch(`/api/logs?uploadId=${currentUploadId}`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
                 const data = await res.json();
                 if (data.success) {
                     setActivityLogs(data.data);
@@ -555,7 +558,7 @@ function ResultsContent() {
 
             await fetch("/api/logs", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                 body: JSON.stringify({
                     action: actionType === "assign" ? "jira_sync" : (actionType === "dismiss" ? "false_alarm" : "vault_commit"),
                     userId: user?.email || "auditor",

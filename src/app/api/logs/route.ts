@@ -1,24 +1,35 @@
 import { NextResponse } from "next/server";
-import { adminDb } from "@/lib/firebase-admin";
+import { adminDb, verifyIdToken } from "@/lib/firebase-admin";
 
 export async function GET(req: Request) {
+    try {
+        if (!adminDb) {
+            return NextResponse.json({ success: true, data: [] });
+        }
+
+        const authHeader = req.headers.get("Authorization");
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+        }
+        
+        const idToken = authHeader.split("Bearer ")[1];
+        const verification = await verifyIdToken(idToken);
+        if (!verification.success || !verification.uid) {
+            return NextResponse.json({ success: false, error: "Invalid token" }, { status: 401 });
+        }
+
         const { searchParams } = new URL(req.url);
         const uploadId = searchParams.get("uploadId");
         const userId = searchParams.get("userId");
 
-        try {
-            if (!adminDb) {
-                return NextResponse.json({ success: true, data: [] });
-            }
-
-            let query: FirebaseFirestore.Query = adminDb.collection("auditLogs");
-            
-            if (uploadId) {
-                query = query.where("details.uploadId", "==", uploadId);
-            }
-            if (userId) {
-                query = query.where("userId", "in", [userId, "system"]);
-            }
+        let query: FirebaseFirestore.Query = adminDb.collection("auditLogs");
+        
+        if (uploadId) {
+            query = query.where("details.uploadId", "==", uploadId);
+        }
+        if (userId) {
+            query = query.where("userId", "in", [userId, "system"]);
+        }
         
         const logsSnapshot = await query
             .limit(200)
@@ -49,11 +60,23 @@ export async function POST(req: Request) {
         if (!adminDb) {
             return NextResponse.json({ success: true, dummy: true });
         }
+
+        const authHeader = req.headers.get("Authorization");
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+        }
+        
+        const idToken = authHeader.split("Bearer ")[1];
+        const verification = await verifyIdToken(idToken);
+        if (!verification.success || !verification.uid) {
+            return NextResponse.json({ success: false, error: "Invalid token" }, { status: 401 });
+        }
+
         const body = await req.json();
         
         await adminDb.collection("auditLogs").add({
             action: body.action || "webhook_event",
-            userId: body.userId || "system",
+            userId: body.userId || verification.uid,
             createdAt: new Date(),
             details: body.details || {}
         });

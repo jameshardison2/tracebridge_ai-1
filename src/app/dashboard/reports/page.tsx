@@ -489,7 +489,10 @@ function ReportsContent() {
         
         const fetchTeamLogs = async () => {
             try {
-                const res = await fetch(`/api/logs?uploadId=${currentUploadId}`);
+                const token = await user?.getIdToken();
+                const res = await fetch(`/api/logs?uploadId=${currentUploadId}`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
                 const data = await res.json();
                 if (data.success) {
                     setActivityLogs(data.data);
