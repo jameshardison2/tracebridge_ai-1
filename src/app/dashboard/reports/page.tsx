@@ -536,15 +536,13 @@ function ReportsContent() {
 
         let uniqueGaps: any[] = [];
         if (activeTemplate === '510k') {
-            const sectionTracker = new Map<string, number>();
-            uniqueGaps = report.upload.gapResults.map((r: any) => {
-                const key = `${r.standard}-${r.section}`;
-                const count = (sectionTracker.get(key) || 0) + 1;
-                sectionTracker.set(key, count);
-                return {
-                    ...r,
-                    section: count > 1 ? `${r.section}.${count}` : r.section
-                };
+            const reqTracker = new Set<string>();
+            uniqueGaps = report.upload.gapResults.filter((r: any) => {
+                if (!reqTracker.has(r.requirement)) {
+                    reqTracker.add(r.requirement);
+                    return true;
+                }
+                return false;
             });
         } else {
             const uniqueGapsMap = new Map<string, any>();
@@ -572,7 +570,7 @@ function ReportsContent() {
                 if (data.results && data.results.length > 0) {
                     maudeEvents = data.results.sort(() => 0.5 - Math.random());
                 } else {
-                    res = await fetch(`https://api.fda.gov/device/event.json?search=event_type:Malfunction&sort=date_received:desc&limit=20`);
+                    res = await fetch(`https://api.fda.gov/device/event.json?search=device.openfda.device_name:defibrillator&sort=date_received:desc&limit=20`);
                     data = await res.json();
                     if (data.results) maudeEvents = data.results.sort(() => 0.5 - Math.random());
                 }
@@ -754,8 +752,15 @@ function ReportsContent() {
         // Pills
         doc.setDrawColor(255, 255, 255);
         doc.setLineWidth(0.3);
+        const formatStandard = (s: string) => {
+            if (s === 'iec60601') return 'IEC 60601';
+            if (s === 'iso14971') return 'ISO 14971';
+            if (s === 'iso13485') return 'ISO 13485';
+            if (s === 'iec62304') return 'IEC 62304';
+            return s;
+        };
         const displayStandards = report.upload.standards && report.upload.standards.length > 0 
-            ? report.upload.standards.slice(0, 3) 
+            ? report.upload.standards.slice(0, 3).map(formatStandard)
             : ["ISO 13485:2016", "ISO 14971:2019", "IEC 62304:2006"];
         
         let pillX = 14;
@@ -862,15 +867,13 @@ function ReportsContent() {
         let uniqueGaps: any[] = [];
         let gaps: any[] = [];
         if (activeTemplate === '510k') {
-            const sectionTracker = new Map<string, number>();
-            uniqueGaps = report.upload.gapResults.map((r: any) => {
-                const key = `${r.standard}-${r.section}`;
-                const count = (sectionTracker.get(key) || 0) + 1;
-                sectionTracker.set(key, count);
-                return {
-                    ...r,
-                    section: count > 1 ? `${r.section}.${count}` : r.section
-                };
+            const reqTracker = new Set<string>();
+            uniqueGaps = report.upload.gapResults.filter((r: any) => {
+                if (!reqTracker.has(r.requirement)) {
+                    reqTracker.add(r.requirement);
+                    return true;
+                }
+                return false;
             });
             gaps = uniqueGaps.filter((r: any) => r.status !== "compliant");
         } else {
@@ -1001,7 +1004,7 @@ function ReportsContent() {
                 if (data.results && data.results.length > 0) {
                     maudeEvents = data.results.sort(() => 0.5 - Math.random());
                 } else {
-                    res = await fetch(`https://api.fda.gov/device/event.json?search=event_type:Malfunction&sort=date_received:desc&limit=20`);
+                    res = await fetch(`https://api.fda.gov/device/event.json?search=device.openfda.device_name:defibrillator&sort=date_received:desc&limit=20`);
                     data = await res.json();
                     if (data.results) maudeEvents = data.results.sort(() => 0.5 - Math.random());
                 }
@@ -1211,7 +1214,7 @@ function ReportsContent() {
                 doc.setTextColor(148, 163, 184);
                 doc.setFontSize(8);
                 doc.text(`TraceBridge AI • Generated ${new Date().toLocaleDateString()}`, 14, pageHeight - 10);
-                doc.text(`${i+2}/${gaps.length + 1}`, pageWidth - 14, pageHeight - 10, { align: "right" });
+                doc.text(`${i+1}/${gaps.length}`, pageWidth - 14, pageHeight - 10, { align: "right" });
             }
         }
 
@@ -1269,7 +1272,7 @@ function ReportsContent() {
                 if (data.success) {
                     // Update format string if RTA styling enabled
                     if (engineRta && data.data.upload) {
-                        data.data.upload.standards = ["FDA Refuse to Accept (RTA) Checklist Format", ...(data.data.upload.standards || []).slice(1)];
+                        data.data.upload.standards = ["FDA RTA Checklist Format", ...(data.data.upload.standards || []).slice(1)];
                     }
                     
                     // Conditionally strip AI Mitigations or Redact IP
