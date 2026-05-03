@@ -1057,10 +1057,7 @@ function ReportsContent() {
                 y += inv.length * 5 + 10;
             }
             
-            // Footer
-            doc.setTextColor(148, 163, 184);
-            doc.setFontSize(8);
-            doc.text(`TraceBridge AI • Generated ${new Date().toLocaleDateString()}`, 14, pageHeight - 10);
+            // Footer handled globally
         } else {
             // CAPA or default detailed layout
             for (let i = 0; i < gaps.length; i++) {
@@ -1210,12 +1207,21 @@ function ReportsContent() {
                 doc.text("HIGH • doc + review", 65, y + 5);
                 doc.text("RA + QE lead", 105, y + 5);
                 
-                // Footer
-                doc.setTextColor(148, 163, 184);
-                doc.setFontSize(8);
-                doc.text(`TraceBridge AI • Generated ${new Date().toLocaleDateString()}`, 14, pageHeight - 10);
-                doc.text(`${i+1}/${gaps.length}`, pageWidth - 14, pageHeight - 10, { align: "right" });
+                // Footer handled globally
             }
+        }
+
+        // Apply global footer to all pages (except cover)
+        const totalPages = typeof (doc as any).getNumberOfPages === 'function' 
+            ? (doc as any).getNumberOfPages() 
+            : doc.internal.pages.length - 1;
+            
+        for (let i = 2; i <= totalPages; i++) {
+            doc.setPage(i);
+            doc.setTextColor(148, 163, 184);
+            doc.setFontSize(8);
+            doc.text(`TraceBridge AI • Generated ${new Date().toLocaleDateString()}`, 14, pageHeight - 10);
+            doc.text(`${i - 1} / ${totalPages - 1}`, pageWidth - 14, pageHeight - 10, { align: "right" });
         }
 
         const dateStr = new Date().toISOString().split('T')[0].replace(/-/g, "");
