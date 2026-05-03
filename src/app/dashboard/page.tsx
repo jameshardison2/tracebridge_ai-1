@@ -146,7 +146,7 @@ export default function DashboardPage() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-[var(--border)] pb-4">
                 <div>
                     <h1 
-                        className="text-2xl font-bold tracking-tight text-[var(--foreground)] uppercase mb-1 cursor-default select-none"
+                        className="text-3xl font-bold tracking-tight text-slate-900 mb-2 cursor-default select-none"
                         onDoubleClick={handleSeedBackdoor}
                     >
                         Quality Regulatory Dashboard
@@ -260,7 +260,7 @@ export default function DashboardPage() {
             {/* Master Audit List - Formal Table */}
             <div className="bg-white border border-[var(--border)] rounded shadow-sm">
                 <div className="bg-slate-50 border-b border-[var(--border)] px-4 py-3 flex justify-between items-center">
-                    <h2 className="text-sm font-bold text-slate-700 uppercase tracking-widest flex items-center gap-2">
+                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
                         <Shield className="w-4 h-4 text-[var(--primary)]" />
                         Master System Query List
                     </h2>

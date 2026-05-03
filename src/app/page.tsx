@@ -59,25 +59,25 @@ export default function LandingPage() {
 
           {/* Engine Architecture Grid */}
           <div>
-            <h2 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">Core Engine Capabilities</h2>
+            <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Core Engine Capabilities</h4>
             <div className="grid md:grid-cols-3 gap-0 border border-slate-300 rounded-md bg-white overflow-hidden shadow-sm">
               <div className="p-6 border-b md:border-b-0 md:border-r border-slate-300">
                 <Database className="w-6 h-6 text-blue-600 mb-3" />
-                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">Deterministic Rules</h3>
+                <h3 className="text-sm font-bold text-slate-900 tracking-tight mb-2">Deterministic Rules</h3>
                 <p className="text-xs text-slate-600 leading-relaxed">
                   153+ strict constraints hardcoded from IEC 62304, ISO 14971, and ISO 13485 mapped directly to a massive PostgreSQL architecture database.
                 </p>
               </div>
               <div className="p-6 border-b md:border-b-0 md:border-r border-slate-300 bg-slate-50">
                 <Brain className="w-6 h-6 text-emerald-600 mb-3" />
-                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">Semantic Evaluation</h3>
+                <h3 className="text-sm font-bold text-slate-900 tracking-tight mb-2">Semantic Evaluation</h3>
                 <p className="text-xs text-slate-600 leading-relaxed">
                   Engine utilizes Google Gemini specialized routing to parse 100+ page clinical PDFs, extracting exact quotes to satisfy database constraints.
                 </p>
               </div>
               <div className="p-6">
                 <CheckCircle2 className="w-6 h-6 text-blue-800 mb-3" />
-                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">Verdict Triangulation</h3>
+                <h3 className="text-sm font-bold text-slate-900 tracking-tight mb-2">Verdict Triangulation</h3>
                 <p className="text-xs text-slate-600 leading-relaxed">
                   Output is merged into strict JSON generating a mathematically sound trace matrix showing complete compliance, partial reviews, or missing evidence.
                 </p>
@@ -92,7 +92,7 @@ export default function LandingPage() {
           
           <div className="bg-white border border-slate-300 shadow-sm rounded-md overflow-hidden">
             <div className="bg-slate-100 border-b border-slate-300 px-4 py-3">
-              <h2 className="text-xs font-bold text-slate-700 uppercase tracking-widest">Regulated Frameworks</h2>
+              <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest">Regulated Frameworks</h4>
             </div>
             <div className="p-0 divide-y divide-slate-200">
               <div className="p-4 hover:bg-slate-50 transition-colors">
@@ -121,7 +121,7 @@ export default function LandingPage() {
 
           <div className="bg-white border border-slate-300 shadow-sm rounded-md overflow-hidden">
             <div className="bg-slate-100 border-b border-slate-300 px-4 py-3">
-              <h2 className="text-xs font-bold text-slate-700 uppercase tracking-widest">Workflow Index</h2>
+              <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest">Workflow Index</h4>
             </div>
             <div className="p-4 space-y-4">
               <div className="flex gap-3">

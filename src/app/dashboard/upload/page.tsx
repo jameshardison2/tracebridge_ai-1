@@ -284,7 +284,7 @@ export default function UploadPage() {
                     <div className="flex items-center gap-4 mb-6 border-b border-[var(--border)] pb-4">
                         <Loader2 className="w-8 h-8 text-[var(--primary)] animate-spin" />
                         <div>
-                            <h2 className="text-xl font-bold text-[var(--foreground)]">Regulatory Gap Analysis in Progress</h2>
+                            <h3 className="text-xl font-bold tracking-tight text-slate-900">Regulatory Gap Analysis in Progress</h3>
                             <p className="text-[var(--muted)] text-sm">
                                 Processing ISO 13485 constraints. Do not close this window.
                             </p>
@@ -361,7 +361,7 @@ export default function UploadPage() {
             <div className="flex flex-col items-center justify-center min-h-[60vh]">
                 <div className="glass-card p-12 text-center max-w-md w-full">
                     <CheckCircle2 className="w-16 h-16 text-[var(--success)] mx-auto mb-6" />
-                    <h2 className="text-2xl font-bold mb-2">Analysis Complete!</h2>
+                    <h2 className="text-3xl font-bold tracking-tight text-slate-900 mb-2">Analysis Complete!</h2>
                     <p className="text-[var(--muted)]">
                         Redirecting to your gap report...
                     </p>
@@ -373,7 +373,7 @@ export default function UploadPage() {
     return (
         <div>
             <div className="mb-8">
-                <h1 className="text-3xl font-bold mb-2">New Analysis</h1>
+                <h1 className="text-3xl font-bold tracking-tight text-slate-900 mb-2">New Analysis</h1>
                 <p className="text-[var(--muted)]">
                     Upload your V&V documents for automatic compliance gap detection.
                 </p>
@@ -390,7 +390,7 @@ export default function UploadPage() {
                 {/* Device Type Selector */}
                 <div className="bg-white border border-[var(--border)] p-6 rounded-md shadow-sm relative">
                     <div className="flex items-center justify-between mb-4 border-b border-[var(--border)] pb-2">
-                        <h3 className="text-sm font-bold text-[var(--foreground)] uppercase tracking-wider">1. Device Classification</h3>
+                        <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest">1. Device Classification</h4>
                         {files.length > 0 && (
                             <button
                                 onClick={handleAutoDetect}
@@ -407,7 +407,7 @@ export default function UploadPage() {
 
                 {/* Enterprise Integrations & File Upload */}
                 <div className="bg-white border border-[var(--border)] p-6 rounded-md shadow-sm flex flex-col pt-6 relative overflow-hidden">
-                    <h3 className="text-sm font-bold text-[var(--foreground)] uppercase tracking-wider mb-4 border-b border-[var(--border)] pb-2">2. Data Ingestion Stream</h3>
+                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 border-b border-slate-200 pb-2">2. Data Ingestion Stream</h4>
                     
                     {/* Enterprise Direct Sync Connectors */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -521,7 +521,7 @@ export default function UploadPage() {
 
                 {/* Engine Configuration */}
                 <div className="bg-slate-50 border border-slate-200 p-6 rounded-md shadow-sm relative overflow-hidden">
-                    <h3 className="text-sm font-bold text-[var(--foreground)] uppercase tracking-wider mb-4 border-b border-[var(--border)] pb-2">3. Security & Execution Parameters</h3>
+                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 border-b border-slate-200 pb-2">3. Security & Execution Parameters</h4>
                     
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">

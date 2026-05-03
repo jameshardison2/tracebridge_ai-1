@@ -1096,7 +1096,7 @@ function ReportsContent() {
         return (
             <div className="flex flex-col h-full min-h-[0px] animate-in fade-in slide-in-from-bottom-2 duration-500">
                 <div className="mb-6 shrink-0">
-                    <h1 className="text-2xl font-bold flex items-center gap-3 text-slate-900">
+                    <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3 text-slate-900 mb-2">
                         Regulatory Artifact Hub
                         <span className="px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-bold">
                             Submission Builder
@@ -1110,7 +1110,7 @@ function ReportsContent() {
                     <div className="flex-1 flex flex-col gap-6 overflow-y-auto custom-scrollbar pr-2 pb-12 max-h-[calc(100vh-140px)]">
                         {/* Pre-Configured Templates Gallery */}
                         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 shrink-0">
-                            <h2 className="text-sm font-bold text-slate-800 uppercase tracking-widest mb-4">1. Select Target Template</h2>
+                            <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">1. Select Target Template</h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <button onClick={() => setActiveTemplate('510k')} className={`text-left p-4 rounded-xl border-2 transition-all ${activeTemplate === '510k' ? 'border-indigo-600 bg-indigo-50/50 relative overflow-hidden' : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'}`}>
                                     {activeTemplate === '510k' && <div className="absolute top-0 left-0 w-1 h-full bg-indigo-600"></div>}
@@ -1137,7 +1137,7 @@ function ReportsContent() {
 
                         {/* Config Wizard */}
                         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 shrink-0">
-                            <h2 className="text-sm font-bold text-slate-800 uppercase tracking-widest mb-6">2. Define Output Constraints</h2>
+                            <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-6">2. Define Output Constraints</h4>
                             {activeTemplate !== 'complaint' ? (
                             <div className="space-y-6">
                                 <div>
@@ -1213,7 +1213,7 @@ function ReportsContent() {
 
                         {/* 3. Customization */}
                         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 shrink-0">
-                            <h2 className="text-sm font-bold text-slate-800 uppercase tracking-widest mb-6 flex items-center justify-between">
+                            <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-6 flex items-center justify-between">
                                 <span>3. Report Customization</span>
                                 <span className="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded font-medium">OPTIONAL</span>
                             </h2>
@@ -1546,7 +1546,7 @@ function ReportsContent() {
                     </button>
                     <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-2xl font-bold flex items-center gap-3 text-slate-900">
+                            <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3 text-slate-900 mb-2">
                             Compliance Intelligence
                             <span className="px-2.5 py-0.5 rounded-full bg-green-100 text-green-700 border border-green-200 text-xs font-bold flex items-center gap-1.5">
                                 <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
@@ -1670,7 +1670,7 @@ function ReportsContent() {
                 <div className="flex-1 flex flex-col overflow-hidden bg-white border border-slate-200 rounded-t-2xl">
                     <div className="bg-slate-100 px-4 py-3 shrink-0 border-b border-[var(--border)] flex items-center justify-between">
                         <div>
-                            <h2 className="text-sm font-semibold text-[var(--foreground)] uppercase tracking-wider">Regulatory Evaluation Traceability Matrix</h2>
+                            <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Regulatory Evaluation Traceability Matrix</h4>
                         </div>
                         
                         {/* Inline Filter tabs */}
@@ -1838,7 +1838,7 @@ function ReportsContent() {
                         {/* Modal Header */}
                         <div className="sticky top-0 bg-slate-50 rounded-t-2xl px-6 py-5 flex items-start justify-between border-b border-[var(--border)]">
                             <div>
-                                <h2 className="text-xl font-bold mb-1">
+                                <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-1">
                                     Trace Verification: {getCategory(selectedResult.standard)} — {selectedResult.section}
                                 </h2>
                                 <span
