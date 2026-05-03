@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { adminDb } from "@/lib/firebase-admin";
+import { adminDb, verifyIdToken } from "@/lib/firebase-admin";
 import { Timestamp } from "firebase-admin/firestore";
 
 export const dynamic = "force-dynamic";
 
 /**
- * GET /api/team?userId=xxx
+ * GET /api/team
  * Returns the team for a given user, or null if they don't belong to one.
  */
 export async function GET(request: Request) {
@@ -14,12 +14,17 @@ export async function GET(request: Request) {
             return NextResponse.json({ success: false, error: "Firebase not configured" }, { status: 503 });
         }
 
-        const { searchParams } = new URL(request.url);
-        const userId = searchParams.get("userId");
-
-        if (!userId) {
-            return NextResponse.json({ success: false, error: "Missing userId" }, { status: 400 });
+        const authHeader = request.headers.get("Authorization");
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
         }
+        
+        const idToken = authHeader.split("Bearer ")[1];
+        const verification = await verifyIdToken(idToken);
+        if (!verification.success || !verification.uid) {
+            return NextResponse.json({ success: false, error: "Invalid token" }, { status: 401 });
+        }
+        const userId = verification.uid;
 
         // Find teams where user is a member
         const teamsSnapshot = await adminDb.collection("teams").get();
@@ -73,10 +78,28 @@ export async function POST(request: Request) {
             return NextResponse.json({ success: false, error: "Firebase not configured" }, { status: 503 });
         }
 
+        const authHeader = request.headers.get("Authorization");
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+        }
+        
+        const idToken = authHeader.split("Bearer ")[1];
+        const verification = await verifyIdToken(idToken);
+        if (!verification.success || !verification.uid) {
+            return NextResponse.json({ success: false, error: "Invalid token" }, { status: 401 });
+        }
+        const authUserId = verification.uid;
+
         const { action, userId, teamName, memberEmail, teamId } = await request.json();
 
-        if (!action || !userId) {
-            return NextResponse.json({ success: false, error: "Missing action or userId" }, { status: 400 });
+        // Enforce that the user performing the action is the authenticated user
+        if (userId && userId !== authUserId) {
+            return NextResponse.json({ success: false, error: "Forbidden: UID mismatch" }, { status: 403 });
+        }
+        const effectiveUserId = authUserId;
+
+        if (!action) {
+            return NextResponse.json({ success: false, error: "Missing action" }, { status: 400 });
         }
 
         switch (action) {
@@ -87,7 +110,7 @@ export async function POST(request: Request) {
 
                 const teamRef = await adminDb.collection("teams").add({
                     name: teamName,
-                    ownerId: userId,
+                    ownerId: effectiveUserId,
                     members: [],
                     createdAt: Timestamp.now(),
                 });
@@ -109,8 +132,8 @@ export async function POST(request: Request) {
                 }
 
                 const team = teamDoc.data()!;
-                if (team.ownerId !== userId) {
-                    return NextResponse.json({ success: false, error: "Only team owner can invite" }, { status: 403 });
+                if (team.ownerId !== effectiveUserId && memberEmail !== (await adminDb.collection('users').doc(effectiveUserId).get()).data()?.email) {
+                    return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 403 });
                 }
 
                 // Check if already a member

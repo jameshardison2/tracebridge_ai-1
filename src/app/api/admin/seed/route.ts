@@ -118,6 +118,18 @@ export async function POST(request: Request) {
         if (!verification.success || !verification.uid) return NextResponse.json({ success: false, error: "Token validation failed" }, { status: 401 });
         
         const tenantUid = verification.uid;
+
+        // Security Hardening: Restrict admin endpoints in production
+        if (process.env.NODE_ENV === "production") {
+            const { adminAuth } = await import("@/lib/firebase-admin");
+            if (adminAuth) {
+                const userRecord = await adminAuth.getUser(tenantUid);
+                if (process.env.ADMIN_EMAIL && userRecord.email !== process.env.ADMIN_EMAIL) {
+                    return NextResponse.json({ success: false, error: "Forbidden: Admin access required." }, { status: 403 });
+                }
+            }
+        }
+
         console.log(`Starting Exhaustive Database Seed for User: ${tenantUid}`);
         
         const uploadsCol = adminDb.collection("uploads");

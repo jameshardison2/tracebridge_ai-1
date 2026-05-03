@@ -70,19 +70,21 @@ export async function POST(request: Request) {
 
         // Verify Firebase ID token if provided
         let userId: string;
-        if (idToken) {
-            const verification = await verifyIdToken(idToken);
-            if (!verification.success) {
-                return NextResponse.json(
-                    { success: false, error: "Invalid authentication token" },
-                    { status: 401 }
-                );
-            }
-            userId = verification.uid!;
-        } else {
-            userId = "demo-user";
-            console.warn("No ID token provided, using demo user");
+        if (!idToken) {
+            return NextResponse.json(
+                { success: false, error: "Unauthorized: Missing authentication token" },
+                { status: 401 }
+            );
         }
+
+        const verification = await verifyIdToken(idToken);
+        if (!verification.success || !verification.uid) {
+            return NextResponse.json(
+                { success: false, error: "Unauthorized: Invalid authentication token" },
+                { status: 401 }
+            );
+        }
+        userId = verification.uid;
 
         // Create upload document in Firestore
         const uploadData: Upload = {
