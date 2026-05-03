@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
@@ -156,6 +156,7 @@ function ReportsContent() {
     const [reviewerTitle, setReviewerTitle] = useState("RA Director");
 
     const [isSavingPrefs, setIsSavingPrefs] = useState(false);
+    const isExportingRef = useRef(false);
 
     const handleSort = (key: string) => {
         let direction: 'asc' | 'desc' = 'asc';
@@ -533,7 +534,18 @@ function ReportsContent() {
         else if (activeTemplate === 'complaint') reportTitle = "MAUDE-Signals";
         else if (activeTemplate === 'executive') reportTitle = "Audit-Metrics";
 
-        const uniqueGaps = Array.from(new Map(report.upload.gapResults.map((r: any) => [`${r.standard}-${r.section}`, r])).values());
+        const uniqueGapsMap = new Map<string, any>();
+        report.upload.gapResults.forEach((r: any) => {
+            const key = `${r.standard}-${r.section}`;
+            if (!uniqueGapsMap.has(key) || r.status !== 'compliant') {
+                uniqueGapsMap.set(key, r);
+            }
+        });
+        
+        let uniqueGaps = Array.from(uniqueGapsMap.values());
+        if (activeTemplate === 'capa' || activeTemplate === 'complaint') {
+            uniqueGaps = uniqueGaps.filter((r: any) => r.status !== "compliant");
+        }
         
         let headers: string[] = [];
         if (activeTemplate === '510k') headers = ["eSTAR VOL", "SECTION", "REQUIREMENT", "STATUS", "ATTACHMENT"];
@@ -557,24 +569,31 @@ function ReportsContent() {
             const state = r.status === 'compliant' ? 'CLOSE' : r.status === 'gap_detected' ? 'OPEN' : 'IN REV';
             
             const ev = r.status === "compliant" ? "Full traceability confirmed" : (r.missingRequirement || "Verification artifact not detected.");
-            const sourceDoc = r.citations?.[0]?.source || report.upload.documents?.[0]?.fileName || "Source_Document.pdf";
+            const sourceDoc = r.citations?.[0]?.source?.replace(/_v\d+/i, '') || report.upload.documents?.[0]?.fileName?.replace(/_v\d+/i, '') || "Source_Document.pdf";
             const pg = r.citations?.[0]?.section || `Pages ${i * 4 + 11}-${i * 4 + 23}`;
 
             if (activeTemplate === '510k') {
+                let eVol = "Vol 08 - Performance";
+                if (r.standard.includes('14971')) eVol = "Vol 09 - Risk";
+                else if (r.standard.includes('62304')) eVol = "Vol 11 - Software";
+                else if (r.standard.includes('10993')) eVol = "Vol 15 - Biocompatibility";
+                else if (r.standard.includes('Cybersecurity')) eVol = "Vol 16 - Cybersecurity";
+                
                 return [
-                    `"Vol 012"`,
+                    `"${eVol}"`,
                     `"${r.standard} § ${r.section}"`,
                     `"${r.requirement.replace(/"/g, '""')}"`,
                     humanStatus,
                     `"${sourceDoc}"`
                 ].join(",");
             } else if (activeTemplate === 'capa') {
+                const capaEv = r.status === "compliant" ? "Full traceability confirmed" : `Evidence not located in submitted documents for: ${r.requirement}`;
                 return [
                     gapId,
                     `"${assigneeName}"`,
                     priority,
-                    `"${ev.replace(/"/g, '""')}"`,
-                    `"Address non-conformance per ${r.standard}"`,
+                    `"${capaEv.replace(/"/g, '""')}"`,
+                    `"Provide explicit documentation satisfying ${r.standard} requirement: ${r.requirement.replace(/"/g, '""')}"`,
                     new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0],
                     state
                 ].join(",");
@@ -582,10 +601,10 @@ function ReportsContent() {
                 return [
                     `${2000000 + i * 45123}`,
                     new Date(Date.now() - i * 86400000 * 30).toISOString().split('T')[0],
-                    `"Product Code XYZ"`,
+                    `"Product Code [SIMULATED]"`,
                     `"TraceBridge Simulation"`,
                     `"Malfunction"`,
-                    `"Adverse event similar to the missing mitigation for ${r.requirement.replace(/"/g, '""')}."`
+                    `"[ILLUSTRATIVE EXAMPLE - NOT REAL MAUDE DATA] Adverse event similar to the missing mitigation for ${r.requirement.replace(/"/g, '""')}."`
                 ].join(",");
             } else {
                 return [
@@ -613,7 +632,7 @@ function ReportsContent() {
         a.href = url;
         const dateStr = new Date().toISOString().split('T')[0].replace(/-/g, "");
         const deviceNameClean = report.upload.deviceName ? report.upload.deviceName.replace(/[^a-zA-Z0-9]/g, "").substring(0, 15) : "Export";
-        a.download = `TraceBridge-${reportTitle}-${deviceNameClean}_${dateStr}_v3.csv`;
+        a.download = `TraceBridge-${reportTitle}-${deviceNameClean}_${dateStr}.csv`;
         a.click();
         URL.revokeObjectURL(url);
     };
@@ -790,7 +809,14 @@ function ReportsContent() {
         // ==========================================
         // 2. DYNAMIC CONTENT BASED ON TEMPLATE
         // ==========================================
-        const uniqueGaps = Array.from(new Map(report.upload.gapResults.map((r: any) => [`${r.standard}-${r.section}`, r])).values());
+        const uniqueGapsMap = new Map<string, any>();
+        report.upload.gapResults.forEach((r: any) => {
+            const key = `${r.standard}-${r.section}`;
+            if (!uniqueGapsMap.has(key) || r.status !== 'compliant') {
+                uniqueGapsMap.set(key, r);
+            }
+        });
+        const uniqueGaps = Array.from(uniqueGapsMap.values());
         const gaps = uniqueGaps.filter((r: any) => r.status !== "compliant");
 
         if (activeTemplate === 'executive') {
@@ -816,8 +842,8 @@ function ReportsContent() {
             doc.line(14, y, pageWidth - 14, y);
             y += 6;
 
-            for (let i = 0; i < report.upload.gapResults.length; i++) {
-                const item = report.upload.gapResults[i];
+            for (let i = 0; i < uniqueGaps.length; i++) {
+                const item = uniqueGaps[i];
                 if (y > pageHeight - 20) {
                     doc.addPage();
                     y = 20;
@@ -850,7 +876,7 @@ function ReportsContent() {
                 
                 // Evidence
                 doc.setTextColor(100, 116, 139);
-                const cite = item.citations?.[0]?.source || (item.status === 'gap_detected' ? "MISSING" : report.upload.documents?.[0]?.fileName || "Source_Document.pdf");
+                const cite = item.citations?.[0]?.source?.replace(/_v\d+/i, '') || (item.status === 'gap_detected' ? "MISSING" : report.upload.documents?.[0]?.fileName?.replace(/_v\d+/i, '') || "Source_Document.pdf");
                 const evLines = doc.splitTextToSize(cite, 35);
                 doc.text(evLines, 165, y);
                 
@@ -965,7 +991,7 @@ function ReportsContent() {
                 doc.rect(14, y, 140, 20, "FD");
                 doc.setTextColor(15, 23, 42);
                 doc.setFontSize(10);
-                const citeSrc = gap.citations?.[0]?.source || report.upload.documents?.[0]?.fileName || "Source_Document.pdf";
+                const citeSrc = gap.citations?.[0]?.source?.replace(/_v\d+/i, '') || report.upload.documents?.[0]?.fileName?.replace(/_v\d+/i, '') || "Source_Document.pdf";
                 doc.text(citeSrc, 18, y + 8);
                 doc.setTextColor(100, 116, 139);
                 doc.setFontSize(8);
@@ -1055,7 +1081,7 @@ function ReportsContent() {
         }
 
         const dateStr = new Date().toISOString().split('T')[0].replace(/-/g, "");
-        doc.save(`TraceBridge-${fileNameSuffix}-${report.upload.deviceName.replace(/\s+/g, "-")}_${dateStr}_v3.pdf`);
+        doc.save(`TraceBridge-${fileNameSuffix}-${report.upload.deviceName.replace(/\s+/g, "-")}_${dateStr}.pdf`);
     };
 
     // Navigate between gaps in modal
@@ -1070,13 +1096,17 @@ function ReportsContent() {
     };
 
     useEffect(() => {
-        if (report && pendingExport) {
+        if (report && pendingExport && !isExportingRef.current) {
+            isExportingRef.current = true;
             if (pendingExport === 'pdf') {
                 exportPDF();
             } else if (pendingExport === 'csv') {
                 exportCSV();
             }
-            setTimeout(() => setPendingExport(null), 1000);
+            setTimeout(() => {
+                setPendingExport(null);
+                isExportingRef.current = false;
+            }, 1000);
         }
     }, [report, pendingExport]);
 
