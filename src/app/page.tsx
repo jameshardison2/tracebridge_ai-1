@@ -40,7 +40,7 @@ export default function LandingPage() {
               <Lock className="w-3.5 h-3.5 text-slate-400" /> Enterprise-Grade Security
             </div>
             <div className="flex items-center gap-3">
-              <a href="mailto:james.hardison2@gmail.com?subject=TraceBridge%20Beta%20Access%20Request&body=Hi%2C%20I%20would%20like%20to%20request%20beta%20access%20to%20TraceBridge%20AI." className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-md text-xs font-bold uppercase tracking-wider transition-all border border-slate-200 hover:border-slate-300">
+              <a href="mailto:james@tracebridge.ai?subject=TraceBridge%20Beta%20Access%20Request&body=Hi%2C%20I%20would%20like%20to%20request%20beta%20access%20to%20TraceBridge%20AI." className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-md text-xs font-bold uppercase tracking-wider transition-all border border-slate-200 hover:border-slate-300">
                 Request Beta Access
               </a>
               <Link href="/login" className="relative group overflow-hidden bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md text-xs font-bold uppercase tracking-wider transition-all shadow-[0_4px_14px_0_rgba(37,99,235,0.39)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.23)]">
