@@ -27,7 +27,7 @@ export default function LandingPage() {
       <header className="relative z-50 border-b border-slate-200/60 bg-white/60 backdrop-blur-xl shrink-0">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between text-sm">
           <div className="flex items-center gap-3 group cursor-pointer">
-            <div className="relative w-10 h-10 shrink-0">
+            <div className="relative w-12 h-8 shrink-0">
               <Image src="/brand/icon_transparent.png" alt="TraceBridge Icon" fill className="object-contain" />
             </div>
             <span className="font-bold text-2xl tracking-tight text-slate-800">TraceBridge <span className="text-emerald-500">AI</span></span>
