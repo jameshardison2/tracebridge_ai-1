@@ -66,7 +66,7 @@ export default function LandingPage() {
               Find your 510(k) gaps before the FDA does.
             </h1>
             <p className="text-slate-600 leading-relaxed text-lg max-w-2xl font-light">
-              TraceBridge is an intelligent regulatory copilot that instantly cross-references your Risk Management, V&V Protocols, and Device Descriptions against strict FDA checklists. We act as your objective third-party reviewer—flagging administrative errors and compliance gaps that trigger expensive RTA holds, so you can submit with total certainty.
+              TraceBridge is an intelligent regulatory copilot that instantly cross-references your Risk Management, V&V Protocols, and Device Descriptions against strict FDA checklists. We act as your objective third-party reviewer-flagging administrative errors and compliance gaps that trigger expensive RTA holds, so you can submit with total certainty.
             </p>
             <div className="flex gap-4 pt-4">
               <Link href="/login" className="bg-slate-900 text-white hover:bg-slate-800 px-6 py-3 rounded-lg text-sm font-bold flex items-center gap-2 transition-all group shadow-lg shadow-slate-900/20">

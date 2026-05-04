@@ -287,7 +287,7 @@ export default function TeamPage() {
             )}
 
             {!team ? (
-                /* No team yet — Premium Onboarding / Empty State for RA Professionals */
+                /* No team yet - Premium Onboarding / Empty State for RA Professionals */
                 <div className="max-w-4xl mx-auto mt-8">
                     <div className="text-center mb-10">
                         <div className="w-20 h-20 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center mx-auto mb-6 shadow-sm">
@@ -356,7 +356,7 @@ export default function TeamPage() {
                     </div>
                 </div>
             ) : (
-                /* Team exists — show dashboard */
+                /* Team exists - show dashboard */
                 <div className="space-y-8">
                     {/* Premium QMS Environment Banner */}
                     <div className="bg-slate-900 rounded-[2rem] p-8 sm:p-10 text-white shadow-2xl relative overflow-hidden border border-slate-800 group">

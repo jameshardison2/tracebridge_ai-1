@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * TraceBridge AI — Weekly Sync Runner
+ * TraceBridge AI - Weekly Sync Runner
  *
  * Designed to be called by a cron job (or GitHub Action / Render cron task).
- * Pulls only NEW records since the last successful run — keeps training data
+ * Pulls only NEW records since the last successful run - keeps training data
  * current without re-downloading everything.
  *
  * Cron schedule (run every Sunday at 2am):

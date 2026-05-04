@@ -72,11 +72,11 @@ interface ReportData {
     };
 }
 
-// Severity-based cost/timeline estimates — uses AI values when available
+// Severity-based cost/timeline estimates - uses AI values when available
 function getEstimates(result: GapResult) {
-    if (result.status === "compliant") return { cost: "—", timeline: "—" };
+    if (result.status === "compliant") return { cost: "-", timeline: "-" };
     // Prefer AI-generated estimates
-    if (result.estimatedCost && result.estimatedCost !== "—") {
+    if (result.estimatedCost && result.estimatedCost !== "-") {
         return { cost: result.estimatedCost, timeline: result.estimatedTimeline || "4–8 weeks" };
     }
     // Fallback to severity-based
@@ -1803,7 +1803,7 @@ function ResultsContent() {
                             </div>
                         </div>
 
-                        {/* Modal Footer — Sticky Bottom Action Bar */}
+                        {/* Modal Footer - Sticky Bottom Action Bar */}
                         <div className="shrink-0 z-10 bg-white border-t border-slate-200 px-6 py-4 flex flex-wrap items-center justify-between gap-y-4 gap-x-6 shadow-[0_-15px_40px_-15px_rgba(0,0,0,0.1)] rounded-b-2xl">
                             
                             {/* Left: Context Navigation & Pipeline */}

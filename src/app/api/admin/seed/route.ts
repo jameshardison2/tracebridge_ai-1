@@ -197,8 +197,8 @@ export async function POST(request: Request) {
                             quote: `The system structurally implements requirements mapping to ${rule.section} accurately.` 
                         }] : [],
                         
-                        estimatedCost: state === "gap_detected" ? "$3,500 - $7,000" : "—",
-                        estimatedTimeline: state === "gap_detected" ? "2-4 weeks" : "—",
+                        estimatedCost: state === "gap_detected" ? "$3,500 - $7,000" : "-",
+                        estimatedTimeline: state === "gap_detected" ? "2-4 weeks" : "-",
                         createdAt: Timestamp.now(),
                     };
                     batchPromises.push(gapsCol.add(gapData));

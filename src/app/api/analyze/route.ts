@@ -10,7 +10,7 @@ export const maxDuration = 300;
 export const dynamic = "force-dynamic";
 
 /**
- * Core analysis logic — runs in background (not blocking the HTTP response).
+ * Core analysis logic - runs in background (not blocking the HTTP response).
  */
 async function runAnalysisInBackground(uploadId: string): Promise<void> {
     if (!adminDb || !adminStorage) return;
@@ -91,7 +91,7 @@ async function runAnalysisInBackground(uploadId: string): Promise<void> {
             console.error("[RAG Engine] Failed to load RAG chunks:", err);
         }
 
-        // Run gap analysis (this is the slow part — Gemini calls)
+        // Run gap analysis (this is the slow part - Gemini calls)
         const results = await runGapAnalysis(
             uploadId,
             upload.standards as string[],
@@ -137,7 +137,7 @@ async function runAnalysisInBackground(uploadId: string): Promise<void> {
         };
         await adminDb.collection("auditLogs").add(auditLog);
 
-        console.log(`[ANALYZE] Complete for ${uploadId} — ${summary.complianceScore}% compliant`);
+        console.log(`[ANALYZE] Complete for ${uploadId} - ${summary.complianceScore}% compliant`);
     } catch (error) {
         console.error("[ANALYZE] Background analysis failed:", error);
         if (adminDb) {

@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
- * TraceBridge AI — FDA 510(k) Training Data Scraper
+ * TraceBridge AI - FDA 510(k) Training Data Scraper
  *
  * Pulls cleared (SE) and failed (NSE) 510(k) submissions from the FDA's
  * public APIs, downloads decision PDFs, generates normalized metadata.json
  * for each record, and produces a matched-pairs report (same product code,
- * one SE + one NSE) — the highest-signal training data for gap analysis.
+ * one SE + one NSE) - the highest-signal training data for gap analysis.
  *
  * Output structure:
  *   ./training-data/
@@ -61,7 +61,7 @@ const SE_CODES  = ['SESK', 'SESE', 'SESU', 'SESP', 'SESN', 'SESD'];
 const NSE_CODES = ['NSED', 'NSEN', 'NSES'];
 
 // Standard → product code family mappings for deficiency tag inference
-// (Heuristic — TraceBridge prompt engine handles the real logic)
+// (Heuristic - TraceBridge prompt engine handles the real logic)
 const STANDARD_HINTS = {
   software:       ['QMB', 'QMF', 'QMG', 'QMH', 'IYO', 'NQB'],
   cybersecurity:  ['QMB', 'QMF', 'IYO'],
@@ -193,7 +193,7 @@ function buildMetadata(record, decision, pdfResult) {
     regulation_number: record.regulation_number,
     submission_type:  record.submission_type_id,
     review_advisory_committee: record.review_advisory_committee,
-    // Heuristic hints — used by TraceBridge RAG to select relevant standards
+    // Heuristic hints - used by TraceBridge RAG to select relevant standards
     inferred_standard_areas: standardHints,
     // Populated post-review by TraceBridge validation pipeline
     deficiency_tags:  [],
@@ -255,7 +255,7 @@ function buildMatchedPairs(seRecords, nseRecords) {
         product_code: code,
         cleared: seByCode[code].map(r => r.k_number),
         failed:  nseByCode[code].map(r => r.k_number),
-        note: 'Same product code — cleared vs. failed. High-signal training pair.',
+        note: 'Same product code - cleared vs. failed. High-signal training pair.',
       });
     }
   }
@@ -266,7 +266,7 @@ function buildMatchedPairs(seRecords, nseRecords) {
 
 async function main() {
   console.log('\n╔══════════════════════════════════════════════════════╗');
-  console.log('║   TraceBridge AI — FDA 510(k) Training Data Scraper  ║');
+  console.log('║   TraceBridge AI - FDA 510(k) Training Data Scraper  ║');
   console.log('╚══════════════════════════════════════════════════════╝\n');
 
   log(`Date range : ${CONFIG.fromDate} → ${CONFIG.toDate}`);
@@ -307,7 +307,7 @@ async function main() {
   log(`Processing ${seRecords.length} cleared submissions...`, 'head');
   for (let i = 0; i < seRecords.length; i++) {
     const r = seRecords[i];
-    process.stdout.write(`\r  [${i + 1}/${seRecords.length}] ${r.k_number} — ${(r.device_name || '').slice(0, 40).padEnd(40)}`);
+    process.stdout.write(`\r  [${i + 1}/${seRecords.length}] ${r.k_number} - ${(r.device_name || '').slice(0, 40).padEnd(40)}`);
     try {
       const result = await processRecord(r, 'cleared');
       stats.se.total++;
@@ -321,7 +321,7 @@ async function main() {
   log(`Processing ${nseRecords.length} NSE submissions...`, 'head');
   for (let i = 0; i < nseRecords.length; i++) {
     const r = nseRecords[i];
-    process.stdout.write(`\r  [${i + 1}/${nseRecords.length}] ${r.k_number} — ${(r.device_name || '').slice(0, 40).padEnd(40)}`);
+    process.stdout.write(`\r  [${i + 1}/${nseRecords.length}] ${r.k_number} - ${(r.device_name || '').slice(0, 40).padEnd(40)}`);
     try {
       const result = await processRecord(r, 'nse');
       stats.nse.total++;
@@ -354,7 +354,7 @@ async function main() {
     },
     output_dir: path.resolve(CONFIG.outputDir),
     next_steps: [
-      '1. Review matched_pairs.json — these are your highest-signal training records',
+      '1. Review matched_pairs.json - these are your highest-signal training records',
       '2. Manually annotate deficiency_tags[] in each NSE metadata.json',
       '3. Feed cleared + NSE pairs into TraceBridge RAG ingestion pipeline',
       '4. Re-run weekly with --from set to last run date to stay current',

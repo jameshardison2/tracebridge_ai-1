@@ -169,8 +169,8 @@ export async function POST(request: Request) {
                     reasoning: state === "compliant" ? rule.posPassText : rule.negFailText,
                     missingEvidence: state !== "compliant" ? rule.missingArtifact : null,
                     citations: state === "compliant" ? [{ source: rule.expectedDocument, section: `${rule.section}.1`, quote: "System verification maps perfectly." }] : [],
-                    estimatedCost: state === "gap_detected" ? "$4,500" : "—",
-                    estimatedTimeline: state === "gap_detected" ? "2-3 weeks" : "—",
+                    estimatedCost: state === "gap_detected" ? "$4,500" : "-",
+                    estimatedTimeline: state === "gap_detected" ? "2-3 weeks" : "-",
                     createdAt: createdAt
                 }));
             }

@@ -109,7 +109,7 @@ EXPECTED DOCUMENT: ${expectedDocument}
 
 INSTRUCTIONS:
 1. Search through ALL uploaded documents thoroughly.
-2. Look for evidence that the requirement is addressed — this could be the exact document, or equivalent content within another document.
+2. Look for evidence that the requirement is addressed - this could be the exact document, or equivalent content within another document.
 3. Provide specific citations with document name, section, and relevant quotes.
 4. Be conservative: if you find partial evidence, mark confidence as "medium".
 

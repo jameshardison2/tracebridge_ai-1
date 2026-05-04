@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
- * TraceBridge AI — Training Data Ingestion Pipeline
+ * TraceBridge AI - Training Data Ingestion Pipeline
  *
  * Reads the training-data/ folder produced by scraper.js and:
  *   1. Validates metadata.json schema for each record
  *   2. Extracts text from PDFs (if present)
- *   3. Outputs ingestion-ready JSONL — one record per line — for RAG indexing
+ *   3. Outputs ingestion-ready JSONL - one record per line - for RAG indexing
  *   4. Produces a validation report flagging bad/missing records
  *
  * Usage:
@@ -41,7 +41,7 @@ function validateMetadata(meta, filePath) {
   return errors;
 }
 
-// ─── Text extraction (lightweight — no external deps) ────────────────────────
+// ─── Text extraction (lightweight - no external deps) ────────────────────────
 // For production, pipe through a proper PDF text extractor (pdfjs, pdf-parse, etc.)
 // This fallback reads any .txt sidecar if present, otherwise notes PDF-only.
 
@@ -52,7 +52,7 @@ function extractText(dir) {
   }
   // Check for PDF existence for downstream processing note
   const pdfFiles = fs.readdirSync(dir).filter(f => f.endsWith('.pdf'));
-  if (pdfFiles.length) return `[PDF present — run pdf-extract pipeline on ${pdfFiles[0]}]`;
+  if (pdfFiles.length) return `[PDF present - run pdf-extract pipeline on ${pdfFiles[0]}]`;
   return null;
 }
 
@@ -66,14 +66,14 @@ function buildChunk(meta, text, category) {
     category:         category,                // 'cleared' | 'nse'
     decision:         meta.decision,
 
-    // Device context — used for retrieval filtering
+    // Device context - used for retrieval filtering
     product_code:     meta.product_code,
     device_class:     meta.device_class,
     device_name:      meta.device_name,
     submission_type:  meta.submission_type,
     decision_date:    meta.decision_date,
 
-    // Regulatory standard hints — used to route to correct gap-analysis prompt
+    // Regulatory standard hints - used to route to correct gap-analysis prompt
     inferred_standard_areas: meta.inferred_standard_areas || [],
     deficiency_tags:         meta.deficiency_tags || [],
 
@@ -125,7 +125,7 @@ function walkCategory(categoryDir, category) {
 
 function main() {
   console.log('\n╔═══════════════════════════════════════════════════════╗');
-  console.log('║   TraceBridge AI — RAG Ingestion Pipeline              ║');
+  console.log('║   TraceBridge AI - RAG Ingestion Pipeline              ║');
   console.log('╚═══════════════════════════════════════════════════════╝\n');
 
   const clearedRecords = walkCategory(path.join(INPUT_DIR, 'cleared'), 'cleared');
@@ -148,7 +148,7 @@ function main() {
   }
 
   if (VALIDATE_ONLY) {
-    console.log('\n  Validate-only mode — no output written.\n');
+    console.log('\n  Validate-only mode - no output written.\n');
     return;
   }
 

@@ -120,7 +120,7 @@ If the requirement is NOT met (found=false or confidence=low), estimate the reme
 - estimatedTimeline: a time range (e.g., "4-6 weeks") based on typical regulatory work
 - remediationSteps: list of 2-4 specific action items to address the gap
 
-If the requirement IS met (found=true, confidence=high/medium), set cost to "—", timeline to "—", and remediationSteps to [].
+If the requirement IS met (found=true, confidence=high/medium), set cost to "-", timeline to "-", and remediationSteps to [].
 
 RESPOND IN EXACTLY THIS JSON FORMAT (you MUST return a JSON array containing one object per ruleId. Do NOT wrap in markdown codeblocks):
 [
@@ -137,8 +137,8 @@ RESPOND IN EXACTLY THIS JSON FORMAT (you MUST return a JSON array containing one
         "quote": "relevant excerpt (max 200 chars)"
       }
     ],
-    "estimatedCost": "$X,XXX - $X,XXX" or "—",
-    "estimatedTimeline": "X-X weeks" or "—",
+    "estimatedCost": "$X,XXX - $X,XXX" or "-",
+    "estimatedTimeline": "X-X weeks" or "-",
     "remediationSteps": ["step 1", "step 2"],
     "fdaPrecedent": "Kxxxxx - The FDA rejected this because..." or ""
   }

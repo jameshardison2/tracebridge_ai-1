@@ -166,7 +166,7 @@ export async function GET(request: Request) {
             })
         );
 
-        // Sort by createdAt (newest first) — now ISO strings
+        // Sort by createdAt (newest first) - now ISO strings
         uploads.sort((a: any, b: any) => {
             return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
         });

@@ -69,11 +69,11 @@ interface ReportData {
     };
 }
 
-// Severity-based cost/timeline estimates — uses AI values when available
+// Severity-based cost/timeline estimates - uses AI values when available
 function getEstimates(result: GapResult) {
-    if (result.status === "compliant") return { cost: "—", timeline: "—" };
+    if (result.status === "compliant") return { cost: "-", timeline: "-" };
     // Prefer AI-generated estimates
-    if (result.estimatedCost && result.estimatedCost !== "—") {
+    if (result.estimatedCost && result.estimatedCost !== "-") {
         return { cost: result.estimatedCost, timeline: result.estimatedTimeline || "4–8 weeks" };
     }
     // Fallback to severity-based
@@ -2058,7 +2058,7 @@ function ReportsContent() {
                         <div className="sticky top-0 bg-slate-50 rounded-t-2xl px-6 py-5 flex items-start justify-between border-b border-[var(--border)]">
                             <div>
                                 <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-1">
-                                    Trace Verification: {getCategory(selectedResult.standard)} — {selectedResult.section}
+                                    Trace Verification: {getCategory(selectedResult.standard)} - {selectedResult.section}
                                 </h2>
                                 <span
                                     className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
@@ -2261,7 +2261,7 @@ function ReportsContent() {
                             </div>
                         </div>
 
-                        {/* Modal Footer — Sticky Bottom Action Bar */}
+                        {/* Modal Footer - Sticky Bottom Action Bar */}
                         <div className="sticky bottom-0 bg-white border-t border-[var(--border)] px-6 py-4 flex items-center justify-between shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] rounded-b-2xl">
                             {/* Left: Progression */}
                             <div className="flex items-center gap-3">

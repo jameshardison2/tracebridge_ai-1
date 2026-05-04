@@ -404,7 +404,7 @@ export default function DashboardPage() {
                             </div>
 
                             <p className="text-sm font-medium">
-                                Welcome to the TraceBridge Enterprise Quality Management Beta! This is a closed beta — your feedback directly shapes the product. Use the feedback button in the bottom right to flag anything unexpected. Here is how to evaluate the platform:
+                                Welcome to the TraceBridge Enterprise Quality Management Beta! This is a closed beta - your feedback directly shapes the product. Use the feedback button in the bottom right to flag anything unexpected. Here is how to evaluate the platform:
                             </p>
                             
                             <div className="space-y-4">
