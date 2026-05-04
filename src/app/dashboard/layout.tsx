@@ -83,8 +83,8 @@ export default function DashboardLayout({
             {/* Mobile Header */}
             <div className="md:hidden flex items-center justify-between p-4 border-b border-[var(--border)] bg-[var(--card)] sticky top-0 z-40">
                 <Link href="/dashboard" className="flex items-center gap-2">
-                    <div className="relative w-6 h-6 overflow-hidden rounded-md shrink-0">
-                        <Image src="/brand/logo.png" alt="TraceBridge Icon" fill className="object-cover object-top scale-125" />
+                    <div className="relative w-6 h-6 shrink-0">
+                        <Image src="/brand/icon_transparent.png" alt="TraceBridge Icon" fill className="object-contain" />
                     </div>
                     <span className="text-lg font-bold text-[var(--foreground)] truncate">TraceBridge UI</span>
                 </Link>
@@ -120,12 +120,12 @@ export default function DashboardLayout({
             
                 <div className="p-6 border-b border-[var(--border)] flex items-center justify-between md:justify-center">
                     <Link href="/dashboard" className={`flex items-center gap-2 ${isCollapsed ? 'md:justify-center' : ''}`}>
-                        <div className={`relative overflow-hidden rounded-md shrink-0 transition-all ${isCollapsed ? 'w-8 h-8' : 'w-7 h-7'}`}>
+                        <div className={`relative shrink-0 transition-all ${isCollapsed ? 'w-8 h-8' : 'w-7 h-7'}`}>
                             <Image 
-                                src="/brand/logo.png" 
+                                src="/brand/icon_transparent.png" 
                                 alt="TraceBridge Icon" 
                                 fill 
-                                className="object-cover object-top scale-125"
+                                className="object-contain"
                             />
                         </div>
                         <span className={`text-lg font-bold text-[var(--foreground)] truncate md:${isCollapsed ? 'hidden' : 'block'}`}>
