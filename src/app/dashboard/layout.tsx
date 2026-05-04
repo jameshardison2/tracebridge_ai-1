@@ -83,10 +83,10 @@ export default function DashboardLayout({
             {/* Mobile Header */}
             <div className="md:hidden flex items-center justify-between p-4 border-b border-[var(--border)] bg-[var(--card)] sticky top-0 z-40">
                 <Link href="/dashboard" className="flex items-center gap-2">
-                    <div className="relative w-6 h-6 shrink-0">
+                    <div className="relative w-8 h-8 shrink-0">
                         <Image src="/brand/icon_transparent.png" alt="TraceBridge Icon" fill className="object-contain" />
                     </div>
-                    <span className="text-xl font-bold tracking-tight text-[var(--foreground)] truncate">TraceBridge <span className="text-emerald-500">AI</span></span>
+                    <span className="text-2xl font-bold tracking-tight text-[var(--foreground)] truncate">TraceBridge <span className="text-emerald-500">AI</span></span>
                 </Link>
                 <button 
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
@@ -120,7 +120,7 @@ export default function DashboardLayout({
             
                 <div className="p-6 border-b border-[var(--border)] flex items-center justify-between md:justify-center">
                     <Link href="/dashboard" className={`flex items-center gap-2 ${isCollapsed ? 'md:justify-center' : ''}`}>
-                        <div className={`relative shrink-0 transition-all ${isCollapsed ? 'w-8 h-8' : 'w-7 h-7'}`}>
+                        <div className={`relative shrink-0 transition-all ${isCollapsed ? 'w-10 h-10' : 'w-8 h-8'}`}>
                             <Image 
                                 src="/brand/icon_transparent.png" 
                                 alt="TraceBridge Icon" 
@@ -128,7 +128,7 @@ export default function DashboardLayout({
                                 className="object-contain"
                             />
                         </div>
-                        <span className={`text-xl font-bold tracking-tight text-[var(--foreground)] truncate md:${isCollapsed ? 'hidden' : 'block'}`}>
+                        <span className={`text-2xl font-bold tracking-tight text-[var(--foreground)] truncate md:${isCollapsed ? 'hidden' : 'block'}`}>
                             TraceBridge <span className="text-emerald-500">AI</span>
                         </span>
                     </Link>

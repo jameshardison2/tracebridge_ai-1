@@ -94,10 +94,10 @@ export default function LoginPage() {
             {/* Header Branding */}
             <div className="mb-8 text-center">
                 <div className="flex items-center justify-center gap-2 mb-2">
-                    <div className="relative w-8 h-8 shrink-0">
+                    <div className="relative w-12 h-12 shrink-0">
                         <Image src="/brand/icon_transparent.png" alt="TraceBridge Icon" fill className="object-contain" />
                     </div>
-                    <span className="text-2xl font-bold tracking-tight text-slate-800">TraceBridge <span className="text-emerald-500">AI</span></span>
+                    <span className="text-4xl font-bold tracking-tight text-slate-800">TraceBridge <span className="text-emerald-500">AI</span></span>
                 </div>
                 <h1 className="text-sm font-semibold text-slate-500 uppercase tracking-widest">Enterprise Quality Management</h1>
             </div>
