@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import {
   Shield,
   FileSearch,
@@ -26,10 +27,7 @@ export default function LandingPage() {
       <header className="relative z-50 border-b border-slate-200/60 bg-white/60 backdrop-blur-xl shrink-0">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between text-sm">
           <div className="flex items-center gap-3 group cursor-pointer">
-            <div className="p-2 bg-teal-50 rounded-lg group-hover:bg-teal-100 transition-colors">
-              <Shield className="w-5 h-5 text-teal-600" />
-            </div>
-            <span className="font-bold tracking-widest uppercase text-slate-900">TraceBridge AI Systems</span>
+            <Image src="/brand/logo.png" alt="TraceBridge AI Logo" width={180} height={40} className="h-8 w-auto" />
             <span className="hidden md:inline text-slate-500 ml-4 border-l border-slate-300 pl-4 text-xs font-medium tracking-wide">
               Enterprise Regulatory Intelligence Engine
             </span>

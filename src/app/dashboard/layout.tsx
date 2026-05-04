@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import {
@@ -82,8 +83,7 @@ export default function DashboardLayout({
             {/* Mobile Header */}
             <div className="md:hidden flex items-center justify-between p-4 border-b border-[var(--border)] bg-[var(--card)] sticky top-0 z-40">
                 <Link href="/dashboard" className="flex items-center gap-2">
-                    <Shield className="w-6 h-6 text-[var(--primary)] shrink-0" />
-                    <span className="text-lg font-bold text-[var(--foreground)] truncate">TraceBridge UI</span>
+                    <Image src="/brand/logo.png" alt="TraceBridge AI Logo" width={140} height={32} className="h-6 w-auto shrink-0" />
                 </Link>
                 <button 
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
@@ -117,10 +117,13 @@ export default function DashboardLayout({
             
                 <div className="p-6 border-b border-[var(--border)] flex items-center justify-between md:justify-center">
                     <Link href="/dashboard" className={`flex items-center gap-2 ${isCollapsed ? 'md:justify-center' : ''}`}>
-                        <Shield className="w-7 h-7 text-[var(--primary)] shrink-0" />
-                        <span className={`text-lg font-bold text-[var(--foreground)] truncate md:${isCollapsed ? 'hidden' : 'block'}`}>
-                            TraceBridge UI
-                        </span>
+                        <Image 
+                            src="/brand/logo.png" 
+                            alt="TraceBridge AI Logo" 
+                            width={160} 
+                            height={36} 
+                            className={`h-7 w-auto shrink-0 transition-all ${isCollapsed ? 'md:w-8 md:object-cover md:object-left' : ''}`}
+                        />
                     </Link>
                     <button 
                         onClick={() => setIsMobileMenuOpen(false)}
