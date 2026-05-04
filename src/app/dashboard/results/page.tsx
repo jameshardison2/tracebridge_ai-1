@@ -1507,7 +1507,6 @@ function ResultsContent() {
                                             </>
                                         )}
                                     </div>
-                                    </div>
                                 </div>
 
                                 {/* Confidence & Safety Net Alert */}
@@ -2163,7 +2162,6 @@ function ResultsContent() {
                     </div>
                 </div>
             )}
-        </div>
 
             {/* FEEDBACK MODAL (Continuous Learning Loop) */}
             {isFeedbackModalOpen && selectedResult && (
@@ -2204,6 +2202,7 @@ function ResultsContent() {
                     </div>
                 </div>
             )}
+        </div>
     );
 }
 
