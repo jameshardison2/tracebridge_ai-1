@@ -95,9 +95,10 @@ INSTRUCTIONS FOR COGNITIVE ACCURACY (ZERO HALLUCINATION POLICY) - STRICT REGULAT
 6. GOLDEN DATASET MEMORY (PSEUDO-RAG): Cross-reference the uploaded document against your vast internal pre-trained knowledge of actual, successfully cleared FDA 510(k) submissions. If the core medical device safety data exists and matches successful historical precedents, but uses slightly different start-up formatting or synonyms, do NOT fail it on semantics. You are strict regarding missing objective evidence, but accommodating to formatting variations.
 
 CONFIDENCE SCALE:
-- "high": The requirement is explicitly addressed. You can cite a direct quote.
-- "medium": The requirement is addressed, but the evidence is brief or uses alternate terminology. (This still counts as compliant!)
-- "low": Tangential or inadequate mention. 
+- Provide a numeric score from 1 to 100.
+- 90-100: The requirement is explicitly addressed. You can cite a direct quote.
+- 70-89: The requirement is addressed, but the evidence is brief or uses alternate terminology. (This still counts as compliant!)
+- 0-69: Tangential or inadequate mention. 
 
 CRITICAL RULE FOR MISSING EVIDENCE: If you cannot find a direct quote that satisfies the requirement, you MUST STRICTLY RETURN "found": false. Do not hallucinate compliance. A false positive in medical device compliance literally risks human lives. Do not automatically return true with low confidence.
 
@@ -120,7 +121,7 @@ If the requirement is NOT met (found=false or confidence=low), estimate the reme
 - estimatedTimeline: a time range (e.g., "4-6 weeks") based on typical regulatory work
 - remediationSteps: list of 2-4 specific action items to address the gap
 
-If the requirement IS met (found=true, confidence=high/medium), set cost to "-", timeline to "-", and remediationSteps to [].
+If the requirement IS met (found=true, confidenceScore > 69), set cost to "-", timeline to "-", and remediationSteps to [].
 
 RESPOND IN EXACTLY THIS JSON FORMAT (you MUST return a JSON array containing one object per ruleId. Do NOT wrap in markdown codeblocks):
 [
@@ -129,7 +130,7 @@ RESPOND IN EXACTLY THIS JSON FORMAT (you MUST return a JSON array containing one
     "analytical_reasoning": "step-by-step analysis of exactly why it passes or fails",
     "exact_missing_evidence": "absent artifact if missing",
     "found": true/false,
-    "confidence": "high"/"medium"/"low",
+    "confidenceScore": 95,
     "citations": [
       {
         "source": "document name",
@@ -212,8 +213,8 @@ RESPOND IN EXACTLY THIS JSON FORMAT (you MUST return a JSON array containing one
         throw new Error("Air-Gapped Connection Refused: Local LLaMA 3 inference engine (localhost:11434) is offline or unreachable from this environment. Please start the local Ollama service.");
     }
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-    console.log(`[DEBUG] Using v1beta API endpoint / Model: gemini-2.5-flash`);
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-001:generateContent?key=${GEMINI_API_KEY}`;
+    console.log(`[DEBUG] Using v1beta API endpoint / Model: gemini-1.5-pro-001`);
 
     try {
         const response = await fetchWithTimeout(url, {
@@ -235,7 +236,7 @@ RESPOND IN EXACTLY THIS JSON FORMAT (you MUST return a JSON array containing one
                                         analytical_reasoning: { type: "STRING" },
                                         exact_missing_evidence: { type: "STRING" },
                                         found: { type: "BOOLEAN" },
-                                        confidence: { type: "STRING" },
+                                        confidenceScore: { type: "INTEGER" },
                                         citations: {
                                             type: "ARRAY",
                                             items: {
@@ -251,7 +252,7 @@ RESPOND IN EXACTLY THIS JSON FORMAT (you MUST return a JSON array containing one
                                         estimatedTimeline: { type: "STRING" },
                                         remediationSteps: { type: "ARRAY", items: { type: "STRING" } }
                                     },
-                                    required: ["ruleId", "analytical_reasoning", "exact_missing_evidence", "found", "confidence", "citations", "estimatedCost", "estimatedTimeline", "remediationSteps"]
+                                    required: ["ruleId", "analytical_reasoning", "exact_missing_evidence", "found", "confidenceScore", "citations", "estimatedCost", "estimatedTimeline", "remediationSteps"]
                                 }
                             }
                 }

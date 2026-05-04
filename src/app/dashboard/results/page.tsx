@@ -26,6 +26,7 @@ import {
     Copy,
     Brain,
     Trash2,
+    ThumbsDown,
 } from "lucide-react";
 
 interface GapResult {
@@ -131,6 +132,31 @@ function ResultsContent() {
     const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
     const [executiveSummary, setExecutiveSummary] = useState<string | null>(null);
     const [summaryLoading, setSummaryLoading] = useState(false);
+
+    // AI Safety Net & Continuous Learning States
+    const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+    const [feedbackReason, setFeedbackReason] = useState("");
+    const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
+
+    const handleFeedbackSubmit = async () => {
+        if (!selectedResult || !feedbackReason.trim()) return;
+        setIsSubmittingFeedback(true);
+        try {
+            const token = user ? await user.getIdToken() : "";
+            await fetch('/api/eval-feedback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': `Bearer ${token}` } : {}) },
+                body: JSON.stringify({ gapResult: selectedResult, reason: feedbackReason })
+            });
+            showToast("Feedback added to Golden Dataset", "success");
+            setIsFeedbackModalOpen(false);
+            setFeedbackReason("");
+        } catch (e) {
+            showToast("Failed to submit feedback", "error");
+        } finally {
+            setIsSubmittingFeedback(false);
+        }
+    };
 
     // Customization Engine State
     const [enginePayload, setEnginePayload] = useState<string>('');
@@ -1481,7 +1507,39 @@ function ResultsContent() {
                                             </>
                                         )}
                                     </div>
+                                    </div>
                                 </div>
+
+                                {/* Confidence & Safety Net Alert */}
+                                {selectedResult.confidenceScore !== undefined && (
+                                    <div className="flex items-center justify-between gap-4">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">AI Confidence Score:</span>
+                                            <div className="flex items-center gap-2 bg-slate-100 rounded-full px-3 py-1 border border-slate-200">
+                                                <Brain className="w-4 h-4 text-slate-600" />
+                                                <span className={`font-mono font-bold text-sm ${selectedResult.confidenceScore >= 85 ? 'text-emerald-600' : 'text-amber-600'}`}>
+                                                    {selectedResult.confidenceScore}%
+                                                </span>
+                                            </div>
+                                        </div>
+                                        
+                                        {selectedResult.confidenceScore < 85 && (
+                                            <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 border border-amber-200/60 rounded-md">
+                                                <AlertTriangle className="w-4 h-4 text-amber-500" />
+                                                <span className="text-xs font-bold text-amber-700 uppercase tracking-wide">Manual Review Recommended</span>
+                                            </div>
+                                        )}
+                                        
+                                        <div className="ml-auto">
+                                            <button 
+                                                onClick={() => setIsFeedbackModalOpen(true)}
+                                                className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 hover:bg-rose-50 hover:border-rose-200 hover:text-rose-600 rounded-md text-xs font-bold text-slate-500 uppercase tracking-wide transition-colors"
+                                            >
+                                                <ThumbsDown className="w-3.5 h-3.5" /> Report False Positive
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
 
                                 {/* BOTTOM SECTION: 2 Columns */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
@@ -2106,6 +2164,46 @@ function ResultsContent() {
                 </div>
             )}
         </div>
+
+            {/* FEEDBACK MODAL (Continuous Learning Loop) */}
+            {isFeedbackModalOpen && selectedResult && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="bg-white rounded-xl border border-slate-200 shadow-2xl max-w-lg w-full p-6">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                                <ThumbsDown className="w-5 h-5 text-rose-500" /> Reject AI Verdict
+                            </h3>
+                            <button onClick={() => setIsFeedbackModalOpen(false)} className="text-slate-400 hover:text-slate-600">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+                        <p className="text-sm text-slate-600 mb-4">
+                            Help us improve our <strong>Golden Dataset</strong>. Why is the AI's analysis incorrect for this requirement?
+                        </p>
+                        <textarea
+                            className="w-full h-32 border border-slate-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 mb-4"
+                            placeholder="e.g., The evidence is actually on page 42 in the risk matrix table..."
+                            value={feedbackReason}
+                            onChange={(e) => setFeedbackReason(e.target.value)}
+                        />
+                        <div className="flex justify-end gap-3">
+                            <button 
+                                onClick={() => setIsFeedbackModalOpen(false)}
+                                className="px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100 rounded-lg"
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                onClick={handleFeedbackSubmit}
+                                disabled={isSubmittingFeedback || !feedbackReason.trim()}
+                                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white text-sm font-bold rounded-lg transition-colors flex items-center gap-2"
+                            >
+                                {isSubmittingFeedback ? "Saving..." : "Submit to Engineering"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
     );
 }
 
