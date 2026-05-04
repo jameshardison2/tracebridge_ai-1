@@ -66,7 +66,7 @@ export default function LandingPage() {
               Will yours be one of the 1 in 3?
             </h1>
             <p className="text-slate-600 leading-relaxed text-lg max-w-2xl font-light">
-              The FDA is a black box. Submissions disappear into it, and a single administrative gap triggers a 90-day RTA clock reset. Never check your own work. TraceBridge is the objective, third-party Submission Intelligence layer built by practitioners with 15 years inside VELYS and HeartMate 3 to tell you whether you'll get cleared—before the FDA tells you you won't.
+              The FDA is a black box, and a single missed requirement triggers a 90-day RTA delay. TraceBridge is an AI-powered gap analysis engine that X-rays your medical device documentation against FDA regulations. We find missing evidence, predicate risks, and cross-document inconsistencies before the FDA reviewer ever sees them.
             </p>
             <div className="flex gap-4 pt-4">
               <Link href="/login" className="bg-slate-900 text-white hover:bg-slate-800 px-6 py-3 rounded-lg text-sm font-bold flex items-center gap-2 transition-all group shadow-lg shadow-slate-900/20">
