@@ -1510,35 +1510,42 @@ function ResultsContent() {
                                 </div>
 
                                 {/* Confidence & Safety Net Alert */}
-                                {selectedResult.confidenceScore !== undefined && (
-                                    <div className="flex items-center justify-between gap-4">
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">AI Confidence Score:</span>
-                                            <div className="flex items-center gap-2 bg-slate-100 rounded-full px-3 py-1 border border-slate-200">
-                                                <Brain className="w-4 h-4 text-slate-600" />
-                                                <span className={`font-mono font-bold text-sm ${selectedResult.confidenceScore >= 85 ? 'text-emerald-600' : 'text-amber-600'}`}>
-                                                    {selectedResult.confidenceScore}%
-                                                </span>
+                                {(() => {
+                                    const score = selectedResult.confidenceScore ?? 
+                                        ((selectedResult as any).confidence === 'high' ? 95 : 
+                                         (selectedResult as any).confidence === 'medium' ? 75 : 
+                                         (selectedResult as any).confidence === 'low' ? 45 : 80);
+                                         
+                                    return (
+                                        <div className="flex items-center justify-between gap-4">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">AI Confidence Score:</span>
+                                                <div className="flex items-center gap-2 bg-slate-100 rounded-full px-3 py-1 border border-slate-200">
+                                                    <Brain className="w-4 h-4 text-slate-600" />
+                                                    <span className={`font-mono font-bold text-sm ${score >= 85 ? 'text-emerald-600' : 'text-amber-600'}`}>
+                                                        {score}%
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            
+                                            {score < 85 && (
+                                                <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 border border-amber-200/60 rounded-md">
+                                                    <AlertTriangle className="w-4 h-4 text-amber-500" />
+                                                    <span className="text-xs font-bold text-amber-700 uppercase tracking-wide">Manual Review Recommended</span>
+                                                </div>
+                                            )}
+                                            
+                                            <div className="ml-auto">
+                                                <button 
+                                                    onClick={() => setIsFeedbackModalOpen(true)}
+                                                    className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 hover:bg-rose-50 hover:border-rose-200 hover:text-rose-600 rounded-md text-xs font-bold text-slate-500 uppercase tracking-wide transition-colors"
+                                                >
+                                                    <ThumbsDown className="w-3.5 h-3.5" /> Report False Positive
+                                                </button>
                                             </div>
                                         </div>
-                                        
-                                        {selectedResult.confidenceScore < 85 && (
-                                            <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 border border-amber-200/60 rounded-md">
-                                                <AlertTriangle className="w-4 h-4 text-amber-500" />
-                                                <span className="text-xs font-bold text-amber-700 uppercase tracking-wide">Manual Review Recommended</span>
-                                            </div>
-                                        )}
-                                        
-                                        <div className="ml-auto">
-                                            <button 
-                                                onClick={() => setIsFeedbackModalOpen(true)}
-                                                className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 hover:bg-rose-50 hover:border-rose-200 hover:text-rose-600 rounded-md text-xs font-bold text-slate-500 uppercase tracking-wide transition-colors"
-                                            >
-                                                <ThumbsDown className="w-3.5 h-3.5" /> Report False Positive
-                                            </button>
-                                        </div>
-                                    </div>
-                                )}
+                                    );
+                                })()}
 
                                 {/* BOTTOM SECTION: 2 Columns */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
