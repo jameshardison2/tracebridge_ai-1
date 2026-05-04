@@ -60,13 +60,13 @@ export default function LandingPage() {
           <div className="space-y-6">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 border border-red-100 text-red-700 text-xs font-bold uppercase tracking-widest shadow-sm">
               <Activity className="w-3.5 h-3.5" />
-              <span>32% of 510(k) Submissions Fail RTA.</span>
+              <span>Don't check your own work.</span>
             </div>
             <h1 className="text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.1]">
-              Will yours be one of the 1 in 3?
+              Find your 510(k) gaps before the FDA does.
             </h1>
             <p className="text-slate-600 leading-relaxed text-lg max-w-2xl font-light">
-              The FDA is a black box, and a single missed requirement triggers a 90-day RTA delay. TraceBridge is an AI-powered gap analysis engine that X-rays your medical device documentation against FDA regulations. We find missing evidence, predicate risks, and cross-document inconsistencies before the FDA reviewer ever sees them.
+              TraceBridge is an intelligent regulatory copilot that instantly cross-references your Risk Management, V&V Protocols, and Device Descriptions against strict FDA checklists. We act as your objective third-party reviewer—flagging administrative errors and compliance gaps that trigger expensive RTA holds, so you can submit with total certainty.
             </p>
             <div className="flex gap-4 pt-4">
               <Link href="/login" className="bg-slate-900 text-white hover:bg-slate-800 px-6 py-3 rounded-lg text-sm font-bold flex items-center gap-2 transition-all group shadow-lg shadow-slate-900/20">
