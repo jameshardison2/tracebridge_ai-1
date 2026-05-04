@@ -86,7 +86,7 @@ export default function DashboardLayout({
                     <div className="relative w-6 h-6 shrink-0">
                         <Image src="/brand/icon_transparent.png" alt="TraceBridge Icon" fill className="object-contain" />
                     </div>
-                    <span className="text-lg font-bold text-[var(--foreground)] truncate">TraceBridge UI</span>
+                    <span className="text-xl font-bold tracking-tight text-[var(--foreground)] truncate">TraceBridge <span className="text-emerald-500">AI</span></span>
                 </Link>
                 <button 
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
@@ -128,8 +128,8 @@ export default function DashboardLayout({
                                 className="object-contain"
                             />
                         </div>
-                        <span className={`text-lg font-bold text-[var(--foreground)] truncate md:${isCollapsed ? 'hidden' : 'block'}`}>
-                            TraceBridge UI
+                        <span className={`text-xl font-bold tracking-tight text-[var(--foreground)] truncate md:${isCollapsed ? 'hidden' : 'block'}`}>
+                            TraceBridge <span className="text-emerald-500">AI</span>
                         </span>
                     </Link>
                     <button 

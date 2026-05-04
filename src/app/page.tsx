@@ -30,7 +30,7 @@ export default function LandingPage() {
             <div className="relative w-8 h-8 shrink-0">
               <Image src="/brand/icon_transparent.png" alt="TraceBridge Icon" fill className="object-contain" />
             </div>
-            <span className="font-bold tracking-widest uppercase text-slate-900">TraceBridge AI Systems</span>
+            <span className="font-bold text-xl tracking-tight text-slate-800">TraceBridge <span className="text-emerald-500">AI</span></span>
             <span className="hidden md:inline text-slate-500 ml-4 border-l border-slate-300 pl-4 text-xs font-medium tracking-wide">
               Enterprise Regulatory Intelligence Engine
             </span>
@@ -194,7 +194,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row justify-between items-center text-xs">
           <div className="flex items-center gap-3 mb-4 md:mb-0 opacity-70 hover:opacity-100 transition-opacity text-slate-600">
             <Shield className="w-4 h-4 text-slate-400" />
-            <span className="font-bold tracking-wider">TRACEBRIDGE AI</span>
+            <span className="font-bold text-lg tracking-tight text-slate-800">TraceBridge <span className="text-emerald-500">AI</span></span>
           </div>
           <div className="flex gap-6 items-center">
             <div className="flex items-center gap-2 text-slate-500 font-medium">

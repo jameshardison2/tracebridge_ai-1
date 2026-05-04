@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import {
-    Shield,
     Mail,
     Lock,
     User,
@@ -94,8 +94,10 @@ export default function LoginPage() {
             {/* Header Branding */}
             <div className="mb-8 text-center">
                 <div className="flex items-center justify-center gap-2 mb-2">
-                    <Shield className="w-8 h-8 text-[var(--primary)]" />
-                    <span className="text-2xl font-bold text-slate-900 tracking-tight">TraceBridge AI</span>
+                    <div className="relative w-8 h-8 shrink-0">
+                        <Image src="/brand/icon_transparent.png" alt="TraceBridge Icon" fill className="object-contain" />
+                    </div>
+                    <span className="text-2xl font-bold tracking-tight text-slate-800">TraceBridge <span className="text-emerald-500">AI</span></span>
                 </div>
                 <h1 className="text-sm font-semibold text-slate-500 uppercase tracking-widest">Enterprise Quality Management</h1>
             </div>
@@ -217,7 +219,7 @@ export default function LoginPage() {
                     )}
                 </div>
                 <p>Protected by 256-bit encryption. Authorized personnel only.</p>
-                <p className="mt-1">© 2026 TraceBridge AI Systems.</p>
+                <p className="mt-1">© 2026 TraceBridge AI.</p>
             </div>
         </div>
     );
