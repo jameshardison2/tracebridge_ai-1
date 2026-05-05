@@ -20,6 +20,7 @@ import {
     Server,
     Menu,
     X,
+    ClipboardList,
 } from "lucide-react";
 
 const navItems = [
@@ -29,6 +30,7 @@ const navItems = [
     { href: "/dashboard/pipeline", label: "Pipeline (Triage)", icon: Kanban },
     { href: "/dashboard/reports", label: "Reports", icon: FileText },
     { href: "/dashboard/team", label: "Roster Config", icon: Users },
+    { href: "/dashboard/survey", label: "Validation Survey", icon: ClipboardList },
     { href: "/dashboard/logs", label: "System Logs", icon: Server },
 ];
 
