@@ -24,14 +24,23 @@ import {
 } from "lucide-react";
 
 const navItems = [
+    // 1. Home Base
     { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
-    { href: "/dashboard/upload", label: "Submit Audit", icon: Upload },
-    { href: "/dashboard/results", label: "Compliance Intelligence", icon: FileSearch },
-    { href: "/dashboard/pipeline", label: "Pipeline (Triage)", icon: Kanban },
-    { href: "/dashboard/reports", label: "Reports", icon: FileText },
-    { href: "/dashboard/team", label: "Roster Config", icon: Users },
-    { href: "/dashboard/survey", label: "Validation Survey", icon: ClipboardList },
+    
+    // 2. Setup Phase
+    { href: "/dashboard/team", label: "Workspace & Team", icon: Users },
+    
+    // 3. Action Phase (The core flow)
+    { href: "/dashboard/upload", label: "1. Submit Audit", icon: Upload },
+    { href: "/dashboard/pipeline", label: "2. Pipeline (Triage)", icon: Kanban },
+    { href: "/dashboard/results", label: "3. Compliance Intelligence", icon: FileSearch },
+    
+    // 4. Output Phase
+    { href: "/dashboard/reports", label: "Regulatory Reports", icon: FileText },
+    
+    // 5. Admin & Feedback
     { href: "/dashboard/logs", label: "System Logs", icon: Server },
+    { href: "/dashboard/survey", label: "Validation Survey", icon: ClipboardList },
 ];
 
 export default function DashboardLayout({
