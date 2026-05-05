@@ -18,7 +18,8 @@ import {
     FileText,
     Clock,
     ChevronDown,
-    ChevronRight
+    ChevronRight,
+    X
 } from "lucide-react";
 
 interface TeamMember {
@@ -38,7 +39,9 @@ interface TeamData {
 
 export default function TeamPage() {
     const { user } = useAuth();
-    const [team, setTeam] = useState<TeamData | null>(null);
+    const [teams, setTeams] = useState<TeamData[]>([]);
+    const [activeTeamId, setActiveTeamId] = useState<string | null>(null);
+    const [showCreateModal, setShowCreateModal] = useState(false);
     const [loading, setLoading] = useState(true);
     const [inviteEmail, setInviteEmail] = useState("");
     const [teamName, setTeamName] = useState("");
@@ -92,15 +95,27 @@ export default function TeamPage() {
         try {
             const res = await fetch(`/api/team?userId=${user?.uid}`);
             const json = await res.json();
-            if (json.success && json.data.team) {
-                setTeam(json.data.team);
-                setStats(json.data.stats);
+            if (json.success && json.data.teams) {
+                setTeams(json.data.teams);
+                if (json.data.teams.length > 0) {
+                    setActiveTeamId(prev => {
+                        const exists = json.data.teams.find((t: any) => t.id === prev);
+                        return exists ? prev : json.data.teams[0].id;
+                    });
+                } else {
+                    setActiveTeamId(null);
+                }
+                if (json.data.stats) {
+                    setStats(json.data.stats);
+                }
             }
         } catch {
             /* no team yet */
         }
         setLoading(false);
     };
+
+    const team = teams.find(t => t.id === activeTeamId) || null;
 
     const createTeam = async () => {
         if (!teamName.trim()) return;
@@ -118,8 +133,9 @@ export default function TeamPage() {
             });
             const json = await res.json();
             if (json.success) {
-                setSuccess("Team created!");
+                setSuccess("Workspace created!");
                 setTeamName("");
+                setShowCreateModal(false);
                 await fetchTeam();
             } else {
                 setError(json.error);
@@ -286,9 +302,19 @@ export default function TeamPage() {
                 </div>
             )}
 
-            {!team ? (
-                /* No team yet - Premium Onboarding / Empty State for RA Professionals */
-                <div className="max-w-4xl mx-auto mt-8">
+            {!team || showCreateModal ? (
+                /* No team yet or creating new team - Premium Onboarding / Empty State for RA Professionals */
+                <div className="max-w-4xl mx-auto mt-8 relative">
+                    {teams.length > 0 && (
+                        <div className="absolute top-0 right-0 z-10">
+                            <button 
+                                onClick={() => setShowCreateModal(false)}
+                                className="px-4 py-2 text-sm font-bold text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl transition-colors flex items-center gap-2"
+                            >
+                                <X className="w-4 h-4" /> Cancel
+                            </button>
+                        </div>
+                    )}
                     <div className="text-center mb-10">
                         <div className="w-20 h-20 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center mx-auto mb-6 shadow-sm">
                             <Users className="w-10 h-10 text-indigo-600" />
@@ -416,17 +442,39 @@ export default function TeamPage() {
                         {/* Left Column: Team Management */}
                         <div className="lg:col-span-5 space-y-6">
                             <div className="glass-card p-6 border-slate-200 shadow-sm">
-                                <div className="flex items-center justify-between mb-6 pb-6 border-b border-slate-100">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center">
-                                            <Shield className="w-6 h-6 text-slate-700" />
+                                <div className="flex flex-col gap-4 mb-6 pb-6 border-b border-slate-100">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center">
+                                                <Shield className="w-6 h-6 text-slate-700" />
+                                            </div>
+                                            <div>
+                                                <h2 className="text-2xl font-bold text-slate-900 tracking-tight">{team.name}</h2>
+                                                <p className="text-sm text-slate-500 mt-1">
+                                                    {isOwner ? "Workspace Owner" : "Workspace Member"} • {stats.totalMembers} Members
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">{team.name}</h2>
-                                            <p className="text-sm text-slate-500 mt-1">
-                                                {isOwner ? "Workspace Owner" : "Workspace Member"} • {stats.totalMembers} Members
-                                            </p>
-                                        </div>
+                                    </div>
+                                    
+                                    {/* Workspace Switcher */}
+                                    <div className="flex flex-col sm:flex-row gap-3 mt-2">
+                                        <select
+                                            value={activeTeamId || ""}
+                                            onChange={(e) => setActiveTeamId(e.target.value)}
+                                            className="flex-1 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm font-bold focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer shadow-inner appearance-none"
+                                            style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
+                                        >
+                                            {teams.map(t => (
+                                                <option key={t.id} value={t.id}>{t.name} (Workspace)</option>
+                                            ))}
+                                        </select>
+                                        <button
+                                            onClick={() => setShowCreateModal(true)}
+                                            className="px-5 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-xl border border-indigo-200 text-sm transition-all whitespace-nowrap flex items-center justify-center gap-2 shadow-sm"
+                                        >
+                                            <Plus className="w-4 h-4" /> New
+                                        </button>
                                     </div>
                                 </div>
 
