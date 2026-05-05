@@ -168,7 +168,7 @@ export async function POST(request: Request) {
                 if (resend) {
                     try {
                         const { data, error } = await resend.emails.send({
-                            from: 'TraceBridge AI <onboarding@resend.dev>', // Use Resend testing domain
+                            from: 'TraceBridge AI <noreply@tracebridge.ai>', // Custom domain verified!
                             to: [memberEmail],
                             subject: `You've been invited to join ${team.name} on TraceBridge AI`,
                             html: `
