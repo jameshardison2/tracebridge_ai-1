@@ -38,10 +38,18 @@ export async function GET(request: Request) {
             return NextResponse.json({ success: true, data: { teams: [] } });
         }
 
-        const teamsData = userTeams.map(teamDoc => ({
-            id: teamDoc.id,
-            ...teamDoc.data()
-        }));
+        const teamsData = userTeams.map(teamDoc => {
+            const data = teamDoc.data();
+            return {
+                id: teamDoc.id,
+                ...data,
+                createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : null,
+                members: data.members?.map((m: any) => ({
+                    ...m,
+                    joinedAt: m.joinedAt?.toDate ? m.joinedAt.toDate().toISOString() : null
+                })) || []
+            };
+        });
 
         // Get team upload stats (for all teams combined, or we can just send back raw stats later if needed)
         // For simplicity, we'll return the teams array. The frontend can calculate stats per team or we just send 0.
