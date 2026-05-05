@@ -1511,9 +1511,15 @@ function ReportsContent() {
                                     <h2 className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Layout Engine</h2>
                                     <p className="text-[10px] text-slate-500 mt-0.5">Wireframe updates dynamically.</p>
                                 </div>
-                                <div className="flex items-center gap-2 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
-                                    <span className="text-[9px] font-bold text-emerald-600 uppercase tracking-widest">Active</span>
+                                <div className="flex items-center gap-3">
+                                    <button onClick={submitToEsg} disabled={isSubmittingEsg} className="bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-[10px] font-bold flex items-center gap-1.5 shadow-[0_0_10px_rgba(16,185,129,0.1)] transition-colors disabled:opacity-50">
+                                        {isSubmittingEsg ? <Loader2 className="w-3 h-3 animate-spin" /> : <Shield className="w-3 h-3" />}
+                                        {isSubmittingEsg ? "Transmitting..." : "Push to ESG (Test)"}
+                                    </button>
+                                    <div className="flex items-center gap-2 px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
+                                        <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">Active</span>
+                                    </div>
                                 </div>
                             </div>
 
