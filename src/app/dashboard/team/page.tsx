@@ -92,8 +92,12 @@ export default function TeamPage() {
     }
 
     const fetchTeam = async () => {
+        if (!user) return;
         try {
-            const res = await fetch(`/api/team?userId=${user?.uid}`);
+            const token = await user.getIdToken();
+            const res = await fetch(`/api/team?userId=${user.uid}`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
             const json = await res.json();
             if (json.success && json.data.teams) {
                 setTeams(json.data.teams);
@@ -122,9 +126,13 @@ export default function TeamPage() {
         setCreating(true);
         setError("");
         try {
+            const token = await user?.getIdToken();
             const res = await fetch("/api/team", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify({
                     action: "create",
                     userId: user?.uid,
@@ -151,9 +159,13 @@ export default function TeamPage() {
         setInviting(true);
         setError("");
         try {
+            const token = await user?.getIdToken();
             const res = await fetch("/api/team", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify({
                     action: "invite",
                     userId: user?.uid,
@@ -178,9 +190,13 @@ export default function TeamPage() {
     const removeMember = async (email: string) => {
         if (!team) return;
         try {
+            const token = await user?.getIdToken();
             const res = await fetch("/api/team", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify({
                     action: "remove",
                     userId: user?.uid,
