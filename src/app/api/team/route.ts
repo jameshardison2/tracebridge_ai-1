@@ -167,8 +167,8 @@ export async function POST(request: Request) {
                 // Send email via Resend if configured
                 if (resend) {
                     try {
-                        await resend.emails.send({
-                            from: 'TraceBridge AI <noreply@tracebridge.ai>', // Use your verified domain
+                        const { data, error } = await resend.emails.send({
+                            from: 'TraceBridge AI <onboarding@resend.dev>', // Use Resend testing domain
                             to: [memberEmail],
                             subject: `You've been invited to join ${team.name} on TraceBridge AI`,
                             html: `
@@ -188,6 +188,11 @@ export async function POST(request: Request) {
                                 </div>
                             `
                         });
+                        if (error) {
+                            console.error("Resend API returned error:", error);
+                        } else {
+                            console.log("Email sent successfully", data);
+                        }
                     } catch (emailError) {
                         console.error("Failed to send Resend email:", emailError);
                         // We don't want to fail the entire request if email fails, 
