@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { adminDb, verifyIdToken } from "@/lib/firebase-admin";
 import { Timestamp } from "firebase-admin/firestore";
+import { Resend } from "resend";
+
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 export const dynamic = "force-dynamic";
 
@@ -160,6 +163,37 @@ export async function POST(request: Request) {
                 await adminDb.collection("teams").doc(teamId).update({
                     members: [...(team.members || []), newMember],
                 });
+
+                // Send email via Resend if configured
+                if (resend) {
+                    try {
+                        await resend.emails.send({
+                            from: 'TraceBridge AI <noreply@tracebridge.ai>', // Use your verified domain
+                            to: [memberEmail],
+                            subject: `You've been invited to join ${team.name} on TraceBridge AI`,
+                            html: `
+                                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
+                                    <h2 style="color: #0f172a; margin-bottom: 16px;">TraceBridge AI Workspace Invitation</h2>
+                                    <p style="color: #334155; font-size: 16px; line-height: 1.5;">
+                                        You have been invited to join the <strong>${team.name}</strong> workspace to collaborate on regulatory gaps and compliance documentation.
+                                    </p>
+                                    <div style="margin-top: 32px; margin-bottom: 32px;">
+                                        <a href="https://www.tracebridge.ai/login" style="background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 6px; display: inline-block;">
+                                            Accept Invitation
+                                        </a>
+                                    </div>
+                                    <p style="color: #64748b; font-size: 14px; margin-top: 32px; border-top: 1px solid #e2e8f0; padding-top: 16px;">
+                                        If you were not expecting this invitation, you can safely ignore this email.
+                                    </p>
+                                </div>
+                            `
+                        });
+                    } catch (emailError) {
+                        console.error("Failed to send Resend email:", emailError);
+                        // We don't want to fail the entire request if email fails, 
+                        // just log it. They are still added to the DB.
+                    }
+                }
 
                 return NextResponse.json({
                     success: true,
