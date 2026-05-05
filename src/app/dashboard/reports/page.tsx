@@ -157,6 +157,9 @@ function ReportsContent() {
 
     const [isSavingPrefs, setIsSavingPrefs] = useState(false);
     const isExportingRef = useRef(false);
+    
+    // ESG State
+    const [isSubmittingEsg, setIsSubmittingEsg] = useState(false);
 
     const handleSort = (key: string) => {
         let direction: 'asc' | 'desc' = 'asc';
@@ -683,6 +686,43 @@ function ReportsContent() {
         a.download = `TraceBridge-${reportTitle}-${deviceNameClean}_${dateStr}.csv`;
         a.click();
         URL.revokeObjectURL(url);
+    };
+
+    const submitToEsg = async () => {
+        if (!report || !user) return;
+        setIsSubmittingEsg(true);
+        try {
+            const token = await user.getIdToken();
+            const payload = {
+                result: {
+                    reportId: report.upload.id,
+                    productCode: (report.upload as any).productCode || "UNKNOWN",
+                    deviceClass: "II",
+                    deviceType: "SaMD",
+                    srsScore: report.summary.complianceScore,
+                    gaps: report.upload.gapResults
+                }
+            };
+            const res = await fetch("/api/esg/submit", {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert(`Successfully submitted to FDA ESG Test Environment! Core ID: ${data.data.fdaCoreId}`);
+            } else {
+                alert(`ESG Submission Failed: ${data.error}`);
+            }
+        } catch (error) {
+            console.error("ESG submit error", error);
+            alert("An error occurred during submission.");
+        } finally {
+            setIsSubmittingEsg(false);
+        }
     };
 
     const exportPDF = async (e?: React.MouseEvent) => {
@@ -1785,6 +1825,10 @@ function ReportsContent() {
                         )}
                         <button onClick={exportPDF} className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 shadow-sm transition-colors">
                             <ExternalLink className="w-4 h-4" /> {activeTemplate === '510k' ? '510(k) Submission Matrix (.pdf)' : activeTemplate === 'executive' ? 'Attestation (.pdf)' : 'Report (.pdf)'}
+                        </button>
+                        <button onClick={submitToEsg} disabled={isSubmittingEsg} className="bg-slate-900 border border-slate-800 text-white hover:bg-slate-800 px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 shadow-sm transition-colors disabled:opacity-50">
+                            {isSubmittingEsg ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4 text-emerald-400" />}
+                            {isSubmittingEsg ? "Transmitting..." : "Push to FDA ESG (Test)"}
                         </button>
                     </div>
                 </div>
