@@ -47,8 +47,15 @@ export async function POST(req: Request) {
         if (resend) {
             try {
                 // Fetch the user's email to include in the notification
-                const userRecord = adminAuth ? await adminAuth.getUser(userId) : { email: "Unknown User" };
-                const userEmail = userRecord.email || "Unknown User";
+                let userEmail = "Unknown User";
+                try {
+                    if (adminAuth) {
+                        const userRecord = await adminAuth.getUser(userId);
+                        if (userRecord && userRecord.email) userEmail = userRecord.email;
+                    }
+                } catch (authErr) {
+                    console.log("Could not fetch user record for email notification:", authErr);
+                }
 
                 await resend.emails.send({
                     from: 'TraceBridge AI <noreply@tracebridge.ai>',
