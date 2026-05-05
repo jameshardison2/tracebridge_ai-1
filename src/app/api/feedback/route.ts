@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
-import { adminDb, verifyIdToken } from "@/lib/firebase-admin";
+import { adminDb, verifyIdToken, adminAuth } from "@/lib/firebase-admin";
 import { Feedback } from "@/lib/firestore-types";
+import { Resend } from "resend";
+
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 export async function POST(req: Request) {
     try {
@@ -39,6 +42,36 @@ export async function POST(req: Request) {
             createdAt: FieldValue.serverTimestamp() as any
         };
         const docRef = await adminDb.collection("feedback").add(feedback);
+
+        // Send email notification to founders
+        if (resend) {
+            try {
+                // Fetch the user's email to include in the notification
+                const userRecord = adminAuth ? await adminAuth.getUser(userId) : { email: "Unknown User" };
+                const userEmail = userRecord.email || "Unknown User";
+
+                await resend.emails.send({
+                    from: 'TraceBridge AI <noreply@tracebridge.ai>',
+                    to: ['tracebridgeai@gmail.com'], // Send to the founder
+                    subject: `New Feature Request: ${type === 'feature_vote' ? featureRequest : 'Open Feedback'}`,
+                    html: `
+                        <h2>New Feedback Submitted on TraceBridge AI</h2>
+                        <p><strong>From:</strong> ${userEmail}</p>
+                        <p><strong>Type:</strong> ${type}</p>
+                        ${featureRequest ? `<p><strong>Feature:</strong> ${featureRequest}</p>` : ''}
+                        <p><strong>Content:</strong></p>
+                        <blockquote style="border-left: 4px solid #4f46e5; padding-left: 16px; color: #334155; margin-left: 0;">
+                            ${content.replace(/\n/g, '<br>')}
+                        </blockquote>
+                        <br>
+                        <p style="color: #64748b; font-size: 12px;">Stored in Firestore Document ID: ${docRef.id}</p>
+                    `
+                });
+            } catch (emailError) {
+                console.error("Failed to send Resend feedback notification:", emailError);
+                // We don't fail the API request if the email fails, the feedback is still saved in Firestore
+            }
+        }
 
         return NextResponse.json({ 
             success: true, 
