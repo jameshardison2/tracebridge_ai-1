@@ -242,8 +242,8 @@ RESPOND IN EXACTLY THIS JSON FORMAT (you MUST return a JSON array containing one
         throw new Error("Air-Gapped Connection Refused: Local LLaMA 3 inference engine (localhost:11434) is offline or unreachable from this environment. Please start the local Ollama service.");
     }
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-001:generateContent?key=${GEMINI_API_KEY}`;
-    console.log(`[DEBUG] Using v1beta API endpoint / Model: gemini-1.5-pro-001`);
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${GEMINI_API_KEY}`;
+    console.log(`[DEBUG] Using v1beta API endpoint / Model: gemini-1.5-pro`);
 
     try {
         const response = await fetchWithTimeout(url, {

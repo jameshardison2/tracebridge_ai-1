@@ -95,8 +95,8 @@ export async function queryGemini(
     console.log(`[DEBUG] Mock mode: ${MOCK_MODE}`);
     
     // Lock model to specific version for deterministic behavior and safety net
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-001" });
-    console.log(`[DEBUG] Model initialized: gemini-1.5-pro-001`);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+    console.log(`[DEBUG] Model initialized: gemini-1.5-pro`);
 
     const prompt = `You are a regulatory compliance auditor reviewing medical device documentation.
 
