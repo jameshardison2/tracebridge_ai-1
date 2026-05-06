@@ -83,7 +83,7 @@ export default function DashboardPage() {
             alert("Demo dataset has already been loaded. Please delete existing audits to load again.");
             return;
         }
-        if (!user || !window.confirm("This will load the TraceBridge Golden Demo Dataset into your workspace. Proceed?")) return;
+        if (!user || !window.confirm("This will populate your workspace with Q-Sub Demo Data. Proceed?")) return;
         try {
             setLoading(true);
             const token = await user.getIdToken();
@@ -183,7 +183,7 @@ export default function DashboardPage() {
                         title={submissions.length > 10 ? "Dataset already loaded. Please delete existing audits to load again." : ""}
                     >
                         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
-                        Load Golden Demo Dataset
+                        Populate Demo Data
                     </button>
                     <Link
                         href="/dashboard/upload"
@@ -413,7 +413,7 @@ export default function DashboardPage() {
                                     <div>
                                         <h3 className="font-bold text-slate-800">Upload Your Own DHF & Q-Sub</h3>
                                         <p className="text-sm text-slate-500 mt-1">Click <strong>Initiate Device Audit</strong> to upload your own Design History File, Risk Management, or V&V documents and test the AI against your real-world data.</p>
-                                        <p className="text-sm text-slate-500 mt-2"><em>Don't have a document ready?</em> Click <strong>Load Golden Demo Dataset</strong> on the dashboard to explore the platform using a pre-configured AED submission and see how TraceBridge handles a real device type.</p>
+                                        <p className="text-sm text-slate-500 mt-2"><em>Don't have a document ready?</em> Click <strong>Populate Demo Data</strong> on the dashboard to explore the platform using a pre-configured Q-Sub alignment example and see how TraceBridge catches engineering drift.</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
