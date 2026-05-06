@@ -1460,138 +1460,123 @@ function ResultsContent() {
                         {/* Scroll Component */}
                         <div className="flex-1 overflow-y-auto w-full custom-scrollbar bg-slate-50/50">
                             <div className="flex flex-col gap-6 p-6 min-h-[500px]">
-                                {/* TOP HEADER: Requirement & Verdict */}
-                                <div className="bg-white rounded-xl border border-slate-200/70 shadow-sm p-6 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
-                                    {/* Requirement */}
-                                    <div className="flex-1 relative z-10 group">
-                                        <div className="flex items-center gap-3 mb-3">
-                                            <h3 className="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest flex items-center">
-                                                FDA Requirement <span className="text-indigo-400/50 mx-2">•</span> {selectedResult.standard} § {selectedResult.section}
-                                            </h3>
-                                            <button 
-                                                onClick={() => {
-                                                    navigator.clipboard.writeText(`${selectedResult.standard} § ${selectedResult.section}\n${selectedResult.requirement}`);
-                                                    setCopiedField('req');
-                                                    setTimeout(() => setCopiedField(null), 2000);
-                                                }}
-                                                className="text-slate-300 hover:text-indigo-600 transition-colors opacity-0 group-hover:opacity-100"
-                                                title="Copy Requirement"
-                                            >
-                                                {copiedField === 'req' ? <CheckCircle2 className="w-4 h-4 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                                            </button>
-                                        </div>
-                                        <p className="text-[15px] text-slate-800 leading-relaxed font-medium">
-                                            {selectedResult.requirement}
-                                        </p>
-                                    </div>
-                                    
-                                    {/* Verdict Box */}
-                                    <div className={`shrink-0 flex items-center gap-4 px-6 py-4 rounded-xl border relative z-10 ${selectedResult.status === "compliant" ? "bg-emerald-50 border-emerald-200/60" : "bg-rose-50 border-rose-200/60"}`}>
-                                        {selectedResult.status === "compliant" ? (
-                                            <>
-                                                <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center border border-emerald-200 shadow-sm">
-                                                    <CheckCircle2 className="w-6 h-6 text-emerald-600" />
-                                                </div>
-                                                <div>
-                                                    <h4 className="text-[14px] font-bold text-emerald-900 uppercase tracking-wide">Audit Passed</h4>
-                                                    <p className="text-[11px] font-bold text-emerald-700/80 uppercase tracking-widest">Requirement Met</p>
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <div className="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center border border-rose-200 shadow-sm">
-                                                    <AlertTriangle className="w-6 h-6 text-rose-600" />
-                                                </div>
-                                                <div>
-                                                    <h4 className="text-[14px] font-bold text-rose-900 uppercase tracking-wide">Gap Identified</h4>
-                                                    <p className="text-[11px] font-bold text-rose-700/80 uppercase tracking-widest">Remediation Required</p>
-                                                </div>
-                                            </>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* Confidence & Safety Net Alert */}
-                                {(() => {
-                                    const score = selectedResult.confidenceScore ?? 
-                                        ((selectedResult as any).confidence === 'high' ? 95 : 
-                                         (selectedResult as any).confidence === 'medium' ? 75 : 
-                                         (selectedResult as any).confidence === 'low' ? 45 : 80);
-                                         
-                                    return (
-                                        <div className="flex items-center justify-between gap-4">
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">AI Confidence Score:</span>
-                                                <div className="flex items-center gap-2 bg-slate-100 rounded-full px-3 py-1 border border-slate-200">
-                                                    <Brain className="w-4 h-4 text-slate-600" />
-                                                    <span className={`font-mono font-bold text-sm ${score >= 85 ? 'text-emerald-600' : 'text-amber-600'}`}>
-                                                        {score}%
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            
-                                            {score < 85 && (
-                                                <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 border border-amber-200/60 rounded-md">
-                                                    <AlertTriangle className="w-4 h-4 text-amber-500" />
-                                                    <span className="text-xs font-bold text-amber-700 uppercase tracking-wide">Manual Review Recommended</span>
-                                                </div>
-                                            )}
-                                            
-                                            <div className="ml-auto">
+                                {/* TOP HEADER: Unified Verification Context */}
+                                <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-6 relative overflow-hidden mb-2">
+                                    <div className="flex flex-col md:flex-row gap-6">
+                                        {/* Left: FDA Requirement */}
+                                        <div className="flex-1 md:border-r border-slate-100 md:pr-6 relative z-10 group">
+                                            <div className="flex items-center justify-between mb-3">
+                                                <h3 className="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest flex items-center">
+                                                    FDA Requirement <span className="text-indigo-400/50 mx-2">•</span> {selectedResult.standard} § {selectedResult.section}
+                                                </h3>
                                                 <button 
-                                                    onClick={() => setIsFeedbackModalOpen(true)}
-                                                    className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 hover:bg-rose-50 hover:border-rose-200 hover:text-rose-600 rounded-md text-xs font-bold text-slate-500 uppercase tracking-wide transition-colors"
+                                                    onClick={() => {
+                                                        navigator.clipboard.writeText(`${selectedResult.standard} § ${selectedResult.section}\n${selectedResult.requirement}`);
+                                                        setCopiedField('req');
+                                                        setTimeout(() => setCopiedField(null), 2000);
+                                                    }}
+                                                    className="text-slate-300 hover:text-indigo-600 transition-colors opacity-0 group-hover:opacity-100"
+                                                    title="Copy Requirement"
                                                 >
-                                                    <ThumbsDown className="w-3.5 h-3.5" /> Report False Positive
+                                                    {copiedField === 'req' ? <CheckCircle2 className="w-4 h-4 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                                                </button>
+                                            </div>
+                                            <p className="text-[14px] text-slate-800 leading-relaxed font-medium">
+                                                {selectedResult.requirement}
+                                            </p>
+                                        </div>
+                                        {/* Right: Submitted Evidence */}
+                                        <div className="flex-1 md:pl-2 flex flex-col">
+                                            <h3 className="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-3">
+                                                Analyzed Evidence
+                                            </h3>
+                                            <div className="bg-slate-50 border border-slate-200/70 rounded-xl p-4 flex items-center justify-between flex-1">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center border border-slate-200 shadow-sm">
+                                                        <FileText className="w-4 h-4 text-indigo-500" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-sm font-bold text-slate-700 max-w-[200px] sm:max-w-[300px] truncate" title={selectedResult.citations && selectedResult.citations.length > 0 ? selectedResult.citations[0].source : (report?.upload?.documents?.[0]?.fileName || "Assessment_Document.pdf")}>
+                                                            {selectedResult.citations && selectedResult.citations.length > 0 ? selectedResult.citations[0].source : (report?.upload?.documents?.[0]?.fileName || "Assessment_Document.pdf")}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <button 
+                                                    onClick={() => {
+                                                        const docUrl = report?.upload?.documents?.[0]?.storageUrl || "/demo_data/Live_510k_Submission_Artifacts.txt";
+                                                        window.open(docUrl, '_blank');
+                                                    }}
+                                                    className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg border border-indigo-100 hover:bg-indigo-100 transition-colors uppercase tracking-widest shadow-sm active:scale-95"
+                                                >
+                                                    View Source
                                                 </button>
                                             </div>
                                         </div>
-                                    );
-                                })()}
-
-                                {/* BOTTOM SECTION: Full Width AI Copilot with Context Strip */}
-                                <div className="flex flex-col gap-6 flex-1">
-                                    
-                                    {/* CONTEXT STRIP: Evidence & Audit */}
-                                    <div className="flex flex-col sm:flex-row items-stretch gap-4 shrink-0">
-                                        <div className="flex-1 bg-white border border-slate-200/70 rounded-xl p-4 shadow-sm flex items-center justify-between">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center border border-slate-200 shadow-sm">
-                                                    <FileText className="w-4 h-4 text-indigo-500" />
-                                                </div>
-                                                <div>
-                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Submitted Evidence</p>
-                                                    <p className="text-sm font-bold text-slate-700">{selectedResult.citations && selectedResult.citations.length > 0 ? selectedResult.citations[0].source : (report?.upload?.documents?.[0]?.fileName || "Assessment_Document.pdf")}</p>
-                                                </div>
-                                            </div>
-                                            <button 
-                                                onClick={() => {
-                                                    const docUrl = report?.upload?.documents?.[0]?.storageUrl || "/demo_data/Live_510k_Submission_Artifacts.txt";
-                                                    window.open(docUrl, '_blank');
-                                                }}
-                                                className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg border border-indigo-100 hover:bg-indigo-100 transition-colors uppercase tracking-widest shadow-sm active:scale-95"
-                                            >
-                                                View Source
-                                            </button>
-                                        </div>
-
-                                        <div className="flex-1 bg-amber-50 border border-amber-200/60 rounded-xl p-4 shadow-sm flex items-center justify-between group cursor-pointer hover:bg-amber-100/50 transition-colors" onClick={() => setLeftTab(leftTab === 'history' ? 'evidence' : 'history')}>
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center border border-amber-200 shadow-sm">
-                                                    <Shield className="w-4 h-4 text-amber-600" />
-                                                </div>
-                                                <div>
-                                                    <p className="text-[10px] font-bold text-amber-700/70 uppercase tracking-widest mb-0.5">Part 11 Audit Trail</p>
-                                                    <p className="text-xs font-mono font-bold text-amber-800 flex items-center gap-1.5">
-                                                        SHA-256 Validated <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div className="text-[10px] font-bold text-amber-700 uppercase tracking-widest flex items-center gap-1 bg-white px-3 py-1.5 rounded-lg border border-amber-200 shadow-sm">
-                                                {leftTab === 'history' ? 'Hide Log' : 'View Log'} <ChevronDown className={`w-4 h-4 transition-transform ${leftTab === 'history' ? 'rotate-180' : ''}`} />
-                                            </div>
-                                        </div>
                                     </div>
+
+                                    {/* Footer: AI Metadata & Verdict */}
+                                    {(() => {
+                                        const score = selectedResult.confidenceScore ?? 
+                                            ((selectedResult as any).confidence === 'high' ? 95 : 
+                                             (selectedResult as any).confidence === 'medium' ? 75 : 
+                                             (selectedResult as any).confidence === 'low' ? 45 : 80);
+                                             
+                                        return (
+                                            <div className="mt-2 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-4">
+                                                <div className="flex flex-wrap items-center gap-3">
+                                                    {/* Verdict Badge */}
+                                                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-md border ${selectedResult.status === "compliant" ? "bg-emerald-50 border-emerald-200/60" : "bg-rose-50 border-rose-200/60"}`}>
+                                                        {selectedResult.status === "compliant" ? (
+                                                            <>
+                                                                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                                                                <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-widest">Audit Passed</span>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <AlertTriangle className="w-4 h-4 text-rose-600" />
+                                                                <span className="text-[10px] font-bold text-rose-800 uppercase tracking-widest">Gap Identified</span>
+                                                            </>
+                                                        )}
+                                                    </div>
+
+                                                    <div className="w-px h-6 bg-slate-200 mx-1"></div>
+
+                                                    {/* Confidence Score */}
+                                                    <div className="flex items-center gap-2 bg-slate-50 rounded-md px-3 py-1.5 border border-slate-200">
+                                                        <Brain className="w-4 h-4 text-slate-500" />
+                                                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Confidence:</span>
+                                                        <span className={`font-mono font-bold text-xs ${score >= 85 ? 'text-emerald-600' : 'text-amber-600'}`}>
+                                                            {score}%
+                                                        </span>
+                                                    </div>
+
+                                                    {/* Audit Trail Badge */}
+                                                    <button 
+                                                        onClick={() => setLeftTab(leftTab === 'history' ? 'evidence' : 'history')}
+                                                        className="flex items-center gap-2 bg-amber-50 hover:bg-amber-100/50 transition-colors rounded-md px-3 py-1.5 border border-amber-200/60 cursor-pointer group"
+                                                    >
+                                                        <Shield className="w-4 h-4 text-amber-600" />
+                                                        <span className="text-[10px] font-bold text-amber-800 uppercase tracking-widest flex items-center gap-1">
+                                                            SHA-256 Validated <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                                
+                                                <div className="flex items-center gap-2 ml-auto">
+                                                    {score < 85 && (
+                                                        <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 border border-amber-200/60 rounded-md">
+                                                            <AlertTriangle className="w-4 h-4 text-amber-500" />
+                                                            <span className="text-[10px] font-bold text-amber-700 uppercase tracking-wide">Review Recommended</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })()}
+                                </div>
+
+                                {/* BOTTOM SECTION: Full Width AI Copilot */}
+                                <div className="flex flex-col gap-6 flex-1">
 
                                     {/* EXPANDABLE AUDIT TRAIL LOG */}
                                     {leftTab === 'history' && (
@@ -1692,15 +1677,20 @@ function ResultsContent() {
                                                                 </div>
                                                                 <div className="flex-1">
                                                                     <h4 className="text-sm font-bold text-slate-800 mb-2">Sign-Off & Continue</h4>
-                                                                    <p className="text-xs text-slate-600 leading-relaxed mb-3">
+                                                                    <p className="text-xs text-slate-600 leading-relaxed mb-4">
                                                                         The AI has mathematically verified that your submitted documentation fully satisfies this FDA requirement. This artifact is submission-ready.
                                                                     </p>
-                                                                    <div className="bg-white border border-emerald-100 rounded-lg p-3 shadow-sm">
-                                                                        <p className="text-[10px] uppercase font-bold text-emerald-700 mb-1 tracking-widest">Required Action</p>
-                                                                        <p className="text-xs text-emerald-800 font-medium leading-relaxed">
-                                                                            Click the green <strong className="text-emerald-900 font-bold">Sign-Off Trace</strong> button in the bottom action bar to finalize, or use the Prev/Next navigation to continue your review.
-                                                                        </p>
-                                                                    </div>
+                                                                    <button 
+                                                                        onClick={() => handleFinalAction("sign-off")}
+                                                                        disabled={isActionLoading}
+                                                                        className="text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-500/20 px-6 py-2.5 rounded-lg text-[11px] font-extrabold uppercase tracking-widest transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-70 w-full sm:w-auto"
+                                                                    >
+                                                                        {isActionLoading ? (
+                                                                            <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Verifying...</>
+                                                                        ) : (
+                                                                            <><CheckCircle2 className="w-4 h-4" /> Sign-Off Trace <kbd className="ml-1.5 bg-emerald-500/30 border border-emerald-400/50 rounded px-1.5 py-0.5 text-[9px] font-mono text-white font-extrabold shadow-sm">A</kbd></>
+                                                                        )}
+                                                                    </button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1714,7 +1704,16 @@ function ResultsContent() {
                                                                         1
                                                                     </div>
                                                                     <div className="flex-1">
-                                                                        <h4 className="text-sm font-bold text-slate-800 mb-2">Review AI Diagnosis</h4>
+                                                                        <div className="flex items-start justify-between gap-4 mb-2">
+                                                                            <h4 className="text-sm font-bold text-slate-800">Review AI Diagnosis</h4>
+                                                                            <button 
+                                                                                onClick={() => handleFinalAction("dismiss")}
+                                                                                disabled={isActionLoading}
+                                                                                className="text-slate-500 hover:text-rose-600 bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-200/60 px-3 py-1.5 rounded-lg text-[10px] font-extrabold uppercase tracking-widest transition-colors flex items-center gap-1.5 disabled:opacity-70 shrink-0 shadow-sm"
+                                                                            >
+                                                                                {isActionLoading ? <div className="w-3 h-3 border-2 border-rose-500/30 border-t-rose-500 rounded-full animate-spin" /> : <X className="w-3 h-3" />} Dismiss False Alarm
+                                                                            </button>
+                                                                        </div>
                                                                         <div className="flex items-center gap-2 mb-3">
                                                                             <span className="bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-0.5 rounded border border-rose-200">Bleed Metric: 90-Day Delay</span>
                                                                             <span className="bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-0.5 rounded border border-rose-200">Cost: ~$30k Burn</span>
@@ -1853,9 +1852,74 @@ function ResultsContent() {
                                                                     </div>
                                                                     <div className="flex-1">
                                                                         <h4 className="text-sm font-bold text-slate-800 mb-2">Assign & Route Workflow</h4>
-                                                                        <p className="text-xs text-slate-600">
-                                                                            Use the bottom action bar to select an <strong>Assignee</strong> and click <strong className="text-indigo-600 font-bold">Assign to Jira</strong> to push this gap to the engineering backlog.
+                                                                        <p className="text-xs text-slate-600 mb-4">
+                                                                            Select an <strong>Assignee</strong> and click <strong className="text-indigo-600 font-bold">Assign to Jira</strong> to push this gap to the engineering backlog.
                                                                         </p>
+                                                                        
+                                                                        {/* Triage Meta (Status & Assignee & Jira) */}
+                                                                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                                                                            <div className="flex items-center bg-white rounded-lg border border-slate-200 p-1 shadow-sm">
+                                                                                <div className="relative">
+                                                                                    <select 
+                                                                                        value={localPipelineStatus}
+                                                                                        onChange={handleModalPipelineSync}
+                                                                                        className="text-[11px] font-extrabold uppercase tracking-wider bg-transparent rounded-lg pl-3 py-2 pr-8 outline-none text-slate-700 cursor-pointer appearance-none"
+                                                                                    >
+                                                                                        <option value="DETECTED">DETECTED</option>
+                                                                                        <option value="TRIAGED">TRIAGED</option>
+                                                                                        <option value="ASSIGNED">ASSIGNED</option>
+                                                                                        <option value="IN_REMEDIATION">WAITING QA</option>
+                                                                                        <option value="CLOSED">CLOSED</option>
+                                                                                    </select>
+                                                                                    <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                                                                </div>
+                                                                                
+                                                                                <div className="w-[1px] h-6 bg-slate-200 mx-1"></div>
+                                                                                
+                                                                                <div className="relative flex items-center gap-1.5 pl-2 pr-7 py-1.5 rounded-lg transition-colors hover:bg-slate-50 cursor-pointer">
+                                                                                    <div className="w-5 h-5 rounded-full bg-indigo-50 flex items-center justify-center text-[9px] font-bold text-indigo-700 shrink-0 border border-indigo-100 shadow-sm">
+                                                                                        {getAssigneeInitials(getAssigneeKey(selectedResult.id, selectedResult.status))}
+                                                                                    </div>
+                                                                                    <select 
+                                                                                        className="bg-transparent text-[11px] font-extrabold uppercase tracking-wider text-slate-700 outline-none cursor-pointer appearance-none truncate max-w-[100px]"
+                                                                                        value={getAssigneeKey(selectedResult.id, selectedResult.status)}
+                                                                                        onChange={(e) => {
+                                                                                            const val = e.target.value;
+                                                                                            
+                                                                                            // QA Validation: Cannot unassign if status is ASSIGNED or IN_REMEDIATION
+                                                                                            if ((localPipelineStatus === "ASSIGNED" || localPipelineStatus === "IN_REMEDIATION") && val === "UN") {
+                                                                                                showToast(`QA Validation Error: You cannot remove the assignee while the gap is in the ${localPipelineStatus} state.`, "error");
+                                                                                                e.target.value = getAssigneeKey(selectedResult.id, selectedResult.status); // Force revert UI
+                                                                                                return;
+                                                                                            }
+
+                                                                                            const name = e.target.options[e.target.selectedIndex].text;
+                                                                                            setAssigneeMap(prev => ({ ...prev, [selectedResult.id]: val }));
+                                                                                            showToast(`Webhook Sync: Task completely reassigned to ${name} in Jira`, 'success');
+                                                                                        }}
+                                                                                    >
+                                                                                        <option value="AP">{teamQaName}</option>
+                                                                                        <option value="MK">{teamEngName}</option>
+                                                                                        <option value="SR">{teamRaName}</option>
+                                                                                        <option value="JM">Jason M.</option>
+                                                                                        <option value="UN">Unassigned</option>
+                                                                                    </select>
+                                                                                    <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                                                                </div>
+                                                                            </div>
+                                                                            
+                                                                            <button 
+                                                                                onClick={() => handleFinalAction("assign")}
+                                                                                disabled={isActionLoading}
+                                                                                className={`text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 px-6 py-2.5 rounded-lg text-[11px] font-extrabold uppercase tracking-widest transition-all flex items-center justify-center gap-2 active:scale-95 w-full sm:w-auto ${isActionLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                                                                            >
+                                                                                {isActionLoading ? (
+                                                                                    <><div className="w-4 h-4 border-2 border-indigo-200 border-t-white rounded-full animate-spin" /> Syncing...</>
+                                                                                ) : (
+                                                                                    <><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> Assign to Jira <kbd className="ml-1.5 bg-indigo-500/30 border border-indigo-400/50 rounded px-1.5 py-0.5 text-[9px] font-mono text-white font-extrabold shadow-sm">A</kbd></>
+                                                                                )}
+                                                                            </button>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -1864,15 +1928,11 @@ function ResultsContent() {
                                                 </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Modal Footer - Sticky Bottom Action Bar */}
+                                               {/* Modal Footer - Sticky Bottom Action Bar */}
                         <div className="shrink-0 z-10 bg-white border-t border-slate-200 px-6 py-4 flex flex-wrap items-center justify-between gap-y-4 gap-x-6 shadow-[0_-15px_40px_-15px_rgba(0,0,0,0.1)] rounded-b-2xl">
                             
-                            {/* Left: Context Navigation & Pipeline */}
-                            <div className="flex flex-wrap items-center gap-3 w-full xl:w-auto">
+                            {/* Left: Pipeline */}
+                            <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
                                 <button 
                                     onClick={() => router.push(`/dashboard/pipeline${uploadId ? '?id='+uploadId : ''}#gap-${selectedResult.id}`)}
                                     className="text-slate-500 hover:text-indigo-600 transition-colors flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-widest bg-slate-50 hover:bg-indigo-50 px-4 py-2.5 rounded-lg border border-slate-200/60 whitespace-nowrap"
@@ -1880,13 +1940,17 @@ function ResultsContent() {
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                                     Pipeline
                                 </button>
-                                
-                                <div className="h-6 w-[1px] bg-slate-200 mx-1 shrink-0"></div>
+                            </div>
+
+                            {/* Right: Navigation */}
+                            <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3 w-full sm:w-auto">
+                                <button onClick={() => navigateGap("next")} className="text-slate-400 hover:text-slate-700 bg-white hover:bg-slate-50 text-[10px] font-extrabold px-3 py-2.5 rounded-lg transition-colors uppercase tracking-widest border border-slate-200/60 hidden sm:inline-block">
+                                    Skip <kbd className="ml-1 bg-slate-100 border border-slate-200 rounded px-1.5 py-0.5 text-[9px] font-mono text-slate-500 font-extrabold shadow-sm">S</kbd>
+                                </button>
                                 
                                 <div className="flex items-center bg-slate-50 rounded-lg border border-slate-200/60 p-1 shrink-0">
                                     <button 
                                         onClick={() => navigateGap("prev")} 
-                                         
                                         className="px-4 py-1.5 text-[11px] font-extrabold uppercase tracking-widest text-slate-500 hover:text-indigo-600 hover:bg-white rounded-md transition-all disabled:opacity-30 disabled:hover:bg-transparent flex items-center gap-1.5"
                                     >
                                         <ChevronLeft className="w-4 h-4" /> Prev
@@ -1894,145 +1958,13 @@ function ResultsContent() {
                                     <div className="w-[1px] h-4 bg-slate-200 mx-1"></div>
                                     <button 
                                         onClick={() => navigateGap("next")} 
-                                         
                                         className="px-4 py-1.5 text-[11px] font-extrabold uppercase tracking-widest text-slate-500 hover:text-indigo-600 hover:bg-white rounded-md transition-all disabled:opacity-30 disabled:hover:bg-transparent flex items-center gap-1.5"
                                     >
                                         Next <ChevronRight className="w-4 h-4" />
                                     </button>
                                 </div>
                             </div>
-
-                            {/* Right: Operational Triage & Actions */}
-                            <div className="flex flex-wrap items-center justify-center xl:justify-end gap-5 w-full xl:w-auto">
-                                
-                                {/* Triage Meta (Status & Assignee) */}
-                                <div className="flex flex-wrap items-center gap-4 xl:border-r xl:border-slate-200 xl:pr-5">
-                                    <div className="flex items-center gap-2 group cursor-pointer relative">
-                                        <span className="text-[10px] font-bold text-slate-400 group-hover:text-indigo-500 uppercase tracking-widest transition-colors hidden sm:inline-block">Status</span>
-                                        <div className="relative">
-                                            <select 
-                                                value={localPipelineStatus}
-                                                onChange={handleModalPipelineSync}
-                                                className="text-[11px] font-extrabold uppercase tracking-wider bg-slate-50 border border-slate-200/80 rounded-lg px-3 py-2 pr-8 outline-none text-slate-700 hover:border-indigo-300 focus:ring-2 focus:ring-indigo-500/20 cursor-pointer shadow-sm transition-all appearance-none"
-                                            >
-                                                <option value="DETECTED">DETECTED</option>
-                                                <option value="TRIAGED">TRIAGED</option>
-                                                <option value="ASSIGNED">ASSIGNED</option>
-                                                <option value="IN_REMEDIATION">WAITING QA</option>
-                                                <option value="CLOSED">CLOSED</option>
-                                            </select>
-                                            <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-2 group cursor-pointer relative">
-                                        <span className="text-[10px] font-bold text-slate-400 group-hover:text-indigo-500 uppercase tracking-widest transition-colors hidden sm:inline-block">Assignee</span>
-                                        <div className={`relative flex items-center gap-1.5 rounded-lg pl-2 pr-7 py-1.5 shadow-sm transition-all border ${(localPipelineStatus === 'ASSIGNED' || localPipelineStatus === 'IN_REMEDIATION') && getAssigneeKey(selectedResult.id, selectedResult.status) === 'UN' ? 'border-rose-500 bg-rose-50/50 ring-2 ring-rose-500/20' : 'bg-slate-50 border-slate-200/80 hover:border-indigo-300'}`}>
-                                            <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center text-[9px] font-bold text-slate-600 shrink-0 border border-slate-200 shadow-sm">
-                                                {getAssigneeInitials(getAssigneeKey(selectedResult.id, selectedResult.status))}
-                                            </div>
-                                            <select 
-                                                className="bg-transparent text-[11px] font-extrabold uppercase tracking-wider text-slate-700 outline-none cursor-pointer appearance-none truncate max-w-[100px]"
-                                                value={getAssigneeKey(selectedResult.id, selectedResult.status)}
-                                                onChange={(e) => {
-                                                    const val = e.target.value;
-                                                    
-                                                    // QA Validation: Cannot unassign if status is ASSIGNED or IN_REMEDIATION
-                                                    if ((localPipelineStatus === "ASSIGNED" || localPipelineStatus === "IN_REMEDIATION") && val === "UN") {
-                                                        showToast(`QA Validation Error: You cannot remove the assignee while the gap is in the ${localPipelineStatus} state.`, "error");
-                                                        e.target.value = getAssigneeKey(selectedResult.id, selectedResult.status); // Force revert UI
-                                                        return;
-                                                    }
-
-                                                    const name = e.target.options[e.target.selectedIndex].text;
-                                                    setAssigneeMap(prev => ({ ...prev, [selectedResult.id]: val }));
-                                                    showToast(`Webhook Sync: Task completely reassigned to ${name} in Jira`, 'success');
-                                                }}
-                                            >
-                                                <option value="AP">{teamQaName}</option>
-                                                <option value="MK">{teamEngName}</option>
-                                                <option value="SR">{teamRaName}</option>
-                                                <option value="JM">Jason M.</option>
-                                                <option value="UN">Unassigned</option>
-                                            </select>
-                                            <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Core Actions */}
-                                <div className="flex flex-wrap items-center gap-3">
-                                    <button onClick={() => navigateGap("next")} className="text-slate-400 hover:text-slate-700 bg-white hover:bg-slate-50 text-[10px] font-extrabold px-3 py-2.5 rounded-lg transition-colors uppercase tracking-widest border border-slate-200/60 hidden sm:inline-block">
-                                        Skip <kbd className="ml-1 bg-slate-100 border border-slate-200 rounded px-1.5 py-0.5 text-[9px] font-mono text-slate-500 font-extrabold shadow-sm">S</kbd>
-                                    </button>
-                                    
-                                    {selectedResult.status === "compliant" ? (
-                                        <>
-                                            <button 
-                                                onClick={async () => {
-                                                    showToast("Discrepancy flagged. QA team has been notified.", "warning");
-                                                    try {
-                                                        const token = await user?.getIdToken();
-                                                        await fetch("/api/gap", {
-                                                            method: "PATCH",
-                                                            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                                                            body: JSON.stringify({ id: selectedResult?.id, status: "IN_REMEDIATION" })
-                                                        });
-                                                        await fetch("/api/logs", {
-                                                            method: "POST",
-                                                            headers: { "Content-Type": "application/json" },
-                                                            body: JSON.stringify({
-                                                                action: "qa_notification",
-                                                                userId: user?.email || "auditor",
-                                                                details: {
-                                                                    event: "Manual Discrepancy Flag",
-                                                                    traceId: selectedResult?.id,
-                                                                    standard: selectedResult?.standard,
-                                                                    destination: "Slack (QA Channel)",
-                                                                    timestamp: new Date().toISOString()
-                                                                }
-                                                            })
-                                                        });
-                                                    } catch(e) {}
-                                                }}
-                                                className="text-orange-600 bg-orange-50 hover:bg-orange-100 border border-orange-200/60 px-5 py-2.5 rounded-lg text-[11px] font-extrabold uppercase tracking-widest transition-colors flex items-center gap-2"
-                                            >
-                                                <AlertTriangle className="w-4 h-4" /> Flag Issue
-                                            </button>
-                                            <button 
-                                                onClick={() => handleFinalAction("sign-off")}
-                                                disabled={isActionLoading}
-                                                className="text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-500/20 px-6 py-2.5 rounded-lg text-[11px] font-extrabold uppercase tracking-widest transition-all flex items-center gap-2 active:scale-95 disabled:opacity-70"
-                                            >
-                                                {isActionLoading ? (
-                                                    <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Verifying...</>
-                                                ) : (
-                                                    <><CheckCircle2 className="w-4 h-4" /> Sign-Off Trace <kbd className="ml-1.5 bg-emerald-500/30 border border-emerald-400/50 rounded px-1.5 py-0.5 text-[9px] font-mono text-white font-extrabold shadow-sm">A</kbd></>
-                                                )}
-                                            </button>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <button 
-                                                onClick={() => handleFinalAction("dismiss")}
-                                                disabled={isActionLoading}
-                                                className="text-slate-500 hover:text-rose-600 bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-200/60 px-5 py-2.5 rounded-lg text-[11px] font-extrabold uppercase tracking-widest transition-colors flex items-center gap-2 disabled:opacity-70"
-                                            >
-                                                {isActionLoading && true ? <div className="w-4 h-4 border-2 border-rose-500/30 border-t-rose-500 rounded-full animate-spin" /> : <X className="w-4 h-4" />} Dismiss False Alarm
-                                            </button>
-                                            <button 
-                                                onClick={() => handleFinalAction("assign")}
-                                                disabled={isActionLoading}
-                                                className={`text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 px-6 py-2.5 rounded-lg text-[11px] font-extrabold uppercase tracking-widest transition-all flex items-center gap-2 active:scale-95 ${isActionLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
-                                            >
-                                                {isActionLoading ? (
-                                                    <><div className="w-4 h-4 border-2 border-indigo-200 border-t-white rounded-full animate-spin" /> Syncing...</>
-                                                ) : (
-                                                    <><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> Assign to Jira <kbd className="ml-1.5 bg-indigo-500/30 border border-indigo-400/50 rounded px-1.5 py-0.5 text-[9px] font-mono text-white font-extrabold shadow-sm">A</kbd></>
-                                                )}
-                                            </button>
-                                        </>
-                                    )}
-                                </div>
+                        </div>          </div>
                             </div>
 
                         </div>
