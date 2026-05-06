@@ -297,7 +297,7 @@ export default function PipelinePage() {
                             Alignment Lifecycle Pipeline
                         </h1>
                         <p className="text-sm font-medium text-slate-500 mt-1">
-                            Kanban state machine • Drag alignment gaps between columns • Jira sync (Coming Soon)
+                            Kanban state machine • Drag alignment gaps between columns • Live Jira Integration Active
                         </p>
                     </div>
                     {isMounted && uploads.length > 0 && (
