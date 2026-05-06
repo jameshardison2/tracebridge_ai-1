@@ -117,6 +117,7 @@ export async function POST(request: Request) {
                 fileSize: file.fileSize,
                 storageUrl: file.storageUrl,
                 storagePath: file.storagePath,
+                isQSub: file.isQSub || false,
                 createdAt: Timestamp.now(),
             };
 

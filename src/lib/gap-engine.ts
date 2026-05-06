@@ -92,6 +92,7 @@ export async function runGapAnalysis(
     uploadId: string,
     standards: string[],
     fileBuffers: { data: Buffer; mimeType: string; name: string }[],
+    qsubBuffers: { data: Buffer; mimeType: string; name: string }[] = [],
     aiEngine: "gemini" | "local" = "gemini",
     fdaPrecedents: any[] = []
 ): Promise<GapReportItem[]> {
@@ -180,7 +181,7 @@ export async function runGapAnalysis(
                     standard: r.standard,
                     section: r.section,
                     expectedDocument: r.expectedDocument
-                })), aiEngine, fdaPrecedents);
+                })), qsubBuffers, aiEngine, fdaPrecedents);
                 
                 return chunkResults;
                 

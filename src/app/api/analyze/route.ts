@@ -36,9 +36,10 @@ async function runAnalysisInBackground(uploadId: string): Promise<void> {
 
         const bucket = adminStorage.bucket();
         const fileBuffers: { data: Buffer; mimeType: string; name: string }[] = [];
+        const qsubBuffers: { data: Buffer; mimeType: string; name: string }[] = [];
 
         for (const doc of documentsSnapshot.docs) {
-            const { storagePath, fileName, fileType } = doc.data();
+            const { storagePath, fileName, fileType, isQSub } = doc.data();
             if (!storagePath) continue;
 
             try {
@@ -53,7 +54,11 @@ async function runAnalysisInBackground(uploadId: string): Promise<void> {
                     mimeType = "text/plain";
                 }
 
-                fileBuffers.push({ data: buffer, mimeType, name: fileName });
+                if (isQSub) {
+                    qsubBuffers.push({ data: buffer, mimeType, name: fileName });
+                } else {
+                    fileBuffers.push({ data: buffer, mimeType, name: fileName });
+                }
                 console.log(`[ANALYZE] Downloaded ${fileName} (${(buffer.length / 1024).toFixed(0)}KB)`);
             } catch (err) {
                 console.error(`[ANALYZE] Failed to download ${fileName}:`, err);
@@ -96,6 +101,7 @@ async function runAnalysisInBackground(uploadId: string): Promise<void> {
             uploadId,
             upload.standards as string[],
             fileBuffers,
+            qsubBuffers,
             upload.aiEngine,
             fdaPrecedents
         );

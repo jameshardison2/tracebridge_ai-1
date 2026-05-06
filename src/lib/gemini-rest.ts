@@ -38,6 +38,7 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
 export async function queryGeminiRESTArray(
     fileBuffers: { data: Buffer; mimeType: string; name: string }[],
     rules: { id: string; requirement: string; standard: string; section: string; expectedDocument: string }[],
+    qsubBuffers: { data: Buffer; mimeType: string; name: string }[] = [],
     aiEngine: "gemini" | "local" = "gemini",
     fdaPrecedents: any[] = []
 ): Promise<any[]> {
@@ -54,6 +55,33 @@ export async function queryGeminiRESTArray(
           `\n--------------------------------------------------\n`
         : "";
 
+    // Build the Q-Sub Context String
+    let qsubContext = "";
+    if (qsubBuffers.length > 0) {
+        let qsubContent = "";
+        for (const file of qsubBuffers) {
+            try {
+                if (file.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+                    const result = await mammoth.extractRawText({ buffer: file.data });
+                    qsubContent += `\n--- Q-Sub Document: ${file.name} ---\n${result.value}\n`;
+                } else if (file.mimeType === "text/plain") {
+                    qsubContent += `\n--- Q-Sub Document: ${file.name} ---\n${file.data.toString("utf-8")}\n`;
+                } else {
+                    qsubContent += `\n--- Q-Sub Document: ${file.name} ---\n[File format not supported for inline Q-Sub extraction. Only TXT/DOCX supported for Q-Sub]\n`;
+                }
+            } catch (e) {
+                console.error("Failed to parse QSub document", e);
+            }
+        }
+
+        if (qsubContent.trim().length > 0) {
+            qsubContext = `\n--- FDA PRE-SUBMISSION (Q-SUB) FEEDBACK ---\n` +
+                `The user received the following direct feedback from the FDA. You MUST prioritize ensuring that all specific FDA requests, constraints, or commitments mentioned in this feedback are explicitly addressed in the design documents.\n` +
+                qsubContent +
+                `\n-------------------------------------------\n`;
+        }
+    }
+
     const prompt = `You are a regulatory compliance auditor reviewing medical device documentation.
 
 TASK: Determine if the uploaded documents contain sufficient evidence for EACH of the following regulatory requirements. You will return exactly ONE JSON array containing an object for every rule.
@@ -62,6 +90,7 @@ TASK: Determine if the uploaded documents contain sufficient evidence for EACH o
 ${rulesListString}
 -------------------------
 ${precedentsString}
+${qsubContext}
 DOCUMENT SYNONYM GUIDE:
 Companies often use different names for the same regulatory document. Match on CONTENT, not just filename.
 - "Software Development Plan" = SDP, Dev Plan, Development Plan, SDLC Plan, SRS (when it contains planning sections)

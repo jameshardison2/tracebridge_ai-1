@@ -45,7 +45,10 @@ export default function UploadPage() {
     const [deviceName, setDeviceName] = useState("");
     const [selectedCode, setSelectedCode] = useState<any>(null);
     const [files, setFiles] = useState<File[]>([]);
+    const [qsubFiles, setQsubFiles] = useState<File[]>([]);
+    const qsubFileInputRef = useRef<HTMLInputElement>(null);
     const [dragActive, setDragActive] = useState(false);
+    const [qsubDragActive, setQsubDragActive] = useState(false);
     const [step, setStep] = useState<"upload" | "analyzing" | "done">("upload");
     const [activeStep, setActiveStep] = useState(0);
     const [analysisProgress, setAnalysisProgress] = useState({ current: 0, total: 0 });
@@ -86,7 +89,7 @@ export default function UploadPage() {
         return () => clearInterval(interval);
     }, [activeStep]);
 
-    const handleFiles = (newFiles: FileList | File[]) => {
+    const handleFiles = (newFiles: FileList | File[], isQSub: boolean = false) => {
         const fileArray = Array.from(newFiles).filter(
             (f) =>
                 f.type === "application/pdf" ||
@@ -101,17 +104,29 @@ export default function UploadPage() {
         }
 
         setError("");
-        setFiles((prev) => [...prev, ...fileArray]);
+        if (isQSub) {
+            setQsubFiles((prev) => [...prev, ...fileArray]);
+        } else {
+            setFiles((prev) => [...prev, ...fileArray]);
+        }
     };
 
-    const removeFile = (index: number) => {
-        setFiles((prev) => prev.filter((_, i) => i !== index));
+    const removeFile = (index: number, isQSub: boolean = false) => {
+        if (isQSub) {
+            setQsubFiles((prev) => prev.filter((_, i) => i !== index));
+        } else {
+            setFiles((prev) => prev.filter((_, i) => i !== index));
+        }
     };
 
-    const handleDrop = (e: React.DragEvent) => {
+    const handleDrop = (e: React.DragEvent, isQSub: boolean = false) => {
         e.preventDefault();
-        setDragActive(false);
-        handleFiles(e.dataTransfer.files);
+        if (isQSub) {
+            setQsubDragActive(false);
+        } else {
+            setDragActive(false);
+        }
+        handleFiles(e.dataTransfer.files, isQSub);
     };
 
     const handleQuickLoadDemo = () => {
@@ -183,32 +198,41 @@ export default function UploadPage() {
                 fileSize: number;
                 storagePath: string;
                 storageUrl: string;
+                isQSub: boolean;
             }[] = [];
 
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const fileType = file.name.split(".").pop()?.toLowerCase() || "unknown";
-                const storagePath = `uploads/${userId}/${uploadTimestamp}-${file.name}`;
+            // Helper to upload a set of files
+            const uploadFileArray = async (fileArray: File[], isQSub: boolean) => {
+                for (let i = 0; i < fileArray.length; i++) {
+                    const file = fileArray[i];
+                    const fileType = file.name.split(".").pop()?.toLowerCase() || "unknown";
+                    const storagePath = `uploads/${userId}/${uploadTimestamp}-${isQSub ? 'QSUB-' : ''}${file.name}`;
 
-                const storageRef = ref(storage, storagePath);
-                await uploadBytes(storageRef, file, {
-                    contentType: file.type || "application/octet-stream",
-                    customMetadata: {
-                        originalName: file.name,
-                        uploadedBy: userId,
-                    },
-                });
+                    const storageRef = ref(storage, storagePath);
+                    await uploadBytes(storageRef, file, {
+                        contentType: file.type || "application/octet-stream",
+                        customMetadata: {
+                            originalName: file.name,
+                            uploadedBy: userId,
+                            isQSub: isQSub.toString()
+                        },
+                    });
 
-                const storageUrl = await getDownloadURL(storageRef);
+                    const storageUrl = await getDownloadURL(storageRef);
 
-                uploadedFiles.push({
-                    fileName: file.name,
-                    fileType,
-                    fileSize: file.size,
-                    storagePath,
-                    storageUrl,
-                });
-            }
+                    uploadedFiles.push({
+                        fileName: file.name,
+                        fileType,
+                        fileSize: file.size,
+                        storagePath,
+                        storageUrl,
+                        isQSub,
+                    });
+                }
+            };
+
+            await uploadFileArray(files, false);
+            await uploadFileArray(qsubFiles, true);
 
             setActiveStep(1);
 
@@ -457,37 +481,74 @@ export default function UploadPage() {
                     <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">
                         Local File Drive Array
                     </label>
-                    <div
-                        className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all ${
-                            dragActive
-                                ? "border-indigo-500 bg-indigo-50/50 scale-[1.01]"
-                                : "border-slate-300 bg-slate-50 hover:bg-slate-100 hover:border-slate-400"
-                        }`}
-                        onDragOver={(e) => {
-                            e.preventDefault();
-                            setDragActive(true);
-                        }}
-                        onDragLeave={() => setDragActive(false)}
-                        onDrop={handleDrop}
-                        onClick={() => fileInputRef.current?.click()}
-                    >
-                        <div className={`w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-4 transition-colors ${dragActive ? 'bg-indigo-100 text-indigo-600' : 'bg-white text-slate-400 shadow-sm border border-slate-200'}`}>
-                            <Upload className="w-6 h-6" />
+                    
+                    <div className="flex flex-col gap-4">
+                        <div
+                            className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all ${
+                                dragActive
+                                    ? "border-indigo-500 bg-indigo-50/50 scale-[1.01]"
+                                    : "border-slate-300 bg-slate-50 hover:bg-slate-100 hover:border-slate-400"
+                            }`}
+                            onDragOver={(e) => {
+                                e.preventDefault();
+                                setDragActive(true);
+                            }}
+                            onDragLeave={() => setDragActive(false)}
+                            onDrop={(e) => handleDrop(e, false)}
+                            onClick={() => fileInputRef.current?.click()}
+                        >
+                            <div className={`w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-4 transition-colors ${dragActive ? 'bg-indigo-100 text-indigo-600' : 'bg-white text-slate-400 shadow-sm border border-slate-200'}`}>
+                                <Upload className="w-6 h-6" />
+                            </div>
+                            <p className="text-sm font-bold text-slate-700 mb-1">
+                                Drop design documents (DHF/DMR/V&V)
+                            </p>
+                            <p className="text-xs text-[var(--muted)]">
+                                Powered by a 1M+ Token Processing Window. Supports unstructured PDF, DOCX, and TXT.
+                            </p>
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                multiple
+                                accept=".pdf,.docx,.txt"
+                                className="hidden"
+                                onChange={(e) => e.target.files && handleFiles(e.target.files, false)}
+                            />
                         </div>
-                        <p className="text-sm font-bold text-slate-700 mb-1">
-                            Drop entire 1,500+ page DHF Submissions
-                        </p>
-                        <p className="text-xs text-[var(--muted)]">
-                            Powered by a 1M+ Token Processing Window. Supports unstructured PDF, DOCX, and TXT.
-                        </p>
-                        <input
-                            ref={fileInputRef}
-                            type="file"
-                            multiple
-                            accept=".pdf,.docx,.txt"
-                            className="hidden"
-                            onChange={(e) => e.target.files && handleFiles(e.target.files)}
-                        />
+
+                        {/* Q-Sub Dedicated Zone */}
+                        <div
+                            className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${
+                                qsubDragActive
+                                    ? "border-amber-500 bg-amber-50/50 scale-[1.01]"
+                                    : "border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300"
+                            }`}
+                            onDragOver={(e) => {
+                                e.preventDefault();
+                                setQsubDragActive(true);
+                            }}
+                            onDragLeave={() => setQsubDragActive(false)}
+                            onDrop={(e) => handleDrop(e, true)}
+                            onClick={() => qsubFileInputRef.current?.click()}
+                        >
+                            <div className={`w-10 h-10 mx-auto rounded-full flex items-center justify-center mb-3 transition-colors ${qsubDragActive ? 'bg-amber-100 text-amber-600' : 'bg-amber-50 text-amber-500 shadow-sm border border-amber-100'}`}>
+                                <FileSearch className="w-5 h-5" />
+                            </div>
+                            <p className="text-sm font-bold text-slate-700 mb-1">
+                                FDA Pre-Sub (Q-Sub) Feedback <span className="text-amber-600 font-normal ml-1">(Optional)</span>
+                            </p>
+                            <p className="text-[11px] text-[var(--muted)] px-8">
+                                Upload FDA meeting minutes. TraceBridge will strictly verify that your evidence addresses the FDA's direct requests.
+                            </p>
+                            <input
+                                ref={qsubFileInputRef}
+                                type="file"
+                                multiple
+                                accept=".pdf,.docx,.txt"
+                                className="hidden"
+                                onChange={(e) => e.target.files && handleFiles(e.target.files, true)}
+                            />
+                        </div>
                     </div>
 
                     {files.length > 0 && (
@@ -507,11 +568,39 @@ export default function UploadPage() {
                                     <button
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            removeFile(i);
+                                            removeFile(i, false);
                                         }}
                                         className="p-1 rounded-lg hover:bg-[var(--danger)]/10 transition-colors"
                                     >
                                         <X className="w-4 h-4 text-[var(--muted)] hover:text-[var(--danger)]" />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {qsubFiles.length > 0 && (
+                        <div className="mt-2 space-y-2">
+                            {qsubFiles.map((file, i) => (
+                                <div
+                                    key={`qsub-${i}`}
+                                    className="flex items-center gap-3 p-3 rounded-xl bg-amber-50 border border-amber-100"
+                                >
+                                    <FileSearch className="w-5 h-5 text-amber-500" />
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-medium truncate text-amber-900">{file.name}</p>
+                                        <p className="text-xs text-amber-700/70">
+                                            Q-Sub Feedback • {(file.size / 1024 / 1024).toFixed(2)} MB
+                                        </p>
+                                    </div>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            removeFile(i, true);
+                                        }}
+                                        className="p-1 rounded-lg hover:bg-amber-100 transition-colors"
+                                    >
+                                        <X className="w-4 h-4 text-amber-600 hover:text-amber-800" />
                                     </button>
                                 </div>
                             ))}

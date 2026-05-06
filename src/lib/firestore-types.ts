@@ -39,6 +39,7 @@ export interface DocumentMetadata {
   fileSize: number;
   storageUrl: string;
   storagePath: string;
+  isQSub?: boolean;
   createdAt: Timestamp | Date;
 }
 
