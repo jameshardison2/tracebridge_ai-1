@@ -138,7 +138,7 @@ async function runAnalysisInBackground(uploadId: string): Promise<void> {
         const auditLog: AuditLog = {
             userId: upload.userId as string,
             action: "analyze",
-            details: { uploadId, rulesChecked: summary.total, gapsFound: summary.gaps, complianceScore: summary.complianceScore },
+            details: { uploadId, rulesChecked: summary.total, gapsFound: summary.gaps, complianceScore: summary.complianceScore, hasQSub: qsubBuffers.length > 0 },
             createdAt: Timestamp.now(),
         };
         await adminDb.collection("auditLogs").add(auditLog);

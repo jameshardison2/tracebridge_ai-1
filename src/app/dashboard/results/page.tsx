@@ -1059,7 +1059,7 @@ function ResultsContent() {
                     </div>
                     <h2 className="text-xl font-bold text-slate-800 mb-3">No Audit Initialized</h2>
                     <p className="text-slate-500 mb-8 text-[15px] leading-relaxed">
-                        Navigate to the Master System Query List and select an active pipeline submission to begin triaging its gap architecture.
+                        Navigate to the Master System Query List and select an active pipeline submission to begin triaging its Q-Sub alignment gaps.
                     </p>
                     <Link href="/dashboard" className="inline-flex items-center gap-2 bg-indigo-600 text-white font-bold text-sm px-6 py-3.5 rounded-xl hover:bg-indigo-700 transition shadow-sm hover:translate-y-[-1px]">
                         <ArrowLeft className="w-4 h-4" /> Return to Overview
