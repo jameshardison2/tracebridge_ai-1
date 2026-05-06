@@ -39,6 +39,8 @@ interface GapResult {
     severity?: "critical" | "major" | "minor";
     gapTitle: string;
     missingRequirement: string;
+    reasoning?: string;
+    missingEvidence?: string;
     createdAt?: any;
     citations?: Array<{
         source: string;
