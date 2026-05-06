@@ -55,6 +55,7 @@ export default function UploadPage() {
     const [error, setError] = useState("");
     const [uploadId, setUploadId] = useState("");
     const [isExtracting, setIsExtracting] = useState(false);
+    const [parsingFiles, setParsingFiles] = useState<Record<string, boolean>>({});
     
     // Security & Engine settings
     const [zdrEnabled, setZdrEnabled] = useState(true);
@@ -104,6 +105,19 @@ export default function UploadPage() {
         }
 
         setError("");
+        
+        // Mark new files as parsing
+        const parsingStateUpdates: Record<string, boolean> = {};
+        fileArray.forEach(f => {
+            const fileId = `${f.name}-${f.size}`;
+            parsingStateUpdates[fileId] = true;
+            // simulate parsing time
+            setTimeout(() => {
+                setParsingFiles(prev => ({ ...prev, [fileId]: false }));
+            }, 1500 + Math.random() * 1000); // 1.5s - 2.5s
+        });
+        setParsingFiles(prev => ({ ...prev, ...parsingStateUpdates }));
+
         if (isQSub) {
             setQsubFiles((prev) => [...prev, ...fileArray]);
         } else {
@@ -427,6 +441,21 @@ export default function UploadPage() {
                         )}
                     </div>
                     <ProductCodeSelector onSelect={setSelectedCode} value={selectedCode} />
+                    
+                    {selectedCode && (
+                        <div className="mt-4 p-4 bg-indigo-50/50 border border-indigo-100 rounded-lg animate-in slide-in-from-top-2 fade-in duration-300 flex gap-3 shadow-inner">
+                            <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
+                                <Brain className="w-4 h-4 text-indigo-600 animate-pulse" />
+                            </div>
+                            <div>
+                                <p className="text-xs font-bold text-indigo-900 mb-1">AI Engine Context Loaded</p>
+                                <p className="text-[11px] text-indigo-700 leading-relaxed">
+                                    Targeting <span className="font-bold">FDA Class {selectedCode.deviceClass || "II"}</span> (Product Code: {selectedCode.code}). 
+                                    Activating validation vectors for 21 CFR § {selectedCode.regulationNumber || "820.30"}{selectedCode.requiresSoftware ? ", IEC 62304" : ""}{selectedCode.requiresClinical ? ", ISO 14155" : ""}{selectedCode.requiresBiocompatibility ? ", ISO 10993" : ""}.
+                                </p>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Enterprise Integrations & File Upload */}
@@ -553,17 +582,32 @@ export default function UploadPage() {
 
                     {files.length > 0 && (
                         <div className="mt-4 space-y-2">
-                            {files.map((file, i) => (
+                            {files.map((file, i) => {
+                                const fileId = `${file.name}-${file.size}`;
+                                const isParsing = parsingFiles[fileId];
+                                return (
                                 <div
                                     key={i}
-                                    className="flex items-center gap-3 p-3 rounded-xl bg-[var(--background)] border border-[var(--border)]"
+                                    className="flex items-center gap-3 p-3 rounded-xl bg-[var(--background)] border border-[var(--border)] transition-all"
                                 >
                                     <FileText className="w-5 h-5 text-[var(--primary)]" />
-                                    <div className="flex-1 min-w-0">
+                                    <div className="flex-1 min-w-0 flex flex-col justify-center">
                                         <p className="text-sm font-medium truncate">{file.name}</p>
-                                        <p className="text-xs text-[var(--muted)]">
-                                            {(file.size / 1024 / 1024).toFixed(2)} MB
-                                        </p>
+                                        <div className="flex items-center gap-2 mt-0.5">
+                                            <span className="text-xs text-[var(--muted)]">
+                                                {(file.size / 1024 / 1024).toFixed(2)} MB
+                                            </span>
+                                            <span className="text-[10px] text-slate-300">•</span>
+                                            {isParsing ? (
+                                                <span className="text-[10px] font-bold text-indigo-500 flex items-center gap-1.5 animate-pulse">
+                                                    <Loader2 className="w-3 h-3 animate-spin" /> Extracting tokens & identifying requirements...
+                                                </span>
+                                            ) : (
+                                                <span className="text-[10px] font-bold text-emerald-600 flex items-center gap-1">
+                                                    <CheckCircle2 className="w-3 h-3" /> Ready for Inference
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
                                     <button
                                         onClick={(e) => {
@@ -575,23 +619,38 @@ export default function UploadPage() {
                                         <X className="w-4 h-4 text-[var(--muted)] hover:text-[var(--danger)]" />
                                     </button>
                                 </div>
-                            ))}
+                            )})}
                         </div>
                     )}
 
                     {qsubFiles.length > 0 && (
                         <div className="mt-2 space-y-2">
-                            {qsubFiles.map((file, i) => (
+                            {qsubFiles.map((file, i) => {
+                                const fileId = `${file.name}-${file.size}`;
+                                const isParsing = parsingFiles[fileId];
+                                return (
                                 <div
                                     key={`qsub-${i}`}
                                     className="flex items-center gap-3 p-3 rounded-xl bg-amber-50 border border-amber-100"
                                 >
                                     <FileSearch className="w-5 h-5 text-amber-500" />
-                                    <div className="flex-1 min-w-0">
+                                    <div className="flex-1 min-w-0 flex flex-col justify-center">
                                         <p className="text-sm font-medium truncate text-amber-900">{file.name}</p>
-                                        <p className="text-xs text-amber-700/70">
-                                            Q-Sub Feedback • {(file.size / 1024 / 1024).toFixed(2)} MB
-                                        </p>
+                                        <div className="flex items-center gap-2 mt-0.5">
+                                            <span className="text-xs text-amber-700/70">
+                                                Q-Sub Feedback • {(file.size / 1024 / 1024).toFixed(2)} MB
+                                            </span>
+                                            <span className="text-[10px] text-amber-300">•</span>
+                                            {isParsing ? (
+                                                <span className="text-[10px] font-bold text-amber-600 flex items-center gap-1.5 animate-pulse">
+                                                    <Loader2 className="w-3 h-3 animate-spin" /> Extracting context...
+                                                </span>
+                                            ) : (
+                                                <span className="text-[10px] font-bold text-emerald-600 flex items-center gap-1">
+                                                    <CheckCircle2 className="w-3 h-3" /> Ready for Validation
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
                                     <button
                                         onClick={(e) => {
@@ -603,7 +662,7 @@ export default function UploadPage() {
                                         <X className="w-4 h-4 text-amber-600 hover:text-amber-800" />
                                     </button>
                                 </div>
-                            ))}
+                            )})}
                         </div>
                     )}
                 </div>
@@ -642,10 +701,17 @@ export default function UploadPage() {
                 <button
                     onClick={handleSubmit}
                     disabled={!selectedCode || files.length === 0}
-                    className="btn-primary w-full py-4 text-lg disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:transform-none flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20"
+                    className={`w-full py-4 text-lg flex items-center justify-center gap-2 rounded-xl font-bold transition-all overflow-hidden relative group ${
+                        (!selectedCode || files.length === 0) 
+                            ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
+                            : 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_30px_rgba(99,102,241,0.5)] hover:-translate-y-0.5 border border-indigo-400'
+                    }`}
                 >
-                    <Shield className="w-5 h-5" />
-                    Run Gap Analysis
+                    {selectedCode && files.length > 0 && (
+                        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></div>
+                    )}
+                    <Shield className={`w-5 h-5 relative z-10 ${selectedCode && files.length > 0 ? 'animate-pulse text-indigo-100' : ''}`} />
+                    <span className="relative z-10">{selectedCode && files.length > 0 ? 'Launch Gap Analysis Engine' : 'Run Gap Analysis'}</span>
                 </button>
 
                 {/* Security & Compliance Guarantee */}
