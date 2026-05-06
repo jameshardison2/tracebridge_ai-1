@@ -65,7 +65,7 @@ export default function LandingPage() {
               <span>Stop Q-Sub Engineering Drift.</span>
             </div>
             <h1 className="text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.1]">
-              Guarantee your engineering aligns with your FDA Pre-Submission.
+              Never miss an FDA Q-Sub commitment.
             </h1>
             <p className="text-slate-600 leading-relaxed text-lg max-w-2xl font-light">
               TraceBridge AI is an intelligent alignment engine that ingests your FDA Q-Sub meeting minutes and cross-references them against your 1,500+ page DHF. We prevent &quot;Q-Sub Drift&quot; by aggressively verifying that every single FDA request, constraint, and commitment is flawlessly met before your final submission.
