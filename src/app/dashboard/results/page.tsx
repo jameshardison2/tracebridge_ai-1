@@ -1682,141 +1682,186 @@ function ResultsContent() {
                                         </div>
                                         
                                         <div className="flex-1 flex flex-col relative z-10">
-                                            {remediationDrafts[selectedResult.id] ? (
-                                                <div className="rounded-xl bg-[#0d1117] border border-slate-800 shadow-2xl max-h-[400px] overflow-hidden flex flex-col h-full ring-1 ring-white/10 relative">
-                                                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-indigo-500/5 pointer-events-none" />
-                                                    <div className="bg-[#161b22] px-4 py-2 border-b border-slate-800 flex items-center justify-between shrink-0 relative z-10">
-                                                        <div className="flex items-center gap-2">
-                                                            <div className="flex gap-1.5">
-                                                                <div className="w-2.5 h-2.5 rounded-full bg-rose-500/80"></div>
-                                                                <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80"></div>
-                                                                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></div>
-                                                            </div>
-                                                            <span className="ml-2 text-[10px] font-mono text-slate-400">remediation_protocol.md</span>
-                                                        </div>
-                                                        <span className="text-[9px] font-bold text-indigo-400 uppercase tracking-widest flex items-center gap-1.5">
-                                                            <Brain className="w-3 h-3 text-indigo-400" /> AI Generated
-                                                        </span>
-                                                    </div>
-                                                    <div className="p-5 overflow-y-auto custom-scrollbar flex-1 text-left bg-[#0d1117] font-mono text-sm relative z-10">
-                                                        {remediationDrafts[selectedResult.id].split('\n').map((line, idx) => {
-                                                            const trimmed = line.trim();
-                                                            if (!trimmed) return <div key={idx} className="h-4"></div>;
-                                                            
-                                                            const headingMatch = trimmed.match(/^(#{1,4})\s+(.*)$/);
-                                                            if (headingMatch || trimmed.startsWith('**') || trimmed.match(/^[A-Z][a-zA-Z\s]+:\*\*$/)) {
-                                                                const cleanText = headingMatch ? headingMatch[2].replace(/\*\*/g, '') : trimmed.replace(/\*\*/g, '');
-                                                                return <div key={idx} className="text-indigo-400 font-bold mt-4 mb-2"><span className="text-slate-600 select-none mr-2">{(idx+1).toString().padStart(2, '0')}</span>{cleanText}</div>;
-                                                            }
-                                                            if (trimmed.startsWith('* ') || trimmed.startsWith('- ')) {
-                                                                return (
-                                                                    <div key={idx} className="flex gap-2 text-emerald-300/90 mb-1">
-                                                                        <span className="text-slate-600 select-none mr-2 shrink-0">{(idx+1).toString().padStart(2, '0')}</span>
-                                                                        <span>{trimmed.substring(2).replace(/\*\*/g, '')}</span>
-                                                                    </div>
-                                                                );
-                                                            }
-                                                            return <div key={idx} className="text-slate-300 mb-1 flex"><span className="text-slate-600 select-none mr-4 shrink-0">{(idx+1).toString().padStart(2, '0')}</span><span className="break-words w-full">{trimmed.replace(/\*\*/g, '')}</span></div>;
-                                                        })}
-                                                    </div>
-                                                    <div className="p-3 bg-[#161b22] border-t border-slate-800 shrink-0 relative z-10">
-                                                        <button 
-                                                            onClick={() => {
-                                                                navigator.clipboard.writeText(remediationDrafts[selectedResult.id]);
-                                                                showToast("Remediation Protocol copied to clipboard.", 'success');
-                                                            }}
-                                                            className="w-full bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 hover:text-indigo-300 rounded-lg text-[12px] py-2.5 px-4 flex items-center justify-center gap-2 border border-indigo-500/30 transition-all font-mono font-bold shadow-md active:scale-[0.98]"
-                                                        >
-                                                            <Copy className="w-4 h-4" />
-                                                            COPY_PROTOCOL
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <div className="h-full flex flex-col pt-2">
+                                                <div className="h-full flex flex-col pt-2 gap-4">
                                                     {selectedResult.status === "compliant" ? (
-                                                        <div className="flex flex-col items-start justify-start h-full px-1">
-                                                            <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center mb-4 border border-emerald-100 shadow-sm">
-                                                                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-                                                            </div>
-                                                            <h4 className="text-[13px] font-bold text-slate-800 mb-2">Audit Cleared</h4>
-                                                            <p className="text-xs font-medium text-slate-500 leading-relaxed mb-6">
-                                                                The AI has mathematically verified that your submitted documentation fully satisfies this FDA requirement. This artifact is submission-ready.
-                                                            </p>
-                                                            <div className="bg-slate-50 border border-slate-100 rounded-lg p-4 w-full">
-                                                                <p className="text-[10px] uppercase font-bold text-slate-400 mb-2 tracking-widest">Recommended Action</p>
-                                                                <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                                                                    No remediation is required. Use the <strong className="text-slate-700">Prev/Next</strong> navigation below to continue your review, or close this window to return to the Pipeline overview.
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    ) : (
-                                                        <div className="flex flex-col h-full justify-between px-1">
-                                                            <div>
-                                                                <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center mb-4 border border-indigo-100 shadow-sm">
-                                                                    <AlertTriangle className="w-5 h-5 text-indigo-600" />
+                                                        <div className="bg-emerald-50/50 border border-emerald-100 rounded-xl p-5 relative overflow-hidden shadow-sm">
+                                                            <div className="absolute top-0 left-0 w-1.5 h-full bg-emerald-500"></div>
+                                                            <div className="flex items-start gap-4">
+                                                                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 border border-emerald-200 shadow-sm text-emerald-700 font-black text-sm">
+                                                                    1
                                                                 </div>
-                                                                <h4 className="text-[13px] font-bold text-rose-800 mb-1.5">RTA Hold Risk Detected</h4>
-                                                                <div className="flex items-center gap-2 mb-4">
-                                                                    <span className="bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-0.5 rounded border border-rose-200">Bleed Metric: 90-Day Delay</span>
-                                                                    <span className="bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-0.5 rounded border border-rose-200">Cost: ~$30k Burn</span>
-                                                                </div>
-
-                                                                <div className="bg-rose-50/50 border border-rose-100 rounded-lg p-4 w-full mb-4">
-                                                                    <p className="text-[10px] uppercase font-bold text-rose-800/70 mb-1.5 tracking-widest flex items-center gap-1.5">
-                                                                        <AlertTriangle className="w-3 h-3" /> Root Cause Diagnosis
+                                                                <div className="flex-1">
+                                                                    <h4 className="text-sm font-bold text-slate-800 mb-2">Sign-Off & Continue</h4>
+                                                                    <p className="text-xs text-slate-600 leading-relaxed mb-3">
+                                                                        The AI has mathematically verified that your submitted documentation fully satisfies this FDA requirement. This artifact is submission-ready.
                                                                     </p>
-                                                                    <p className="text-xs text-slate-700 font-medium leading-relaxed mb-3">
-                                                                        {(() => {
-                                                                            try {
-                                                                                if (!selectedResult.geminiResponse) return selectedResult.reasoning || "The submitted evidence failed to satisfy the FDA requirement.";
-                                                                                const data = JSON.parse(selectedResult.geminiResponse);
-                                                                                return data.reasoning || data.analytical_reasoning || data.rawResponse || selectedResult.reasoning || "The submitted evidence failed to satisfy the FDA requirement.";
-                                                                            } catch(e) {
-                                                                                return selectedResult.reasoning || "The submitted evidence failed to satisfy the FDA requirement.";
-                                                                            }
-                                                                        })()}
-                                                                    </p>
-                                                                    
-                                                                    <div className="bg-white border border-rose-100 rounded p-2.5">
-                                                                        <p className="text-[9px] uppercase font-bold text-slate-400 mb-1 tracking-widest">Missing Evidence Required</p>
-                                                                        <p className="text-[11px] text-rose-700 font-bold font-mono">
-                                                                            {(() => {
-                                                                                try {
-                                                                                    if (!selectedResult.geminiResponse) return selectedResult.missingEvidence || "Specific engineering artifact missing.";
-                                                                                    const data = JSON.parse(selectedResult.geminiResponse);
-                                                                                    return data.exact_missing_evidence || selectedResult.missingEvidence || "Specific engineering artifact missing.";
-                                                                                } catch(e) {
-                                                                                    return selectedResult.missingEvidence || "Specific engineering artifact missing.";
-                                                                                }
-                                                                            })()}
+                                                                    <div className="bg-white border border-emerald-100 rounded-lg p-3 shadow-sm">
+                                                                        <p className="text-[10px] uppercase font-bold text-emerald-700 mb-1 tracking-widest">Required Action</p>
+                                                                        <p className="text-xs text-emerald-800 font-medium leading-relaxed">
+                                                                            Click the green <strong className="text-emerald-900 font-bold">Sign-Off Trace</strong> button in the bottom action bar to finalize, or use the Prev/Next navigation to continue your review.
                                                                         </p>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div className="mt-auto">
-                                                                <button 
-                                                                    onClick={handleRemediate}
-                                                                    disabled={remediationLoading}
-                                                                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[12px] py-4 px-4 flex items-center justify-center gap-2 border border-indigo-500 transition-all shadow-md shadow-indigo-600/20 active:scale-[0.98]"
-                                                                >
-                                                                    {remediationLoading ? (
-                                                                        <>
-                                                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                                                            Synthesizing CAPA...
-                                                                        </>
-                                                                    ) : (
-                                                                        <>
-                                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                                                            <span className="font-bold tracking-wide">Draft Engineering CAPA</span>
-                                                                        </>
-                                                                    )}
-                                                                </button>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex flex-col gap-4">
+                                                            {/* STEP 1: REVIEW DIAGNOSIS */}
+                                                            <div className="bg-rose-50/30 border border-rose-200 rounded-xl p-5 relative overflow-hidden shadow-sm">
+                                                                <div className="absolute top-0 left-0 w-1.5 h-full bg-rose-500"></div>
+                                                                <div className="flex items-start gap-4">
+                                                                    <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 border border-rose-200 shadow-sm text-rose-700 font-black text-sm">
+                                                                        1
+                                                                    </div>
+                                                                    <div className="flex-1">
+                                                                        <h4 className="text-sm font-bold text-slate-800 mb-2">Review AI Diagnosis</h4>
+                                                                        <div className="flex items-center gap-2 mb-3">
+                                                                            <span className="bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-0.5 rounded border border-rose-200">Bleed Metric: 90-Day Delay</span>
+                                                                            <span className="bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-0.5 rounded border border-rose-200">Cost: ~$30k Burn</span>
+                                                                        </div>
+                                                                        <p className="text-xs text-slate-700 font-medium leading-relaxed mb-4">
+                                                                            {(() => {
+                                                                                try {
+                                                                                    if (!selectedResult.geminiResponse) return selectedResult.reasoning || "The submitted evidence failed to satisfy the FDA requirement.";
+                                                                                    const data = JSON.parse(selectedResult.geminiResponse);
+                                                                                    return data.reasoning || data.analytical_reasoning || data.rawResponse || selectedResult.reasoning || "The submitted evidence failed to satisfy the FDA requirement.";
+                                                                                } catch(e) {
+                                                                                    return selectedResult.reasoning || "The submitted evidence failed to satisfy the FDA requirement.";
+                                                                                }
+                                                                            })()}
+                                                                        </p>
+                                                                        <div className="bg-white border border-rose-100 rounded-lg p-3 shadow-sm">
+                                                                            <p className="text-[10px] uppercase font-bold text-rose-500 mb-1 tracking-widest">Missing Evidence Required</p>
+                                                                            <p className="text-[11px] text-rose-700 font-bold font-mono">
+                                                                                {(() => {
+                                                                                    try {
+                                                                                        if (!selectedResult.geminiResponse) return selectedResult.missingEvidence || "Specific engineering artifact missing.";
+                                                                                        const data = JSON.parse(selectedResult.geminiResponse);
+                                                                                        return data.exact_missing_evidence || selectedResult.missingEvidence || "Specific engineering artifact missing.";
+                                                                                    } catch(e) {
+                                                                                        return selectedResult.missingEvidence || "Specific engineering artifact missing.";
+                                                                                    }
+                                                                                })()}
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            {/* STEP 2: REMEDIATE */}
+                                                            <div className="bg-indigo-50/30 border border-indigo-200 rounded-xl p-5 relative overflow-hidden shadow-sm">
+                                                                <div className="absolute top-0 left-0 w-1.5 h-full bg-indigo-500"></div>
+                                                                <div className="flex items-start gap-4">
+                                                                    <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 border border-indigo-200 shadow-sm text-indigo-700 font-black text-sm">
+                                                                        2
+                                                                    </div>
+                                                                    <div className="flex-1 w-full min-w-0">
+                                                                        <h4 className="text-sm font-bold text-slate-800 mb-2">Draft Remediation Protocol</h4>
+                                                                        {remediationDrafts[selectedResult.id] ? (
+                                                                            <div className="rounded-xl bg-[#0d1117] border border-slate-800 shadow-2xl max-h-[300px] overflow-hidden flex flex-col ring-1 ring-white/10 relative mt-3">
+                                                                                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-indigo-500/5 pointer-events-none" />
+                                                                                <div className="bg-[#161b22] px-4 py-2 border-b border-slate-800 flex items-center justify-between shrink-0 relative z-10">
+                                                                                    <div className="flex items-center gap-2">
+                                                                                        <div className="flex gap-1.5">
+                                                                                            <div className="w-2.5 h-2.5 rounded-full bg-rose-500/80"></div>
+                                                                                            <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80"></div>
+                                                                                            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></div>
+                                                                                        </div>
+                                                                                        <span className="ml-2 text-[10px] font-mono text-slate-400">remediation_protocol.md</span>
+                                                                                    </div>
+                                                                                    <span className="text-[9px] font-bold text-indigo-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                                                        <Brain className="w-3 h-3 text-indigo-400" /> AI Generated
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div className="p-5 overflow-y-auto custom-scrollbar flex-1 text-left bg-[#0d1117] font-mono text-sm relative z-10">
+                                                                                    {remediationDrafts[selectedResult.id].split('\n').map((line, idx) => {
+                                                                                        const trimmed = line.trim();
+                                                                                        if (!trimmed) return <div key={idx} className="h-4"></div>;
+                                                                                        
+                                                                                        const headingMatch = trimmed.match(/^(#{1,4})\s+(.*)$/);
+                                                                                        if (headingMatch || trimmed.startsWith('**') || trimmed.match(/^[A-Z][a-zA-Z\s]+:\*\*$/)) {
+                                                                                            const cleanText = headingMatch ? headingMatch[2].replace(/\*\*/g, '') : trimmed.replace(/\*\*/g, '');
+                                                                                            return <div key={idx} className="text-indigo-400 font-bold mt-4 mb-2"><span className="text-slate-600 select-none mr-2">{(idx+1).toString().padStart(2, '0')}</span>{cleanText}</div>;
+                                                                                        }
+                                                                                        if (trimmed.startsWith('* ') || trimmed.startsWith('- ')) {
+                                                                                            return (
+                                                                                                <div key={idx} className="flex gap-2 text-emerald-300/90 mb-1">
+                                                                                                    <span className="text-slate-600 select-none mr-2 shrink-0">{(idx+1).toString().padStart(2, '0')}</span>
+                                                                                                    <span>{trimmed.substring(2).replace(/\*\*/g, '')}</span>
+                                                                                                </div>
+                                                                                            );
+                                                                                        }
+                                                                                        return <div key={idx} className="text-slate-300 mb-1 flex"><span className="text-slate-600 select-none mr-4 shrink-0">{(idx+1).toString().padStart(2, '0')}</span><span className="break-words w-full">{trimmed.replace(/\*\*/g, '')}</span></div>;
+                                                                                    })}
+                                                                                </div>
+                                                                                <div className="p-3 bg-[#161b22] border-t border-slate-800 shrink-0 relative z-10 flex gap-2">
+                                                                                    <button 
+                                                                                        onClick={() => {
+                                                                                            navigator.clipboard.writeText(remediationDrafts[selectedResult.id]);
+                                                                                            showToast("Remediation Protocol copied to clipboard.", 'success');
+                                                                                        }}
+                                                                                        className="flex-1 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 hover:text-indigo-300 rounded-lg text-[12px] py-2 px-4 flex items-center justify-center gap-2 border border-indigo-500/30 transition-all font-mono font-bold shadow-md active:scale-[0.98]"
+                                                                                    >
+                                                                                        <Copy className="w-4 h-4" />
+                                                                                        COPY_PROTOCOL
+                                                                                    </button>
+                                                                                    <button 
+                                                                                        onClick={handleRemediate}
+                                                                                        disabled={remediationLoading}
+                                                                                        className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[12px] py-2 px-4 flex items-center justify-center gap-2 border border-slate-700 transition-all font-mono font-bold shadow-md active:scale-[0.98]"
+                                                                                    >
+                                                                                        {remediationLoading ? (
+                                                                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                                                                        ) : (
+                                                                                            <Brain className="w-4 h-4" />
+                                                                                        )}
+                                                                                        REGENERATE
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                        ) : (
+                                                                            <>
+                                                                                <p className="text-xs text-slate-600 mb-4">Use the AI Copilot to automatically generate a Corrective and Preventive Action (CAPA) document based on the required missing evidence.</p>
+                                                                                <button 
+                                                                                    onClick={handleRemediate}
+                                                                                    disabled={remediationLoading}
+                                                                                    className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs py-3 px-6 font-bold transition-all shadow-md shadow-indigo-600/20 active:scale-[0.98] flex items-center justify-center gap-2"
+                                                                                >
+                                                                                    {remediationLoading ? (
+                                                                                        <>
+                                                                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                                                                            Synthesizing CAPA...
+                                                                                        </>
+                                                                                    ) : (
+                                                                                        <>
+                                                                                            <Brain className="w-4 h-4" /> Auto-Draft CAPA Protocol
+                                                                                        </>
+                                                                                    )}
+                                                                                </button>
+                                                                            </>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            {/* STEP 3: ROUTE WORKFLOW */}
+                                                            <div className="bg-amber-50/30 border border-amber-200 rounded-xl p-5 relative overflow-hidden shadow-sm">
+                                                                <div className="absolute top-0 left-0 w-1.5 h-full bg-amber-500"></div>
+                                                                <div className="flex items-start gap-4">
+                                                                    <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 border border-amber-200 shadow-sm text-amber-700 font-black text-sm">
+                                                                        3
+                                                                    </div>
+                                                                    <div className="flex-1">
+                                                                        <h4 className="text-sm font-bold text-slate-800 mb-2">Assign & Route Workflow</h4>
+                                                                        <p className="text-xs text-slate-600">
+                                                                            Use the bottom action bar to select an <strong>Assignee</strong> and click <strong className="text-indigo-600 font-bold">Assign to Jira</strong> to push this gap to the engineering backlog.
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     )}
                                                 </div>
-                                            )}
                                         </div>
                                     </div>
                                 </div>
