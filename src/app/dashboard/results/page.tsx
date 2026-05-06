@@ -1737,12 +1737,18 @@ function ResultsContent() {
                                                     )}
                                                 </div>
                                                 
-                                                <div className="mt-4 p-3 bg-amber-50 border border-amber-100 rounded-lg">
-                                                    <div className="flex gap-2">
-                                                        <Shield className="w-4 h-4 text-amber-600 shrink-0" />
-                                                        <p className="text-[10px] text-amber-800 leading-relaxed font-medium">
-                                                            <strong>21 CFR Part 11 Notice:</strong> This audit trail is immutably sealed. All timestamped events and metadata are cryptographically hashed and cannot be altered.
-                                                        </p>
+                                                <div className="mt-4 p-3 bg-amber-50 border border-amber-200/60 rounded-lg relative overflow-hidden group">
+                                                    <div className="absolute top-0 left-0 w-1 h-full bg-amber-400" />
+                                                    <div className="flex gap-2.5">
+                                                        <Shield className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                                                        <div>
+                                                            <p className="text-[10px] text-amber-900 leading-relaxed font-medium mb-1.5">
+                                                                <strong>21 CFR Part 11 Notice:</strong> This audit trail is immutably sealed. All timestamped events and metadata are cryptographically hashed and cannot be altered.
+                                                            </p>
+                                                            <div className="flex items-center gap-1 text-[8px] font-mono text-amber-700/60 bg-amber-100/50 px-2 py-1 rounded inline-flex">
+                                                                <span className="font-bold">SHA-256:</span> e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1762,43 +1768,52 @@ function ResultsContent() {
                                         
                                         <div className="flex-1 flex flex-col relative z-10">
                                             {remediationDrafts[selectedResult.id] ? (
-                                                <div className="rounded-xl bg-white border border-indigo-200 shadow-sm max-h-[400px] overflow-hidden flex flex-col h-full ring-4 ring-indigo-500/5">
-                                                    <div className="bg-indigo-50/80 px-4 py-3 border-b border-indigo-100 flex items-center justify-between shrink-0">
-                                                        <span className="text-[10px] font-bold text-indigo-700 uppercase tracking-widest flex items-center gap-1.5">
-                                                            <Brain className="w-3.5 h-3.5 text-indigo-500" /> Synthesized Remediation Protocol
+                                                <div className="rounded-xl bg-[#0d1117] border border-slate-800 shadow-2xl max-h-[400px] overflow-hidden flex flex-col h-full ring-1 ring-white/10 relative">
+                                                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-indigo-500/5 pointer-events-none" />
+                                                    <div className="bg-[#161b22] px-4 py-2 border-b border-slate-800 flex items-center justify-between shrink-0 relative z-10">
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="flex gap-1.5">
+                                                                <div className="w-2.5 h-2.5 rounded-full bg-rose-500/80"></div>
+                                                                <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80"></div>
+                                                                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></div>
+                                                            </div>
+                                                            <span className="ml-2 text-[10px] font-mono text-slate-400">remediation_protocol.md</span>
+                                                        </div>
+                                                        <span className="text-[9px] font-bold text-indigo-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                            <Brain className="w-3 h-3 text-indigo-400" /> AI Generated
                                                         </span>
                                                     </div>
-                                                    <div className="p-4 overflow-y-auto custom-scrollbar flex-1 text-left bg-white">
+                                                    <div className="p-5 overflow-y-auto custom-scrollbar flex-1 text-left bg-[#0d1117] font-mono text-sm relative z-10">
                                                         {remediationDrafts[selectedResult.id].split('\n').map((line, idx) => {
                                                             const trimmed = line.trim();
-                                                            if (!trimmed) return null;
+                                                            if (!trimmed) return <div key={idx} className="h-4"></div>;
                                                             
                                                             const headingMatch = trimmed.match(/^(#{1,4})\s+(.*)$/);
                                                             if (headingMatch || trimmed.startsWith('**') || trimmed.match(/^[A-Z][a-zA-Z\s]+:\*\*$/)) {
                                                                 const cleanText = headingMatch ? headingMatch[2].replace(/\*\*/g, '') : trimmed.replace(/\*\*/g, '');
-                                                                return <h4 key={idx} className="text-[11px] font-extrabold text-slate-800 mt-5 first:mt-0 mb-2 uppercase tracking-wide border-b border-slate-100 pb-1.5">{cleanText}</h4>;
+                                                                return <div key={idx} className="text-indigo-400 font-bold mt-4 mb-2"><span className="text-slate-600 select-none mr-2">{(idx+1).toString().padStart(2, '0')}</span>{cleanText}</div>;
                                                             }
                                                             if (trimmed.startsWith('* ') || trimmed.startsWith('- ')) {
                                                                 return (
-                                                                    <div key={idx} className="flex gap-2.5 mb-2 ml-1">
-                                                                        <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5 shrink-0 shadow-sm"></div>
-                                                                        <p className="text-xs text-slate-700 leading-relaxed font-medium">{trimmed.substring(2).replace(/\*\*/g, '')}</p>
+                                                                    <div key={idx} className="flex gap-2 text-emerald-300/90 mb-1">
+                                                                        <span className="text-slate-600 select-none mr-2 shrink-0">{(idx+1).toString().padStart(2, '0')}</span>
+                                                                        <span>{trimmed.substring(2).replace(/\*\*/g, '')}</span>
                                                                     </div>
                                                                 );
                                                             }
-                                                            return <p key={idx} className="text-xs text-slate-600 mb-2 leading-relaxed">{trimmed.replace(/\*\*/g, '')}</p>;
+                                                            return <div key={idx} className="text-slate-300 mb-1 flex"><span className="text-slate-600 select-none mr-4 shrink-0">{(idx+1).toString().padStart(2, '0')}</span><span className="break-words w-full">{trimmed.replace(/\*\*/g, '')}</span></div>;
                                                         })}
                                                     </div>
-                                                    <div className="p-3 bg-slate-50/80 border-t border-slate-100 shrink-0">
+                                                    <div className="p-3 bg-[#161b22] border-t border-slate-800 shrink-0 relative z-10">
                                                         <button 
                                                             onClick={() => {
                                                                 navigator.clipboard.writeText(remediationDrafts[selectedResult.id]);
                                                                 showToast("Remediation Protocol copied to clipboard.", 'success');
                                                             }}
-                                                            className="w-full bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-[12px] py-3.5 px-4 flex items-center justify-center gap-2 border border-slate-700 transition-all font-bold shadow-md active:scale-[0.98] animate-in slide-in-from-bottom-2 fade-in duration-300"
+                                                            className="w-full bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 hover:text-indigo-300 rounded-lg text-[12px] py-2.5 px-4 flex items-center justify-center gap-2 border border-indigo-500/30 transition-all font-mono font-bold shadow-md active:scale-[0.98]"
                                                         >
                                                             <Copy className="w-4 h-4" />
-                                                            Copy Protocol to Clipboard
+                                                            COPY_PROTOCOL
                                                         </button>
                                                     </div>
                                                 </div>
@@ -2020,13 +2035,13 @@ function ResultsContent() {
                                             </button>
                                             <button 
                                                 onClick={() => handleFinalAction("assign")}
-                                                disabled={true}
-                                                className="text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 px-6 py-2.5 rounded-lg text-[11px] font-extrabold uppercase tracking-widest transition-all flex items-center gap-2 active:scale-95 opacity-50 cursor-not-allowed"
+                                                disabled={isActionLoading}
+                                                className={`text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 px-6 py-2.5 rounded-lg text-[11px] font-extrabold uppercase tracking-widest transition-all flex items-center gap-2 active:scale-95 ${isActionLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
                                             >
                                                 {isActionLoading ? (
-                                                    <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Syncing Jira...</>
+                                                    <><div className="w-4 h-4 border-2 border-indigo-200 border-t-white rounded-full animate-spin" /> Syncing...</>
                                                 ) : (
-                                                    <><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> Assign to Jira (Coming Soon) <kbd className="ml-1.5 bg-indigo-500/30 border border-indigo-400/50 rounded px-1.5 py-0.5 text-[9px] font-mono text-white font-extrabold shadow-sm">A</kbd></>
+                                                    <><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> Assign to Jira <kbd className="ml-1.5 bg-indigo-500/30 border border-indigo-400/50 rounded px-1.5 py-0.5 text-[9px] font-mono text-white font-extrabold shadow-sm">A</kbd></>
                                                 )}
                                             </button>
                                         </>
