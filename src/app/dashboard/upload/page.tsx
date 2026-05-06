@@ -512,45 +512,12 @@ export default function UploadPage() {
                     </label>
                     
                     <div className="flex flex-col gap-4">
+                        {/* Q-Sub Dedicated Zone (Primary) */}
                         <div
                             className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all ${
-                                dragActive
-                                    ? "border-indigo-500 bg-indigo-50/50 scale-[1.01]"
-                                    : "border-slate-300 bg-slate-50 hover:bg-slate-100 hover:border-slate-400"
-                            }`}
-                            onDragOver={(e) => {
-                                e.preventDefault();
-                                setDragActive(true);
-                            }}
-                            onDragLeave={() => setDragActive(false)}
-                            onDrop={(e) => handleDrop(e, false)}
-                            onClick={() => fileInputRef.current?.click()}
-                        >
-                            <div className={`w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-4 transition-colors ${dragActive ? 'bg-indigo-100 text-indigo-600' : 'bg-white text-slate-400 shadow-sm border border-slate-200'}`}>
-                                <Upload className="w-6 h-6" />
-                            </div>
-                            <p className="text-sm font-bold text-slate-700 mb-1">
-                                Drop design documents (DHF/DMR/V&V)
-                            </p>
-                            <p className="text-xs text-[var(--muted)]">
-                                Powered by a 1M+ Token Processing Window. Supports unstructured PDF, DOCX, and TXT.
-                            </p>
-                            <input
-                                ref={fileInputRef}
-                                type="file"
-                                multiple
-                                accept=".pdf,.docx,.txt"
-                                className="hidden"
-                                onChange={(e) => e.target.files && handleFiles(e.target.files, false)}
-                            />
-                        </div>
-
-                        {/* Q-Sub Dedicated Zone */}
-                        <div
-                            className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${
                                 qsubDragActive
                                     ? "border-amber-500 bg-amber-50/50 scale-[1.01]"
-                                    : "border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300"
+                                    : "border-slate-300 bg-slate-50 hover:bg-slate-100 hover:border-slate-400"
                             }`}
                             onDragOver={(e) => {
                                 e.preventDefault();
@@ -560,13 +527,13 @@ export default function UploadPage() {
                             onDrop={(e) => handleDrop(e, true)}
                             onClick={() => qsubFileInputRef.current?.click()}
                         >
-                            <div className={`w-10 h-10 mx-auto rounded-full flex items-center justify-center mb-3 transition-colors ${qsubDragActive ? 'bg-amber-100 text-amber-600' : 'bg-amber-50 text-amber-500 shadow-sm border border-amber-100'}`}>
-                                <FileSearch className="w-5 h-5" />
+                            <div className={`w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-4 transition-colors ${qsubDragActive ? 'bg-amber-100 text-amber-600' : 'bg-white text-amber-500 shadow-sm border border-amber-200'}`}>
+                                <FileSearch className="w-6 h-6" />
                             </div>
                             <p className="text-sm font-bold text-slate-700 mb-1">
-                                FDA Pre-Sub (Q-Sub) Feedback <span className="text-amber-600 font-normal ml-1">(Optional)</span>
+                                FDA Pre-Sub (Q-Sub) Feedback
                             </p>
-                            <p className="text-[11px] text-[var(--muted)] px-8">
+                            <p className="text-xs text-[var(--muted)] px-8">
                                 Upload FDA meeting minutes. TraceBridge will strictly verify that your evidence addresses the FDA's direct requests.
                             </p>
                             <input
@@ -576,6 +543,40 @@ export default function UploadPage() {
                                 accept=".pdf,.docx,.txt"
                                 className="hidden"
                                 onChange={(e) => e.target.files && handleFiles(e.target.files, true)}
+                            />
+                        </div>
+
+                        {/* Main DHF Zone (Secondary) */}
+                        <div
+                            className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${
+                                dragActive
+                                    ? "border-indigo-500 bg-indigo-50/50 scale-[1.01]"
+                                    : "border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300"
+                            }`}
+                            onDragOver={(e) => {
+                                e.preventDefault();
+                                setDragActive(true);
+                            }}
+                            onDragLeave={() => setDragActive(false)}
+                            onDrop={(e) => handleDrop(e, false)}
+                            onClick={() => fileInputRef.current?.click()}
+                        >
+                            <div className={`w-10 h-10 mx-auto rounded-full flex items-center justify-center mb-3 transition-colors ${dragActive ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-50 text-slate-400 shadow-sm border border-slate-100'}`}>
+                                <Upload className="w-5 h-5" />
+                            </div>
+                            <p className="text-sm font-bold text-slate-700 mb-1">
+                                Drop design documents (DHF/DMR/V&V) <span className="text-slate-400 font-normal ml-1">(Optional)</span>
+                            </p>
+                            <p className="text-[11px] text-[var(--muted)]">
+                                Powered by a 1M+ Token Processing Window. Supports unstructured PDF, DOCX, and TXT.
+                            </p>
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                multiple
+                                accept=".pdf,.docx,.txt"
+                                className="hidden"
+                                onChange={(e) => e.target.files && handleFiles(e.target.files, false)}
                             />
                         </div>
                     </div>
