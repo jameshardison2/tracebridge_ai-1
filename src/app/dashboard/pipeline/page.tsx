@@ -219,36 +219,46 @@ export default function PipelinePage() {
         }
 
         const isMine = t.priority?.includes('MINE');
-        const borderColor = isMine ? 'border-amber-400 border-2' : 'border-slate-200';
+        let statusColor = 'bg-slate-400';
+        if (t.status === 'TRIAGED') statusColor = 'bg-amber-400';
+        if (t.status === 'ASSIGNED') statusColor = 'bg-indigo-500';
+        if (t.status === 'IN_REMEDIATION') statusColor = 'bg-purple-500';
+        
+        const borderColor = isMine ? 'border-amber-300 ring-2 ring-amber-100' : 'border-slate-200/80';
         
         return (
             <div 
                 id={`gap-${t.id}`}
                 key={t.id} draggable onDragStart={(e) => onDragStart(e, t.id)}
                 onClick={() => router.push(`/dashboard/results?id=${t.uploadId || 'demo-id'}&demoGap=${t.id}`)}
-                className={`bg-white rounded-lg p-4 border shadow-sm mb-3 cursor-pointer hover:shadow-md hover:border-indigo-400 transition-all active:cursor-grabbing ${borderColor} relative group overflow-hidden`}
+                className={`bg-white rounded-xl p-4 border shadow-sm hover:shadow-md mb-3 cursor-pointer transition-all active:cursor-grabbing ${borderColor} relative group overflow-hidden hover:-translate-y-0.5 duration-200`}
             >
-                <div className="absolute inset-0 bg-indigo-50/50 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-                <div className="relative z-10">
-                    {t.priority && (
-                        <span className={`px-1.5 py-0.5 rounded font-bold text-[9px] uppercase tracking-wider mb-2 inline-block ${
-                            t.priority.includes('CRITICAL') ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-700'
-                        }`}>
-                            {t.priority}
+                <div className={`absolute top-0 left-0 w-1 h-full ${statusColor} transition-all group-hover:w-1.5`} />
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-50/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                <div className="relative z-10 pl-1">
+                    <div className="flex justify-between items-start mb-2">
+                        {t.priority && (
+                            <span className={`px-2 py-0.5 rounded flex items-center gap-1 font-bold text-[9px] uppercase tracking-wider ${
+                                t.priority.includes('CRITICAL') ? 'bg-rose-50 text-rose-600 border border-rose-100' : 'bg-amber-50 text-amber-700 border border-amber-100'
+                            }`}>
+                                <span className={`w-1.5 h-1.5 rounded-full ${t.priority.includes('CRITICAL') ? 'bg-rose-500' : 'bg-amber-500'}`}></span>
+                                {t.priority}
+                            </span>
+                        )}
+                        <span className="text-[9px] font-mono text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-100">
+                            ID-{t.id.substring(0, 4).toUpperCase()}
                         </span>
-                    )}
-                    <h4 className="text-[13px] font-bold text-slate-900 mb-1 group-hover:text-indigo-700 transition-colors">{t.title}</h4>
-                    <p className="text-[10px] text-slate-400 mb-4 font-mono tracking-tighter">{t.standard}</p>
+                    </div>
+                    <h4 className="text-[12px] leading-snug font-bold text-slate-800 mb-1.5 group-hover:text-indigo-700 transition-colors line-clamp-3">{t.title}</h4>
+                    <p className="text-[9px] text-slate-400 mb-3 font-mono tracking-tighter truncate" title={t.standard}>{t.standard}</p>
 
                 {/* Progress Bar (Detected/Triaged) */}
                 {t.confidence !== undefined && (
-                    <div className="flex items-center gap-1.5 pt-3 border-t border-slate-100">
-                        {t.confidence === 0 ? (
-                            <div className="w-4 bg-slate-200 h-1.5 rounded-full"><div className="w-0 bg-red-500 h-full rounded-full"></div></div>
-                        ) : (
-                            <div className="w-4 h-4 rounded-full border border-dashed border-amber-400 flex items-center justify-center"></div>
-                        )}
-                        <span className="text-[9px] font-bold text-slate-400">{t.confidence > 0 ? `${t.confidence}% • ` : ''}{t.subNote}</span>
+                    <div className="flex items-center justify-between pt-2.5 border-t border-slate-100/60 mt-1">
+                        <div className="flex items-center gap-1.5">
+                            <svg className="w-3.5 h-3.5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{t.confidence > 0 ? `AI CONFIDENCE: ${t.confidence}%` : 'AI ANALYSIS PENDING'}</span>
+                        </div>
                     </div>
                 )}
 
