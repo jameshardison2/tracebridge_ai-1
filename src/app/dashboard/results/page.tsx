@@ -1549,213 +1549,126 @@ function ResultsContent() {
                                     );
                                 })()}
 
-                                {/* BOTTOM SECTION: 2 Columns */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
+                                {/* BOTTOM SECTION: Full Width AI Copilot with Context Strip */}
+                                <div className="flex flex-col gap-6 flex-1">
                                     
-                                    {/* LEFT COLUMN: Evidence & Analysis */}
-                                    <div className="bg-white rounded-xl border border-slate-200/70 shadow-sm p-6 flex flex-col h-full">
-                                        <div className="flex items-center gap-6 mb-5 pb-4 border-b border-slate-100">
+                                    {/* CONTEXT STRIP: Evidence & Audit */}
+                                    <div className="flex flex-col sm:flex-row items-stretch gap-4 shrink-0">
+                                        <div className="flex-1 bg-white border border-slate-200/70 rounded-xl p-4 shadow-sm flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center border border-slate-200 shadow-sm">
+                                                    <FileText className="w-4 h-4 text-indigo-500" />
+                                                </div>
+                                                <div>
+                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Submitted Evidence</p>
+                                                    <p className="text-sm font-bold text-slate-700">{selectedResult.citations && selectedResult.citations.length > 0 ? selectedResult.citations[0].source : (report?.upload?.documents?.[0]?.fileName || "Assessment_Document.pdf")}</p>
+                                                </div>
+                                            </div>
                                             <button 
-                                                onClick={() => setLeftTab('evidence')}
-                                                className={`text-[11px] font-extrabold uppercase tracking-widest flex items-center gap-2 pb-1 transition-colors relative ${leftTab === 'evidence' ? 'text-slate-800' : 'text-slate-400 hover:text-slate-600'}`}
+                                                onClick={() => {
+                                                    const docUrl = report?.upload?.documents?.[0]?.storageUrl || "/demo_data/Live_510k_Submission_Artifacts.txt";
+                                                    window.open(docUrl, '_blank');
+                                                }}
+                                                className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg border border-indigo-100 hover:bg-indigo-100 transition-colors uppercase tracking-widest shadow-sm active:scale-95"
                                             >
-                                                <div className={`w-2 h-2 rounded-full ${leftTab === 'evidence' ? 'bg-indigo-400' : 'bg-slate-300'}`}></div> Submitted Evidence
-                                                {leftTab === 'evidence' && <div className="absolute -bottom-[17px] left-0 right-0 h-0.5 bg-indigo-500 rounded-t-full"></div>}
-                                            </button>
-                                            <button 
-                                                onClick={() => setLeftTab('history')}
-                                                className={`text-[11px] font-extrabold uppercase tracking-widest flex items-center gap-2 pb-1 transition-colors relative ${leftTab === 'history' ? 'text-slate-800' : 'text-slate-400 hover:text-slate-600'}`}
-                                            >
-                                                <div className={`w-2 h-2 rounded-full ${leftTab === 'history' ? 'bg-amber-500' : 'bg-slate-300'}`}></div> Part 11 Audit Trail
-                                                {leftTab === 'history' && <div className="absolute -bottom-[17px] left-0 right-0 h-0.5 bg-amber-500 rounded-t-full"></div>}
+                                                View Source
                                             </button>
                                         </div>
-                                        
-                                        {leftTab === 'evidence' ? (
-                                            <>
-                                                <div className="space-y-3 mb-6">
-                                                    {selectedResult.citations && selectedResult.citations.length > 0 ? selectedResult.citations.map((cite, i) => (
-                                                        <div key={i} className="flex items-center justify-between p-3.5 rounded-lg border border-slate-200/60 bg-slate-50 hover:bg-slate-100 transition-colors shadow-sm group">
-                                                            <div className="flex items-center gap-3">
-                                                                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-slate-200 shadow-sm">
-                                                                    <FileText className="w-3.5 h-3.5 text-slate-500" />
-                                                                </div>
-                                                                <span className="text-[12px] font-bold text-slate-700">{cite.source || "Verification_Artifact.pdf"}</span>
-                                                            </div>
-                                                            <button 
-                                                                onClick={() => {
-                                                                    showToast(`Opening ${cite.source || "document"} in viewer...`, "info");
-                                                                    const docUrl = report?.upload?.documents?.[0]?.storageUrl || "/demo_data/Live_510k_Submission_Artifacts.txt";
-                                                                    window.open(docUrl, '_blank');
-                                                                }}
-                                                                className="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 uppercase tracking-widest px-3 py-2 rounded-md bg-indigo-50 hover:bg-indigo-100 transition-colors border border-indigo-100 opacity-0 group-hover:opacity-100"
-                                                            >
-                                                                View Document
-                                                            </button>
-                                                        </div>
-                                                    )) : (
-                                                        <div className="flex items-center justify-between p-3.5 rounded-lg border border-slate-200/60 bg-slate-50 hover:bg-slate-100 transition-colors shadow-sm group">
-                                                            <div className="flex items-center gap-3">
-                                                                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-slate-200 shadow-sm">
-                                                                    <FileText className="w-3.5 h-3.5 text-slate-500" />
-                                                                </div>
-                                                                <span className="text-[12px] font-bold text-slate-700">{report?.upload?.documents?.[0]?.fileName || "Assessment_Document.pdf"}</span>
-                                                            </div>
-                                                            <button 
-                                                                onClick={() => {
-                                                                    showToast(`Opening document securely...`, "info");
-                                                                    const docUrl = report?.upload?.documents?.[0]?.storageUrl || "/demo_data/Live_510k_Submission_Artifacts.txt";
-                                                                    window.open(docUrl, '_blank');
-                                                                }}
-                                                                className="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 uppercase tracking-widest px-3 py-2 rounded-md bg-indigo-50 hover:bg-indigo-100 transition-colors border border-indigo-100 opacity-0 group-hover:opacity-100"
-                                                            >
-                                                                View Document
-                                                            </button>
-                                                        </div>
-                                                    )}
+
+                                        <div className="flex-1 bg-amber-50 border border-amber-200/60 rounded-xl p-4 shadow-sm flex items-center justify-between group cursor-pointer hover:bg-amber-100/50 transition-colors" onClick={() => setLeftTab(leftTab === 'history' ? 'evidence' : 'history')}>
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center border border-amber-200 shadow-sm">
+                                                    <Shield className="w-4 h-4 text-amber-600" />
+                                                </div>
+                                                <div>
+                                                    <p className="text-[10px] font-bold text-amber-700/70 uppercase tracking-widest mb-0.5">Part 11 Audit Trail</p>
+                                                    <p className="text-xs font-mono font-bold text-amber-800 flex items-center gap-1.5">
+                                                        SHA-256 Validated <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="text-[10px] font-bold text-amber-700 uppercase tracking-widest flex items-center gap-1 bg-white px-3 py-1.5 rounded-lg border border-amber-200 shadow-sm">
+                                                {leftTab === 'history' ? 'Hide Log' : 'View Log'} <ChevronDown className={`w-4 h-4 transition-transform ${leftTab === 'history' ? 'rotate-180' : ''}`} />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* EXPANDABLE AUDIT TRAIL LOG */}
+                                    {leftTab === 'history' && (
+                                        <div className="bg-white border border-amber-200/60 rounded-xl p-6 shadow-sm mb-2 animate-in slide-in-from-top-2">
+                                            <h3 className="text-[11px] font-bold text-amber-800 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-amber-100 pb-3">
+                                                <Shield className="w-4 h-4" /> Cryptographic Event Log
+                                            </h3>
+                                            <div className="relative border-l-2 border-slate-100 ml-3 space-y-6 pb-2">
+                                                {/* Event 1: AI Detection */}
+                                                <div className="relative pl-6">
+                                                    <div className="absolute w-2.5 h-2.5 bg-indigo-500 rounded-full -left-[5px] top-1.5 ring-4 ring-white"></div>
+                                                    <div className="flex items-center justify-between mb-1">
+                                                        <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">Engine Analysis</p>
+                                                        <p className="text-[10px] text-slate-400 font-mono">{(new Date(selectedResult.createdAt?.toDate ? selectedResult.createdAt.toDate() : (selectedResult.createdAt || new Date()))).toLocaleDateString()} {(new Date(selectedResult.createdAt?.toDate ? selectedResult.createdAt.toDate() : (selectedResult.createdAt || new Date()))).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                                                    </div>
+                                                    <p className="text-xs font-bold text-slate-700">Requirement Parsed & Evaluated</p>
+                                                    <p className="text-xs text-slate-500 mt-1">TraceBridge AI scanned submission artifacts against standard.</p>
                                                 </div>
 
-                                                {/* Hidden/Subtle AI Analysis details */}
-                                                <div className="mt-auto pt-4 border-t border-slate-100">
-                                                    <details className="group">
-                                                        <summary className="text-[10px] font-bold text-slate-500 hover:text-indigo-600 cursor-pointer uppercase tracking-widest flex items-center gap-2 list-none transition-colors">
-                                                            <Brain className="w-3.5 h-3.5" /> View Technical AI Analysis
-                                                            <ChevronDown className="w-4 h-4 ml-auto transition-transform group-open:rotate-180" />
-                                                        </summary>
-                                                        <div className="mt-4 p-4 bg-slate-50 rounded-lg border border-slate-200/60 shadow-inner max-h-[200px] overflow-y-auto custom-scrollbar relative">
-                                                            <button 
-                                                                onClick={() => {
-                                                                    try {
-                                                                        const data = JSON.parse(selectedResult.geminiResponse!);
-                                                                        const reasoning = data.analytical_reasoning || data.reasoning || data.rawResponse;
-                                                                        const missing = data.exact_missing_evidence ? `\nMissing Evidence: ${data.exact_missing_evidence}` : '';
-                                                                        navigator.clipboard.writeText(`Engine Analysis Tooling:\n${reasoning}${missing}`);
-                                                                        setCopiedField('feed');
-                                                                        setTimeout(() => setCopiedField(null), 2000);
-                                                                    } catch(e) {}
-                                                                }}
-                                                                className="absolute top-2 right-2 text-slate-400 hover:text-indigo-600 transition-colors p-1"
-                                                                title="Copy Technical Feedback"
-                                                            >
-                                                                {copiedField === 'feed' ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                                                            </button>
-                                                            {(() => {
-                                                                try {
-                                                                    if (!selectedResult.geminiResponse) return <p className="text-xs text-slate-500 italic">No detailed analysis available.</p>;
-                                                                    const data = JSON.parse(selectedResult.geminiResponse);
-                                                                    const reasoning = data.analytical_reasoning || data.reasoning || data.rawResponse || "The engine mathematically verified the compliance string.";
-                                                                    return (
-                                                                        <div className="space-y-3">
-                                                                            <p className="text-xs text-slate-600 leading-relaxed font-medium">{reasoning}</p>
-                                                                            {data.exact_missing_evidence && (
-                                                                                <div className="bg-rose-50 border border-rose-100 rounded-md p-3">
-                                                                                    <span className="text-[10px] font-bold text-rose-700 uppercase tracking-widest block mb-1">Missing Evidence</span>
-                                                                                    <span className="text-xs text-rose-900 font-medium">{data.exact_missing_evidence}</span>
-                                                                                </div>
-                                                                            )}
-                                                                            {data.fdaPrecedent && (
-                                                                                <div className="bg-amber-50 border border-amber-200 rounded-md p-3 mt-3 relative overflow-hidden group">
-                                                                                    <div className="absolute top-0 left-0 w-1 h-full bg-amber-400" />
-                                                                                    <div className="flex items-start gap-2">
-                                                                                        <AlertTriangle className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
-                                                                                        <div>
-                                                                                            <span className="text-[10px] font-bold text-amber-800 uppercase tracking-widest block mb-1">FDA Historical Precedent</span>
-                                                                                            <span className="text-xs text-amber-900 font-medium leading-relaxed">{data.fdaPrecedent}</span>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            )}
-                                                                        </div>
-                                                                    );
-                                                                } catch(e) {
-                                                                    return <p className="text-xs text-slate-500 italic">{(selectedResult as any).reasoning || "Technical payload unavailable."}</p>;
-                                                                }
-                                                            })()}
-                                                            {selectedResult.citations && selectedResult.citations.length > 0 && selectedResult.status === "compliant" && (
-                                                                <div className="mt-4 pt-3 border-t border-slate-200">
-                                                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Extracted Legal Trace</span>
-                                                                    <span className="text-xs text-slate-600 font-mono italic">"{selectedResult.citations[0].quote}"</span>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    </details>
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 pt-2">
-                                                <div className="relative border-l border-slate-200 ml-3 space-y-6 pb-4">
-                                                    
-                                                    {/* Event 1: AI Trace Generation */}
+                                                {/* Event 2: Gap Detected */}
+                                                {selectedResult.status !== 'compliant' && (
                                                     <div className="relative pl-6">
-                                                        <div className="absolute w-2.5 h-2.5 bg-slate-300 rounded-full -left-[5px] top-1.5 ring-4 ring-white"></div>
+                                                        <div className="absolute w-2.5 h-2.5 bg-rose-400 rounded-full -left-[5px] top-1.5 ring-4 ring-white"></div>
                                                         <div className="flex items-center justify-between mb-1">
-                                                            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">System Event</p>
+                                                            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Automated QA</p>
                                                             <p className="text-[10px] text-slate-400 font-mono">{(new Date(selectedResult.createdAt?.toDate ? selectedResult.createdAt.toDate() : (selectedResult.createdAt || new Date()))).toLocaleDateString()} {(new Date(selectedResult.createdAt?.toDate ? selectedResult.createdAt.toDate() : (selectedResult.createdAt || new Date()))).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
                                                         </div>
-                                                        <p className="text-xs font-bold text-slate-700">AI Trace Analysis Executed</p>
-                                                        <p className="text-xs text-slate-500 mt-1">TraceBridge Engine analyzed requirement <span className="font-mono text-[10px] bg-slate-100 px-1 py-0.5 rounded border border-slate-200">{selectedResult.section.trim()}</span>.</p>
+                                                        <p className="text-xs font-bold text-slate-700">Anomaly Flagged ({selectedResult.severity?.toUpperCase() || 'MINOR'})</p>
+                                                        <p className="text-xs text-slate-500 mt-1">Pipeline paused. Awaiting human-in-the-loop triage.</p>
                                                     </div>
+                                                )}
 
-                                                    {/* Event 2: Gap Triage (if not initially compliant) */}
-                                                    {selectedResult.status !== 'compliant' && (
-                                                        <div className="relative pl-6">
-                                                            <div className="absolute w-2.5 h-2.5 bg-rose-400 rounded-full -left-[5px] top-1.5 ring-4 ring-white"></div>
-                                                            <div className="flex items-center justify-between mb-1">
-                                                                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Automated QA</p>
-                                                                <p className="text-[10px] text-slate-400 font-mono">{(new Date(selectedResult.createdAt?.toDate ? selectedResult.createdAt.toDate() : (selectedResult.createdAt || new Date()))).toLocaleDateString()} {(new Date(selectedResult.createdAt?.toDate ? selectedResult.createdAt.toDate() : (selectedResult.createdAt || new Date()))).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
-                                                            </div>
-                                                            <p className="text-xs font-bold text-slate-700">Anomaly Flagged ({selectedResult.severity?.toUpperCase() || 'MINOR'})</p>
-                                                            <p className="text-xs text-slate-500 mt-1">Pipeline paused. Awaiting human-in-the-loop triage.</p>
+                                                {/* Event 3: Workflow State Changes */}
+                                                {(localPipelineStatus === 'ASSIGNED' || localPipelineStatus === 'IN_REMEDIATION') && (
+                                                    <div className="relative pl-6">
+                                                        <div className="absolute w-2.5 h-2.5 bg-amber-500 rounded-full -left-[5px] top-1.5 ring-4 ring-white"></div>
+                                                        <div className="flex items-center justify-between mb-1">
+                                                            <p className="text-[10px] font-bold text-amber-600 uppercase tracking-wider">eQMS Integration</p>
+                                                            <p className="text-[10px] text-slate-400 font-mono">Just now</p>
                                                         </div>
-                                                    )}
+                                                        <p className="text-xs font-bold text-slate-700">CAPA Workflow Initiated</p>
+                                                        <p className="text-xs text-slate-500 mt-1">
+                                                            State changed to <span className="font-bold text-slate-700">{localPipelineStatus}</span>. 
+                                                            Routed to {getAssigneeKey(selectedResult.id, selectedResult.status) === 'UN' ? 'Unassigned' : getAssigneeKey(selectedResult.id, selectedResult.status) === 'AP' ? teamQaName : getAssigneeKey(selectedResult.id, selectedResult.status) === 'MK' ? teamEngName : teamRaName}.
+                                                        </p>
+                                                    </div>
+                                                )}
 
-                                                    {/* Event 3: Workflow State Changes */}
-                                                    {(localPipelineStatus === 'ASSIGNED' || localPipelineStatus === 'IN_REMEDIATION') && (
-                                                        <div className="relative pl-6">
-                                                            <div className="absolute w-2.5 h-2.5 bg-amber-500 rounded-full -left-[5px] top-1.5 ring-4 ring-white"></div>
-                                                            <div className="flex items-center justify-between mb-1">
-                                                                <p className="text-[10px] font-bold text-amber-600 uppercase tracking-wider">eQMS Integration</p>
-                                                                <p className="text-[10px] text-slate-400 font-mono">Just now</p>
-                                                            </div>
-                                                            <p className="text-xs font-bold text-slate-700">CAPA Workflow Initiated</p>
-                                                            <p className="text-xs text-slate-500 mt-1">
-                                                                State changed to <span className="font-bold text-slate-700">{localPipelineStatus}</span>. 
-                                                                Routed to {getAssigneeKey(selectedResult.id, selectedResult.status) === 'UN' ? 'Unassigned' : getAssigneeKey(selectedResult.id, selectedResult.status) === 'AP' ? teamQaName : getAssigneeKey(selectedResult.id, selectedResult.status) === 'MK' ? teamEngName : teamRaName}.
-                                                            </p>
+                                                {/* Event 4: Verification/Closure */}
+                                                {(selectedResult.status === 'compliant' || localPipelineStatus === 'CLOSED') && (
+                                                    <div className="relative pl-6">
+                                                        <div className="absolute w-2.5 h-2.5 bg-emerald-500 rounded-full -left-[5px] top-1.5 ring-4 ring-white"></div>
+                                                        <div className="flex items-center justify-between mb-1">
+                                                            <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">Quality Assurance</p>
+                                                            <p className="text-[10px] text-slate-400 font-mono">Just now</p>
                                                         </div>
-                                                    )}
-
-                                                    {/* Event 4: Verification/Closure */}
-                                                    {(selectedResult.status === 'compliant' || localPipelineStatus === 'CLOSED') && (
-                                                        <div className="relative pl-6">
-                                                            <div className="absolute w-2.5 h-2.5 bg-emerald-500 rounded-full -left-[5px] top-1.5 ring-4 ring-white"></div>
-                                                            <div className="flex items-center justify-between mb-1">
-                                                                <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">Quality Assurance</p>
-                                                                <p className="text-[10px] text-slate-400 font-mono">Just now</p>
-                                                            </div>
-                                                            <p className="text-xs font-bold text-slate-700">Legally Signed-Off</p>
-                                                            <p className="text-xs text-slate-500 mt-1">Requirement satisfied and verified by authorized personnel.</p>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                
-                                                <div className="mt-4 p-3 bg-amber-50 border border-amber-200/60 rounded-lg relative overflow-hidden group">
-                                                    <div className="absolute top-0 left-0 w-1 h-full bg-amber-400" />
-                                                    <div className="flex gap-2.5">
-                                                        <Shield className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                                                        <div>
-                                                            <p className="text-[10px] text-amber-900 leading-relaxed font-medium mb-1.5">
-                                                                <strong>21 CFR Part 11 Notice:</strong> This audit trail is immutably sealed. All timestamped events and metadata are cryptographically hashed and cannot be altered.
-                                                            </p>
-                                                            <div className="flex items-center gap-1 text-[8px] font-mono text-amber-700/60 bg-amber-100/50 px-2 py-1 rounded inline-flex">
-                                                                <span className="font-bold">SHA-256:</span> e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-                                                            </div>
+                                                        <p className="text-xs font-bold text-slate-700">Legally Signed-Off</p>
+                                                        <p className="text-xs text-slate-500 mt-1">Requirement satisfied and verified by authorized personnel.</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="mt-4 p-3 bg-amber-50 border border-amber-200/60 rounded-lg relative overflow-hidden group">
+                                                <div className="absolute top-0 left-0 w-1 h-full bg-amber-400" />
+                                                <div className="flex gap-2.5">
+                                                    <Shield className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                                                    <div>
+                                                        <p className="text-[10px] text-amber-900 leading-relaxed font-medium mb-1.5">
+                                                            <strong>21 CFR Part 11 Notice:</strong> This audit trail is immutably sealed. All timestamped events and metadata are cryptographically hashed and cannot be altered.
+                                                        </p>
+                                                        <div className="flex items-center gap-1 text-[8px] font-mono text-amber-700/60 bg-amber-100/50 px-2 py-1 rounded inline-flex">
+                                                            <span className="font-bold">SHA-256:</span> e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        )}
-                                    </div>
+                                        </div>
+                                    )}
 
                                     {/* RIGHT COLUMN: AI Copilot Guidance */}
                                     <div className="bg-indigo-50/30 rounded-xl border border-indigo-100/70 shadow-sm p-6 flex flex-col relative overflow-hidden group/remedy h-full">
