@@ -12,7 +12,8 @@ import {
   CheckCircle2,
   Lock,
   Activity,
-  Zap
+  Zap,
+  AlertTriangle
 } from "lucide-react";
 
 export default function LandingPage() {
@@ -59,15 +60,15 @@ export default function LandingPage() {
           
           {/* Main Title Portal */}
           <div className="space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 border border-red-100 text-red-700 text-xs font-bold uppercase tracking-widest shadow-sm">
-              <Activity className="w-3.5 h-3.5" />
-              <span>Don't check your own work.</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-100 text-amber-700 text-xs font-bold uppercase tracking-widest shadow-sm">
+              <AlertTriangle className="w-3.5 h-3.5" />
+              <span>Stop Q-Sub Engineering Drift.</span>
             </div>
             <h1 className="text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.1]">
-              Find your 510(k) gaps before the FDA does.
+              Guarantee your engineering aligns with your FDA Pre-Submission.
             </h1>
             <p className="text-slate-600 leading-relaxed text-lg max-w-2xl font-light">
-              TraceBridge is an intelligent regulatory copilot that instantly cross-references your Risk Management, V&V Protocols, and Device Descriptions against strict FDA checklists. We act as your objective third-party reviewer-flagging administrative errors and compliance gaps that trigger expensive RTA holds, so you can submit with total certainty.
+              TraceBridge AI is an intelligent alignment engine that ingests your FDA Q-Sub meeting minutes and cross-references them against your 1,500+ page DHF. We prevent &quot;Q-Sub Drift&quot; by aggressively verifying that every single FDA request, constraint, and commitment is flawlessly met before your final submission.
             </p>
             <div className="flex gap-4 pt-4">
               <Link href="/login" className="bg-slate-900 text-white hover:bg-slate-800 px-6 py-3 rounded-lg text-sm font-bold flex items-center gap-2 transition-all group shadow-lg shadow-slate-900/20">
@@ -161,7 +162,7 @@ export default function LandingPage() {
                   <FileSearch className="w-4 h-4 text-slate-400 group-hover/item:text-blue-600" />
                 </div>
                 <div>
-                  <span className="text-sm font-bold text-slate-900 block mb-1">1. File Ingestion</span>
+                  <span className="text-sm font-bold text-slate-900 block mb-1">1. Q-Sub & Evidence Ingestion</span>
                   <span className="text-xs text-slate-500 leading-relaxed">Secure File API handles 20MB+ PDFs natively with advanced OCR fallback.</span>
                 </div>
               </div>
@@ -170,7 +171,7 @@ export default function LandingPage() {
                   <BarChart3 className="w-4 h-4 text-slate-400 group-hover/item:text-teal-600" />
                 </div>
                 <div>
-                  <span className="text-sm font-bold text-slate-900 block mb-1">2. Gap Generation</span>
+                  <span className="text-sm font-bold text-slate-900 block mb-1">2. Alignment Verification</span>
                   <span className="text-xs text-slate-500 leading-relaxed">System throttles processing to abide by rate limits and ensure deterministic outcomes.</span>
                 </div>
               </div>
@@ -179,7 +180,7 @@ export default function LandingPage() {
                   <Shield className="w-4 h-4 text-slate-400 group-hover/item:text-indigo-600" />
                 </div>
                 <div>
-                  <span className="text-sm font-bold text-slate-900 block mb-1">3. Result Output</span>
+                  <span className="text-sm font-bold text-slate-900 block mb-1">3. Traceability Output</span>
                   <span className="text-xs text-slate-500 leading-relaxed">Matrix formats directly for auditor review with full citations mapped.</span>
                 </div>
               </div>
