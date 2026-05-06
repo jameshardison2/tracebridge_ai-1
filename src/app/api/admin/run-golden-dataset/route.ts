@@ -3,56 +3,56 @@ import { adminDb, verifyIdToken } from "@/lib/firebase-admin";
 import { Timestamp } from "firebase-admin/firestore";
 
 const DEVICE_VARIANTS = [
-    { name: "Surgical Robot Control Interface v2.4", type: "Orthopedic", class: "Class II", standards: ["iso13485", "iec62304", "iso14971"] },
-    { name: "AI Radiological Triage System", type: "Radiology", class: "Class II", standards: ["iso13485", "iec62304", "fda820"] },
-    { name: "TraceGlow Continuous Glucose Monitor", type: "Cardiovascular", class: "Class II", standards: ["iso13485", "iec62304", "iso10993"] },
-    { name: "AeroFlow Infusion Pump Telemetry", type: "General Hospital", class: "Class II", standards: ["iso13485", "iec62304", "iec60601"] },
-    { name: "CardioLink Implantable Pacemaker Firmware", type: "Cardiovascular", class: "Class III", standards: ["iso13485", "iec62304", "iso14971"] },
-    { name: "Orthopedic Drill Calibration System", type: "Orthopedic", class: "Class II", standards: ["iso13485", "fda820"] },
-    { name: "Ophthalmic Laser Control Board", type: "Ophthalmic", class: "Class II", standards: ["iso13485", "iec62304", "iec60601"] },
-    { name: "Dialysis Machine Safety Interlock", type: "Gastroenterology", class: "Class II", standards: ["iso13485", "iec62304", "iso14971"] },
-    { name: "Dental Milling CAD/CAM Integration", type: "Dental", class: "Class II", standards: ["iso13485", "iec62304"] },
-    { name: "Pediatric Ventilator Flow Sensor", type: "Anesthesiology", class: "Class II", standards: ["iso13485", "iso14971", "iec60601"] },
-    { name: "Neurostimulation Lead Programmer", type: "Neurology", class: "Class II", standards: ["iso13485", "iec62304", "iso14971"] },
-    { name: "Endoscopic Suture Delivery Device", type: "General Surgery", class: "Class II", standards: ["iso13485", "iso10993", "fda820"] },
-    { name: "Automated External Defibrillator (AED)", type: "Cardiovascular", class: "Class II", standards: ["iso13485", "iec60601", "iso14971"] },
-    { name: "Digital Pathology Image Analyzer", type: "Pathology", class: "Class II", standards: ["iso13485", "iec62304", "fda820"] },
-    { name: "Fetal Heart Rate Monitor", type: "Obstetrics", class: "Class II", standards: ["iso13485", "iec60601", "iso14971"] },
-    { name: "Powered Exoskeleton for Rehabilitation", type: "Physical Medicine", class: "Class II", standards: ["iso13485", "iec60601", "iso14971"] }
+    { name: "Surgical Robot Control Interface v2.4", type: "Orthopedic", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "ISO 14971"] },
+    { name: "AI Radiological Triage System", type: "Radiology", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "FDA Cybersecurity"] },
+    { name: "TraceGlow Continuous Glucose Monitor", type: "Cardiovascular", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "ISO 10993"] },
+    { name: "AeroFlow Infusion Pump Telemetry", type: "General Hospital", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "IEC 60601"] },
+    { name: "CardioLink Implantable Pacemaker Firmware", type: "Cardiovascular", class: "Class III", standards: ["Q-Sub Alignment", "PMA Evidence", "ISO 14971"] },
+    { name: "Orthopedic Drill Calibration System", type: "Orthopedic", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "FDA 820"] },
+    { name: "Ophthalmic Laser Control Board", type: "Ophthalmic", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "IEC 60601"] },
+    { name: "Dialysis Machine Safety Interlock", type: "Gastroenterology", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "ISO 14971"] },
+    { name: "Dental Milling CAD/CAM Integration", type: "Dental", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "IEC 62304"] },
+    { name: "Pediatric Ventilator Flow Sensor", type: "Anesthesiology", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "IEC 60601"] },
+    { name: "Neurostimulation Lead Programmer", type: "Neurology", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "ISO 14971"] },
+    { name: "Endoscopic Suture Delivery Device", type: "General Surgery", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "ISO 10993"] },
+    { name: "Automated External Defibrillator (AED)", type: "Cardiovascular", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "IEC 60601"] },
+    { name: "Digital Pathology Image Analyzer", type: "Pathology", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "FDA Cybersecurity"] },
+    { name: "Fetal Heart Rate Monitor", type: "Obstetrics", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "IEC 60601"] },
+    { name: "Powered Exoskeleton for Rehabilitation", type: "Physical Medicine", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "ISO 14971"] }
 ];
 
 const EXHAUSTIVE_RULES = [
     {
-        id: "rule_qms_13485", standard: "ISO 13485:2016", section: "4.2.1",
-        requirement: "The quality management system documentation shall include the quality manual and documented statistical frameworks.",
-        expectedDocument: "Quality Manual",
-        posPassText: "AI Trace Confirmed: Structural mapping of Quality Manual hierarchical clauses successfully validated.",
-        negFailText: "Root Cause Analysis: Strict hierarchical document procedures omitted. System failed to locate explicit phase-gated statistical sampling methodology.",
-        missingArtifact: "Quality Manual Section 8.2 Phase-Gated Algorithm"
+        id: "rule_qsub_cyber", standard: "FDA Q-Sub Agreement (Cybersecurity)", section: "Pre-Sub Q230911",
+        requirement: "Sponsor agreed to utilize CVSS v3.1 for vulnerability scoring and mapping in the final threat model.",
+        expectedDocument: "Cybersecurity Threat Model",
+        posPassText: "AI Trace Confirmed: All third-party SBOM components and vulnerability scoring mapped strictly to CVSS v3.1 as agreed in the Pre-Sub.",
+        negFailText: "Root Cause Analysis: Q-Sub Engineering Drift Detected. The 510(k) threat model documentation was generated using the deprecated CVSS v2.0 scoring system, violating the Q-Sub agreement.",
+        missingArtifact: "CVSS v3.1 Vulnerability Matrix"
     },
     {
-        id: "rule_cyber", standard: "FDA Cybersecurity Guidance", section: "V.A",
-        requirement: "Premarket submissions must contain a comprehensive Software Bill of Materials (SBOM)",
-        expectedDocument: "Cybersecurity Management Plan",
-        posPassText: "AI Trace Confirmed: All third-party SBOM components mapped strictly to CVE vulnerability feeds.",
-        negFailText: "Root Cause Analysis: Critical Non-Conformance Detected. Document relies on buzzwords ('secure', 'encryption') but explicitly failed to provide the mathematical SBOM risk ledger.",
-        missingArtifact: "Software Bill of Materials (SBOM) mapped to exact CVE numbers."
+        id: "rule_qsub_biocomp", standard: "FDA Q-Sub Agreement (Biocompatibility)", section: "Pre-Sub Q230911",
+        requirement: "FDA explicitly requested a GLP in-vivo animal study to evaluate mucosal irritation.",
+        expectedDocument: "Biocompatibility Test Report",
+        posPassText: "AI Trace Confirmed: DHF documentation includes full GLP in-vivo animal study results matching the FDA request.",
+        negFailText: "Root Cause Analysis: Q-Sub Engineering Drift Detected. Engineering performed an in-vitro alternative test instead of the agreed in-vivo GLP animal study. Submitting this will trigger an immediate RTA.",
+        missingArtifact: "GLP In-Vivo Mucosal Irritation Study"
     },
     {
-        id: "rule_iec_arc", standard: "IEC 62304", section: "5.3",
-        requirement: "Establish a software architecture that limits software unit boundary intersections, and explicitly states segregation measures.",
-        expectedDocument: "Software Architecture Document",
-        posPassText: "AI Trace Confirmed: Sequence diagrams enforce strict API gateway segregation crossing Class C to Class A logic boundaries.",
-        negFailText: "Root Cause Analysis: System crash detection - Architecture lacks physical or network memory limiters preventing a Class A sub-routine from modifying a Class C safety function.",
-        missingArtifact: "IEC Sequence Flowchart mapping strict RAM segregation."
+        id: "rule_qsub_clinical", standard: "FDA Q-Sub Agreement (Clinical Evaluation)", section: "Pre-Sub Q230911",
+        requirement: "FDA agreed to a non-inferiority clinical endpoint margin of 5%.",
+        expectedDocument: "Clinical Evaluation Protocol",
+        posPassText: "AI Trace Confirmed: Clinical protocol correctly establishes the non-inferiority margin at 5% per the FDA agreement.",
+        negFailText: "Root Cause Analysis: Q-Sub Engineering Drift Detected. The Clinical team adjusted the non-inferiority margin to 10% in the final protocol without seeking FDA concurrence, voiding the Pre-Sub agreement.",
+        missingArtifact: "Revised Clinical Protocol with 5% Margin"
     },
     {
-        id: "rule_risk_14971", standard: "ISO 14971:2019", section: "7",
-        requirement: "Risk evaluation must implement a deterministic threshold comparing the calculated risk index (Probability x Severity matrix) against pre-defined acceptability criteria.",
-        expectedDocument: "Risk Management File",
-        posPassText: "AI Trace Confirmed: All residual risk calculations deterministically resolve below the accepted threshold algorithm (PxS < 0.05).",
-        negFailText: "Root Cause Analysis: Critical Non-Conformance Detected. Management accepted 'risk vs reward' philosophically but physically failed to compute Probability multiplied by Severity scales.",
-        missingArtifact: "Mathematical Probability (P) x Severity (S) calculation chart."
+        id: "rule_qsub_usability", standard: "FDA Q-Sub Agreement (Human Factors)", section: "Pre-Sub Q230911",
+        requirement: "Summative usability testing must include a minimum of 15 representative users per distinct user group (e.g., clinicians, lay users).",
+        expectedDocument: "Human Factors Engineering Report",
+        posPassText: "AI Trace Confirmed: Summative usability cohort sizes (n=15 per group) meet the FDA agreed threshold.",
+        negFailText: "Root Cause Analysis: Q-Sub Engineering Drift Detected. Summative test report only recruited 10 lay users due to budget constraints, directly violating the FDA sample size agreement.",
+        missingArtifact: "Summative Testing Addendum (n=15)"
     }
 ];
 

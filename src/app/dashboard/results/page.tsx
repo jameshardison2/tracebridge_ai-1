@@ -1103,7 +1103,7 @@ function ResultsContent() {
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-2xl font-bold flex items-center gap-3 text-slate-900">
-                            Compliance Intelligence
+                            Alignment Intelligence
                             <span className="px-2.5 py-0.5 rounded-full bg-green-100 text-green-700 border border-green-200 text-xs font-bold flex items-center gap-1.5">
                                 <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
                                 Live

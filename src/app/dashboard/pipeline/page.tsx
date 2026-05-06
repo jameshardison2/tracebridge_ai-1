@@ -294,10 +294,10 @@ export default function PipelinePage() {
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-2xl font-extrabold flex items-center gap-3 text-slate-900 tracking-tight">
-                            Gap Lifecycle Pipeline
+                            Alignment Lifecycle Pipeline
                         </h1>
                         <p className="text-sm font-medium text-slate-500 mt-1">
-                            Kanban state machine • Drag gaps between columns • Jira sync (Coming Soon)
+                            Kanban state machine • Drag alignment gaps between columns • Jira sync (Coming Soon)
                         </p>
                     </div>
                     {isMounted && uploads.length > 0 && (

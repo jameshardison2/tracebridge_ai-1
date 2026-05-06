@@ -31,12 +31,12 @@ const navItems = [
     { href: "/dashboard/team", label: "Workspace & Team", icon: Users },
     
     // 3. Action Phase (The core flow)
-    { href: "/dashboard/upload", label: "1. Submit Audit", icon: Upload },
-    { href: "/dashboard/pipeline", label: "2. Pipeline (Triage)", icon: Kanban },
-    { href: "/dashboard/results", label: "3. Compliance Intelligence", icon: FileSearch },
+    { href: "/dashboard/upload", label: "1. Ingest Q-Sub", icon: Upload },
+    { href: "/dashboard/pipeline", label: "2. Alignment Pipeline", icon: Kanban },
+    { href: "/dashboard/results", label: "3. Alignment Intelligence", icon: FileSearch },
     
     // 4. Output Phase
-    { href: "/dashboard/reports", label: "Regulatory Reports", icon: FileText },
+    { href: "/dashboard/reports", label: "Alignment Reports", icon: FileText },
     
     // 5. Admin & Feedback
     { href: "/dashboard/logs", label: "System Logs", icon: Server },

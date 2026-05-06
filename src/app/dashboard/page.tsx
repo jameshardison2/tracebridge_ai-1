@@ -162,10 +162,10 @@ export default function DashboardPage() {
                         className="text-3xl font-bold tracking-tight text-slate-900 mb-2 cursor-default select-none"
                         onDoubleClick={handleSeedBackdoor}
                     >
-                        Quality Regulatory Dashboard
+                        Q-Sub Alignment Dashboard
                     </h1>
                     <p className="text-[var(--muted)] text-sm">
-                        Master index of IEC 62304 and ISO 14971 active compliance audits.
+                        Master index of active Q-Sub alignment audits.
                     </p>
                 </div>
                 <div className="flex flex-wrap gap-3 mt-4 md:mt-0">
@@ -190,7 +190,7 @@ export default function DashboardPage() {
                         className="bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] transition-colors px-4 py-2 rounded-md text-sm font-bold flex items-center gap-2 shadow-sm"
                     >
                         <Upload className="w-4 h-4" />
-                        Initiate Device Audit
+                        Initiate Alignment Audit
                     </Link>
                 </div>
             </div>
@@ -207,8 +207,8 @@ export default function DashboardPage() {
                     <Link href="/dashboard/upload" className="bg-slate-800/80 backdrop-blur-sm border border-slate-700 hover:border-slate-500 transition-colors p-4 rounded-lg flex gap-3 items-start relative group cursor-pointer block">
                         <div className="w-8 h-8 rounded bg-slate-700 text-white flex items-center justify-center font-bold shrink-0 shadow-sm group-hover:bg-slate-600 transition-colors">1</div>
                         <div>
-                            <h3 className="text-sm font-bold text-white mb-1">Submit Audit</h3>
-                            <p className="text-xs text-slate-400">Upload MedTech documentation to directly target ISO/FDA protocols.</p>
+                            <h3 className="text-sm font-bold text-white mb-1">Ingest Q-Sub</h3>
+                            <p className="text-xs text-slate-400">Upload DHF and Q-Sub minutes to instantly cross-reference constraints.</p>
                         </div>
                         <ArrowRight className="w-5 h-5 text-slate-600 absolute -right-3 top-1/2 -translate-y-1/2 z-20 hidden md:block" />
                     </Link>
@@ -234,8 +234,8 @@ export default function DashboardPage() {
                     <div className="bg-slate-800/80 backdrop-blur-sm border border-slate-700 p-4 rounded-lg flex gap-3 items-start relative">
                         <div className="w-8 h-8 rounded bg-amber-500 text-white flex items-center justify-center font-bold shrink-0 shadow-sm">4</div>
                         <div>
-                            <h3 className="text-sm font-bold text-white mb-1">FDA Checkout</h3>
-                            <p className="text-xs text-slate-400">Export your signed-off trace items flawlessly to the FDA eCopy CSV Format.</p>
+                            <h3 className="text-sm font-bold text-white mb-1">Alignment Export</h3>
+                            <p className="text-xs text-slate-400">Export your signed-off alignment matrix to prove Q-Sub compliance.</p>
                         </div>
                     </div>
                 </div>
@@ -404,14 +404,14 @@ export default function DashboardPage() {
                             </div>
 
                             <p className="text-sm font-medium">
-                                Welcome to the TraceBridge Enterprise Quality Management Beta! This is a closed beta - your feedback directly shapes the product. Use the feedback button in the bottom right to flag anything unexpected. Here is how to evaluate the platform:
+                                Welcome to the TraceBridge Q-Sub Alignment Engine Beta! This is a closed beta - your feedback directly shapes the product. Use the feedback button in the bottom right to flag anything unexpected. Here is how to evaluate the platform:
                             </p>
                             
                             <div className="space-y-4">
                                 <div className="flex gap-4">
                                     <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold shrink-0">1</div>
                                     <div>
-                                        <h3 className="font-bold text-slate-800">Upload Your Own DHF / 510(k)</h3>
+                                        <h3 className="font-bold text-slate-800">Upload Your Own DHF & Q-Sub</h3>
                                         <p className="text-sm text-slate-500 mt-1">Click <strong>Initiate Device Audit</strong> to upload your own Design History File, Risk Management, or V&V documents and test the AI against your real-world data.</p>
                                         <p className="text-sm text-slate-500 mt-2"><em>Don't have a document ready?</em> Click <strong>Load Golden Demo Dataset</strong> on the dashboard to explore the platform using a pre-configured AED submission and see how TraceBridge handles a real device type.</p>
                                     </div>
