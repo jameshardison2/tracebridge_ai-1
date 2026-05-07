@@ -57,12 +57,12 @@ export default function TeamPage() {
     const [votedFeature, setVotedFeature] = useState<string | null>(null);
 
     const [frameworks, setFrameworks] = useState([
-        { id: 'iso13485', name: 'ISO 13485:2016', active: true, available: true },
-        { id: 'fda820', name: 'FDA 21 CFR Part 820', active: true, available: true },
-        { id: 'iec62304', name: 'IEC 62304:2006', active: true, available: true },
-        { id: 'eumdr', name: 'EU MDR 2017/745', active: false, available: false },
-        { id: 'soc2', name: 'SOC 2 Type II', active: false, available: false },
-        { id: 'hipaa', name: 'HIPAA Security Rule', active: false, available: false }
+        { id: 'iso13485', name: 'ISO 13485:2016', active: true, available: true, requested: false },
+        { id: 'fda820', name: 'FDA 21 CFR Part 820', active: true, available: true, requested: false },
+        { id: 'iec62304', name: 'IEC 62304:2006', active: true, available: true, requested: false },
+        { id: 'eumdr', name: 'EU MDR 2017/745', active: false, available: false, requested: false },
+        { id: 'soc2', name: 'SOC 2 Type II', active: false, available: false, requested: false },
+        { id: 'hipaa', name: 'HIPAA Security Rule', active: false, available: false, requested: false }
     ]);
 
     const [logs, setLogs] = useState<any[]>([]);
@@ -263,18 +263,16 @@ export default function TeamPage() {
 
         setFrameworks(prev => prev.map(f => {
             if (f.id === id) {
-                const newActive = !f.active;
+                if (f.requested) return f; // Prevent spamming
                 
-                // Stealth Vote if turning on an unavailable framework
-                if (newActive) {
-                    handleFeatureVote(name);
-                }
+                // Stealth Vote
+                handleFeatureVote(name);
 
                 // Show a realistic UI toast to sell the illusion
                 setSuccess(`Early Access Request logged for ${name}.`);
                 setTimeout(() => setSuccess(""), 4000);
 
-                return { ...f, active: newActive };
+                return { ...f, requested: true }; // Do not turn active to true
             }
             return f;
         }));
@@ -657,11 +655,11 @@ export default function TeamPage() {
                                         >
                                             <div>
                                                 <p className={`text-sm font-bold ${framework.active ? 'text-emerald-900' : 'text-slate-700'}`}>{framework.name}</p>
-                                                <p className={`text-[10px] uppercase mt-1 font-semibold tracking-wider ${framework.active ? 'text-emerald-600' : 'text-slate-400'}`}>
-                                                    {framework.active ? 'AI Model Trained' : 'Request Early Access'}
+                                                <p className={`text-[10px] uppercase mt-1 font-semibold tracking-wider ${framework.active ? 'text-emerald-600' : (framework.requested ? 'text-indigo-500' : 'text-slate-400')}`}>
+                                                    {framework.active ? 'AI Model Trained' : (framework.requested ? 'Beta Request Logged' : 'Request Early Access')}
                                                 </p>
                                             </div>
-                                            <div className={`w-11 h-6 rounded-full flex items-center px-1 transition-colors duration-300 ${framework.active ? 'bg-emerald-500 justify-end shadow-inner' : 'bg-slate-200 justify-start'}`}>
+                                            <div className={`w-11 h-6 rounded-full flex items-center px-1 transition-colors duration-300 ${framework.active ? 'bg-emerald-500 justify-end shadow-inner' : (framework.requested ? 'bg-indigo-100 justify-start ring-1 ring-indigo-200' : 'bg-slate-200 justify-start')}`}>
                                                 <div className="w-4 h-4 rounded-full bg-white shadow-sm transition-all duration-300"></div>
                                             </div>
                                         </div>
