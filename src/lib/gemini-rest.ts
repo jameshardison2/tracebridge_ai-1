@@ -236,10 +236,61 @@ RESPOND IN EXACTLY THIS JSON FORMAT (you MUST return a JSON array containing one
         }
     }
 
-    // Enterprise Air-Gapped Simulation Block
+    // Enterprise Air-Gapped Local Inference Engine (Ollama)
     if (aiEngine === "local") {
-        console.log(`[DEBUG] Attempting to connect to Air-Gapped Local Server (localhost:11434)...`);
-        throw new Error("Air-Gapped Connection Refused: Local LLaMA 3 inference engine (localhost:11434) is offline or unreachable from this environment. Please start the local Ollama service.");
+        console.log(`[DEBUG] Routing payload to Air-Gapped Local Server (localhost:11434)...`);
+        
+        // Combine prompt and parts into a single text block since local Llama3 is primarily text-in text-out
+        let fullPrompt = parts[0].text + "\n\n";
+        for (let i = 1; i < parts.length; i++) {
+            if (parts[i].text) {
+                fullPrompt += parts[i].text + "\n\n";
+            }
+        }
+
+        try {
+            const ollamaResponse = await fetchWithTimeout("http://localhost:11434/api/generate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    model: "llama3.1",
+                    prompt: fullPrompt,
+                    format: "json",
+                    stream: false,
+                    options: {
+                        temperature: 0.1
+                    }
+                }),
+                timeout: 180000 // 3 minutes for local inference
+            });
+
+            if (!ollamaResponse.ok) {
+                const errorText = await ollamaResponse.text();
+                throw new Error(`Ollama API error: ${ollamaResponse.status} - ${errorText}`);
+            }
+
+            const ollamaData = await ollamaResponse.json();
+            console.log(`[DEBUG] Received response from Local Air-Gapped Engine`);
+            
+            let text = ollamaData.response || "";
+            text = text.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
+
+            try {
+                return JSON.parse(text);
+            } catch (parseError) {
+                console.error("Failed to parse Local Ollama JSON. Trying aggressive regex...", text);
+                const jsonMatch = text.match(/\[\s*\{[\s\S]*\}\s*\]/);
+                if (jsonMatch) return JSON.parse(jsonMatch[0]);
+                throw new Error("Fatal JSON parse failure from Local Air-Gapped Engine.");
+            }
+        } catch (error) {
+            console.error("[DEBUG] Local Air-Gapped Server Error:", error);
+            const msg = error instanceof Error ? error.message : String(error);
+            if (msg.includes("fetch failed") || msg.includes("ECONNREFUSED")) {
+                throw new Error("Air-Gapped Connection Refused: Ensure Ollama is running locally (http://localhost:11434) and the 'llama3.1' model is pulled.");
+            }
+            throw new Error(`Air-Gapped Analysis Failed: ${msg}`);
+        }
     }
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${GEMINI_API_KEY}`;

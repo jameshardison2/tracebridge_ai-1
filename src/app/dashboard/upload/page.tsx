@@ -692,7 +692,7 @@ export default function UploadPage() {
                                 className="w-full text-sm font-bold bg-white border border-slate-200 rounded-lg px-3 py-2.5 outline-none text-slate-700 hover:border-indigo-300 focus:ring-2 focus:ring-indigo-500/20 shadow-sm transition-all"
                             >
                                 <option value="gemini">Google Gemini Cloud (Enterprise ZDR API)</option>
-                                <option value="local" disabled>Air-Gapped Local Server (Coming Soon)</option>
+                                <option value="local">Air-Gapped Local Server (Ollama)</option>
                             </select>
                         </div>
                     </div>
