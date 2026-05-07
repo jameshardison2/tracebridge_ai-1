@@ -163,13 +163,16 @@ export default function SurveyPage() {
                     <div className="space-y-3">
                         <label className="block font-bold text-slate-700">Q4. How accurately did TraceBridge identify regulatory gaps in the submission you reviewed?</label>
                         <p className="text-xs text-slate-500 uppercase tracking-widest">(1 = Very inaccurate, 5 = Very accurate)</p>
-                        <div className="flex gap-4">
-                            {[1, 2, 3, 4, 5].map(opt => (
-                                <label key={opt} className="flex flex-col items-center gap-2 cursor-pointer group">
-                                    <input type="radio" name="q4" value={String(opt)} checked={responses.q4_accuracy === String(opt)} onChange={(e) => handleChange('q4_accuracy', e.target.value)} className="w-5 h-5 text-indigo-600 border-slate-300 focus:ring-indigo-500" />
-                                    <span className="text-slate-500 group-hover:text-indigo-600 font-medium">{opt}</span>
-                                </label>
-                            ))}
+                        <div className="flex flex-wrap gap-3">
+                            {[1, 2, 3, 4, 5].map(opt => {
+                                const isSelected = responses.q4_accuracy === String(opt);
+                                return (
+                                    <label key={opt} className={`cursor-pointer w-12 h-12 flex items-center justify-center rounded-xl border-2 transition-all font-bold text-lg ${isSelected ? 'border-indigo-600 bg-indigo-50 text-indigo-700' : 'border-slate-200 bg-white text-slate-500 hover:border-indigo-300 hover:bg-slate-50'}`}>
+                                        <input type="radio" name="q4" value={String(opt)} checked={isSelected} onChange={(e) => handleChange('q4_accuracy', e.target.value)} className="sr-only" />
+                                        <span>{opt}</span>
+                                    </label>
+                                );
+                            })}
                         </div>
                     </div>
 
@@ -183,7 +186,9 @@ export default function SurveyPage() {
                                 </label>
                             ))}
                         </div>
-                        <textarea placeholder="If yes, please describe which gap(s) and why you disagreed:" value={responses.q5_false_positives_desc} onChange={(e) => handleChange('q5_false_positives_desc', e.target.value)} className="mt-2 w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm min-h-[80px]" />
+                        {responses.q5_false_positives.startsWith('Yes') && (
+                            <textarea placeholder="If yes, please describe which gap(s) and why you disagreed:" value={responses.q5_false_positives_desc} onChange={(e) => handleChange('q5_false_positives_desc', e.target.value)} className="mt-2 w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm min-h-[80px]" />
+                        )}
                     </div>
 
                     <div className="space-y-3">
@@ -196,7 +201,9 @@ export default function SurveyPage() {
                                 </label>
                             ))}
                         </div>
-                        <textarea placeholder="If yes, what was missing?" value={responses.q6_missed_gaps_desc} onChange={(e) => handleChange('q6_missed_gaps_desc', e.target.value)} className="mt-2 w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm min-h-[80px]" />
+                        {responses.q6_missed_gaps.startsWith('Yes') && (
+                            <textarea placeholder="If yes, what was missing?" value={responses.q6_missed_gaps_desc} onChange={(e) => handleChange('q6_missed_gaps_desc', e.target.value)} className="mt-2 w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm min-h-[80px]" />
+                        )}
                     </div>
 
                     <div className="space-y-3">
@@ -232,13 +239,16 @@ export default function SurveyPage() {
                     <div className="space-y-3">
                         <label className="block font-bold text-slate-700">Q9. Did the confidence scores shown for each gap feel accurate and trustworthy?</label>
                         <p className="text-xs text-slate-500 uppercase tracking-widest">(1 = Not at all trustworthy, 5 = Very trustworthy)</p>
-                        <div className="flex gap-4">
-                            {[1, 2, 3, 4, 5].map(opt => (
-                                <label key={opt} className="flex flex-col items-center gap-2 cursor-pointer group">
-                                    <input type="radio" name="q9" value={String(opt)} checked={responses.q9_confidence_trust === String(opt)} onChange={(e) => handleChange('q9_confidence_trust', e.target.value)} className="w-5 h-5 text-indigo-600 border-slate-300 focus:ring-indigo-500" />
-                                    <span className="text-slate-500 group-hover:text-indigo-600 font-medium">{opt}</span>
-                                </label>
-                            ))}
+                        <div className="flex flex-wrap gap-3">
+                            {[1, 2, 3, 4, 5].map(opt => {
+                                const isSelected = responses.q9_confidence_trust === String(opt);
+                                return (
+                                    <label key={opt} className={`cursor-pointer w-12 h-12 flex items-center justify-center rounded-xl border-2 transition-all font-bold text-lg ${isSelected ? 'border-indigo-600 bg-indigo-50 text-indigo-700' : 'border-slate-200 bg-white text-slate-500 hover:border-indigo-300 hover:bg-slate-50'}`}>
+                                        <input type="radio" name="q9" value={String(opt)} checked={isSelected} onChange={(e) => handleChange('q9_confidence_trust', e.target.value)} className="sr-only" />
+                                        <span>{opt}</span>
+                                    </label>
+                                );
+                            })}
                         </div>
                         <textarea placeholder="What would make the confidence scores more useful?" value={responses.q9_confidence_improvements} onChange={(e) => handleChange('q9_confidence_improvements', e.target.value)} className="mt-2 w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm min-h-[80px]" />
                     </div>
@@ -246,13 +256,16 @@ export default function SurveyPage() {
                     <div className="space-y-3">
                         <label className="block font-bold text-slate-700">Q10. How clear and understandable was the alignment gap output?</label>
                         <p className="text-xs text-slate-500 uppercase tracking-widest">(1 = Very confusing, 5 = Very clear)</p>
-                        <div className="flex gap-4">
-                            {[1, 2, 3, 4, 5].map(opt => (
-                                <label key={opt} className="flex flex-col items-center gap-2 cursor-pointer group">
-                                    <input type="radio" name="q10" value={String(opt)} checked={responses.q10_clarity === String(opt)} onChange={(e) => handleChange('q10_clarity', e.target.value)} className="w-5 h-5 text-indigo-600 border-slate-300 focus:ring-indigo-500" />
-                                    <span className="text-slate-500 group-hover:text-indigo-600 font-medium">{opt}</span>
-                                </label>
-                            ))}
+                        <div className="flex flex-wrap gap-3">
+                            {[1, 2, 3, 4, 5].map(opt => {
+                                const isSelected = responses.q10_clarity === String(opt);
+                                return (
+                                    <label key={opt} className={`cursor-pointer w-12 h-12 flex items-center justify-center rounded-xl border-2 transition-all font-bold text-lg ${isSelected ? 'border-indigo-600 bg-indigo-50 text-indigo-700' : 'border-slate-200 bg-white text-slate-500 hover:border-indigo-300 hover:bg-slate-50'}`}>
+                                        <input type="radio" name="q10" value={String(opt)} checked={isSelected} onChange={(e) => handleChange('q10_clarity', e.target.value)} className="sr-only" />
+                                        <span>{opt}</span>
+                                    </label>
+                                );
+                            })}
                         </div>
                     </div>
 
@@ -276,13 +289,16 @@ export default function SurveyPage() {
                     <div className="space-y-3">
                         <label className="block font-bold text-slate-700">Q12. How easy was it to navigate the TraceBridge platform?</label>
                         <p className="text-xs text-slate-500 uppercase tracking-widest">(1 = Very difficult, 5 = Very easy)</p>
-                        <div className="flex gap-4">
-                            {[1, 2, 3, 4, 5].map(opt => (
-                                <label key={opt} className="flex flex-col items-center gap-2 cursor-pointer group">
-                                    <input type="radio" name="q12" value={String(opt)} checked={responses.q12_navigation === String(opt)} onChange={(e) => handleChange('q12_navigation', e.target.value)} className="w-5 h-5 text-indigo-600 border-slate-300 focus:ring-indigo-500" />
-                                    <span className="text-slate-500 group-hover:text-indigo-600 font-medium">{opt}</span>
-                                </label>
-                            ))}
+                        <div className="flex flex-wrap gap-3">
+                            {[1, 2, 3, 4, 5].map(opt => {
+                                const isSelected = responses.q12_navigation === String(opt);
+                                return (
+                                    <label key={opt} className={`cursor-pointer w-12 h-12 flex items-center justify-center rounded-xl border-2 transition-all font-bold text-lg ${isSelected ? 'border-indigo-600 bg-indigo-50 text-indigo-700' : 'border-slate-200 bg-white text-slate-500 hover:border-indigo-300 hover:bg-slate-50'}`}>
+                                        <input type="radio" name="q12" value={String(opt)} checked={isSelected} onChange={(e) => handleChange('q12_navigation', e.target.value)} className="sr-only" />
+                                        <span>{opt}</span>
+                                    </label>
+                                );
+                            })}
                         </div>
                     </div>
 
@@ -304,13 +320,16 @@ export default function SurveyPage() {
                     <div className="space-y-3">
                         <label className="block font-bold text-slate-700">Q15. How likely are you to recommend TraceBridge AI to a colleague or classmate working on Q-Sub alignment?</label>
                         <p className="text-xs text-slate-500 uppercase tracking-widest">(0 = Not at all likely, 10 = Extremely likely)</p>
-                        <div className="flex flex-wrap gap-3">
-                            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(opt => (
-                                <label key={opt} className="flex flex-col items-center gap-1 cursor-pointer group">
-                                    <input type="radio" name="q15" value={String(opt)} checked={responses.q15_nps === String(opt)} onChange={(e) => handleChange('q15_nps', e.target.value)} className="w-5 h-5 text-indigo-600 border-slate-300 focus:ring-indigo-500" />
-                                    <span className="text-slate-500 group-hover:text-indigo-600 font-medium text-sm">{opt}</span>
-                                </label>
-                            ))}
+                        <div className="flex flex-wrap gap-2">
+                            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(opt => {
+                                const isSelected = responses.q15_nps === String(opt);
+                                return (
+                                    <label key={opt} className={`cursor-pointer w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-xl border-2 transition-all font-bold ${isSelected ? 'border-indigo-600 bg-indigo-50 text-indigo-700' : 'border-slate-200 bg-white text-slate-500 hover:border-indigo-300 hover:bg-slate-50'}`}>
+                                        <input type="radio" name="q15" value={String(opt)} checked={isSelected} onChange={(e) => handleChange('q15_nps', e.target.value)} className="sr-only" />
+                                        <span>{opt}</span>
+                                    </label>
+                                );
+                            })}
                         </div>
                     </div>
 
