@@ -22,18 +22,22 @@ export async function GET(request: Request) {
         const tenantUid = verification.uid;
 
         // 1. Fetch latest upload for user
+        // We fetch all for the user and sort in memory to avoid requiring a composite index on userId + createdAt
         const uploadsSnapshot = await adminDb
             .collection("uploads")
             .where("userId", "==", tenantUid)
-            .orderBy("createdAt", "desc")
-            .limit(1)
             .get();
 
         if (uploadsSnapshot.empty) {
             return NextResponse.json({ success: true, data: [] });
         }
 
-        const latestUploadId = uploadsSnapshot.docs[0].id;
+        const uploads = uploadsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        uploads.sort((a: any, b: any) => {
+            return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+        });
+
+        const latestUploadId = uploads[0].id;
 
         // 2. Fetch gapResults for this upload
         const gapResultsSnapshot = await adminDb
