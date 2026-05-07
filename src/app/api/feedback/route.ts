@@ -33,14 +33,18 @@ export async function POST(req: Request) {
             return NextResponse.json({ success: false, error: "Database not initialized" }, { status: 500 });
         }
         
-        const feedback: Feedback = {
+        const feedback: any = {
             userId,
             teamId: teamId || "unknown",
             type,
             content,
-            featureRequest,
-            createdAt: FieldValue.serverTimestamp() as any
+            createdAt: FieldValue.serverTimestamp()
         };
+        
+        if (featureRequest) {
+            feedback.featureRequest = featureRequest;
+        }
+
         const docRef = await adminDb.collection("feedback").add(feedback);
 
         // Send email notification to founders
