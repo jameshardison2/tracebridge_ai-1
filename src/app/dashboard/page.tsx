@@ -199,45 +199,45 @@ export default function DashboardPage() {
             <div className="bg-[#0f172a] rounded-xl border border-slate-800 p-6 shadow-xl mb-2 relative overflow-hidden hidden xl:block">
                 <div className="absolute top-0 right-0 p-40 bg-indigo-500/10 blur-[80px] rounded-full pointer-events-none"></div>
                 <h2 className="text-white font-bold text-xs uppercase tracking-widest flex items-center gap-2 mb-6">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                    TraceBridge Operating Mechanism
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    Your TraceBridge AI Workflow
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 relative z-10">
                     {/* Step 1 */}
                     <Link href="/dashboard/upload" className="bg-slate-800/80 backdrop-blur-sm border border-slate-700 hover:border-slate-500 transition-colors p-4 rounded-lg flex gap-3 items-start relative group cursor-pointer block">
                         <div className="w-8 h-8 rounded bg-slate-700 text-white flex items-center justify-center font-bold shrink-0 shadow-sm group-hover:bg-slate-600 transition-colors">1</div>
                         <div>
-                            <h3 className="text-sm font-bold text-white mb-1">Ingest Q-Sub</h3>
-                            <p className="text-xs text-slate-400">Upload DHF and Q-Sub minutes to instantly cross-reference constraints.</p>
+                            <h3 className="text-sm font-bold text-white mb-1">New Analysis</h3>
+                            <p className="text-[11px] text-slate-400 leading-relaxed">Drop in your DHF and FDA minutes. We'll automatically build a semantic knowledge graph of your entire device architecture.</p>
                         </div>
                         <ArrowRight className="w-5 h-5 text-slate-600 absolute -right-3 top-1/2 -translate-y-1/2 z-20 hidden md:block" />
                     </Link>
                     {/* Step 2 */}
-                    <div className="bg-indigo-900/40 backdrop-blur-sm border border-indigo-500/30 p-4 rounded-lg flex gap-3 items-start relative">
-                        <div className="w-8 h-8 rounded bg-indigo-600 text-white flex items-center justify-center font-bold shrink-0 shadow-md">2</div>
+                    <Link href="/dashboard/results" className="bg-indigo-900/40 backdrop-blur-sm border border-indigo-500/30 hover:border-indigo-400/60 transition-colors p-4 rounded-lg flex gap-3 items-start relative group cursor-pointer block">
+                        <div className="w-8 h-8 rounded bg-indigo-600 text-white flex items-center justify-center font-bold shrink-0 shadow-md group-hover:bg-indigo-500 transition-colors">2</div>
                         <div>
-                            <h3 className="text-sm font-bold text-indigo-100 mb-1">AI Detection</h3>
-                            <p className="text-xs text-indigo-300">Google Gemini systematically parses architecture and intelligently flags gaps.</p>
+                            <h3 className="text-sm font-bold text-indigo-100 mb-1">AI Intelligence</h3>
+                            <p className="text-[11px] text-indigo-300 leading-relaxed">Our specialized Gemini models instantly detect "Q-Sub Drift" and proactively flag missing FDA regulatory requirements.</p>
                         </div>
                         <ArrowRight className="w-5 h-5 text-slate-600 absolute -right-3 top-1/2 -translate-y-1/2 z-20 hidden md:block" />
-                    </div>
+                    </Link>
                     {/* Step 3 */}
                     <Link href="/dashboard/pipeline" className="bg-emerald-900/40 backdrop-blur-sm border border-emerald-500/30 hover:border-emerald-400/60 transition-colors p-4 rounded-lg flex gap-3 items-start relative group cursor-pointer block">
                         <div className="w-8 h-8 rounded bg-emerald-600 text-white flex items-center justify-center font-bold shrink-0 shadow-md group-hover:bg-emerald-500 transition-colors">3</div>
                         <div>
-                            <h3 className="text-sm font-bold text-emerald-100 mb-1">Execute Triage</h3>
-                            <p className="text-xs text-emerald-300">Formally assign and remediate issues using the interactive Pipeline Tracker.</p>
+                            <h3 className="text-sm font-bold text-emerald-100 mb-1">Remediation Pipeline</h3>
+                            <p className="text-[11px] text-emerald-300 leading-relaxed">Triage the flagged gaps. We automatically sync with your Jira board to seamlessly assign fixes directly to your engineering team.</p>
                         </div>
                         <ArrowRight className="w-5 h-5 text-slate-600 absolute -right-3 top-1/2 -translate-y-1/2 z-20 hidden md:block" />
                     </Link>
                     {/* Step 4 */}
-                    <div className="bg-slate-800/80 backdrop-blur-sm border border-slate-700 p-4 rounded-lg flex gap-3 items-start relative">
-                        <div className="w-8 h-8 rounded bg-amber-500 text-white flex items-center justify-center font-bold shrink-0 shadow-sm">4</div>
+                    <Link href="/dashboard/traceability" className="bg-blue-900/40 backdrop-blur-sm border border-blue-500/30 hover:border-blue-400/60 transition-colors p-4 rounded-lg flex gap-3 items-start relative group cursor-pointer block">
+                        <div className="w-8 h-8 rounded bg-blue-600 text-white flex items-center justify-center font-bold shrink-0 shadow-sm group-hover:bg-blue-500 transition-colors">4</div>
                         <div>
-                            <h3 className="text-sm font-bold text-white mb-1">Alignment Export</h3>
-                            <p className="text-xs text-slate-400">Export your signed-off alignment matrix to prove Q-Sub compliance.</p>
+                            <h3 className="text-sm font-bold text-white mb-1">Traceability Matrix</h3>
+                            <p className="text-[11px] text-blue-200 leading-relaxed">Watch your live matrix turn green as engineers ship code, guaranteeing 100% compliance before your final eSTAR export.</p>
                         </div>
-                    </div>
+                    </Link>
                 </div>
             </div>
 
@@ -411,30 +411,30 @@ export default function DashboardPage() {
                                 <div className="flex gap-4">
                                     <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold shrink-0">1</div>
                                     <div>
-                                        <h3 className="font-bold text-slate-800">Upload Your Own DHF & Q-Sub</h3>
-                                        <p className="text-sm text-slate-500 mt-1">Click <strong>Initiate Device Audit</strong> to upload your own Design History File, Risk Management, or V&V documents and test the AI against your real-world data.</p>
-                                        <p className="text-sm text-slate-500 mt-2"><em>Don't have a document ready?</em> Click <strong>Populate Demo Data</strong> on the dashboard to explore the platform using a pre-configured Q-Sub alignment example and see how TraceBridge catches engineering drift.</p>
+                                        <h3 className="font-bold text-slate-800">Run a New Analysis</h3>
+                                        <p className="text-sm text-slate-500 mt-1">Click <strong>Initiate Alignment Audit</strong> to upload your own Design History File, Risk Management, or V&V documents. We will instantly build a semantic knowledge graph of your device.</p>
+                                        <p className="text-sm text-slate-500 mt-2"><em>Don't have a document ready?</em> Click <strong>Populate Demo Data</strong> on the dashboard to safely load a pre-configured Q-Sub alignment example.</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
                                     <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold shrink-0">2</div>
                                     <div>
-                                        <h3 className="font-bold text-slate-800">Review the Pipeline</h3>
-                                        <p className="text-sm text-slate-500 mt-1">Navigate to the <strong>Pipeline Tracker</strong> to view the AI-driven gap detection. See how TraceBridge automatically flags missing ISO 13485 or FDA requirements.</p>
+                                        <h3 className="font-bold text-slate-800">Review AI Intelligence & Remediate</h3>
+                                        <p className="text-sm text-slate-500 mt-1">Navigate to the <strong>Remediation Pipeline</strong>. Watch how TraceBridge automatically flags missing ISO 13485 or FDA requirements and allows you to seamlessly assign fixes directly to Jira.</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
-                                    <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold shrink-0">3</div>
+                                    <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold shrink-0">3</div>
                                     <div>
-                                        <h3 className="font-bold text-slate-800">Export Traceability Matrices</h3>
-                                        <p className="text-sm text-slate-500 mt-1">Go to the <strong>Reports Hub</strong> to generate deterministic, FDA-ready Part 11 compliant traceability matrices with zero manual spreadsheet work.</p>
+                                        <h3 className="font-bold text-slate-800">Monitor the Traceability Matrix</h3>
+                                        <p className="text-sm text-slate-500 mt-1">Go to the <strong>Traceability Matrix</strong> to watch your real-time FDA compliance status. As your engineers close Jira tickets, the AI will automatically lower the "Drift Risk" and turn the matrix green.</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
-                                    <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold shrink-0">4</div>
+                                    <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold shrink-0">4</div>
                                     <div>
-                                        <h3 className="font-bold text-slate-800">Explore the Team Workspace</h3>
-                                        <p className="text-sm text-slate-500 mt-1">Check out the <strong>Team Workspace</strong> to request new framework integrations (like EU MDR) and view the background audit log.</p>
+                                        <h3 className="font-bold text-slate-800">Export to eSTAR</h3>
+                                        <p className="text-sm text-slate-500 mt-1">When your matrix is green, go to <strong>Saved Reports</strong> to generate a deterministic, FDA-ready Part 11 compliant eSTAR payload with zero manual spreadsheet work.</p>
                                     </div>
                                 </div>
                             </div>
