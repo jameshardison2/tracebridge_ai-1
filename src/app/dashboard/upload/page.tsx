@@ -406,14 +406,11 @@ export default function UploadPage() {
                 </div>
             </div>
         );
-    }
-
-    return (
-        <div>
+<div>
             <div className="mb-8">
-                <h1 className="text-3xl font-bold tracking-tight text-slate-900 mb-2">New Analysis</h1>
-                <p className="text-[var(--muted)]">
-                    Upload your V&V documents for automatic compliance gap detection.
+                <h1 className="text-3xl font-black tracking-tight text-slate-900 mb-2">New Analysis</h1>
+                <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight">
+                    Upload your V&V documents for automatic, semantic AI compliance gap detection.
                 </p>
             </div>
 

@@ -83,11 +83,11 @@ export default function TraceabilityMatrixPage() {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-[var(--foreground)] flex items-center gap-2">
-                        <Network className="w-8 h-8 text-[var(--primary)]" />
+                    <h1 className="text-3xl font-black tracking-tight text-[var(--foreground)] flex items-center gap-2">
+                        <GitMerge className="w-8 h-8 text-indigo-600" />
                         Dynamic Traceability Matrix
                     </h1>
-                    <p className="text-[var(--muted)] mt-1 max-w-2xl">
+                    <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight mt-2 max-w-2xl">
                         Real-time AI monitoring of your engineering pipeline against FDA regulatory feedback to prevent Q-Sub drift.
                     </p>
                 </div>

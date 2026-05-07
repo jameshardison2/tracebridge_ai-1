@@ -37,8 +37,10 @@ export default function LogsPage() {
                     <Server className="w-6 h-6 text-slate-600" />
                 </div>
                 <div>
-                    <h1 className="text-3xl font-bold text-[var(--foreground)]">System Audit Logs</h1>
-                    <p className="text-[var(--muted)] text-sm mt-1">Immutable record of all platform activities and data transformations.</p>
+                    <h1 className="text-3xl font-black tracking-tight text-[var(--foreground)]">System Audit Logs</h1>
+                    <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight mt-1">
+                        Immutable record of all platform activities and data transformations.
+                    </p>
                 </div>
             </div>
 

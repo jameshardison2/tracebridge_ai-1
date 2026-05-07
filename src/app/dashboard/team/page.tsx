@@ -298,10 +298,10 @@ export default function TeamPage() {
     return (
         <div className="space-y-8 pb-12">
             <div>
-                <h1 className="text-3xl font-bold text-slate-900 mb-2 tracking-tight flex items-center gap-3">
-                    Team Workspace <span className="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold uppercase tracking-widest border border-indigo-200">Beta</span>
+                <h1 className="text-3xl font-black text-slate-900 mb-2 tracking-tight flex items-center gap-3">
+                    Team Workspace <span className="text-xs font-bold bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full uppercase tracking-widest border border-indigo-200">Beta</span>
                 </h1>
-                <p className="text-[var(--muted)]">
+                <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight">
                     Centralize your QMS artifacts and streamline cross-functional remediation.
                 </p>
             </div>

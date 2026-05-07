@@ -96,9 +96,11 @@ export default function SurveyPage() {
     return (
         <div className="max-w-4xl mx-auto pb-20">
             <div className="mb-10">
-                <h1 className="text-3xl font-bold text-slate-900 mb-3 tracking-tight">TraceBridge AI — Validation Feedback Survey</h1>
-                <p className="text-slate-500 text-lg">Version 1.0 | May 2026</p>
-                <p className="text-slate-400 mt-1 italic">Estimated time: 5-7 minutes</p>
+                <h1 className="text-3xl font-black text-slate-900 mb-3 tracking-tight">TraceBridge AI — Validation Feedback Survey</h1>
+                <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight">
+                    Help us perfect the future of MedTech regulatory automation. Version 1.0
+                </p>
+                <p className="text-slate-400 mt-2 font-medium italic">Estimated time: 5-7 minutes</p>
             </div>
 
             {error && (

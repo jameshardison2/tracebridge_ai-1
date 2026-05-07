@@ -1388,13 +1388,12 @@ function ReportsContent() {
         return (
             <div className="flex flex-col h-full min-h-[0px] animate-in fade-in slide-in-from-bottom-2 duration-500">
                 <div className="mb-6 shrink-0">
-                    <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3 text-slate-900 mb-2">
-                        Alignment Artifact Hub
-                        <span className="px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-bold">
-                            Submission Builder
-                        </span>
+                    <h1 className="text-3xl font-black tracking-tight flex items-center gap-3 text-slate-900 mb-2">
+                        Alignment Artifact Hub <span className="text-xs font-bold bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full uppercase tracking-widest border border-indigo-200">Submission Builder</span>
                     </h1>
-                    <p className="text-sm text-slate-500 mt-1">Configure and generate official FDA submission matrices, CAPA reports, and post-market logs.</p>
+                    <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight">
+                        Configure and generate official FDA submission matrices, CAPA reports, and post-market logs.
+                    </p>
                 </div>
 
                 <div className="flex flex-1 gap-6 overflow-hidden items-start pb-4">
