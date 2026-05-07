@@ -63,7 +63,7 @@ export async function POST(req: Request) {
 
                 await resend.emails.send({
                     from: 'TraceBridge AI <noreply@tracebridge.ai>',
-                    to: ['tracebridgeai@gmail.com', 'james.hardison2@gmail.com'], // Send to the founders
+                    to: ['james@tracebridge.ai'], // Send to the founder
                     subject: `New Feature Request: ${type === 'feature_vote' ? featureRequest : 'Open Feedback'}`,
                     html: `
                         <h2>New Feedback Submitted on TraceBridge AI</h2>
