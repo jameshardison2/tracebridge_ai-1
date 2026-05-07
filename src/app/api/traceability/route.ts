@@ -1,94 +1,105 @@
 import { NextResponse } from "next/server";
+import { adminDb, verifyIdToken } from "@/lib/firebase-admin";
 
-export async function GET() {
-    // Highly curated mock data designed for an investor/customer pitch
-    // Demonstrates "Semantic Traceability" and "Drift Risk"
-    const mockTraceabilityData = [
-        {
-            id: "tm-1",
-            regulatoryAnchor: {
-                id: "FDA-Q1.1",
-                topic: "Biocompatibility",
-                description: "Must conduct testing on final finished, sterilized device per ISO 10993-1.",
-            },
-            engineeringLink: {
-                id: "ENG-104",
-                title: "Update bio protocol to include EO sterilization step",
-                status: "In Progress",
-                owner: "Sarah K.",
-                url: "https://tracebridge.atlassian.net/browse/ENG-104",
-            },
-            aiAnalysis: {
-                confidenceScore: 95,
-                driftRisk: "Low",
-                rationale: "The Jira ticket explicitly mentions the EO sterilization step on the final finished device.",
-            },
-            estarStatus: "Ready",
-        },
-        {
-            id: "tm-2",
-            regulatoryAnchor: {
-                id: "FDA-Q1.2",
-                topic: "Animal Studies",
-                description: "GLP study required; sample size of N=6 is insufficient. Recommend N=12.",
-            },
-            engineeringLink: {
-                id: "CLIN-22",
-                title: "Revise animal study protocol to include more samples",
-                status: "Blocked",
-                owner: "Dr. Aris",
-                url: "https://tracebridge.atlassian.net/browse/CLIN-22",
-            },
-            aiAnalysis: {
-                confidenceScore: 35,
-                driftRisk: "High",
-                rationale: "The linked protocol currently states N=8, which does not meet the FDA's explicit recommendation of N=12. High risk of Refuse to Accept (RTA).",
-            },
-            estarStatus: "Blocked",
-        },
-        {
-            id: "tm-3",
-            regulatoryAnchor: {
-                id: "FDA-Q2.1",
-                topic: "Cybersecurity",
-                description: "Provide threat model aligned with 2023 final guidance, including full SBOM.",
-            },
-            engineeringLink: {
-                id: "SWE-405",
-                title: "Draft new threat model & SBOM",
-                status: "Not Started",
-                owner: "James H.",
-                url: "https://tracebridge.atlassian.net/browse/SWE-405",
-            },
-            aiAnalysis: {
-                confidenceScore: 78,
-                driftRisk: "Medium",
-                rationale: "Task is created and appropriately assigned, but work has not begun. Keep monitoring to ensure SBOM generation tool is FDA-compliant.",
-            },
-            estarStatus: "Pending",
-        },
-        {
-            id: "tm-4",
-            regulatoryAnchor: {
-                id: "FDA-Q3.1",
-                topic: "Human Factors",
-                description: "Formative testing must include pediatric user group (ages 6-12).",
-            },
-            engineeringLink: {
-                id: "UX-09",
-                title: "Recruit 15 pediatric users for next usability round",
-                status: "Completed",
-                owner: "Alex M.",
-                url: "https://tracebridge.atlassian.net/browse/UX-09",
-            },
-            aiAnalysis: {
-                confidenceScore: 98,
-                driftRisk: "Low",
-                rationale: "Usability recruitment is complete and explicitly includes the required demographic (ages 6-12).",
-            },
-            estarStatus: "Ready",
+export async function GET(request: Request) {
+    try {
+        if (!adminDb) {
+            return NextResponse.json({ success: false, error: "Firebase not configured" }, { status: 503 });
         }
-    ];
 
-    return NextResponse.json({ success: true, data: mockTraceabilityData });
+        const authHeader = request.headers.get("Authorization");
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return NextResponse.json({ success: false, error: "Unauthorized access" }, { status: 401 });
+        }
+
+        const idToken = authHeader.split("Bearer ")[1];
+        const verification = await verifyIdToken(idToken);
+        
+        if (!verification.success || !verification.uid) {
+            return NextResponse.json({ success: false, error: "Token validation failed" }, { status: 401 });
+        }
+        
+        const tenantUid = verification.uid;
+
+        // 1. Fetch latest upload for user
+        const uploadsSnapshot = await adminDb
+            .collection("uploads")
+            .where("userId", "==", tenantUid)
+            .orderBy("createdAt", "desc")
+            .limit(1)
+            .get();
+
+        if (uploadsSnapshot.empty) {
+            return NextResponse.json({ success: true, data: [] });
+        }
+
+        const latestUploadId = uploadsSnapshot.docs[0].id;
+
+        // 2. Fetch gapResults for this upload
+        const gapResultsSnapshot = await adminDb
+            .collection("gapResults")
+            .where("uploadId", "==", latestUploadId)
+            .get();
+
+        if (gapResultsSnapshot.empty) {
+            return NextResponse.json({ success: true, data: [] });
+        }
+
+        // 3. Map to TraceabilityItem schema
+        const mappedData = gapResultsSnapshot.docs.map((doc, index) => {
+            const data = doc.data();
+            
+            // Map AI Confidence
+            let confidenceScore = 95;
+            let driftRisk: "Low" | "Medium" | "High" = "Low";
+            let estarStatus = "Ready";
+
+            if (data.status === "gap_detected") {
+                confidenceScore = 30;
+                driftRisk = data.severity === "critical" ? "High" : "Medium";
+                estarStatus = "Blocked";
+            } else if (data.status === "needs_review") {
+                confidenceScore = 70;
+                driftRisk = "Medium";
+                estarStatus = "Pending";
+            }
+
+            return {
+                id: doc.id,
+                regulatoryAnchor: {
+                    id: `FDA-${data.standard?.split(" ")[0] || "REG"}-${index + 1}`,
+                    topic: data.standard || "Regulatory Requirement",
+                    description: data.requirement || "Unknown requirement",
+                },
+                engineeringLink: {
+                    id: `CAPA-${doc.id.substring(0, 5).toUpperCase()}`,
+                    title: data.gapTitle || data.missingRequirement || "Pending Engineering Action",
+                    status: data.pipelineStatus || (data.status === "compliant" ? "Completed" : "Not Started"),
+                    owner: "Unassigned",
+                    url: "#",
+                },
+                aiAnalysis: {
+                    confidenceScore,
+                    driftRisk,
+                    rationale: data.reasoning || "AI assessment based on document context.",
+                },
+                estarStatus,
+            };
+        });
+
+        // Sort by drift risk: High -> Medium -> Low
+        mappedData.sort((a, b) => {
+            const order = { "High": 0, "Medium": 1, "Low": 2 };
+            return order[a.aiAnalysis.driftRisk] - order[b.aiAnalysis.driftRisk];
+        });
+
+        return NextResponse.json({ success: true, data: mappedData });
+
+    } catch (error) {
+        console.error("Traceability API Error:", error);
+        return NextResponse.json(
+            { success: false, error: error instanceof Error ? error.message : "Failed to fetch traceability data" },
+            { status: 500 }
+        );
+    }
 }

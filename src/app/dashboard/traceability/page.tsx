@@ -11,6 +11,7 @@ import {
     RefreshCw,
     Download
 } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
 
 interface TraceabilityItem {
     id: string;
@@ -35,13 +36,20 @@ interface TraceabilityItem {
 }
 
 export default function TraceabilityMatrixPage() {
+    const { user } = useAuth();
     const [data, setData] = useState<TraceabilityItem[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
+            if (!user) return;
             try {
-                const res = await fetch("/api/traceability");
+                const token = await user.getIdToken();
+                const res = await fetch("/api/traceability", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
                 const json = await res.json();
                 if (json.success) {
                     setData(json.data);
@@ -54,7 +62,7 @@ export default function TraceabilityMatrixPage() {
         };
 
         fetchData();
-    }, []);
+    }, [user]);
 
     const getRiskColor = (risk: string) => {
         if (risk === "Low") return "bg-emerald-500/10 text-emerald-600 border-emerald-500/20";
