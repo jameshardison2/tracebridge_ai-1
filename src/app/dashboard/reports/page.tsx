@@ -681,7 +681,7 @@ function ReportsContent() {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        const displayDeviceNameCSV = report.upload.deviceName ? report.upload.deviceName.replace(/demo\s*[-|–]*\s*/ig, '').trim() : "Export";
+        const displayDeviceNameCSV = report.upload.deviceName ? report.upload.deviceName.replace(/demo\s*[-–:]*\s*/ig, '').trim() : "Export";
         const filenameDeviceCSV = displayDeviceNameCSV.replace(/[^a-zA-Z0-9]/g, "_").replace(/_+/g, "_");
         a.download = `TraceBridge_${reportTitle.replace(/-/g, '_')}_${filenameDeviceCSV}.csv`;
         a.click();
@@ -794,7 +794,7 @@ function ReportsContent() {
         doc.text(titleString, 14, 60);
         doc.setTextColor(255, 255, 255);
         doc.setFontSize(28);
-        const displayDeviceName = report.upload.deviceName ? report.upload.deviceName.replace(/demo\s*[-|–]*\s*/ig, '').trim() : "Device";
+        const displayDeviceName = report.upload.deviceName ? report.upload.deviceName.replace(/demo\s*[-–:]*\s*/ig, '').trim() : "Device";
         const splitTitle = doc.splitTextToSize(displayDeviceName, 150);
         doc.text(splitTitle, 14, 75);
         doc.setFontSize(12);
@@ -1196,7 +1196,7 @@ function ReportsContent() {
 
                 y += aiLines.length * 5 + 6;
                 doc.setFillColor(254, 226, 226);
-                doc.rect(14, y, 45, 6, "F");
+                doc.rect(14, y, 80, 6, "F");
                 doc.setFillColor(239, 68, 68);
                 doc.rect(16, y + 1.5, 3, 3, "F");
                 doc.setTextColor(185, 28, 28);
@@ -1210,7 +1210,7 @@ function ReportsContent() {
                     doc.setDrawColor(187, 247, 208);
                     doc.roundedRect(14, y, 140, 45, 3, 3, "FD");
                     doc.setFillColor(34, 197, 94);
-                    doc.roundedRect(18, y + 4, 38, 6, 1, 1, "F");
+                    doc.roundedRect(18, y + 4, 48, 6, 1, 1, "F");
                     doc.setTextColor(255, 255, 255);
                     doc.setFontSize(8);
                     doc.text("PROPOSED CORRECTIVE ACTION", 21, y + 8.2);
@@ -1232,7 +1232,7 @@ function ReportsContent() {
                     doc.setDrawColor(203, 213, 225);
                     doc.roundedRect(14, y, 140, 25, 3, 3, "FD");
                     doc.setFillColor(100, 116, 139);
-                    doc.roundedRect(18, y + 4, 45, 6, 1, 1, "F");
+                    doc.roundedRect(18, y + 4, 65, 6, 1, 1, "F");
                     doc.setTextColor(255, 255, 255);
                     doc.setFontSize(8);
                     doc.text("AI AUTONOMOUS MITIGATIONS DISABLED", 21, y + 8.2);
