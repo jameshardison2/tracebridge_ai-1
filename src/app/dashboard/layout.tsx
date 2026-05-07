@@ -21,6 +21,7 @@ import {
     Menu,
     X,
     ClipboardList,
+    Network,
 } from "lucide-react";
 
 const navItems = [
@@ -36,6 +37,7 @@ const navItems = [
     { href: "/dashboard/results", label: "3. Alignment Intelligence", icon: FileSearch },
     
     // 4. Output Phase
+    { href: "/dashboard/traceability", label: "Traceability Matrix", icon: Network },
     { href: "/dashboard/reports", label: "Alignment Reports", icon: FileText },
     
     // 5. Admin & Feedback
