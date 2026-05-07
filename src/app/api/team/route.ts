@@ -54,18 +54,24 @@ export async function GET(request: Request) {
             };
         });
 
-        // Get team upload stats (for all teams combined, or we can just send back raw stats later if needed)
-        // For simplicity, we'll return the teams array. The frontend can calculate stats per team or we just send 0.
-        // Actually, let's keep stats for the active team on the frontend.
+        // Fetch actual upload count from the database to drive the ROI metrics dashboard
+        const uploadsSnapshot = await adminDb.collection('uploads').where('userId', '==', userId).get();
+        const totalUploads = uploadsSnapshot.size;
+
+        // Calculate total members across all teams this user belongs to
+        let totalMembers = 0;
+        userTeams.forEach(teamDoc => {
+            const data = teamDoc.data();
+            totalMembers += (data.members || []).length;
+        });
         
         return NextResponse.json({
             success: true,
             data: {
                 teams: teamsData,
-                // Stats will be computed dynamically on the frontend or we return an aggregate
                 stats: {
-                    totalUploads: 0,
-                    totalMembers: 0,
+                    totalUploads,
+                    totalMembers,
                 },
             },
         });
