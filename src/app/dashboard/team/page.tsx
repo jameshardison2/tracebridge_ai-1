@@ -269,7 +269,7 @@ export default function TeamPage() {
                 }
 
                 // Show a realistic UI toast to sell the illusion
-                setSuccess(`${name} Monitoring ${newActive ? 'Enabled' : 'Disabled'}`);
+                setSuccess(`${name} added to your AI Alignment pipeline requirements.`);
                 setTimeout(() => setSuccess(""), 3000);
 
                 return { ...f, active: newActive };
@@ -416,10 +416,10 @@ export default function TeamPage() {
                             </div>
                             
                             <h2 className="text-3xl sm:text-4xl font-extrabold mb-4 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400">
-                                TraceBridge QMS Environment
+                                Enterprise Alignment Hub
                             </h2>
                             <p className="text-slate-400 text-sm sm:text-base leading-relaxed mb-10 max-w-2xl font-light">
-                                Centralized compliance infrastructure for MedTech engineering and regulatory affairs. Configure active regulatory frameworks, manage cross-functional triage, and maintain an immutable <strong className="text-white font-medium">21 CFR Part 11 Audit Trail</strong> to streamline 510(k) clearance.
+                                Centralized Command Center for MedTech engineering and regulatory affairs. Track your cross-functional remediation ROI, monitor supported AI compliance frameworks, and maintain an immutable <strong className="text-white font-medium">21 CFR Part 11 Audit Trail</strong> to streamline 510(k) clearance.
                             </p>
                             
                             {/* Premium Impact Metrics */}
@@ -636,10 +636,10 @@ export default function TeamPage() {
                                 
                                 <h3 className="text-xl font-bold text-slate-900 mb-2 tracking-tight flex items-center gap-2">
                                     <Shield className="w-6 h-6 text-emerald-500" />
-                                    Active Compliance Frameworks
+                                    AI Framework Capabilities
                                 </h3>
                                 <p className="text-sm text-slate-500 mb-8 max-w-lg">
-                                    Select the regulatory standards your team is currently tracking against. TraceBridge AI will automatically cross-reference these during gap analysis.
+                                    TraceBridge AI is continuously trained on the following core frameworks. When you ingest a Q-Sub, the engine automatically extracts the required standards for your analysis.
                                 </p>
                                 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -656,7 +656,7 @@ export default function TeamPage() {
                                             <div>
                                                 <p className={`text-sm font-bold ${framework.active ? 'text-emerald-900' : 'text-slate-700'}`}>{framework.name}</p>
                                                 <p className={`text-[10px] uppercase mt-1 font-semibold tracking-wider ${framework.active ? 'text-emerald-600' : 'text-slate-400'}`}>
-                                                    {framework.active ? 'Monitoring Active' : 'Disabled'}
+                                                    {framework.active ? 'AI Model Trained' : 'Request Early Access'}
                                                 </p>
                                             </div>
                                             <div className={`w-11 h-6 rounded-full flex items-center px-1 transition-colors duration-300 ${framework.active ? 'bg-emerald-500 justify-end shadow-inner' : 'bg-slate-200 justify-start'}`}>
