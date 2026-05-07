@@ -293,8 +293,8 @@ RESPOND IN EXACTLY THIS JSON FORMAT (you MUST return a JSON array containing one
         }
     }
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${GEMINI_API_KEY}`;
-    console.log(`[DEBUG] Using v1beta API endpoint / Model: gemini-1.5-pro`);
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${GEMINI_API_KEY}`;
+    console.log(`[DEBUG] Using v1beta API endpoint / Model: gemini-2.5-pro`);
 
     try {
         const response = await fetchWithTimeout(url, {

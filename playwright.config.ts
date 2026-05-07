@@ -24,6 +24,12 @@ export default defineConfig({
     /* Maximum time each action (e.g. click, fill) can take */
     actionTimeout: 30 * 1000,
   },
+  webServer: {
+    command: 'npm run dev',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !process.env.CI,
+    timeout: 120 * 1000,
+  },
   projects: [
     {
       name: 'chromium',

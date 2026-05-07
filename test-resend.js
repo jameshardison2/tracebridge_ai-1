@@ -1,28 +1,24 @@
-import { Resend } from "resend";
-import dotenv from "dotenv";
+const { Resend } = require('resend');
 
-dotenv.config({ path: ".env.local" });
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend('re_LXuT89Pz_49bUcFzF4W3r6nfoPK1zEp2V');
 
 async function testEmail() {
-    console.log("Testing Resend API with key:", process.env.RESEND_API_KEY ? "Loaded" : "Missing");
-    try {
-        const { data, error } = await resend.emails.send({
-            from: 'TraceBridge AI <noreply@tracebridge.ai>',
-            to: ['james@tracebridge.ai'],
-            subject: 'Test Email Validation',
-            html: '<p>This is a test from the local dev environment.</p>'
-        });
-        
-        if (error) {
-            console.error("Resend API Error:", error);
-        } else {
-            console.log("Email sent successfully!", data);
-        }
-    } catch (e) {
-        console.error("Fatal exception:", e);
+  try {
+    const { data, error } = await resend.emails.send({
+      from: 'TraceBridge AI <noreply@tracebridge.ai>',
+      to: ['james@tracebridge.ai'],
+      subject: 'Test Email from API',
+      html: '<p>If you see this, Resend is working!</p>'
+    });
+
+    if (error) {
+      console.error('Resend Error:', error);
+    } else {
+      console.log('Success:', data);
     }
+  } catch (err) {
+    console.error('Caught Exception:', err);
+  }
 }
 
 testEmail();
