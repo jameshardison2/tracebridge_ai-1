@@ -681,7 +681,7 @@ function ReportsContent() {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        const displayDeviceNameCSV = report.upload.deviceName ? report.upload.deviceName.replace(/demo\s*[-–:]*\s*/ig, '').trim() : "Export";
+        const displayDeviceNameCSV = report.upload.deviceName ? report.upload.deviceName.replace(/demo\s*[-–:]*\s*/ig, '').replace(/^[-–:\s]+/, '').trim() : "Export";
         const filenameDeviceCSV = displayDeviceNameCSV.replace(/[^a-zA-Z0-9]/g, "_").replace(/_+/g, "_");
         a.download = `TraceBridge_${reportTitle.replace(/-/g, '_')}_${filenameDeviceCSV}.csv`;
         a.click();
@@ -794,7 +794,7 @@ function ReportsContent() {
         doc.text(titleString, 14, 60);
         doc.setTextColor(255, 255, 255);
         doc.setFontSize(28);
-        const displayDeviceName = report.upload.deviceName ? report.upload.deviceName.replace(/demo\s*[-–:]*\s*/ig, '').trim() : "Device";
+        const displayDeviceName = report.upload.deviceName ? report.upload.deviceName.replace(/demo\s*[-–:]*\s*/ig, '').replace(/^[-–:\s]+/, '').trim() : "Device";
         const splitTitle = doc.splitTextToSize(displayDeviceName, 150);
         doc.text(splitTitle, 14, 75);
         doc.setFontSize(12);
@@ -944,11 +944,11 @@ function ReportsContent() {
 
         if (activeTemplate === 'executive') {
             doc.addPage();
-            doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
-            doc.rect(14, 14, pageWidth - 28, 8, "F");
+            doc.setFillColor(15, 23, 42); // Dark slate
+            doc.rect(14, 14, pageWidth - 28, 10, "F");
             doc.setTextColor(255, 255, 255);
-            doc.setFontSize(10);
-            doc.text("EXECUTIVE AUDIT SUMMARY", 18, 19);
+            doc.setFontSize(11);
+            doc.text("EXECUTIVE AUDIT SUMMARY (AI SYNTHESIS)", 18, 20.5);
             
             let y = 35;
             doc.setTextColor(15, 23, 42);
@@ -984,23 +984,23 @@ function ReportsContent() {
         } else if (activeTemplate === '510k') {
             // 510(k) Traceability Matrix (Data Table)
             doc.addPage();
-            doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
-            doc.rect(14, 14, pageWidth - 28, 8, "F");
+            doc.setFillColor(15, 23, 42); // Dark slate
+            doc.rect(14, 14, pageWidth - 28, 10, "F");
             doc.setTextColor(255, 255, 255);
-            doc.setFontSize(10);
-            doc.text("REQUIREMENT TRACEABILITY MATRIX", 18, 19);
+            doc.setFontSize(11);
+            doc.text("REQUIREMENT TRACEABILITY MATRIX (AI ANALYSIS)", 18, 20.5);
             
-            let y = 30;
-            doc.setTextColor(100, 116, 139);
+            let y = 28;
+            doc.setFillColor(248, 250, 252); // Very light slate
+            doc.rect(14, y, pageWidth - 28, 8, "F");
+            doc.setTextColor(71, 85, 105);
             doc.setFontSize(8);
-            doc.text("STANDARD §", 14, y);
-            doc.text("REQUIREMENT", 55, y);
-            doc.text("STATUS", 127, y);
-            doc.text("EVIDENCE LOCATOR", 155, y);
-            y += 4;
-            doc.setDrawColor(226, 232, 240);
-            doc.line(14, y, pageWidth - 14, y);
-            y += 6;
+            y += 5.5;
+            doc.text("STANDARD §", 16, y);
+            doc.text("REQUIREMENT", 54, y);
+            doc.text("STATUS", 133, y);
+            doc.text("EVIDENCE LOCATOR", 162, y);
+            y += 8;
 
             for (let i = 0; i < uniqueGaps.length; i++) {
                 const item = uniqueGaps[i];
@@ -1016,33 +1016,44 @@ function ReportsContent() {
                 doc.setFontSize(8);
                 
                 // Standard
-                const stdLines = doc.splitTextToSize(`${item.standard} § ${item.section}`, 38);
-                doc.text(stdLines, 14, y);
+                const stdLines = doc.splitTextToSize(`${item.standard} § ${item.section}`, 35);
+                doc.text(stdLines, 16, y);
                 
                 // Requirement
-                const reqLines = doc.splitTextToSize(item.requirement, 70);
-                doc.text(reqLines, 55, y);
+                const reqLines = doc.splitTextToSize(item.requirement, 75);
+                doc.text(reqLines, 54, y);
                 
                 // Status
-                let statusColor = [100, 116, 139];
-                if (item.status === 'compliant') statusColor = [16, 185, 129];
-                else if (item.status === 'gap_detected') statusColor = [239, 68, 68];
-                else statusColor = [245, 158, 11];
-                
-                doc.setFillColor(statusColor[0], statusColor[1], statusColor[2]);
-                doc.rect(127, y - 3, 2, 2, "F");
-                doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
-                doc.text(item.status.toUpperCase().replace('_', ' '), 131, y);
+                if (item.status === 'gap_detected') {
+                    doc.setFillColor(254, 226, 226); 
+                    doc.roundedRect(131, y - 4, 25, 6, 1, 1, "F");
+                    doc.setTextColor(185, 28, 28); 
+                    doc.text("GAP DETECTED", 133, y);
+                } else if (item.status === 'compliant') {
+                    doc.setFillColor(209, 250, 229); 
+                    doc.roundedRect(131, y - 4, 21, 6, 1, 1, "F");
+                    doc.setTextColor(4, 120, 87); 
+                    doc.text("COMPLIANT", 133, y);
+                } else {
+                    doc.setFillColor(254, 243, 199); 
+                    doc.roundedRect(131, y - 4, 18, 6, 1, 1, "F");
+                    doc.setTextColor(180, 83, 9); 
+                    doc.text("REVIEW", 133, y);
+                }
                 
                 // Evidence
-                doc.setTextColor(100, 116, 139);
-                const cite = item.citations?.[0]?.source?.replace(/_v\d+/i, '') || (item.status === 'gap_detected' ? "MISSING" : report.upload.documents?.[0]?.fileName?.replace(/_v\d+/i, '') || "Source_Document.pdf");
-                const evLines = doc.splitTextToSize(cite, 40);
-                doc.text(evLines, 155, y);
+                const cite = item.citations?.[0]?.source?.replace(/_v\d+/i, '') || (item.status === 'gap_detected' ? "DOCUMENTATION MISSING" : report.upload.documents?.[0]?.fileName?.replace(/_v\d+/i, '') || "Source_Document.pdf");
+                const evLines = doc.splitTextToSize(cite, 34);
+                if (item.status === 'gap_detected') {
+                    doc.setTextColor(239, 68, 68);
+                } else {
+                    doc.setTextColor(100, 116, 139);
+                }
+                doc.text(evLines, 162, y);
                 
                 const blockHeight = Math.max(stdLines.length, reqLines.length, evLines.length) * 4 + 4;
                 y += blockHeight;
-                doc.setDrawColor(241, 245, 249);
+                doc.setDrawColor(226, 232, 240);
                 doc.line(14, y - 2, pageWidth - 14, y - 2);
             }
         } else if (activeTemplate === 'complaint') {
@@ -1196,7 +1207,7 @@ function ReportsContent() {
 
                 y += aiLines.length * 5 + 6;
                 doc.setFillColor(254, 226, 226);
-                doc.rect(14, y, 80, 6, "F");
+                doc.rect(14, y, 92, 6, "F");
                 doc.setFillColor(239, 68, 68);
                 doc.rect(16, y + 1.5, 3, 3, "F");
                 doc.setTextColor(185, 28, 28);
@@ -1232,7 +1243,7 @@ function ReportsContent() {
                     doc.setDrawColor(203, 213, 225);
                     doc.roundedRect(14, y, 140, 25, 3, 3, "FD");
                     doc.setFillColor(100, 116, 139);
-                    doc.roundedRect(18, y + 4, 65, 6, 1, 1, "F");
+                    doc.roundedRect(18, y + 4, 78, 6, 1, 1, "F");
                     doc.setTextColor(255, 255, 255);
                     doc.setFontSize(8);
                     doc.text("AI AUTONOMOUS MITIGATIONS DISABLED", 21, y + 8.2);
