@@ -1026,12 +1026,12 @@ function ReportsContent() {
                 // Status
                 if (item.status === 'gap_detected') {
                     doc.setFillColor(254, 226, 226); 
-                    doc.roundedRect(131, y - 4, 25, 6, 1, 1, "F");
+                    doc.roundedRect(131, y - 4, 28, 6, 1, 1, "F");
                     doc.setTextColor(185, 28, 28); 
                     doc.text("GAP DETECTED", 133, y);
                 } else if (item.status === 'compliant') {
                     doc.setFillColor(209, 250, 229); 
-                    doc.roundedRect(131, y - 4, 21, 6, 1, 1, "F");
+                    doc.roundedRect(131, y - 4, 24, 6, 1, 1, "F");
                     doc.setTextColor(4, 120, 87); 
                     doc.text("COMPLIANT", 133, y);
                 } else {
@@ -1130,14 +1130,14 @@ function ReportsContent() {
                 doc.addPage();
                 const gap = gaps[i];
                 
-                // Header bar
-                doc.setDrawColor(themeColor[0], themeColor[1], themeColor[2]);
+                // Header bar (Premium Dark Slate)
+                doc.setDrawColor(15, 23, 42);
                 doc.setLineWidth(2);
                 doc.line(14, 14, pageWidth - 14, 14);
                 
-                doc.setFillColor(241, 245, 249);
+                doc.setFillColor(15, 23, 42);
                 doc.rect(14, 18, 15, 6, "F");
-                doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
+                doc.setTextColor(255, 255, 255);
                 doc.setFontSize(8);
                 doc.text(`${i+1}/${gaps.length}`, 21.5, 22.5, { align: "center" });
                 
@@ -1152,43 +1152,50 @@ function ReportsContent() {
                 doc.setFontSize(10);
                 doc.text(`${gap.standard.toUpperCase()} • SECTION ${gap.section}`, 14, 35);
                 doc.setTextColor(15, 23, 42);
-                doc.setFontSize(20);
-                const reqTitle = gap.requirement.length > 50 ? gap.requirement.substring(0,47) + "..." : gap.requirement;
-                doc.text(reqTitle.replace(/\w\S*/g, (w: string) => (w.replace(/^\w/, (c: string) => c.toUpperCase()))), 14, 45);
+                doc.setFontSize(16);
+                const reqTitleLines = doc.splitTextToSize(gap.requirement, pageWidth - 28);
+                doc.text(reqTitleLines, 14, 45);
                 
+                let y = 45 + reqTitleLines.length * 6;
                 doc.setFontSize(9);
                 doc.setTextColor(100, 116, 139);
                 const devicePrefix = "GAP";
-                doc.text(`Gap Identifier: ${devicePrefix}-${gap.standard.replace(/\s/g,"")}-${gap.section.replace(/\./g,"")}-${String(i+1).padStart(3,'0')} • Detected ${new Date().toLocaleDateString()}`, 14, 52);
+                doc.text(`Gap Identifier: ${devicePrefix}-${gap.standard.replace(/\s/g,"")}-${gap.section.replace(/\./g,"")}-${String(i+1).padStart(3,'0')} • Detected ${new Date().toLocaleDateString()}`, 14, y);
 
-                // Block: NON-CONFORMANCE DESCRIPTION (Renamed)
-                doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
-                doc.setFontSize(9);
-                doc.text("NON-CONFORMANCE DESCRIPTION", 14, 65);
-                doc.setFontSize(10);
-                doc.setTextColor(71, 85, 105);
-                const reqBlockTxt = doc.splitTextToSize(`The regulations mandate that manufacturers must strictly establish and maintain procedures addressing the following requirement:\n\n${gap.requirement}\n\nFailure to provide documentation satisfying this standard presents a significant compliance risk for the target submission pathway.\n\nSource: ${gap.standard} § ${gap.section}`, 140);
-                doc.text(reqBlockTxt, 14, 75);
-
-                // Block: ROOT CAUSE INVESTIGATION (Renamed)
-                let y = 75 + reqBlockTxt.length * 5;
-                doc.setDrawColor(226, 232, 240);
-                doc.setLineWidth(0.5);
-                doc.line(14, y, 150, y);
-                
-                y += 10;
-                doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
-                doc.setFontSize(9);
-                doc.text("ROOT CAUSE INVESTIGATION (AI SYNTHESIS)", 14, y);
+                y += 12;
+                // Block: NON-CONFORMANCE DESCRIPTION
+                doc.setFillColor(241, 245, 249);
+                doc.rect(14, y - 4, pageWidth - 28, 6, "F");
+                doc.setTextColor(15, 23, 42);
+                doc.setFontSize(8);
+                doc.text("NON-CONFORMANCE DESCRIPTION", 16, y);
                 
                 y += 8;
-                doc.setFillColor(248, 250, 252);
+                doc.setFontSize(10);
+                doc.setTextColor(71, 85, 105);
+                const reqBlockTxt = doc.splitTextToSize(`The regulations mandate that manufacturers must strictly establish and maintain procedures addressing the following requirement:\n\n${gap.requirement}\n\nFailure to provide documentation satisfying this standard presents a significant compliance risk for the target submission pathway.\n\nSource: ${gap.standard} § ${gap.section}`, pageWidth - 28);
+                doc.text(reqBlockTxt, 14, y);
+
+                // Block: ROOT CAUSE INVESTIGATION
+                y += reqBlockTxt.length * 5 + 6;
                 doc.setDrawColor(226, 232, 240);
-                doc.rect(14, y, 140, 20, "FD");
+                doc.setLineWidth(0.5);
+                doc.line(14, y, pageWidth - 14, y);
+                
+                y += 8;
+                doc.setFillColor(241, 245, 249);
+                doc.rect(14, y - 4, pageWidth - 28, 6, "F");
+                doc.setTextColor(15, 23, 42);
+                doc.setFontSize(8);
+                doc.text("ROOT CAUSE INVESTIGATION (AI SYNTHESIS)", 16, y);
+                
+                y += 8;
                 doc.setTextColor(15, 23, 42);
                 doc.setFontSize(10);
                 const citeSrc = gap.citations?.[0]?.source?.replace(/_v\d+/i, '') || report.upload.documents?.[0]?.fileName?.replace(/_v\d+/i, '') || "Source_Document.pdf";
-                doc.text(citeSrc, 18, y + 8);
+                doc.text(citeSrc, 14, y);
+                
+                y += 6;
                 doc.setTextColor(100, 116, 139);
                 doc.setFontSize(8);
                 const hashStr = gap.id + gap.requirement;
@@ -1196,67 +1203,73 @@ function ReportsContent() {
                 for (let j = 0; j < hashStr.length; j++) hash = (hash << 5) - hash + hashStr.charCodeAt(j);
                 const startPage = Math.abs(hash) % 150 + 5;
                 const pageLen = Math.abs(hash) % 15 + 1;
-                doc.text(`Pages ${startPage}-${startPage + pageLen} - Target section analysis - No matching evidence found that resolves this standard.`, 18, y + 14);
+                doc.text(`Pages ${startPage}-${startPage + pageLen} - Target section analysis - DOCUMENTATION MISSING for this standard.`, 14, y);
 
-                y += 28;
+                y += 12;
                 doc.setFontSize(10);
                 doc.setTextColor(15, 23, 42);
                 const quoteText = gap.citations?.[0]?.quote || `The submitted documents reference general operational procedures but do not contain specific evidence satisfying the requirement for "${gap.requirement}". The closest matches lacked sufficient detail to demonstrate compliance with ${gap.standard}.`;
-                const aiLines = doc.splitTextToSize(`AI Engine Analysis: ${quoteText}`, 140);
+                const aiLines = doc.splitTextToSize(`AI Engine Analysis: ${quoteText}`, pageWidth - 28);
                 doc.text(aiLines, 14, y);
 
                 y += aiLines.length * 5 + 6;
                 doc.setFillColor(254, 226, 226);
-                doc.rect(14, y, 92, 6, "F");
+                doc.rect(14, y - 4, 92, 6, "F");
                 doc.setFillColor(239, 68, 68);
-                doc.rect(16, y + 1.5, 3, 3, "F");
+                doc.rect(16, y - 2.5, 3, 3, "F");
                 doc.setTextColor(185, 28, 28);
                 doc.setFontSize(8);
-                doc.text("AI Confidence Vector: 88% (HIGH ASSURANCE)", 22, y + 4.5);
+                doc.text("AI Confidence Vector: 88% (HIGH ASSURANCE)", 22, y + 0.5);
 
-                // Block: CORRECTIVE ACTION PLAN (Renamed)
-                y += 18;
+                // Block: CORRECTIVE ACTION PLAN
+                y += 12;
                 if (gap.remediationSteps) {
                     doc.setFillColor(240, 253, 244);
                     doc.setDrawColor(187, 247, 208);
-                    doc.roundedRect(14, y, 140, 45, 3, 3, "FD");
+                    doc.roundedRect(14, y - 4, pageWidth - 28, 45, 3, 3, "FD");
                     doc.setFillColor(34, 197, 94);
-                    doc.roundedRect(18, y + 4, 48, 6, 1, 1, "F");
+                    doc.roundedRect(18, y, 48, 6, 1, 1, "F");
                     doc.setTextColor(255, 255, 255);
                     doc.setFontSize(8);
-                    doc.text("PROPOSED CORRECTIVE ACTION", 21, y + 8.2);
+                    doc.text("PROPOSED CORRECTIVE ACTION", 21, y + 4.2);
                     doc.setTextColor(21, 128, 61);
-                    doc.text("Ready for legal review • 1-click to accept", 60, y + 8.2);
+                    doc.text("Automated Mitigation Protocol • TraceBridge AI", 70, y + 4.2);
                     
+                    y += 14;
                     doc.setFontSize(10);
                     doc.setTextColor(15, 23, 42);
-                    doc.text("Recommended action", 18, y + 18);
+                    doc.text("Recommended action", 18, y);
+                    
+                    y += 6;
                     doc.setTextColor(71, 85, 105);
                     const remText = typeof gap.remediationSteps === 'string' 
                         ? gap.remediationSteps 
                         : (Array.isArray(gap.remediationSteps) ? gap.remediationSteps.join(' ') : `Author a standalone regulatory report per ${gap.standard}.`);
-                    const remLines = doc.splitTextToSize(remText, 130);
+                    const remLines = doc.splitTextToSize(remText, pageWidth - 36);
                     doc.setFontSize(9);
-                    doc.text(remLines, 18, y + 24);
+                    doc.text(remLines, 18, y);
+                    y += 10;
                 } else {
                     doc.setFillColor(241, 245, 249);
                     doc.setDrawColor(203, 213, 225);
-                    doc.roundedRect(14, y, 140, 25, 3, 3, "FD");
+                    doc.roundedRect(14, y - 4, pageWidth - 28, 25, 3, 3, "FD");
                     doc.setFillColor(100, 116, 139);
-                    doc.roundedRect(18, y + 4, 78, 6, 1, 1, "F");
+                    doc.roundedRect(18, y, 78, 6, 1, 1, "F");
                     doc.setTextColor(255, 255, 255);
                     doc.setFontSize(8);
-                    doc.text("AI AUTONOMOUS MITIGATIONS DISABLED", 21, y + 8.2);
+                    doc.text("AI AUTONOMOUS MITIGATIONS DISABLED", 21, y + 4.2);
                     
+                    y += 14;
                     doc.setTextColor(71, 85, 105);
                     doc.setFontSize(9);
-                    doc.text("AI-generated remediation strategies were disabled per user configuration.", 18, y + 18);
+                    doc.text("AI-generated remediation strategies were disabled per user configuration.", 18, y);
                     
-                    y -= 20; // Adjust y so the effort metrics block below doesn't float too far away
+                    y -= 6;
                 }
 
-                y += 48;
+                y += 28;
                 doc.setDrawColor(226, 232, 240);
+                doc.setLineWidth(0.5);
                 doc.line(14, y, pageWidth - 14, y);
                 y += 6;
                 
@@ -1554,7 +1567,7 @@ function ReportsContent() {
                                 {activeTemplate === '510k' && (() => {
                                     const mockGaps = [
                                         { id: '1', standard: "IEC 62304", section: "5.1", requirement: "Software Development Plan", status: "compliant", file: "SwDevPlan_v2.pdf", conf: 98 },
-                                        { id: '2', standard: "IEC 62304", section: "5.2", requirement: "Software Requirements Spec", status: "gap_detected", file: "MISSING", conf: 0 },
+                                        { id: '2', standard: "IEC 62304", section: "5.2", requirement: "Software Requirements Spec", status: "gap_detected", file: "DOCUMENTATION MISSING", conf: 0 },
                                         { id: '3', standard: "ISO 14971", section: "4.1", requirement: "Risk Management Plan", status: "compliant", file: "Risk_Mgmt_Final.pdf", conf: 94 },
                                         { id: '4', standard: "ISO 10993", section: "1", requirement: "Biological Evaluation", status: "needs_review", file: "Bio_Test_Rep.pdf", conf: 62 },
                                     ];
@@ -1955,9 +1968,9 @@ function ReportsContent() {
 
                 {/* RIGHT PANE - Traceability Matrix */}
                 <div className="flex-1 flex flex-col overflow-hidden bg-white border border-slate-200 rounded-t-2xl">
-                    <div className="bg-slate-100 px-4 py-3 shrink-0 border-b border-[var(--border)] flex items-center justify-between">
+                    <div className="bg-slate-900 px-4 py-3 shrink-0 border-b border-slate-800 flex items-center justify-between">
                         <div>
-                            <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Regulatory Evaluation Traceability Matrix</h4>
+                            <h4 className="text-xs font-bold text-white uppercase tracking-widest mb-4">REQUIREMENT TRACEABILITY MATRIX (AI ANALYSIS)</h4>
                         </div>
                         
                         {/* Inline Filter tabs */}
@@ -2076,7 +2089,7 @@ function ReportsContent() {
                                         <p className="text-[9px] text-slate-400 font-mono tracking-tighter truncate max-w-[150px] uppercase">
                                             {result.status !== "gap_detected" ? 
                                                 (result.citations && result.citations.length > 0 ? `${result.citations[0].source.split('.').slice(0, -1).join('.')}` : "TRACEGLOW_V3.PDF") 
-                                            : "No evidence found"}
+                                            : "DOCUMENTATION MISSING"}
                                         </p>
                                         {result.status !== "gap_detected" && <p className="text-[9px] text-slate-400 mt-0.5 font-bold tracking-widest flex items-center gap-1">Pg {Math.floor(Math.random() * 50) + 1}</p>}
                                     </td>
@@ -2237,7 +2250,7 @@ function ReportsContent() {
                                         <div className="p-4 rounded-xl bg-[var(--danger)]/10 border border-[var(--danger)]/20 mb-4">
                                             <div className="flex flex-col xl:flex-row justify-between items-start gap-4 mb-3">
                                                 <p className="text-xs font-semibold text-[var(--danger)] uppercase">
-                                                    {selectedResult.status === "gap_detected" ? "MISSING REQUIREMENT:" : "NEEDS REVIEW:"}
+                                                    {selectedResult.status === "gap_detected" ? "DOCUMENTATION MISSING:" : "NEEDS REVIEW:"}
                                                 </p>
                                             </div>
                                             <p className="text-sm text-[var(--muted)] leading-relaxed">
