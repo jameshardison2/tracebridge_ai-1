@@ -24,23 +24,28 @@ import {
     Network,
 } from "lucide-react";
 
-const navItems = [
-    // 1. Home Base
+type NavItem = {
+    href?: string;
+    label?: string;
+    icon?: any;
+    isDivider?: boolean;
+    heading?: string;
+};
+
+const navItems: NavItem[] = [
     { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
     
-    // 2. Setup Phase
-    { href: "/dashboard/team", label: "Workspace & Team", icon: Users },
+    { isDivider: true, heading: "Core Workflow" },
+    { href: "/dashboard/upload", label: "New Analysis", icon: Upload },
+    { href: "/dashboard/results", label: "AI Intelligence", icon: FileSearch },
+    { href: "/dashboard/pipeline", label: "Remediation Pipeline", icon: Kanban },
     
-    // 3. Action Phase (The core flow)
-    { href: "/dashboard/upload", label: "1. Ingest Q-Sub", icon: Upload },
-    { href: "/dashboard/pipeline", label: "2. Alignment Pipeline", icon: Kanban },
-    { href: "/dashboard/results", label: "3. Alignment Intelligence", icon: FileSearch },
-    
-    // 4. Output Phase
+    { isDivider: true, heading: "Outputs & Tracking" },
     { href: "/dashboard/traceability", label: "Traceability Matrix", icon: Network },
-    { href: "/dashboard/reports", label: "Alignment Reports", icon: FileText },
+    { href: "/dashboard/reports", label: "Saved Reports", icon: FileText },
     
-    // 5. Admin & Feedback
+    { isDivider: true, heading: "Settings & Management" },
+    { href: "/dashboard/team", label: "Workspace & Team", icon: Users },
     { href: "/dashboard/logs", label: "System Logs", icon: Server },
     { href: "/dashboard/survey", label: "Validation Survey", icon: ClipboardList },
 ];
@@ -153,22 +158,32 @@ export default function DashboardLayout({
                     </button>
                 </div>
 
-                <nav className="flex-1 p-4 space-y-2">
-                    {navItems.map((item) => {
+                <nav className="flex-1 p-4 space-y-1">
+                    {navItems.map((item, index) => {
+                        if (item.isDivider) {
+                            return (
+                                <div key={`divider-${index}`} className={`pt-4 pb-1 ${isCollapsed ? 'hidden' : 'block'}`}>
+                                    <p className="px-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                                        {item.heading}
+                                    </p>
+                                </div>
+                            );
+                        }
+
                         const isActive =
                             pathname === item.href ||
-                            (item.href !== "/dashboard" && pathname.startsWith(item.href));
+                            (item.href !== "/dashboard" && pathname.startsWith(item.href!));
                         return (
                             <Link
                                 key={item.href}
-                                href={item.href}
+                                href={item.href!}
                                 title={isCollapsed ? item.label : ""}
-                                className={`flex items-center gap-3 rounded-xl transition-all ${isCollapsed ? 'justify-center p-3' : 'px-4 py-3'} text-sm font-medium ${isActive
+                                className={`flex items-center gap-3 rounded-xl transition-all ${isCollapsed ? 'justify-center p-3' : 'px-4 py-2.5'} text-sm font-medium ${isActive
                                     ? "bg-[var(--primary)]/10 text-[var(--primary)] font-bold shadow-sm"
                                     : "text-[var(--muted)] hover:text-[var(--primary)] hover:bg-[var(--card-hover)]"
                                     }`}
                             >
-                                <item.icon className="w-5 h-5 shrink-0" />
+                                {item.icon && <item.icon className="w-5 h-5 shrink-0" />}
                                 {!isCollapsed && <span className="truncate">{item.label}</span>}
                             </Link>
                         );
