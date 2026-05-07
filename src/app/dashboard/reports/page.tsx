@@ -760,14 +760,25 @@ function ReportsContent() {
         doc.rect(0, 0, pageWidth, pageHeight * 0.45, "F");
         
         // Brand logo
-        doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
-        doc.rect(14, 20, 8, 8, "F");
+        const img = new Image();
+        img.src = '/brand/icon_transparent.png';
+        try {
+            await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = reject;
+            });
+            doc.addImage(img, 'PNG', 14, 18, 10, 10);
+        } catch (e) {
+            doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
+            doc.rect(14, 20, 8, 8, "F");
+        }
+        
         doc.setTextColor(255, 255, 255);
         doc.setFontSize(16);
         doc.text("TraceBridge", 26, 26);
         doc.setFontSize(8);
         doc.setTextColor(156, 163, 175);
-        doc.text("AI COMPLIANCE COPILOT", 26, 30);
+        doc.text("ENTERPRISE COMPLIANCE", 26, 30);
         
         // Confidential badge
         doc.setDrawColor(themeColor[0], themeColor[1], themeColor[2]);
@@ -836,11 +847,13 @@ function ReportsContent() {
 
         // Stats List
         let sy = 160;
+        const pendingReview = report.summary.total - report.summary.compliant - report.summary.gaps;
         const stats = [
             { l: "Compliant requirements", v: report.summary.compliant.toString(), c: [16, 185, 129] },
             { l: "Critical gaps detected", v: report.summary.gaps.toString(), c: [239, 68, 68] },
+            { l: "Items pending review", v: pendingReview > 0 ? pendingReview.toString() : "0", c: [245, 158, 11] },
             { l: "Total requirements evaluated", v: report.summary.total.toString(), c: [148, 163, 184] },
-            { l: "Est. remediation effort", v: "4-8 weeks", c: [245, 158, 11] }
+            { l: "Est. remediation effort", v: "4-8 weeks", c: [99, 102, 241] }
         ];
         stats.forEach(s => {
             doc.setFillColor(s.c[0], s.c[1], s.c[2]);
@@ -943,7 +956,7 @@ function ReportsContent() {
             y += 8;
             doc.setFontSize(10);
             doc.setTextColor(71, 85, 105);
-            const execSummary = `TraceBridge AI has evaluated the ${report.upload.deviceName} submission against ${report.upload.standards.join(', ')}. The system detected ${report.summary.gaps} critical non-conformances across ${report.summary.total} evaluated requirements, yielding an overall compliance score of ${Math.round((report.summary.compliant / report.summary.total) * 100)}%. Immediate remediation is required for identified critical gaps to prevent regulatory delays.`;
+            const execSummary = `TraceBridge has evaluated the ${report.upload.deviceName} submission against ${report.upload.standards.join(', ')}. The system detected ${report.summary.gaps} critical non-conformances across ${report.summary.total} evaluated requirements, yielding an overall compliance score of ${Math.round((report.summary.compliant / report.summary.total) * 100)}%. Immediate remediation is required for identified critical gaps to prevent regulatory delays.`;
             const summaryLines = doc.splitTextToSize(execSummary, pageWidth - 28);
             doc.text(summaryLines, 14, y);
             
@@ -1091,7 +1104,8 @@ function ReportsContent() {
                 y += desc.length * 5 + 4;
                 doc.setTextColor(100, 116, 139);
                 doc.setFontSize(9);
-                const inv = doc.splitTextToSize(`Post-Market Impact: Adverse event similar to the missing mitigation for ${gap.requirement}. Mitigation strategies must explicitly address ${gap.standard} § ${gap.section}.`, pageWidth - 28);
+                const invText = `Post-Market Impact: Adverse event similar to the missing mitigation for ${gap.requirement}`.replace(/\.+$/, '') + `. Mitigation strategies must explicitly address ${gap.standard} § ${gap.section}.`;
+                const inv = doc.splitTextToSize(invText, pageWidth - 28);
                 doc.text(inv, 14, y);
                 
                 y += inv.length * 5 + 10;
@@ -1153,7 +1167,7 @@ function ReportsContent() {
                 y += 10;
                 doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
                 doc.setFontSize(9);
-                doc.text("ROOT CAUSE INVESTIGATION (AI ANALYSIS)", 14, y);
+                doc.text("ROOT CAUSE INVESTIGATION", 14, y);
                 
                 y += 8;
                 doc.setFillColor(248, 250, 252);
@@ -1176,7 +1190,7 @@ function ReportsContent() {
                 doc.setFontSize(10);
                 doc.setTextColor(15, 23, 42);
                 const quoteText = gap.citations?.[0]?.quote || `The submitted documents reference general operational procedures but do not contain specific evidence satisfying the requirement for "${gap.requirement}". The closest matches lacked sufficient detail to demonstrate compliance with ${gap.standard}.`;
-                const aiLines = doc.splitTextToSize(`AI Analysis: ${quoteText}`, 140);
+                const aiLines = doc.splitTextToSize(`Platform Analysis: ${quoteText}`, 140);
                 doc.text(aiLines, 14, y);
 
                 y += aiLines.length * 5 + 6;
@@ -1186,7 +1200,7 @@ function ReportsContent() {
                 doc.rect(16, y + 1.5, 3, 3, "F");
                 doc.setTextColor(185, 28, 28);
                 doc.setFontSize(8);
-                doc.text("AI Confidence: 88% • High", 22, y + 4.5);
+                doc.text("Confidence Score: 88% • High", 22, y + 4.5);
 
                 // Block: CORRECTIVE ACTION PLAN (Renamed)
                 y += 18;
@@ -1220,32 +1234,32 @@ function ReportsContent() {
                     doc.roundedRect(18, y + 4, 45, 6, 1, 1, "F");
                     doc.setTextColor(255, 255, 255);
                     doc.setFontSize(8);
-                    doc.text("AI MITIGATIONS DISABLED", 21, y + 8.2);
+                    doc.text("MITIGATIONS DISABLED", 21, y + 8.2);
                     
                     doc.setTextColor(71, 85, 105);
                     doc.setFontSize(9);
-                    doc.text("AI-generated remediation strategies were omitted per user configuration.", 18, y + 18);
+                    doc.text("Automated remediation strategies were omitted per user configuration.", 18, y + 18);
                     
                     y -= 20; // Adjust y so the effort metrics block below doesn't float too far away
                 }
 
                 y += 48;
                 doc.setDrawColor(226, 232, 240);
-                doc.line(14, y, 150, y);
+                doc.line(14, y, pageWidth - 14, y);
                 y += 6;
                 
                 doc.setFontSize(8);
                 doc.setTextColor(148, 163, 184);
-                doc.text("EFFORT (INDUSTRY AVG)", 18, y);
-                doc.text("COMPLEXITY", 65, y);
-                doc.text("OWNER (SUGGESTED)", 105, y);
-                doc.text("Industry avg, not quote", 150, y, { align: "right" });
+                doc.text("EFFORT (INDUSTRY AVG)", 14, y);
+                doc.text("COMPLEXITY", 70, y);
+                doc.text("OWNER (SUGGESTED)", 120, y);
+                doc.text("Industry avg, not quote", pageWidth - 14, y, { align: "right" });
                 
                 doc.setTextColor(15, 23, 42);
                 doc.setFontSize(10);
-                doc.text("6-10 weeks", 18, y + 5);
-                doc.text("HIGH • doc + review", 65, y + 5);
-                doc.text("RA + QE lead", 105, y + 5);
+                doc.text("6-10 weeks", 14, y + 5);
+                doc.text("HIGH • doc + review", 70, y + 5);
+                doc.text("RA + QE lead", 120, y + 5);
                 
                 // Footer handled globally
             }
@@ -1260,7 +1274,7 @@ function ReportsContent() {
             doc.setPage(i);
             doc.setTextColor(148, 163, 184);
             doc.setFontSize(8);
-            doc.text(`TraceBridge AI • Generated ${new Date().toLocaleDateString()}`, 14, pageHeight - 10);
+            doc.text(`TraceBridge • Generated ${new Date().toLocaleDateString()}`, 14, pageHeight - 10);
             doc.text(`${i - 1} / ${totalPages - 1}`, pageWidth - 14, pageHeight - 10, { align: "right" });
         }
 
@@ -1527,99 +1541,77 @@ function ReportsContent() {
                                 {/* Preview Dynamic Rendering */}
                                 {activeTemplate === '510k' && (() => {
                                     const mockGaps = [
-                                        { id: '1', standard: "IEC 62304", section: "5.1", requirement: "Software Development Plan", status: "compliant" },
-                                        { id: '2', standard: "IEC 62304", section: "5.2", requirement: "Software Requirements Spec", status: "gap_detected" },
-                                        { id: '3', standard: "ISO 14971", section: "4.1", requirement: "Risk Management Plan", status: "compliant" },
-                                        { id: '4', standard: "ISO 10993", section: "1", requirement: "Biological Evaluation", status: "needs_review" },
-                                        { id: '5', standard: "FDA Cybersecurity", section: "V.A", requirement: "Threat Modeling", status: "gap_detected" },
-                                        { id: '6', standard: "Performance Testing", section: "1", requirement: "Bench Verification", status: "compliant" }
+                                        { id: '1', standard: "IEC 62304", section: "5.1", requirement: "Software Development Plan", status: "compliant", file: "SwDevPlan_v2.pdf", conf: 98 },
+                                        { id: '2', standard: "IEC 62304", section: "5.2", requirement: "Software Requirements Spec", status: "gap_detected", file: "MISSING", conf: 0 },
+                                        { id: '3', standard: "ISO 14971", section: "4.1", requirement: "Risk Management Plan", status: "compliant", file: "Risk_Mgmt_Final.pdf", conf: 94 },
+                                        { id: '4', standard: "ISO 10993", section: "1", requirement: "Biological Evaluation", status: "needs_review", file: "Bio_Test_Rep.pdf", conf: 62 },
                                     ];
-                                    const grouped = mockGaps.reduce((acc: any, gap: any) => {
-                                        const { vol, title } = getESTARSection(gap.standard);
-                                        if (!acc[vol]) acc[vol] = { title, gaps: [] };
-                                        acc[vol].gaps.push(gap);
-                                        return acc;
-                                    }, {});
-
                                     return (
                                         <div className="space-y-4 animate-in fade-in zoom-in-95 duration-300">
-                                            <div className="bg-indigo-900/40 border border-indigo-500/30 p-4 rounded-xl backdrop-blur-sm">
+                                            <div className="bg-indigo-900/40 border border-indigo-500/30 p-4 rounded-xl backdrop-blur-sm relative overflow-hidden">
+                                                <div className="absolute top-0 right-0 p-4 opacity-10"><FileText className="w-16 h-16 text-indigo-400" /></div>
                                                 <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-1 flex items-center gap-2">
-                                                    <FileText className="w-4 h-4" /> eSTAR Mapping Active
+                                                    <div className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></div> eSTAR Mapping Active
                                                 </h3>
-                                                <p className="text-[10px] text-indigo-200/70">
-                                                    Evidence automatically mapped to FDA 510(k) electronic submission volumes.
+                                                <p className="text-[10px] text-indigo-200/70 max-w-[85%] leading-relaxed">
+                                                    Dynamically formatting and packaging 510(k) submission controls into FDA electronic submission volumes.
                                                 </p>
                                             </div>
-                                            
-                                            {Object.keys(grouped).sort().map(vol => (
-                                                <div key={vol} className="border border-slate-700/50 rounded-xl overflow-hidden shadow-inner bg-slate-800/20">
-                                                    <div className="flex items-center justify-between bg-slate-800/90 p-3 border-b border-slate-700/50 cursor-pointer hover:bg-slate-700/80 transition-colors">
-                                                        <div className="flex items-center gap-3">
-                                                            <div className="bg-slate-700 text-slate-300 text-[10px] font-bold px-2 py-0.5 rounded uppercase">{vol}</div>
-                                                            <div className="text-xs font-bold text-white">{grouped[vol].title}</div>
+                                            <div className="space-y-3 mt-4">
+                                                {mockGaps.map((gap, i) => (
+                                                    <div key={i} className="bg-slate-800/60 border border-slate-700/50 p-3.5 rounded-lg flex flex-col gap-2 relative overflow-hidden group hover:border-slate-500 transition-all">
+                                                        <div className="flex items-center justify-between">
+                                                            <div className="flex items-center gap-2">
+                                                                {gap.status === 'compliant' ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> : gap.status === 'gap_detected' ? <AlertTriangle className="w-3.5 h-3.5 text-rose-400" /> : <Shield className="w-3.5 h-3.5 text-amber-400" />}
+                                                                <span className="text-[11px] font-bold text-white">{gap.standard} § {gap.section}</span>
+                                                            </div>
+                                                            <div className="text-[9px] font-bold uppercase tracking-widest text-slate-400 px-2 py-0.5 bg-slate-900/50 rounded border border-slate-700/50">Vol {i+8}</div>
                                                         </div>
-                                                        <div className="text-[10px] text-slate-400">
-                                                            {grouped[vol].gaps.filter((g: any) => g.status === 'compliant').length} / {grouped[vol].gaps.length} Ready
+                                                        <div className="text-[10px] text-slate-400 truncate">{gap.requirement}</div>
+                                                        <div className="flex items-center justify-between mt-1 pt-2 border-t border-slate-700/50">
+                                                            <div className="flex items-center gap-1.5 text-[9px] font-mono text-slate-300">
+                                                                <FileSearch className="w-3 h-3 text-indigo-400" />
+                                                                {gap.file}
+                                                            </div>
+                                                            <div className={`text-[9px] font-bold ${gap.conf > 90 ? 'text-emerald-400' : gap.conf > 50 ? 'text-amber-400' : 'text-rose-400'}`}>
+                                                                CONFIDENCE: {gap.conf}%
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <div className="divide-y divide-slate-700/30">
-                                                        {grouped[vol].gaps.slice(0, 3).map((gap: any) => (
-                                                            <div key={gap.id} className="flex items-start p-3 gap-3 hover:bg-slate-800/40 transition-colors">
-                                                                <div className="mt-0.5 shrink-0">
-                                                                    {gap.status === 'compliant' ? (
-                                                                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                                                                    ) : (
-                                                                        <AlertTriangle className="w-3.5 h-3.5 text-rose-500" />
-                                                                    )}
-                                                                </div>
-                                                                <div className="flex-1 min-w-0">
-                                                                    <div className="text-[10px] font-bold text-slate-300 truncate">{gap.standard} § {gap.section}</div>
-                                                                    <div className="text-[9px] text-slate-500 truncate mt-0.5">{gap.requirement}</div>
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                        {grouped[vol].gaps.length > 3 && (
-                                                            <div className="p-2 text-center bg-slate-800/50">
-                                                                <span className="text-[9px] font-bold text-indigo-400 uppercase tracking-widest">+ {grouped[vol].gaps.length - 3} More</span>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            ))}
+                                                ))}
+                                            </div>
                                         </div>
                                     );
                                 })()}
 
                                 {activeTemplate === 'capa' && (
                                     <div className="space-y-4 animate-in fade-in zoom-in-95 duration-300">
-                                        <div className="flex justify-center mb-6 mt-4 relative">
-                                            <div className="absolute inset-0 bg-rose-500/10 blur-xl rounded-full w-20 h-20 left-1/2 -translate-x-1/2"></div>
-                                            <div className="w-16 h-16 rounded-full bg-rose-500/20 flex flex-col items-center justify-center border border-rose-500/30 relative z-10 shadow-[0_0_15px_rgba(244,63,94,0.3)]">
-                                                <Shield className="w-6 h-6 text-rose-400 mb-1" />
-                                            </div>
+                                        <div className="bg-rose-950/40 border border-rose-500/30 p-4 rounded-xl backdrop-blur-sm relative overflow-hidden">
+                                            <h3 className="text-xs font-bold text-rose-400 uppercase tracking-widest mb-1 flex items-center gap-2">
+                                                <AlertTriangle className="w-4 h-4" /> CAPA Generation Engine
+                                            </h3>
+                                            <p className="text-[10px] text-rose-200/70">
+                                                Compiling major non-conformances into actionable Jira/eQMS tickets.
+                                            </p>
                                         </div>
-                                        <div className="text-center mb-8">
-                                            <div className="h-4 w-48 bg-slate-600/50 rounded mx-auto mb-3"></div>
-                                            <div className="h-2 w-32 bg-slate-600/30 rounded mx-auto"></div>
-                                        </div>
-                                        {[1,2].map(i => (
-                                            <div key={i} className="bg-slate-800/40 border border-slate-700/80 hover:border-rose-500/30 p-4 rounded-xl transition-colors">
-                                                <div className="flex items-center justify-between mb-3">
+                                        {[
+                                            { id: "CAPA-001", req: "Cybersecurity Threat Model", owner: "Engineering", risk: "CRITICAL", mit: "Implement AES-256 encryption for data at rest." },
+                                            { id: "CAPA-002", req: "Usability Formative Testing", owner: "UX Research", risk: "MAJOR", mit: "Schedule 15 user sessions with Target Profile A." }
+                                        ].map((capa, i) => (
+                                            <div key={i} className="bg-slate-800/80 border border-slate-700/50 rounded-xl p-4 shadow-lg relative overflow-hidden group">
+                                                <div className={`absolute left-0 top-0 h-full w-1 ${capa.risk === 'CRITICAL' ? 'bg-rose-500' : 'bg-amber-500'}`}></div>
+                                                <div className="flex justify-between items-center mb-3 ml-2">
                                                     <div className="flex items-center gap-2">
-                                                        <div className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]"></div>
-                                                        <div className="h-3 w-24 bg-rose-500/30 rounded"></div>
+                                                        <span className="text-[10px] font-bold text-slate-300 bg-slate-900/50 px-2 py-0.5 rounded border border-slate-700/50">{capa.id}</span>
+                                                        <span className={`text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded ${capa.risk === 'CRITICAL' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}`}>{capa.risk}</span>
                                                     </div>
-                                                    <div className="h-3 w-12 bg-slate-600/40 rounded-full"></div>
+                                                    <span className="text-[9px] font-bold text-slate-400 uppercase">{capa.owner}</span>
                                                 </div>
-                                                <div className="h-2.5 w-full bg-slate-600/50 rounded mb-2.5"></div>
-                                                <div className="h-2.5 w-11/12 bg-slate-600/50 rounded mb-4"></div>
+                                                <p className="text-[11px] font-bold text-white mb-2 ml-2 leading-tight">{capa.req}</p>
                                                 {engineMitigations && (
-                                                    <div className="bg-slate-900/80 p-3.5 rounded-lg border border-indigo-500/20 mt-3 relative overflow-hidden">
-                                                        <div className="absolute left-0 top-0 h-full w-1 bg-indigo-500/50"></div>
-                                                        <div className="h-2 w-20 bg-indigo-400/40 rounded mb-2.5 ml-2"></div>
-                                                        <div className="h-2 w-full bg-indigo-400/20 rounded mb-2 ml-2"></div>
-                                                        <div className="h-2 w-4/5 bg-indigo-400/20 rounded ml-2"></div>
+                                                    <div className="ml-2 mt-3 p-2.5 bg-indigo-900/20 border border-indigo-500/20 rounded-lg">
+                                                        <div className="text-[8px] font-bold text-indigo-400 uppercase tracking-widest mb-1 flex items-center gap-1"><CheckCircle2 className="w-2.5 h-2.5" /> AI Mitigation</div>
+                                                        <p className="text-[10px] text-indigo-200/80 leading-relaxed">{capa.mit}</p>
                                                     </div>
                                                 )}
                                             </div>
@@ -1628,37 +1620,41 @@ function ReportsContent() {
                                 )}
 
                                 {activeTemplate === 'complaint' && (
-                                    <div className="space-y-5 animate-in fade-in zoom-in-95 duration-300">
-                                        <div className="bg-gradient-to-r from-rose-950/40 to-slate-900/40 border border-rose-500/30 p-5 rounded-xl shadow-[inset_0_1px_0_rgba(244,63,94,0.1)]">
-                                            <h3 className="text-rose-400 font-bold text-xs flex items-center gap-2 mb-3 uppercase tracking-wider"><AlertTriangle className="w-4 h-4" /> Detected Sentinel Events</h3>
-                                            <div className="h-2.5 w-full bg-rose-900/40 rounded mb-2"></div>
-                                            <div className="h-2.5 w-[90%] bg-rose-900/40 rounded mb-2"></div>
-                                            <div className="h-2.5 w-2/3 bg-rose-900/40 rounded"></div>
+                                    <div className="space-y-4 animate-in fade-in zoom-in-95 duration-300">
+                                        <div className="bg-emerald-950/40 border border-emerald-500/30 p-4 rounded-xl backdrop-blur-sm">
+                                            <h3 className="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-1 flex items-center gap-2">
+                                                <Eye className="w-4 h-4" /> Active MAUDE Vector
+                                            </h3>
+                                            <p className="text-[10px] text-emerald-200/70">
+                                                Correlating predicate device adverse events from the FDA database.
+                                            </p>
                                         </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="bg-slate-800/40 p-4 rounded-xl border border-slate-700/80 flex flex-col items-center text-center">
-                                                <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center mb-2">
-                                                    <div className="text-2xl font-black text-amber-400">14</div>
-                                                </div>
-                                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">MAUDE Hits</div>
+                                        <div className="grid grid-cols-2 gap-3 mt-4">
+                                            <div className="bg-slate-800/80 border border-slate-700/50 p-4 rounded-xl flex flex-col items-center justify-center relative overflow-hidden">
+                                                <div className="absolute inset-0 bg-amber-500/5"></div>
+                                                <span className="text-3xl font-black text-amber-400 tracking-tighter">14</span>
+                                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1 z-10">MDR Reports</span>
                                             </div>
-                                            <div className="bg-slate-800/40 p-4 rounded-xl border border-slate-700/80 flex flex-col items-center text-center">
-                                                <div className="w-10 h-10 rounded-full bg-rose-500/10 flex items-center justify-center mb-2">
-                                                    <div className="text-2xl font-black text-rose-400">2</div>
-                                                </div>
-                                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Warning Letters</div>
+                                            <div className="bg-slate-800/80 border border-slate-700/50 p-4 rounded-xl flex flex-col items-center justify-center relative overflow-hidden">
+                                                <div className="absolute inset-0 bg-rose-500/5"></div>
+                                                <span className="text-3xl font-black text-rose-400 tracking-tighter">2</span>
+                                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1 z-10">Recalls</span>
                                             </div>
                                         </div>
-                                        <div className="space-y-3 mt-2">
-                                            {[1,2,3,4].map(i => (
-                                                <div key={i} className="flex p-3.5 gap-4 bg-slate-800/30 rounded-xl border border-slate-700/50 hover:bg-slate-800/50 transition-colors cursor-default">
-                                                    <div className="w-1.5 h-10 bg-gradient-to-b from-amber-400 to-rose-500 rounded-full shrink-0 shadow-[0_0_10px_rgba(245,158,11,0.2)]"></div>
-                                                    <div className="flex-1 space-y-2.5 py-1">
-                                                        <div className="flex justify-between">
-                                                          <div className="h-2.5 w-3/4 bg-slate-500/40 rounded"></div>
-                                                          <div className="h-2.5 w-8 bg-slate-600/30 rounded"></div>
+                                        <div className="space-y-2.5 mt-2">
+                                            {[
+                                                { date: "Oct 2025", desc: "Software malfunction resulted in delayed therapy.", type: "Malfunction" },
+                                                { date: "Aug 2025", desc: "Battery depleted without generating appropriate alarm.", type: "Adverse Event" },
+                                                { date: "Mar 2025", desc: "Device enclosure cracked during normal operation.", type: "Injury" }
+                                            ].map((evt, i) => (
+                                                <div key={i} className="bg-slate-800/60 p-3 border border-slate-700/50 rounded-lg flex items-start gap-3 hover:bg-slate-700/50 transition-colors">
+                                                    <div className={`w-1.5 h-10 rounded-full shrink-0 ${evt.type === 'Injury' ? 'bg-rose-500' : evt.type === 'Adverse Event' ? 'bg-amber-500' : 'bg-indigo-500'}`}></div>
+                                                    <div>
+                                                        <div className="flex justify-between items-center mb-1">
+                                                            <span className="text-[9px] font-bold uppercase text-slate-400">{evt.date}</span>
+                                                            <span className="text-[8px] font-bold text-slate-500 uppercase px-1.5 py-0.5 bg-slate-900 rounded">{evt.type}</span>
                                                         </div>
-                                                        <div className="h-2.5 w-1/2 bg-slate-500/20 rounded"></div>
+                                                        <p className="text-[10px] text-slate-300 leading-snug">{evt.desc}</p>
                                                     </div>
                                                 </div>
                                             ))}
@@ -1667,33 +1663,43 @@ function ReportsContent() {
                                 )}
 
                                 {activeTemplate === 'executive' && (
-                                    <div className="space-y-8 animate-in fade-in zoom-in-95 duration-300 h-full flex flex-col justify-center px-4">
-                                        <div className="flex items-center justify-center gap-4 relative">
-                                            <div className="absolute inset-0 bg-indigo-500/10 blur-2xl rounded-full w-40 h-40 left-1/2 -translate-x-1/2"></div>
-                                            <div className="w-28 h-28 rounded-full border-4 border-indigo-500/80 flex items-center justify-center bg-[#0f172a] relative z-10 shadow-[0_0_30px_rgba(79,70,229,0.2)]">
-                                                <span className="text-4xl font-extrabold text-white tracking-tighter">92%</span>
-                                                <span className="absolute bottom-2 text-[8px] text-indigo-300 font-bold uppercase tracking-widest">Ready</span>
+                                    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300 h-full flex flex-col pb-4">
+                                        <div className="text-center mt-4 relative">
+                                            <div className="absolute inset-0 bg-indigo-500/10 blur-3xl rounded-full w-48 h-48 left-1/2 -translate-x-1/2"></div>
+                                            <div className="w-32 h-32 mx-auto rounded-full border-[6px] border-indigo-500/90 flex flex-col items-center justify-center bg-slate-900 relative z-10 shadow-[0_0_40px_rgba(79,70,229,0.2)]">
+                                                <span className="text-4xl font-extrabold text-white tracking-tighter">92<span className="text-xl">%</span></span>
+                                                <span className="text-[9px] text-indigo-300 font-bold uppercase tracking-widest mt-1">Ready</span>
                                             </div>
                                         </div>
-                                        <div className="space-y-4">
-                                            <div className="flex justify-between items-center bg-slate-800/50 p-4 rounded-xl border border-slate-700/50 backdrop-blur-sm">
-                                                <div className="space-y-2">
-                                                    <div className="h-3 w-28 bg-slate-500/60 rounded"></div>
-                                                    <div className="h-2 w-16 bg-slate-600/40 rounded"></div>
-                                                </div>
-                                                <div className="h-4 w-12 bg-emerald-500/80 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.3)]"></div>
+                                        <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl p-4">
+                                            <div className="flex justify-between items-center mb-2">
+                                                <span className="text-[10px] font-bold text-slate-300 uppercase">Compliance Gap Resolution</span>
+                                                <span className="text-[10px] font-bold text-emerald-400">14 / 16 Metrics</span>
                                             </div>
-                                            <div className="flex justify-between items-center bg-slate-800/50 p-4 rounded-xl border border-slate-700/50 backdrop-blur-sm">
-                                                <div className="space-y-2">
-                                                    <div className="h-3 w-36 bg-slate-500/60 rounded"></div>
-                                                    <div className="h-2 w-20 bg-slate-600/40 rounded"></div>
+                                            <div className="w-full h-2 bg-slate-900 rounded-full overflow-hidden flex">
+                                                <div className="h-full bg-emerald-500 w-[85%]"></div>
+                                                <div className="h-full bg-rose-500 w-[15%]"></div>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-slate-700/50">
+                                                <div>
+                                                    <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">Prepared By</p>
+                                                    <p className="text-[11px] text-white font-medium">{authorName}</p>
+                                                    <p className="text-[9px] text-slate-400">{authorTitle}</p>
                                                 </div>
-                                                <div className="h-4 w-12 bg-rose-500/80 rounded-full shadow-[0_0_10px_rgba(244,63,94,0.3)]"></div>
+                                                <div>
+                                                    <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">Reviewed By</p>
+                                                    <p className="text-[11px] text-white font-medium">{reviewerName}</p>
+                                                    <p className="text-[9px] text-slate-400">{reviewerTitle}</p>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className="mt-8 border-t border-slate-700/80 pt-8 flex justify-between px-6">
-                                            <div className="w-28 h-[2px] bg-slate-600/80 mt-6 relative"><span className="absolute -top-5 left-0 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Sign Here</span></div>
-                                            <div className="w-24 h-[2px] bg-slate-600/80 mt-6 relative"><span className="absolute -top-5 left-0 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Date</span></div>
+                                        <div className="mt-4 flex justify-between px-6">
+                                            <div className="w-28 border-b-2 border-slate-600/80 pb-1 text-center">
+                                                <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Attestation Signature</span>
+                                            </div>
+                                            <div className="w-24 border-b-2 border-slate-600/80 pb-1 text-center">
+                                                <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Date</span>
+                                            </div>
                                         </div>
                                     </div>
                                 )}
