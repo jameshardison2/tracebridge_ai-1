@@ -259,18 +259,20 @@ export default function TeamPage() {
     };
 
     const toggleFramework = (id: string, name: string, available: boolean) => {
+        if (available) return; // Core trained frameworks are locked ON and handled by product code ingestion
+
         setFrameworks(prev => prev.map(f => {
             if (f.id === id) {
                 const newActive = !f.active;
                 
                 // Stealth Vote if turning on an unavailable framework
-                if (!available && newActive) {
+                if (newActive) {
                     handleFeatureVote(name);
                 }
 
                 // Show a realistic UI toast to sell the illusion
-                setSuccess(`${name} added to your AI Alignment pipeline requirements.`);
-                setTimeout(() => setSuccess(""), 3000);
+                setSuccess(`Early Access Request logged for ${name}.`);
+                setTimeout(() => setSuccess(""), 4000);
 
                 return { ...f, active: newActive };
             }
@@ -647,10 +649,10 @@ export default function TeamPage() {
                                         <div 
                                             key={framework.id}
                                             onClick={() => toggleFramework(framework.id, framework.name, framework.available)}
-                                            className={`text-left p-4 rounded-xl border flex items-center justify-between gap-3 cursor-pointer transition-all duration-300 ${
+                                            className={`text-left p-4 rounded-xl border flex items-center justify-between gap-3 transition-all duration-300 ${
                                                 framework.active 
-                                                    ? 'bg-gradient-to-r from-emerald-50 to-white border-emerald-200 ring-1 ring-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.15)] hover:shadow-[0_0_20px_rgba(16,185,129,0.25)] hover:border-emerald-300' 
-                                                    : 'bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-300'
+                                                    ? 'bg-gradient-to-r from-emerald-50 to-white border-emerald-200 ring-1 ring-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.15)] cursor-default' 
+                                                    : 'bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-300 cursor-pointer'
                                             }`}
                                         >
                                             <div>
