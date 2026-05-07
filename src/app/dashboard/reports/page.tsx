@@ -681,9 +681,9 @@ function ReportsContent() {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        const dateStr = new Date().toISOString().split('T')[0].replace(/-/g, "");
-        const deviceNameClean = report.upload.deviceName ? report.upload.deviceName.replace(/[^a-zA-Z0-9]/g, "").substring(0, 15) : "Export";
-        a.download = `TraceBridge-${reportTitle}-${deviceNameClean}_${dateStr}.csv`;
+        const displayDeviceNameCSV = report.upload.deviceName ? report.upload.deviceName.replace(/demo\s*[-|–]*\s*/ig, '').trim() : "Export";
+        const filenameDeviceCSV = displayDeviceNameCSV.replace(/[^a-zA-Z0-9]/g, "_").replace(/_+/g, "_");
+        a.download = `TraceBridge_${reportTitle.replace(/-/g, '_')}_${filenameDeviceCSV}.csv`;
         a.click();
         URL.revokeObjectURL(url);
     };
@@ -778,7 +778,7 @@ function ReportsContent() {
         doc.text("TraceBridge", 26, 26);
         doc.setFontSize(8);
         doc.setTextColor(156, 163, 175);
-        doc.text("ENTERPRISE COMPLIANCE", 26, 30);
+        doc.text("AI COMPLIANCE COPILOT", 26, 30);
         
         // Confidential badge
         doc.setDrawColor(themeColor[0], themeColor[1], themeColor[2]);
@@ -794,7 +794,8 @@ function ReportsContent() {
         doc.text(titleString, 14, 60);
         doc.setTextColor(255, 255, 255);
         doc.setFontSize(28);
-        const splitTitle = doc.splitTextToSize(report.upload.deviceName, 150);
+        const displayDeviceName = report.upload.deviceName ? report.upload.deviceName.replace(/demo\s*[-|–]*\s*/ig, '').trim() : "Device";
+        const splitTitle = doc.splitTextToSize(displayDeviceName, 150);
         doc.text(splitTitle, 14, 75);
         doc.setFontSize(12);
         doc.setTextColor(203, 213, 225);
@@ -956,7 +957,7 @@ function ReportsContent() {
             y += 8;
             doc.setFontSize(10);
             doc.setTextColor(71, 85, 105);
-            const execSummary = `TraceBridge has evaluated the ${report.upload.deviceName} submission against ${report.upload.standards.join(', ')}. The system detected ${report.summary.gaps} critical non-conformances across ${report.summary.total} evaluated requirements, yielding an overall compliance score of ${Math.round((report.summary.compliant / report.summary.total) * 100)}%. Immediate remediation is required for identified critical gaps to prevent regulatory delays.`;
+            const execSummary = `TraceBridge AI Autonomous Engine has evaluated the ${displayDeviceName} submission against ${report.upload.standards.join(', ')}. The neural system detected ${report.summary.gaps} critical non-conformances across ${report.summary.total} evaluated requirements, yielding an overall compliance score of ${Math.round((report.summary.compliant / report.summary.total) * 100)}%. Immediate remediation is recommended by the AI co-pilot for identified critical gaps to prevent regulatory delays.`;
             const summaryLines = doc.splitTextToSize(execSummary, pageWidth - 28);
             doc.text(summaryLines, 14, y);
             
@@ -1167,7 +1168,7 @@ function ReportsContent() {
                 y += 10;
                 doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
                 doc.setFontSize(9);
-                doc.text("ROOT CAUSE INVESTIGATION", 14, y);
+                doc.text("ROOT CAUSE INVESTIGATION (AI SYNTHESIS)", 14, y);
                 
                 y += 8;
                 doc.setFillColor(248, 250, 252);
@@ -1190,7 +1191,7 @@ function ReportsContent() {
                 doc.setFontSize(10);
                 doc.setTextColor(15, 23, 42);
                 const quoteText = gap.citations?.[0]?.quote || `The submitted documents reference general operational procedures but do not contain specific evidence satisfying the requirement for "${gap.requirement}". The closest matches lacked sufficient detail to demonstrate compliance with ${gap.standard}.`;
-                const aiLines = doc.splitTextToSize(`Platform Analysis: ${quoteText}`, 140);
+                const aiLines = doc.splitTextToSize(`AI Engine Analysis: ${quoteText}`, 140);
                 doc.text(aiLines, 14, y);
 
                 y += aiLines.length * 5 + 6;
@@ -1200,7 +1201,7 @@ function ReportsContent() {
                 doc.rect(16, y + 1.5, 3, 3, "F");
                 doc.setTextColor(185, 28, 28);
                 doc.setFontSize(8);
-                doc.text("Confidence Score: 88% • High", 22, y + 4.5);
+                doc.text("AI Confidence Vector: 88% (HIGH ASSURANCE)", 22, y + 4.5);
 
                 // Block: CORRECTIVE ACTION PLAN (Renamed)
                 y += 18;
@@ -1234,11 +1235,11 @@ function ReportsContent() {
                     doc.roundedRect(18, y + 4, 45, 6, 1, 1, "F");
                     doc.setTextColor(255, 255, 255);
                     doc.setFontSize(8);
-                    doc.text("MITIGATIONS DISABLED", 21, y + 8.2);
+                    doc.text("AI AUTONOMOUS MITIGATIONS DISABLED", 21, y + 8.2);
                     
                     doc.setTextColor(71, 85, 105);
                     doc.setFontSize(9);
-                    doc.text("Automated remediation strategies were omitted per user configuration.", 18, y + 18);
+                    doc.text("AI-generated remediation strategies were disabled per user configuration.", 18, y + 18);
                     
                     y -= 20; // Adjust y so the effort metrics block below doesn't float too far away
                 }
@@ -1274,12 +1275,12 @@ function ReportsContent() {
             doc.setPage(i);
             doc.setTextColor(148, 163, 184);
             doc.setFontSize(8);
-            doc.text(`TraceBridge • Generated ${new Date().toLocaleDateString()}`, 14, pageHeight - 10);
+            doc.text(`TraceBridge AI Core • Generated ${new Date().toLocaleDateString()}`, 14, pageHeight - 10);
             doc.text(`${i - 1} / ${totalPages - 1}`, pageWidth - 14, pageHeight - 10, { align: "right" });
         }
 
-        const dateStr = new Date().toISOString().split('T')[0].replace(/-/g, "");
-        doc.save(`TraceBridge-${fileNameSuffix}-${report.upload.deviceName.replace(/\s+/g, "-")}_${dateStr}.pdf`);
+        const filenameDevicePDF = displayDeviceName.replace(/[^a-zA-Z0-9]/g, "_").replace(/_+/g, "_");
+        doc.save(`TraceBridge_${fileNameSuffix.replace(/-/g, '_')}_${filenameDevicePDF}.pdf`);
     };
 
     // Navigate between gaps in modal
