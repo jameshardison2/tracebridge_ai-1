@@ -386,7 +386,7 @@ function ResultsContent() {
     };
 
     useEffect(() => {
-        if (!uploadId || !user) {
+        if (!user) {
             setLoading(false);
             return;
         }
@@ -394,7 +394,24 @@ function ResultsContent() {
         const fetchReport = async () => {
             try {
                 const token = await user.getIdToken();
-                const r = await fetch(`/api/reports?uploadId=${uploadId}`, {
+                let targetId = uploadId;
+
+                // If no specific audit is selected, auto-load the most recent one
+                if (!targetId) {
+                    const listRes = await fetch("/api/reports", {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    const listData = await listRes.json();
+                    if (listData.success && listData.data.uploads && listData.data.uploads.length > 0) {
+                        targetId = listData.data.uploads[0].id;
+                        window.history.replaceState(null, '', `/dashboard/results?id=${targetId}`);
+                    } else {
+                        setLoading(false);
+                        return; // Leave report null, will show empty state
+                    }
+                }
+
+                const r = await fetch(`/api/reports?uploadId=${targetId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
