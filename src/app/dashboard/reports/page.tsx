@@ -817,77 +817,40 @@ function ReportsContent() {
             doc.addPage();
             doc.setFillColor(255, 255, 255);
             doc.rect(0, 0, pageWidth, pageHeight, "F");
-            doc.setDrawColor(themeColor[0], themeColor[1], themeColor[2]);
-            doc.setLineWidth(3);
-            doc.rect(0, 0, pageWidth, pageHeight, "S");
-            if (isLogoLoaded) {
-                doc.addImage(img, 'PNG', 14, 14, 6, 6);
-            }
         };
 
-        // Full Page Border
+        // Full Page Border (None for printed layout)
         doc.setFillColor(255, 255, 255);
         doc.rect(0, 0, pageWidth, pageHeight, "F");
         
-        doc.setDrawColor(themeColor[0], themeColor[1], themeColor[2]);
-        doc.setLineWidth(3);
-        doc.rect(0, 0, pageWidth, pageHeight, "S");
-        
-        // --- Header ---
-        // Brand icon box
-        if (isLogoLoaded) {
-            doc.addImage(img, 'PNG', 14, 20, 8, 8);
-        } else {
-            doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
-            doc.roundedRect(14, 20, 8, 8, 1, 1, "F");
-        }
-        
-        doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
-        doc.setFontSize(16);
-        doc.setFont("helvetica", "bold");
-        doc.text("TraceBridge", 26, 26);
-        doc.setFontSize(8);
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
-        doc.text("AI COMPLIANCE COPILOT", 26, 30);
-        
-        // Confidential badge
-        doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
-        doc.roundedRect(pageWidth - 45, 22, 31, 6, 3, 3, "F");
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(7);
-        doc.text("CONFIDENTIAL DRAFT", pageWidth - 30, 26, { align: "center" });
-
         // --- Title Block ---
-        doc.setDrawColor(226, 232, 240); // slate-200
-        doc.setLineWidth(0.5);
-        doc.line(14, 75, pageWidth - 14, 75);
-
         doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
-        doc.setFontSize(28);
+        doc.setFontSize(26);
         doc.setFont("helvetica", "bold");
-        const titleLines = doc.splitTextToSize(titleString, 150);
-        doc.text(titleLines, 14, 50);
+        const titleLines = doc.splitTextToSize(titleString, 180);
+        doc.text(titleLines, pageWidth / 2, 35, { align: "center" });
         
-        let currentY = 50 + (titleLines.length * 10);
+        let currentY = 35 + (titleLines.length * 10);
         const displayDeviceName = report.upload.deviceName ? report.upload.deviceName.replace(/demo\s*[-–:]*\s*/ig, '').replace(/^[-–:\s]+/, '').trim() : "Omnipod 5 / Horizon POD";
         
-        doc.setFontSize(14);
-        doc.text(displayDeviceName, 14, currentY);
+        doc.setFontSize(16);
+        doc.text(displayDeviceName, pageWidth / 2, currentY, { align: "center" });
         
-        currentY += 8;
-        doc.setFontSize(9);
-        doc.setTextColor(100, 116, 139); // slate-500
-        doc.text("DEVICE CLASS II  •  510(k) SUBMISSION PATHWAY", 14, currentY);
+        currentY += 12;
+        doc.setFontSize(10);
+        doc.setTextColor(51, 65, 85); // slate-700
+        doc.setFont("helvetica", "normal");
+        doc.text("Device Class II  •  510(k) submission pathway", pageWidth / 2, currentY, { align: "center" });
         
-        currentY += 6;
-        doc.setFontSize(8);
-        doc.setTextColor(30, 41, 59); // slate-800
-        const formatType = engineRta ? "FDA RTA CHECKLIST FORMAT" : "STANDARD REVIEW FORMAT";
-        doc.text(`${formatType}   |   ISO 14971:2019   |   IEC 62304`, 14, currentY);
+        currentY += 10;
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(51, 65, 85); // slate-700
+        const formatType = engineRta ? "FDA RTA Checklist Format" : "Standard Review Format";
+        doc.text(`${formatType}   |   ISO 14971:2019   |   IEC 62366-1`, pageWidth / 2, currentY, { align: "center" });
 
         // --- Overall Compliance Readiness ---
-        currentY = 85;
+        currentY += 10;
         doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
         doc.rect(14, currentY, pageWidth - 28, 8, "F");
         doc.setTextColor(255, 255, 255);
@@ -896,62 +859,74 @@ function ReportsContent() {
         doc.text("OVERALL COMPLIANCE READINESS", pageWidth / 2, currentY + 5.5, { align: "center" });
         
         currentY += 8;
-        doc.setFillColor(248, 250, 252); // slate-50
-        doc.setDrawColor(226, 232, 240); // slate-200
+        doc.setFillColor(250, 250, 250); 
+        doc.setDrawColor(200, 200, 200); 
         doc.rect(14, currentY, pageWidth - 28, 55, "FD");
 
         // Donut Chart
-        doc.setDrawColor(226, 232, 240); // Base ring
+        doc.setDrawColor(220, 220, 220); // Base ring
         doc.setLineWidth(5);
-        doc.circle(45, currentY + 20, 12, "S");
-        doc.setDrawColor(themeColor[0], themeColor[1], themeColor[2]); // Active ring
+        doc.circle(55, currentY + 27, 20, "S");
+        doc.setDrawColor(185, 28, 28); // Red active ring for 0%
         // Approximate a 3/4 circle for aesthetic
-        doc.circle(45, currentY + 20, 12, "S"); 
+        doc.circle(55, currentY + 27, 20, "S"); 
         
-        doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
-        doc.setFontSize(18);
-        doc.text(`${report.summary.complianceScore}%`, 45, currentY + 21, { align: "center" });
-        doc.setFontSize(7);
-        doc.text("READY", 45, currentY + 26, { align: "center" });
+        doc.setTextColor(185, 28, 28);
+        doc.setFontSize(28);
+        doc.setFont("helvetica", "bold");
+        doc.text(`${report.summary.complianceScore}%`, 55, currentY + 29, { align: "center" });
+        doc.setFontSize(9);
+        doc.text("READY", 55, currentY + 36, { align: "center" });
 
         // Stats List
-        let sy = currentY + 8;
+        let sy = currentY + 10;
         const pendingReview = report.summary.total - report.summary.compliant - report.summary.gaps;
         const stats = [
-            { l: "Compliant requirements", v: report.summary.compliant.toString(), iconColor: [16, 185, 129] },
-            { l: "Critical gaps detected", v: report.summary.gaps.toString(), iconColor: [239, 68, 68] },
-            { l: "Items pending review", v: pendingReview > 0 ? pendingReview.toString() : "0", iconColor: [245, 158, 11] },
-            { l: "Total requirements evaluated", v: report.summary.total.toString(), iconColor: [37, 99, 235] }
+            { l: "Compliant requirements", v: report.summary.compliant.toString(), iconColor: [16, 185, 129], icon: "V" },
+            { l: "Critical gaps detected", v: report.summary.gaps.toString(), iconColor: [220, 38, 38], icon: "!" },
+            { l: "Items pending review", v: pendingReview > 0 ? pendingReview.toString() : "0", iconColor: [234, 179, 8], icon: "?" },
+            { l: "Total requirements evaluated", v: report.summary.total.toString(), iconColor: [37, 99, 235], icon: "i" }
         ];
         
+        doc.setFont("helvetica", "normal");
         stats.forEach(s => {
             doc.setFillColor(s.iconColor[0], s.iconColor[1], s.iconColor[2]);
-            doc.circle(90, sy - 1, 2, "F");
+            doc.circle(100, sy - 1, 3, "F");
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(7);
+            doc.text(s.icon, 100, sy + 0.5, { align: "center", baseline: "middle" });
+            
             doc.setTextColor(51, 65, 85);
             doc.setFontSize(9);
-            doc.text(s.l, 95, sy);
+            doc.text(s.l, 108, sy);
             doc.setTextColor(15, 23, 42);
             doc.setFontSize(10);
+            doc.setFont("helvetica", "bold");
             doc.text(s.v, pageWidth - 25, sy, { align: "right" });
-            sy += 7;
+            doc.setFont("helvetica", "normal");
+            
+            doc.setDrawColor(226, 232, 240);
+            doc.setLineWidth(0.3);
+            doc.line(100, sy + 3, pageWidth - 25, sy + 3);
+            sy += 9;
         });
         
-        doc.setDrawColor(226, 232, 240);
-        doc.setLineWidth(0.5);
-        doc.line(90, sy - 2, pageWidth - 25, sy - 2);
-        
-        sy += 4;
         doc.setFillColor(147, 51, 234); // purple-600
-        doc.circle(90, sy - 1, 2, "F");
+        doc.circle(100, sy - 1, 3, "F");
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(7);
+        doc.text("~", 100, sy + 0.5, { align: "center", baseline: "middle" });
         doc.setTextColor(51, 65, 85);
         doc.setFontSize(9);
-        doc.text("Est. remediation effort", 95, sy);
+        doc.text("Est. remediation effort", 108, sy);
         doc.setTextColor(15, 23, 42);
         doc.setFontSize(10);
+        doc.setFont("helvetica", "bold");
         doc.text("4-8 weeks", pageWidth - 25, sy, { align: "right" });
+        doc.setFont("helvetica", "normal");
 
         // --- Attestation Footer ---
-        currentY = 200;
+        currentY = sy + 15;
         doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
         doc.rect(14, currentY, pageWidth - 28, 8, "F");
         doc.setTextColor(255, 255, 255);
@@ -959,69 +934,78 @@ function ReportsContent() {
         doc.setFont("helvetica", "bold");
         doc.text("SUBMISSION ATTESTATION", pageWidth / 2, currentY + 5.5, { align: "center" });
 
-        currentY += 16;
+        currentY += 8;
+        doc.setFillColor(250, 250, 250); 
+        doc.setDrawColor(200, 200, 200); 
+        doc.rect(14, currentY, pageWidth - 28, 35, "FD");
+
+        currentY += 6;
         // Prepared By Column
-        doc.setTextColor(148, 163, 184); // slate-400
+        doc.setTextColor(51, 65, 85); // slate-700
         doc.setFontSize(8);
-        doc.text("PREPARED BY (NAME)", 14, currentY);
+        doc.setFont("helvetica", "bold");
+        doc.text("PREPARED BY", 20, currentY);
         doc.setTextColor(30, 41, 59); // slate-800
         doc.setFontSize(10);
-        doc.text(authorName || "James N. Hardison", 14, currentY + 5);
+        doc.text(authorName || "James N. Hardison II", 20, currentY + 6);
         doc.setTextColor(100, 116, 139); // slate-500
         doc.setFontSize(8);
-        doc.text(authorTitle || "Senior Regulatory Affairs", 14, currentY + 10);
+        doc.setFont("helvetica", "normal");
+        doc.text(authorTitle || "Senior Regulatory Affairs", 20, currentY + 11);
         
         doc.setFont("times", "italic");
-        doc.setFontSize(14);
+        doc.setFontSize(16);
         doc.setTextColor(51, 65, 85);
-        doc.text(authorName || "James N. Hardison", 14, currentY + 17);
+        doc.text(authorName || "James N. Hardison", 20, currentY + 22);
         doc.setFont("helvetica", "normal");
         
         doc.setDrawColor(203, 213, 225); // slate-300
         doc.setLineWidth(0.5);
-        doc.line(14, currentY + 20, 60, currentY + 20);
+        doc.line(20, currentY + 24, 75, currentY + 24);
 
         // Reviewed By Column
-        doc.setTextColor(148, 163, 184); // slate-400
+        doc.setTextColor(51, 65, 85); // slate-700
         doc.setFontSize(8);
         doc.setFont("helvetica", "bold");
-        doc.text("REVIEWED BY (NAME)", 80, currentY);
+        doc.text("REVIEWED BY", 85, currentY);
         doc.setTextColor(30, 41, 59); // slate-800
         doc.setFontSize(10);
-        doc.text(reviewerName || "Team Lead", 80, currentY + 5);
+        doc.text(reviewerName || "My Team", 85, currentY + 6);
         doc.setTextColor(100, 116, 139); // slate-500
         doc.setFontSize(8);
-        doc.text(reviewerTitle || "RA Director", 80, currentY + 10);
+        doc.setFont("helvetica", "normal");
+        doc.text(reviewerTitle || "RA Director", 85, currentY + 11);
         
         doc.setFont("times", "italic");
-        doc.setFontSize(14);
+        doc.setFontSize(16);
         doc.setTextColor(51, 65, 85);
-        doc.text(reviewerName || "Team Lead", 80, currentY + 17);
+        doc.text(reviewerName || "My Team", 85, currentY + 22);
         doc.setFont("helvetica", "normal");
         
         doc.setDrawColor(203, 213, 225); // slate-300
-        doc.line(80, currentY + 20, 126, currentY + 20);
+        doc.line(85, currentY + 24, 140, currentY + 24);
 
         // Date Column
-        doc.setTextColor(148, 163, 184); // slate-400
+        doc.setTextColor(51, 65, 85); // slate-700
         doc.setFontSize(8);
         doc.setFont("helvetica", "bold");
-        doc.text("REPORT DATE", pageWidth - 14, currentY, { align: "right" });
+        doc.text("REPORT DATE", pageWidth - 20, currentY, { align: "right" });
         doc.setTextColor(30, 41, 59); // slate-800
         doc.setFontSize(10);
-        doc.text(new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }), pageWidth - 14, currentY + 5, { align: "right" });
+        doc.text(new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }), pageWidth - 20, currentY + 6, { align: "right" });
         doc.setTextColor(100, 116, 139); // slate-500
         doc.setFontSize(8);
-        doc.text("Version 3.2", pageWidth - 14, currentY + 10, { align: "right" });
+        doc.setFont("helvetica", "normal");
+        doc.text("Version 3.2", pageWidth - 20, currentY + 20, { align: "right" });
 
         // --- Footer Target Submission Bar ---
-        currentY = pageHeight - 16;
+        currentY += 30;
         doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
-        doc.rect(14, currentY, pageWidth - 28, 10, "F");
+        doc.rect(14, currentY, pageWidth - 28, 12, "F");
         doc.setTextColor(255, 255, 255);
-        doc.setFontSize(9);
+        doc.setFontSize(14);
         doc.setFont("helvetica", "bold");
-        doc.text(`TARGET SUBMISSION    JUN 6, 2026`, pageWidth / 2, currentY + 6.5, { align: "center" });
+        doc.text(`TARGET SUBMISSION        JUN 6, 2026`, pageWidth / 2, currentY + 8, { align: "center" });
 
         // ==========================================
         // 2. DYNAMIC CONTENT BASED ON TEMPLATE
@@ -1092,77 +1076,124 @@ function ReportsContent() {
         } else if (activeTemplate === '510k') {
             // 510(k) Traceability Matrix (Data Table)
             addThemedPage();
-            doc.setFillColor(15, 23, 42); // Dark slate
-            doc.rect(14, 14, pageWidth - 28, 10, "F");
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(11);
-            doc.text("REQUIREMENT TRACEABILITY MATRIX (AI ANALYSIS)", 18, 20.5);
             
-            let y = 28;
-            doc.setFillColor(248, 250, 252); // Very light slate
-            doc.rect(14, y, pageWidth - 28, 8, "F");
-            doc.setTextColor(71, 85, 105);
+            // Title Header
+            doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
+            doc.setFontSize(16);
+            doc.setFont("helvetica", "bold");
+            doc.text("PRE-SUBMISSION GAP ANALYSIS", pageWidth / 2, 20, { align: "center" });
+            doc.setFontSize(12);
+            doc.text("REQUIREMENT TRACEABILITY MATRIX (AI ANALYSIS)", pageWidth / 2, 26, { align: "center" });
+            
+            let y = 35;
+            // Table Header Row
+            doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
+            doc.rect(14, y, pageWidth - 28, 10, "F");
+            doc.setTextColor(255, 255, 255);
             doc.setFontSize(8);
-            y += 5.5;
-            doc.text("STANDARD §", 16, y);
-            doc.text("REQUIREMENT", 54, y);
-            doc.text("STATUS", 133, y);
-            doc.text("EVIDENCE LOCATOR", 162, y);
-            y += 8;
+            y += 6;
+            
+            const totalW = pageWidth - 28;
+            const w0 = totalW * 0.18;
+            const w1 = totalW * 0.08;
+            const w2 = totalW * 0.40;
+            const w3 = totalW * 0.15;
+            const w4 = totalW * 0.19;
+            
+            let cx = 14;
+            doc.text("STANDARD", cx + w0/2, y, { align: "center" }); cx += w0;
+            doc.text("§", cx + w1/2, y, { align: "center" }); cx += w1;
+            doc.text("REQUIREMENT", cx + w2/2, y, { align: "center" }); cx += w2;
+            doc.text("STATUS", cx + w3/2, y, { align: "center" }); cx += w3;
+            doc.text("EVIDENCE LOCATOR", cx + w4/2, y, { align: "center" });
+            
+            y += 4;
+            doc.setDrawColor(200, 200, 200);
 
             for (let i = 0; i < uniqueGaps.length; i++) {
                 const item = uniqueGaps[i];
                 if (y > pageHeight - 20) {
                     addThemedPage();
-                    y = 30;
-                    doc.setDrawColor(226, 232, 240);
-                    doc.line(14, y, pageWidth - 14, y);
-                    y += 6;
+                    y = 20;
                 }
                 
-                doc.setTextColor(15, 23, 42);
+                doc.setFont("helvetica", "normal");
                 doc.setFontSize(8);
                 
-                // Standard
-                const stdLines = doc.splitTextToSize(`${item.standard} § ${item.section}`, 35);
-                doc.text(stdLines, 16, y);
+                // Content
+                const stdLines = doc.splitTextToSize(item.standard, w0 - 4);
+                const secLines = doc.splitTextToSize(`§ ${item.section}`, w1 - 4);
+                const reqLines = doc.splitTextToSize(item.requirement, w2 - 4);
                 
-                // Requirement
-                const reqLines = doc.splitTextToSize(item.requirement, 75);
-                doc.text(reqLines, 54, y);
+                const statusStr = item.status === 'gap_detected' ? "GAP\\nDETECTED" : (item.status === 'compliant' ? "COMPLIANT" : "REVIEW");
+                const statLines = doc.splitTextToSize(statusStr, w3 - 4);
                 
-                // Status
-                if (item.status === 'gap_detected') {
-                    doc.setFillColor(254, 226, 226); 
-                    doc.roundedRect(131, y - 4, 28, 6, 1, 1, "F");
-                    doc.setTextColor(185, 28, 28); 
-                    doc.text("GAP DETECTED", 133, y);
-                } else if (item.status === 'compliant') {
-                    doc.setFillColor(209, 250, 229); 
-                    doc.roundedRect(131, y - 4, 24, 6, 1, 1, "F");
-                    doc.setTextColor(4, 120, 87); 
-                    doc.text("COMPLIANT", 133, y);
-                } else {
-                    doc.setFillColor(254, 243, 199); 
-                    doc.roundedRect(131, y - 4, 18, 6, 1, 1, "F");
-                    doc.setTextColor(180, 83, 9); 
-                    doc.text("REVIEW", 133, y);
+                const cite = item.citations?.[0]?.source?.replace(/_v\d+/i, '') || (item.status === 'gap_detected' ? "DOCUMENTATION\\nMISSING" : report.upload.documents?.[0]?.fileName?.replace(/_v\d+/i, '') || "Source_Document.pdf");
+                const evLines = doc.splitTextToSize(cite, w4 - 4);
+                
+                const maxLines = Math.max(stdLines.length, secLines.length, reqLines.length, statLines.length, evLines.length);
+                const blockHeight = maxLines * 4 + 8;
+                
+                if (y + blockHeight > pageHeight - 20) {
+                    addThemedPage();
+                    y = 20;
                 }
                 
-                // Evidence
-                const cite = item.citations?.[0]?.source?.replace(/_v\d+/i, '') || (item.status === 'gap_detected' ? "DOCUMENTATION MISSING" : report.upload.documents?.[0]?.fileName?.replace(/_v\d+/i, '') || "Source_Document.pdf");
-                const evLines = doc.splitTextToSize(cite, 34);
+                // Background
+                if (i % 2 === 0) {
+                    doc.setFillColor(248, 250, 252);
+                    doc.rect(14, y, totalW, blockHeight, "F");
+                }
+                
+                doc.setDrawColor(200, 200, 200);
+                doc.setLineWidth(0.3);
+                // Horizontal lines
+                doc.line(14, y, 14 + totalW, y);
+                doc.line(14, y + blockHeight, 14 + totalW, y + blockHeight);
+                
+                // Vertical lines
+                let vx = 14;
+                doc.line(vx, y, vx, y + blockHeight); vx += w0;
+                doc.line(vx, y, vx, y + blockHeight); vx += w1;
+                doc.line(vx, y, vx, y + blockHeight); vx += w2;
+                doc.line(vx, y, vx, y + blockHeight); vx += w3;
+                doc.line(vx, y, vx, y + blockHeight);
+                doc.line(14 + totalW, y, 14 + totalW, y + blockHeight);
+                
+                // Draw Text
+                const textY = y + 5;
+                let tx = 14;
+                doc.setTextColor(15, 23, 42);
+                doc.setFont("helvetica", "bold");
+                doc.text(stdLines, tx + 2, textY); tx += w0;
+                
+                doc.text(secLines, tx + 2, textY); tx += w1;
+                
+                doc.setFont("helvetica", "normal");
+                doc.text(reqLines, tx + 2, textY); tx += w2;
+                
                 if (item.status === 'gap_detected') {
-                    doc.setTextColor(239, 68, 68);
+                    doc.setTextColor(220, 38, 38);
+                    doc.setFont("helvetica", "bold");
+                } else if (item.status === 'compliant') {
+                    doc.setTextColor(4, 120, 87);
+                    doc.setFont("helvetica", "bold");
+                } else {
+                    doc.setTextColor(180, 83, 9);
+                    doc.setFont("helvetica", "bold");
+                }
+                doc.text(statLines, tx + w3/2, textY, { align: "center" }); tx += w3;
+                
+                if (item.status === 'gap_detected') {
+                    doc.setFont("helvetica", "bold");
+                    doc.setTextColor(15, 23, 42); 
                 } else {
                     doc.setTextColor(100, 116, 139);
+                    doc.setFont("helvetica", "normal");
                 }
-                doc.text(evLines, 162, y);
+                doc.text(evLines, tx + 2, textY);
                 
-                const blockHeight = Math.max(stdLines.length, reqLines.length, evLines.length) * 6 + 6;
                 y += blockHeight;
-                doc.setDrawColor(226, 232, 240);
-                doc.line(14, y - 2, pageWidth - 14, y - 2);
             }
         } else if (activeTemplate === 'complaint') {
             // Post-Market Sentinel Events (Complaint)
@@ -1403,12 +1434,13 @@ function ReportsContent() {
             ? (doc as any).getNumberOfPages() 
             : doc.internal.pages.length - 1;
             
-        for (let i = 2; i <= totalPages; i++) {
+        for (let i = 1; i <= totalPages; i++) {
             doc.setPage(i);
-            doc.setTextColor(148, 163, 184);
+            doc.setTextColor(15, 23, 42);
             doc.setFontSize(8);
-            doc.text(`TraceBridge AI Core • Generated ${new Date().toLocaleDateString()}`, 14, pageHeight - 10);
-            doc.text(`${i - 1} / ${totalPages - 1}`, pageWidth - 14, pageHeight - 10, { align: "right" });
+            doc.setFont("helvetica", "bold");
+            doc.text(`TraceBridge AI Core  •  Generated ${new Date().toLocaleDateString('en-US')}`, pageWidth / 2, pageHeight - 10, { align: "center" });
+            doc.text(`${i} / ${totalPages}`, pageWidth - 14, pageHeight - 10, { align: "right" });
         }
 
         const filenameDevicePDF = displayDeviceName.replace(/[^a-zA-Z0-9]/g, "_").replace(/_+/g, "_");
