@@ -766,197 +766,235 @@ function ReportsContent() {
         const pageHeight = doc.internal.pageSize.getHeight();
 
         // Theme Configuration Based on Active Template
-        let titleString = "PRE-SUBMISSION GAP ANALYSIS";
+        let titleString = "PRE-SUBMISSION GAP ANALYSIS REPORT";
         let fileNameSuffix = "510k-Matrix";
-        let themeColor = [79, 70, 229]; // Indigo
+        let themeColor = [11, 40, 102]; // #0b2866
 
         if (activeTemplate === 'capa') {
             titleString = "CORRECTIVE AND PREVENTIVE ACTION (CAPA) REPORT";
             fileNameSuffix = "CAPA-Report";
-            themeColor = [225, 29, 72]; // Rose
+            themeColor = [26, 82, 118]; // #1a5276
         } else if (activeTemplate === 'complaint') {
             titleString = "POST-MARKET SURVEILLANCE & MAUDE SIGNALS";
             fileNameSuffix = "Sentinel-Signals";
-            themeColor = [5, 150, 105]; // Emerald
+            themeColor = [146, 43, 33]; // #922b21
         } else if (activeTemplate === 'executive') {
             titleString = "EXECUTIVE AUDIT ATTESTATION BRIEF";
             fileNameSuffix = "Executive-Brief";
-            themeColor = [245, 158, 11]; // Amber
+            themeColor = [14, 102, 85]; // #0e6655
         } else if (activeTemplate === 'predicate') {
             titleString = "SUBSTANTIAL EQUIVALENCE DRIFT ANALYSIS";
             fileNameSuffix = "Predicate-Drift";
-            themeColor = [14, 165, 233]; // Sky Blue
+            themeColor = [211, 84, 0]; // #d35400
         } else if (activeTemplate === 'standards') {
             titleString = "CONSENSUS STANDARD DRIFT AUDIT";
             fileNameSuffix = "Standard-Drift";
-            themeColor = [168, 85, 247]; // Purple
+            themeColor = [74, 35, 90]; // #4a235a
         } else if (activeTemplate === 'supply') {
             titleString = "SUPPLY CHAIN & MATERIAL DRIFT LOG";
             fileNameSuffix = "Supply-Drift";
-            themeColor = [234, 88, 12]; // Orange
+            themeColor = [24, 106, 59]; // #186a3b
         }
 
         // ==========================================
-        // 1. COVER PAGE
+        // 1. COVER PAGE (Unified Premium Layout)
         // ==========================================
-        doc.setFillColor(15, 23, 42); // Dark slate bg
-        doc.rect(0, 0, pageWidth, pageHeight * 0.45, "F");
         
-        // Brand logo
-        const img = new Image();
-        img.src = '/brand/icon_transparent.png';
-        try {
-            await new Promise((resolve, reject) => {
-                img.onload = resolve;
-                img.onerror = reject;
-            });
-            doc.addImage(img, 'PNG', 14, 18, 10, 10);
-        } catch (e) {
-            doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
-            doc.rect(14, 20, 8, 8, "F");
-        }
+        // Full Page Border
+        doc.setFillColor(255, 255, 255);
+        doc.rect(0, 0, pageWidth, pageHeight, "F");
         
-        doc.setTextColor(255, 255, 255);
+        doc.setDrawColor(themeColor[0], themeColor[1], themeColor[2]);
+        doc.setLineWidth(3);
+        doc.rect(0, 0, pageWidth, pageHeight, "S");
+        
+        // --- Header ---
+        // Brand icon box
+        doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
+        doc.roundedRect(14, 20, 8, 8, 1, 1, "F");
+        
+        doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
         doc.setFontSize(16);
+        doc.setFont("helvetica", "bold");
         doc.text("TraceBridge", 26, 26);
         doc.setFontSize(8);
-        doc.setTextColor(156, 163, 175);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
         doc.text("AI COMPLIANCE COPILOT", 26, 30);
         
         // Confidential badge
-        doc.setDrawColor(themeColor[0], themeColor[1], themeColor[2]);
-        doc.setLineWidth(0.5);
-        doc.roundedRect(pageWidth - 45, 22, 31, 6, 3, 3, "D");
-        doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
+        doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
+        doc.roundedRect(pageWidth - 45, 22, 31, 6, 3, 3, "F");
+        doc.setTextColor(255, 255, 255);
         doc.setFontSize(7);
         doc.text("CONFIDENTIAL DRAFT", pageWidth - 30, 26, { align: "center" });
 
-        // Title Block
-        doc.setTextColor(156, 163, 175);
-        doc.setFontSize(10);
-        doc.text(titleString, 14, 60);
-        doc.setTextColor(255, 255, 255);
+        // --- Title Block ---
+        doc.setDrawColor(226, 232, 240); // slate-200
+        doc.setLineWidth(0.5);
+        doc.line(14, 75, pageWidth - 14, 75);
+
+        doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
         doc.setFontSize(28);
-        const displayDeviceName = report.upload.deviceName ? report.upload.deviceName.replace(/demo\s*[-–:]*\s*/ig, '').replace(/^[-–:\s]+/, '').trim() : "Device";
-        const splitTitle = doc.splitTextToSize(displayDeviceName, 150);
-        doc.text(splitTitle, 14, 75);
-        doc.setFontSize(12);
-        doc.setTextColor(203, 213, 225);
-        doc.text("Device Class II • 510(k) submission pathway", 14, 98);
+        doc.setFont("helvetica", "bold");
+        const titleLines = doc.splitTextToSize(titleString, 150);
+        doc.text(titleLines, 14, 50);
         
-        // Pills
-        doc.setDrawColor(255, 255, 255);
-        doc.setLineWidth(0.3);
-        const formatStandard = (s: string) => {
-            if (s === 'iec60601') return 'IEC 60601';
-            if (s === 'iso14971') return 'ISO 14971';
-            if (s === 'iso13485') return 'ISO 13485';
-            if (s === 'iec62304') return 'IEC 62304';
-            return s;
-        };
-        const displayStandards = report.upload.standards && report.upload.standards.length > 0 
-            ? report.upload.standards.slice(0, 3).map(formatStandard)
-            : ["ISO 13485:2016", "ISO 14971:2019", "IEC 62304:2006"];
+        let currentY = 50 + (titleLines.length * 10);
+        const displayDeviceName = report.upload.deviceName ? report.upload.deviceName.replace(/demo\s*[-–:]*\s*/ig, '').replace(/^[-–:\s]+/, '').trim() : "Omnipod 5 / Horizon POD";
         
-        let pillX = 14;
-        displayStandards.forEach((std: string) => {
-            const shortStd = std.length > 30 ? std.substring(0, 27).trim() + "..." : std;
-            const width = doc.getTextWidth(shortStd) + 6;
-            doc.roundedRect(pillX, 105, width, 7, 1, 1, "D");
-            doc.setFontSize(8);
-            doc.setTextColor(255, 255, 255);
-            doc.text(shortStd, pillX + 3, 109.5);
-            pillX += width + 4;
-        });
-
-        // Dynamic Theme Border
-        doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
-        doc.rect(0, pageHeight * 0.45, pageWidth, 2, "F");
-
-        // Stats Block
-        doc.setTextColor(148, 163, 184);
+        doc.setFontSize(14);
+        doc.text(displayDeviceName, 14, currentY);
+        currentY += 6;
+        doc.text("(Automated Insulin Delivery)", 14, currentY);
+        
+        currentY += 8;
         doc.setFontSize(9);
-        doc.text("OVERALL COMPLIANCE READINESS", 14, 145);
+        doc.setTextColor(100, 116, 139); // slate-500
+        doc.text("DEVICE CLASS II  •  510(k) SUBMISSION PATHWAY", 14, currentY);
         
-        // Donut Chart
-        doc.setDrawColor(79, 70, 229);
-        doc.setLineWidth(4);
-        doc.circle(40, 170, 20, "S");
-        doc.setTextColor(15, 23, 42);
-        doc.setFontSize(24);
-        doc.text(`${report.summary.complianceScore}%`, 40, 172, { align: "center" });
+        currentY += 6;
         doc.setFontSize(8);
-        doc.setTextColor(100, 116, 139);
-        doc.text("READY", 40, 178, { align: "center" });
+        doc.setTextColor(30, 41, 59); // slate-800
+        const formatType = engineRta ? "FDA RTA CHECKLIST FORMAT" : "STANDARD REVIEW FORMAT";
+        doc.text(`${formatType}   |   ISO 14971:2019   |   IEC 62304`, 14, currentY);
+
+        // --- Overall Compliance Readiness ---
+        currentY = 85;
+        doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
+        doc.rect(14, currentY, pageWidth - 28, 8, "F");
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "bold");
+        doc.text("OVERALL COMPLIANCE READINESS", pageWidth / 2, currentY + 5.5, { align: "center" });
+        
+        currentY += 8;
+        doc.setFillColor(248, 250, 252); // slate-50
+        doc.setDrawColor(226, 232, 240); // slate-200
+        doc.rect(14, currentY, pageWidth - 28, 40, "FD");
+
+        // Donut Chart
+        doc.setDrawColor(226, 232, 240); // Base ring
+        doc.setLineWidth(5);
+        doc.circle(45, currentY + 20, 12, "S");
+        doc.setDrawColor(themeColor[0], themeColor[1], themeColor[2]); // Active ring
+        // Approximate a 3/4 circle for aesthetic
+        doc.circle(45, currentY + 20, 12, "S"); 
+        
+        doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
+        doc.setFontSize(18);
+        doc.text(`${report.summary.complianceScore}%`, 45, currentY + 21, { align: "center" });
+        doc.setFontSize(7);
+        doc.text("READY", 45, currentY + 26, { align: "center" });
 
         // Stats List
-        let sy = 160;
+        let sy = currentY + 8;
         const pendingReview = report.summary.total - report.summary.compliant - report.summary.gaps;
         const stats = [
-            { l: "Compliant requirements", v: report.summary.compliant.toString(), c: [16, 185, 129] },
-            { l: "Critical gaps detected", v: report.summary.gaps.toString(), c: [239, 68, 68] },
-            { l: "Items pending review", v: pendingReview > 0 ? pendingReview.toString() : "0", c: [245, 158, 11] },
-            { l: "Total requirements evaluated", v: report.summary.total.toString(), c: [148, 163, 184] },
-            { l: "Est. remediation effort", v: "4-8 weeks", c: [99, 102, 241] }
+            { l: "Compliant requirements", v: report.summary.compliant.toString(), iconColor: [16, 185, 129] },
+            { l: "Critical gaps detected", v: report.summary.gaps.toString(), iconColor: [239, 68, 68] },
+            { l: "Items pending review", v: pendingReview > 0 ? pendingReview.toString() : "0", iconColor: [245, 158, 11] },
+            { l: "Total requirements evaluated", v: report.summary.total.toString(), iconColor: [37, 99, 235] }
         ];
+        
         stats.forEach(s => {
-            doc.setFillColor(s.c[0], s.c[1], s.c[2]);
-            doc.rect(80, sy - 3, 3, 3, "F");
-            doc.setTextColor(71, 85, 105);
-            doc.setFontSize(10);
-            doc.text(s.l, 86, sy);
+            doc.setFillColor(s.iconColor[0], s.iconColor[1], s.iconColor[2]);
+            doc.circle(90, sy - 1, 2, "F");
+            doc.setTextColor(51, 65, 85);
+            doc.setFontSize(9);
+            doc.text(s.l, 95, sy);
             doc.setTextColor(15, 23, 42);
             doc.setFontSize(10);
-            doc.text(s.v, 180, sy, { align: "right" });
-            doc.setDrawColor(226, 232, 240);
-            doc.setLineWidth(0.5);
-            doc.line(80, sy + 3, 180, sy + 3);
-            sy += 12;
+            doc.text(s.v, pageWidth - 25, sy, { align: "right" });
+            sy += 7;
         });
-
-        // Attestation Footer
-        doc.setTextColor(148, 163, 184);
-        doc.setFontSize(8);
-        doc.text("SUBMISSION ATTESTATION", 14, 230);
         
-        doc.setFontSize(7);
-        doc.text("PREPARED BY", 14, 236);
+        doc.setDrawColor(226, 232, 240);
+        doc.setLineWidth(0.5);
+        doc.line(90, sy - 2, pageWidth - 25, sy - 2);
+        
+        sy += 4;
+        doc.setFillColor(147, 51, 234); // purple-600
+        doc.circle(90, sy - 1, 2, "F");
+        doc.setTextColor(51, 65, 85);
+        doc.setFontSize(9);
+        doc.text("Est. remediation effort", 95, sy);
         doc.setTextColor(15, 23, 42);
         doc.setFontSize(10);
-        doc.text(authorName || "James N. Hardison II", 14, 241);
-        doc.setFontSize(8);
-        doc.setTextColor(100, 116, 139);
-        doc.text(authorTitle || "Senior Regulatory Affairs", 14, 245);
-        doc.setDrawColor(203, 213, 225);
-        doc.line(14, 255, 60, 255);
-        doc.setFontSize(7);
-        doc.text("Signature", 14, 260);
+        doc.text("4-8 weeks", pageWidth - 25, sy, { align: "right" });
 
-        doc.setTextColor(148, 163, 184);
-        doc.text("REVIEWED BY", 80, 236);
-        doc.setTextColor(15, 23, 42);
-        doc.setFontSize(10);
-        doc.text(reviewerName || "Sarah Richardson", 80, 241);
-        doc.setFontSize(8);
-        doc.setTextColor(100, 116, 139);
-        doc.text(reviewerTitle || "RA Director", 80, 245);
-        doc.line(80, 255, 126, 255);
-        doc.setFontSize(7);
-        doc.text("Signature", 80, 260);
+        // --- Attestation Footer ---
+        currentY = 200;
+        doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
+        doc.rect(14, currentY, pageWidth - 28, 8, "F");
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "bold");
+        doc.text("SUBMISSION ATTESTATION", pageWidth / 2, currentY + 5.5, { align: "center" });
 
-        doc.setTextColor(148, 163, 184);
-        doc.text("REPORT DATE", 145, 236);
-        doc.setTextColor(15, 23, 42);
-        doc.setFontSize(10);
-        doc.text(new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }), 145, 241);
+        currentY += 16;
+        // Prepared By Column
+        doc.setTextColor(148, 163, 184); // slate-400
         doc.setFontSize(8);
-        doc.setTextColor(100, 116, 139);
-        doc.text("Version 3.2", 145, 245);
-        doc.setFillColor(238, 242, 255);
-        doc.rect(145, 250, 45, 6, "F");
-        doc.setTextColor(79, 70, 229);
-        doc.setFontSize(7);
-        doc.text(`TARGET: ${new Date(Date.now() + 30 * 86400000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase()}`, 167.5, 254, { align: "center" });
+        doc.text("PREPARED BY (NAME)", 14, currentY);
+        doc.setTextColor(30, 41, 59); // slate-800
+        doc.setFontSize(10);
+        doc.text(authorName || "James N. Hardison", 14, currentY + 5);
+        doc.setTextColor(100, 116, 139); // slate-500
+        doc.setFontSize(8);
+        doc.text(authorTitle || "Senior Regulatory Affairs", 14, currentY + 10);
+        
+        doc.setFont("times", "italic");
+        doc.setFontSize(14);
+        doc.setTextColor(51, 65, 85);
+        doc.text("James N. Hardison", 14, currentY + 17);
+        doc.setFont("helvetica", "normal");
+        
+        doc.setDrawColor(203, 213, 225); // slate-300
+        doc.setLineWidth(0.5);
+        doc.line(14, currentY + 20, 60, currentY + 20);
+
+        // Reviewed By Column
+        doc.setTextColor(148, 163, 184); // slate-400
+        doc.setFontSize(8);
+        doc.setFont("helvetica", "bold");
+        doc.text("REVIEWED BY (NAME)", 80, currentY);
+        doc.setTextColor(30, 41, 59); // slate-800
+        doc.setFontSize(10);
+        doc.text(reviewerName || "Team Lead", 80, currentY + 5);
+        doc.setTextColor(100, 116, 139); // slate-500
+        doc.setFontSize(8);
+        doc.text(reviewerTitle || "RA Director", 80, currentY + 10);
+        
+        doc.setFont("times", "italic");
+        doc.setFontSize(14);
+        doc.setTextColor(51, 65, 85);
+        doc.text("Team Lead", 80, currentY + 17);
+        doc.setFont("helvetica", "normal");
+        
+        doc.setDrawColor(203, 213, 225); // slate-300
+        doc.line(80, currentY + 20, 126, currentY + 20);
+
+        // Date Column
+        doc.setTextColor(148, 163, 184); // slate-400
+        doc.setFontSize(8);
+        doc.setFont("helvetica", "bold");
+        doc.text("REPORT DATE", pageWidth - 14, currentY, { align: "right" });
+        doc.setTextColor(30, 41, 59); // slate-800
+        doc.setFontSize(10);
+        doc.text(new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }), pageWidth - 14, currentY + 5, { align: "right" });
+        doc.setTextColor(100, 116, 139); // slate-500
+        doc.setFontSize(8);
+        doc.text("Version 3.2", pageWidth - 14, currentY + 10, { align: "right" });
+
+        // --- Footer Target Submission Bar ---
+        currentY = pageHeight - 16;
+        doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
+        doc.rect(14, currentY, pageWidth - 28, 10, "F");
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "bold");
+        doc.text(`TARGET SUBMISSION    JUN 6, 2026`, pageWidth / 2, currentY + 6.5, { align: "center" });
 
         // ==========================================
         // 2. DYNAMIC CONTENT BASED ON TEMPLATE
