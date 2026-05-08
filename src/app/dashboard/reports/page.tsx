@@ -842,7 +842,7 @@ function ReportsContent() {
             doc.roundedRect(pageWidth - 42, 11, 28, 6, 3, 3, "F");
             doc.setTextColor(255, 255, 255);
             doc.setFontSize(6);
-            doc.text("CONFIDENTIAL DRAFT", pageWidth - 28, 15, { align: "center", baseline: "middle" });
+            doc.text("CONFIDENTIAL DRAFT", pageWidth - 28, 14.2, { align: "center", baseline: "middle" });
         };
 
         const addThemedPage = () => {
@@ -894,8 +894,12 @@ function ReportsContent() {
         
         currentY += 8;
         doc.setFillColor(250, 250, 250); 
-        doc.setDrawColor(200, 200, 200); 
-        doc.rect(14, currentY, pageWidth - 28, 55, "FD");
+        doc.rect(14, currentY, pageWidth - 28, 55, "F");
+        doc.setDrawColor(200, 200, 200);
+        doc.setLineWidth(0.3);
+        doc.line(14, currentY, 14, currentY + 55); // Left
+        doc.line(pageWidth - 14, currentY, pageWidth - 14, currentY + 55); // Right
+        doc.line(14, currentY + 55, pageWidth - 14, currentY + 55); // Bottom
 
         // Donut Chart
         doc.setDrawColor(226, 232, 240); // Base ring slate-200
@@ -1008,8 +1012,12 @@ function ReportsContent() {
 
         currentY += 8;
         doc.setFillColor(250, 250, 250); 
-        doc.setDrawColor(200, 200, 200); 
-        doc.rect(14, currentY, pageWidth - 28, 35, "FD");
+        doc.rect(14, currentY, pageWidth - 28, 35, "F");
+        doc.setDrawColor(200, 200, 200);
+        doc.setLineWidth(0.3);
+        doc.line(14, currentY, 14, currentY + 35); // Left
+        doc.line(pageWidth - 14, currentY, pageWidth - 14, currentY + 35); // Right
+        doc.line(14, currentY + 35, pageWidth - 14, currentY + 35); // Bottom
 
         currentY += 6;
         // Prepared By Column
