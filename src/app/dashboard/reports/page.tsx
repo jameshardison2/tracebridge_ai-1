@@ -767,33 +767,40 @@ function ReportsContent() {
         const pageHeight = doc.internal.pageSize.getHeight();
 
         // Theme Configuration Based on Active Template
-        let titleString = "PRE-SUBMISSION GAP ANALYSIS REPORT";
-        let fileNameSuffix = "510k-Matrix";
+        let titleString = "Q-SUB DIVERGENCE MATRIX";
+        let subTitleString = "PRE-SUBMISSION GAP ANALYSIS REPORT";
+        let fileNameSuffix = "QSub-Matrix";
         let themeColor = [11, 40, 102]; // #0b2866
 
         if (activeTemplate === 'capa') {
-            titleString = "CORRECTIVE AND PREVENTIVE ACTION (CAPA) REPORT";
-            fileNameSuffix = "CAPA-Report";
+            titleString = "DRIFT REMEDIATION LOG";
+            subTitleString = "CORRECTIVE AND PREVENTIVE ACTION (CAPA) REPORT";
+            fileNameSuffix = "Remediation-Log";
             themeColor = [26, 82, 118]; // #1a5276
         } else if (activeTemplate === 'complaint') {
-            titleString = "POST-MARKET SURVEILLANCE & MAUDE SIGNALS";
-            fileNameSuffix = "Sentinel-Signals";
+            titleString = "EMERGING SIGNAL DRIFT";
+            subTitleString = "POST-MARKET SURVEILLANCE & MAUDE SIGNALS";
+            fileNameSuffix = "Signal-Drift";
             themeColor = [146, 43, 33]; // #922b21
         } else if (activeTemplate === 'executive') {
-            titleString = "EXECUTIVE AUDIT ATTESTATION BRIEF";
-            fileNameSuffix = "Executive-Brief";
+            titleString = "EXECUTIVE ANTI-DRIFT BRIEF";
+            subTitleString = "EXECUTIVE AUDIT ATTESTATION REPORT";
+            fileNameSuffix = "Anti-Drift-Brief";
             themeColor = [14, 102, 85]; // #0e6655
         } else if (activeTemplate === 'predicate') {
-            titleString = "SUBSTANTIAL EQUIVALENCE DRIFT ANALYSIS";
+            titleString = "PREDICATE FEATURE DRIFT";
+            subTitleString = "SUBSTANTIAL EQUIVALENCE EVALUATION";
             fileNameSuffix = "Predicate-Drift";
             themeColor = [211, 84, 0]; // #d35400
         } else if (activeTemplate === 'standards') {
-            titleString = "CONSENSUS STANDARD DRIFT AUDIT";
+            titleString = "REGULATORY STANDARDS DRIFT";
+            subTitleString = "CONSENSUS STANDARD AUDIT";
             fileNameSuffix = "Standard-Drift";
             themeColor = [74, 35, 90]; // #4a235a
         } else if (activeTemplate === 'supply') {
-            titleString = "SUPPLY CHAIN & MATERIAL DRIFT LOG";
-            fileNameSuffix = "Supply-Drift";
+            titleString = "SUPPLY CHAIN MATERIAL DRIFT";
+            subTitleString = "SUPPLY CHAIN & BOM DRIFT LOG";
+            fileNameSuffix = "Material-Drift";
             themeColor = [24, 106, 59]; // #186a3b
         }
 
@@ -865,8 +872,17 @@ function ReportsContent() {
         doc.text(titleLines, pageWidth / 2, 35, { align: "center" });
         
         let currentY = 35 + (titleLines.length * 10);
+        
+        doc.setFontSize(10);
+        doc.setTextColor(100, 116, 139); // slate-500
+        doc.setFont("helvetica", "bold");
+        doc.text(subTitleString.toUpperCase(), pageWidth / 2, currentY - 2, { align: "center", charSpace: 1 });
+        
+        currentY += 8;
+        
         const displayDeviceName = report.upload.deviceName ? report.upload.deviceName.replace(/demo\s*[-–:]*\s*/ig, '').replace(/^[-–:\s]+/, '').trim() : "Omnipod 5 / Horizon POD";
         
+        doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
         doc.setFontSize(16);
         doc.text(displayDeviceName, pageWidth / 2, currentY, { align: "center" });
         
@@ -1163,7 +1179,7 @@ function ReportsContent() {
             doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
             doc.setFontSize(16);
             doc.setFont("helvetica", "bold");
-            doc.text("PRE-SUBMISSION GAP ANALYSIS", pageWidth / 2, 26, { align: "center" });
+            doc.text("Q-SUB DIVERGENCE MATRIX", pageWidth / 2, 26, { align: "center" });
             doc.setFontSize(12);
             doc.text("REQUIREMENT TRACEABILITY MATRIX (AI ANALYSIS)", pageWidth / 2, 32, { align: "center" });
             
@@ -1852,13 +1868,13 @@ function ReportsContent() {
                                 {/* Unified Premium PDF Cover Renderer */}
                                 {(() => {
                                     const themeMap: Record<string, any> = {
-                                        '510k': { title: "PRE-SUBMISSION GAP ANALYSIS REPORT", bg: "bg-[#0b2866]", text: "text-[#0b2866]", border: "border-[#0b2866]" },
-                                        'supply': { title: "SUPPLY CHAIN & MATERIAL DRIFT LOG", bg: "bg-[#186a3b]", text: "text-[#186a3b]", border: "border-[#186a3b]" },
-                                        'standards': { title: "CONSENSUS STANDARD DRIFT AUDIT", bg: "bg-[#4a235a]", text: "text-[#4a235a]", border: "border-[#4a235a]" },
-                                        'predicate': { title: "SUBSTANTIAL EQUIVALENCE DRIFT ANALYSIS", bg: "bg-[#d35400]", text: "text-[#d35400]", border: "border-[#d35400]" },
-                                        'executive': { title: "EXECUTIVE AUDIT ATTESTATION BRIEF", bg: "bg-[#0e6655]", text: "text-[#0e6655]", border: "border-[#0e6655]" },
-                                        'complaint': { title: "POST-MARKET SURVEILLANCE & MAUDE SIGNALS", bg: "bg-[#922b21]", text: "text-[#922b21]", border: "border-[#922b21]" },
-                                        'capa': { title: "CORRECTIVE AND PREVENTIVE ACTION (CAPA) REPORT", bg: "bg-[#1a5276]", text: "text-[#1a5276]", border: "border-[#1a5276]" }
+                                        '510k': { title: "Q-SUB DIVERGENCE MATRIX", subTitle: "PRE-SUBMISSION GAP ANALYSIS REPORT", bg: "bg-[#0b2866]", text: "text-[#0b2866]", border: "border-[#0b2866]" },
+                                        'supply': { title: "SUPPLY CHAIN MATERIAL DRIFT", subTitle: "SUPPLY CHAIN & BOM DRIFT LOG", bg: "bg-[#186a3b]", text: "text-[#186a3b]", border: "border-[#186a3b]" },
+                                        'standards': { title: "REGULATORY STANDARDS DRIFT", subTitle: "CONSENSUS STANDARD AUDIT", bg: "bg-[#4a235a]", text: "text-[#4a235a]", border: "border-[#4a235a]" },
+                                        'predicate': { title: "PREDICATE FEATURE DRIFT", subTitle: "SUBSTANTIAL EQUIVALENCE EVALUATION", bg: "bg-[#d35400]", text: "text-[#d35400]", border: "border-[#d35400]" },
+                                        'executive': { title: "EXECUTIVE ANTI-DRIFT BRIEF", subTitle: "EXECUTIVE AUDIT ATTESTATION REPORT", bg: "bg-[#0e6655]", text: "text-[#0e6655]", border: "border-[#0e6655]" },
+                                        'complaint': { title: "EMERGING SIGNAL DRIFT", subTitle: "POST-MARKET SURVEILLANCE & MAUDE SIGNALS", bg: "bg-[#922b21]", text: "text-[#922b21]", border: "border-[#922b21]" },
+                                        'capa': { title: "DRIFT REMEDIATION LOG", subTitle: "CORRECTIVE AND PREVENTIVE ACTION (CAPA) REPORT", bg: "bg-[#1a5276]", text: "text-[#1a5276]", border: "border-[#1a5276]" }
                                     };
                                     const theme = themeMap[activeTemplate] || themeMap['510k'];
                                     const selectedSub = availableSubmissions.find(s => s.id === enginePayload);
@@ -1900,7 +1916,8 @@ function ReportsContent() {
                                             {/* Title Block */}
                                             <div className="px-5 mt-4 border-b border-slate-200 pb-3">
                                                 <h1 className={`text-lg font-black leading-[1.1] pr-4 uppercase ${theme.text}`}>{theme.title}</h1>
-                                                <h2 className={`text-xs font-bold mt-2 leading-tight ${theme.text}`}>{deviceName}</h2>
+                                                <h2 className="text-[6.5px] font-bold text-slate-500 uppercase tracking-widest mt-1.5">{theme.subTitle}</h2>
+                                                <h2 className={`text-xs font-bold mt-2.5 leading-tight ${theme.text}`}>{deviceName}</h2>
                                                 <h3 className={`text-xs font-bold leading-tight ${theme.text}`}>(Automated Insulin Delivery)</h3>
                                                 <div className="text-[6px] text-slate-500 mt-1 uppercase tracking-widest flex items-center gap-1.5 font-bold">
                                                     <span>Device Class II</span> <span className="text-slate-300">•</span> <span>510(k) submission pathway</span>
