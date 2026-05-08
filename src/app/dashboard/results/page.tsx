@@ -1135,7 +1135,7 @@ function ResultsContent() {
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-2xl font-black tracking-tight flex items-center gap-3 text-slate-900">
-                            Alignment Intelligence
+                            Q-Sub Drift Intelligence
                             {report?.upload?.status === 'complete' ? (
                                 <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-widest flex items-center gap-1 border border-emerald-200">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>

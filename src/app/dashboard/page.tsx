@@ -207,7 +207,7 @@ export default function DashboardPage() {
                     <Link href="/dashboard/upload" className="bg-slate-800/80 backdrop-blur-sm border border-slate-700 hover:border-slate-500 transition-colors p-4 rounded-lg flex gap-3 items-start relative group cursor-pointer block">
                         <div className="w-8 h-8 rounded bg-slate-700 text-white flex items-center justify-center font-bold shrink-0 shadow-sm group-hover:bg-slate-600 transition-colors">1</div>
                         <div>
-                            <h3 className="text-sm font-bold text-white mb-1">New Analysis</h3>
+                            <h3 className="text-sm font-bold text-white mb-1">Drift Detection</h3>
                             <p className="text-[11px] text-slate-400 leading-relaxed">Drop in your DHF and FDA minutes. We'll automatically build a semantic knowledge graph of your entire device architecture.</p>
                         </div>
                         <ArrowRight className="w-5 h-5 text-slate-600 absolute -right-3 top-1/2 -translate-y-1/2 z-20 hidden md:block" />
@@ -216,7 +216,7 @@ export default function DashboardPage() {
                     <Link href="/dashboard/results" className="bg-indigo-900/40 backdrop-blur-sm border border-indigo-500/30 hover:border-indigo-400/60 transition-colors p-4 rounded-lg flex gap-3 items-start relative group cursor-pointer block">
                         <div className="w-8 h-8 rounded bg-indigo-600 text-white flex items-center justify-center font-bold shrink-0 shadow-md group-hover:bg-indigo-500 transition-colors">2</div>
                         <div>
-                            <h3 className="text-sm font-bold text-indigo-100 mb-1">AI Intelligence</h3>
+                            <h3 className="text-sm font-bold text-indigo-100 mb-1">Q-Sub Intelligence</h3>
                             <p className="text-[11px] text-indigo-300 leading-relaxed">Our specialized Gemini models instantly detect "Q-Sub Drift" and proactively flag missing FDA regulatory requirements.</p>
                         </div>
                         <ArrowRight className="w-5 h-5 text-slate-600 absolute -right-3 top-1/2 -translate-y-1/2 z-20 hidden md:block" />
@@ -225,7 +225,7 @@ export default function DashboardPage() {
                     <Link href="/dashboard/pipeline" className="bg-emerald-900/40 backdrop-blur-sm border border-emerald-500/30 hover:border-emerald-400/60 transition-colors p-4 rounded-lg flex gap-3 items-start relative group cursor-pointer block">
                         <div className="w-8 h-8 rounded bg-emerald-600 text-white flex items-center justify-center font-bold shrink-0 shadow-md group-hover:bg-emerald-500 transition-colors">3</div>
                         <div>
-                            <h3 className="text-sm font-bold text-emerald-100 mb-1">Remediation Pipeline</h3>
+                            <h3 className="text-sm font-bold text-emerald-100 mb-1">Drift Remediation</h3>
                             <p className="text-[11px] text-emerald-300 leading-relaxed">Triage the flagged gaps. We automatically sync with your Jira board to seamlessly assign fixes directly to your engineering team.</p>
                         </div>
                         <ArrowRight className="w-5 h-5 text-slate-600 absolute -right-3 top-1/2 -translate-y-1/2 z-20 hidden md:block" />
@@ -411,7 +411,7 @@ export default function DashboardPage() {
                                 <div className="flex gap-4">
                                     <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold shrink-0">1</div>
                                     <div>
-                                        <h3 className="font-bold text-slate-800">Run a New Analysis</h3>
+                                        <h3 className="font-bold text-slate-800">Run a Drift Detection Analysis</h3>
                                         <p className="text-sm text-slate-500 mt-1">Click <strong>Initiate Alignment Audit</strong> to upload your own Design History File, Risk Management, or V&V documents. We will instantly build a semantic knowledge graph of your device.</p>
                                         <p className="text-sm text-slate-500 mt-2"><em>Don't have a document ready?</em> Click <strong>Populate Demo Data</strong> on the dashboard to safely load a pre-configured Q-Sub alignment example.</p>
                                     </div>

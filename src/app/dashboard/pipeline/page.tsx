@@ -304,10 +304,10 @@ export default function PipelinePage() {
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-2xl font-black flex items-center gap-3 text-slate-900 tracking-tight">
-                            Alignment Lifecycle Pipeline
+                            Q-Sub Drift Remediation Pipeline
                         </h1>
                         <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight mt-1">
-                            Kanban state machine • Drag alignment gaps between columns • Live Jira Integration Active
+                            Kanban anti-drift machine • Drag Q-Sub drift gaps between columns • Live Jira Integration Active
                         </p>
                     </div>
                     {isMounted && uploads.length > 0 && (

@@ -411,9 +411,9 @@ export default function UploadPage() {
     return (
         <div>
             <div className="mb-8">
-                <h1 className="text-3xl font-black tracking-tight text-slate-900 mb-2">New Analysis</h1>
+                <h1 className="text-3xl font-black tracking-tight text-slate-900 mb-2">Q-Sub Drift Detection Analysis</h1>
                 <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight">
-                    Upload your V&V documents for automatic, semantic AI compliance gap detection.
+                    Upload your V&V documents for automatic, semantic AI Q-Sub drift detection.
                 </p>
             </div>
 

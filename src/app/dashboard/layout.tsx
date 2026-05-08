@@ -36,13 +36,13 @@ const navItems: NavItem[] = [
     { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
     
     { isDivider: true, heading: "Core Workflow" },
-    { href: "/dashboard/upload", label: "New Analysis", icon: Upload },
-    { href: "/dashboard/results", label: "AI Intelligence", icon: FileSearch },
-    { href: "/dashboard/pipeline", label: "Remediation Pipeline", icon: Kanban },
+    { href: "/dashboard/upload", label: "Drift Detection", icon: Upload },
+    { href: "/dashboard/results", label: "Q-Sub Intelligence", icon: FileSearch },
+    { href: "/dashboard/pipeline", label: "Drift Remediation", icon: Kanban },
     
     { isDivider: true, heading: "Outputs & Tracking" },
     { href: "/dashboard/traceability", label: "Traceability Matrix", icon: Network },
-    { href: "/dashboard/reports", label: "Saved Reports", icon: FileText },
+    { href: "/dashboard/reports", label: "Submission Hub", icon: FileText },
     
     { isDivider: true, heading: "Settings & Management" },
     { href: "/dashboard/team", label: "Workspace & Team", icon: Users },
