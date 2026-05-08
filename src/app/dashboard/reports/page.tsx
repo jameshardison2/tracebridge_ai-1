@@ -1657,131 +1657,166 @@ function ReportsContent() {
                             </div>
 
                             <div className="flex-1 py-8 px-6 relative z-10 flex flex-col items-center overflow-y-auto custom-scrollbar bg-slate-100/50">
-                                {/* Preview Dynamic Rendering */}
-                                {activeTemplate === '510k' && (() => {
+                                {/* Unified Premium PDF Cover Renderer */}
+                                {(() => {
+                                    const themeMap: Record<string, any> = {
+                                        '510k': { title: "PRE-SUBMISSION GAP ANALYSIS REPORT", bg: "bg-[#0b2866]", text: "text-[#0b2866]", border: "border-[#0b2866]" },
+                                        'supply': { title: "SUPPLY CHAIN & MATERIAL DRIFT LOG", bg: "bg-[#186a3b]", text: "text-[#186a3b]", border: "border-[#186a3b]" },
+                                        'standards': { title: "CONSENSUS STANDARD DRIFT AUDIT", bg: "bg-[#4a235a]", text: "text-[#4a235a]", border: "border-[#4a235a]" },
+                                        'predicate': { title: "SUBSTANTIAL EQUIVALENCE DRIFT ANALYSIS", bg: "bg-[#d35400]", text: "text-[#d35400]", border: "border-[#d35400]" },
+                                        'executive': { title: "EXECUTIVE AUDIT ATTESTATION BRIEF", bg: "bg-[#0e6655]", text: "text-[#0e6655]", border: "border-[#0e6655]" },
+                                        'complaint': { title: "POST-MARKET SURVEILLANCE & MAUDE SIGNALS", bg: "bg-[#922b21]", text: "text-[#922b21]", border: "border-[#922b21]" },
+                                        'capa': { title: "CORRECTIVE AND PREVENTIVE ACTION (CAPA) REPORT", bg: "bg-[#1a5276]", text: "text-[#1a5276]", border: "border-[#1a5276]" }
+                                    };
+                                    const theme = themeMap[activeTemplate] || themeMap['510k'];
+                                    const selectedSub = availableSubmissions.find(s => s.id === enginePayload);
+                                    const deviceName = selectedSub ? selectedSub.deviceName : "Omnipod 5 / Horizon POD";
+                                    
+                                    // Mock compliance math for demo presentation
                                     const mockGaps = [
                                         { id: '1', standard: "IEC 62304", section: "5.1", requirement: "Software Development Plan", status: "compliant", file: "SwDevPlan_v2.pdf", conf: 98 },
                                         { id: '2', standard: "IEC 62304", section: "5.2", requirement: "Software Requirements Spec", status: "gap_detected", file: "DOCUMENTATION MISSING", conf: 0 },
                                         { id: '3', standard: "ISO 14971", section: "4.1", requirement: "Risk Management Plan", status: "compliant", file: "Risk_Mgmt_Final.pdf", conf: 94 },
                                         { id: '4', standard: "ISO 10993", section: "1", requirement: "Biological Evaluation", status: "needs_review", file: "Bio_Test_Rep.pdf", conf: 62 },
                                     ];
+                                    const activeGaps = report?.upload?.gapResults || mockGaps;
+                                    const compliantCount = activeGaps.filter((g: any) => g.status === 'compliant').length || 0;
+                                    const criticalCount = activeGaps.filter((g: any) => g.status === 'gap_detected').length || 6;
+                                    const pendingCount = activeGaps.filter((g: any) => g.status === 'needs_review').length || 0;
+                                    const totalCount = activeGaps.length || 6;
+                                    
+                                    // Pseudo readiness stat
+                                    const readinessScore = Math.round((compliantCount / totalCount) * 100) || 0;
+
                                     return (
-                                        <div className="space-y-4 animate-in fade-in zoom-in-95 duration-300">
-                                            <div className="bg-indigo-900/40 border border-indigo-500/30 p-4 rounded-xl backdrop-blur-sm relative overflow-hidden">
-                                                <div className="absolute top-0 right-0 p-4 opacity-10"><FileText className="w-16 h-16 text-indigo-400" /></div>
-                                                <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-1 flex items-center gap-2">
-                                                    <div className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></div> eSTAR Mapping Active
-                                                </h3>
-                                                <p className="text-[10px] text-indigo-200/70 max-w-[85%] leading-relaxed">
-                                                    Dynamically formatting and packaging 510(k) submission controls into FDA electronic submission volumes.
-                                                </p>
+                                        <div className={`w-full max-w-[340px] bg-white aspect-[8.5/11] shadow-xl relative flex flex-col border-[3px] ${theme.border} transform transition-all duration-500 animate-in fade-in zoom-in-95`}>
+                                            
+                                            {/* Header */}
+                                            <div className="px-5 pt-6 pb-2 flex justify-between items-start">
+                                                <div className="flex items-center gap-2">
+                                                    <div className={`p-1 ${theme.bg} text-white rounded-sm shadow-sm flex items-center justify-center`}><Shield className="w-4 h-4" /></div>
+                                                    <div>
+                                                        <div className={`text-[12px] font-black tracking-tight leading-none ${theme.text}`}>TraceBridge</div>
+                                                        <div className={`text-[5px] font-bold tracking-widest uppercase opacity-80 ${theme.text}`}>AI Compliance Copilot</div>
+                                                    </div>
+                                                </div>
+                                                <div className={`px-2 py-0.5 rounded-full ${theme.bg} text-white text-[5px] font-bold tracking-widest uppercase shadow-sm`}>
+                                                    Confidential Draft
+                                                </div>
                                             </div>
-                                            <div className="space-y-3 mt-4">
-                                                {mockGaps.map((gap, i) => (
-                                                    <div key={i} className="bg-slate-800/60 border border-slate-700/50 p-3.5 rounded-lg flex flex-col gap-2 relative overflow-hidden group hover:border-slate-500 transition-all">
-                                                        <div className="flex items-center justify-between">
-                                                            <div className="flex items-center gap-2">
-                                                                {gap.status === 'compliant' ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> : gap.status === 'gap_detected' ? <AlertTriangle className="w-3.5 h-3.5 text-rose-400" /> : <Shield className="w-3.5 h-3.5 text-amber-400" />}
-                                                                <span className="text-[11px] font-bold text-white">{gap.standard} § {gap.section}</span>
-                                                            </div>
-                                                            <div className="text-[9px] font-bold uppercase tracking-widest text-slate-400 px-2 py-0.5 bg-slate-900/50 rounded border border-slate-700/50">Vol {i+8}</div>
-                                                        </div>
-                                                        <div className="text-[10px] text-slate-400 truncate">{gap.requirement}</div>
-                                                        <div className="flex items-center justify-between mt-1 pt-2 border-t border-slate-700/50">
-                                                            <div className="flex items-center gap-1.5 text-[9px] font-mono text-slate-300">
-                                                                <FileSearch className="w-3 h-3 text-indigo-400" />
-                                                                {gap.file}
-                                                            </div>
-                                                            <div className={`text-[9px] font-bold ${gap.conf > 90 ? 'text-emerald-400' : gap.conf > 50 ? 'text-amber-400' : 'text-rose-400'}`}>
-                                                                CONFIDENCE: {gap.conf}%
+
+                                            {/* Title Block */}
+                                            <div className="px-5 mt-4 border-b border-slate-200 pb-3">
+                                                <h1 className={`text-lg font-black leading-[1.1] pr-4 uppercase ${theme.text}`}>{theme.title}</h1>
+                                                <h2 className={`text-xs font-bold mt-2 leading-tight ${theme.text}`}>{deviceName}</h2>
+                                                <h3 className={`text-xs font-bold leading-tight ${theme.text}`}>(Automated Insulin Delivery)</h3>
+                                                <div className="text-[6px] text-slate-500 mt-1 uppercase tracking-widest flex items-center gap-1.5 font-bold">
+                                                    <span>Device Class II</span> <span className="text-slate-300">•</span> <span>510(k) submission pathway</span>
+                                                </div>
+                                                <div className="flex items-center gap-2 mt-2 text-[5px] font-bold text-slate-800 tracking-wider">
+                                                    <span className="uppercase">{engineRta ? "FDA RTA Checklist Format" : "Standard Review Format"}</span>
+                                                    <span className="text-slate-300">|</span>
+                                                    <span>ISO 14971:2019</span>
+                                                    <span className="text-slate-300">|</span>
+                                                    <span>IEC 62304</span>
+                                                </div>
+                                            </div>
+
+                                            {/* OVERALL COMPLIANCE READINESS */}
+                                            <div className="px-5 mt-3">
+                                                <div className={`w-full py-1 ${theme.bg} text-center text-white text-[6px] font-bold tracking-[0.1em] uppercase shadow-inner`}>
+                                                    Overall Compliance Readiness
+                                                </div>
+                                                <div className="border border-slate-200 border-t-0 p-3 flex items-center justify-between bg-slate-50/30">
+                                                    
+                                                    {/* Donut Chart */}
+                                                    <div className="flex flex-col items-center ml-2">
+                                                        <div className={`w-14 h-14 rounded-full border-[3px] border-slate-200 relative flex items-center justify-center`}>
+                                                            <div className={`absolute inset-0 rounded-full border-[3px] ${theme.border} border-l-transparent border-b-transparent transform -rotate-45`}></div>
+                                                            <div className="text-center mt-0.5">
+                                                                <div className={`text-lg font-black leading-none tracking-tighter ${theme.text}`}>{readinessScore}%</div>
+                                                                <div className={`text-[5px] font-bold tracking-widest uppercase ${theme.text}`}>Ready</div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                ))}
+
+                                                    {/* Stats List */}
+                                                    <div className="space-y-1 w-32 mr-2">
+                                                        <div className="flex justify-between items-center text-[6px] font-bold">
+                                                            <span className="flex items-center gap-1.5 text-slate-700"><CheckCircle2 className="w-2.5 h-2.5 text-emerald-600" /> Compliant requirements</span>
+                                                            <span className="text-slate-900">{compliantCount}</span>
+                                                        </div>
+                                                        <div className="flex justify-between items-center text-[6px] font-bold">
+                                                            <span className="flex items-center gap-1.5 text-slate-700"><AlertTriangle className="w-2.5 h-2.5 text-rose-600" /> Critical gaps detected</span>
+                                                            <span className="text-slate-900">{criticalCount}</span>
+                                                        </div>
+                                                        <div className="flex justify-between items-center text-[6px] font-bold">
+                                                            <span className="flex items-center gap-1.5 text-slate-700"><div className="w-2.5 h-2.5 rounded-full bg-amber-500 flex items-center justify-center text-white text-[5px]">!</div> Items pending review</span>
+                                                            <span className="text-slate-900">{pendingCount}</span>
+                                                        </div>
+                                                        <div className="flex justify-between items-center text-[6px] font-bold">
+                                                            <span className="flex items-center gap-1.5 text-slate-700"><div className="w-2.5 h-2.5 rounded-full bg-blue-600 flex items-center justify-center text-white text-[5px]">#</div> Total requirements evaluated</span>
+                                                            <span className="text-slate-900">{totalCount}</span>
+                                                        </div>
+                                                        <div className="flex justify-between items-center text-[6px] font-bold pt-0.5 mt-0.5 border-t border-slate-200">
+                                                            <span className="flex items-center gap-1.5 text-slate-700"><div className="w-2.5 h-2.5 rounded-full bg-purple-600 flex items-center justify-center text-white text-[5px]">⏱</div> Est. remediation effort</span>
+                                                            <span className="text-slate-900">4-8 weeks</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* ATTESTATION */}
+                                            <div className="px-5 mt-auto mb-4">
+                                                <div className={`w-full py-1 ${theme.bg} text-center text-white text-[6px] font-bold tracking-[0.1em] uppercase shadow-inner mb-2`}>
+                                                    Submission Attestation
+                                                </div>
+                                                <div className="grid grid-cols-3 gap-2">
+                                                    <div>
+                                                        <div className="text-[4px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Prepared By</div>
+                                                        <div className="text-[6px] font-bold text-slate-800 leading-tight">{authorName}</div>
+                                                        <div className="text-[4px] text-slate-500">{authorTitle}</div>
+                                                        <div className="mt-1 font-serif text-[9px] text-slate-800/70 italic transform -rotate-2 select-none pr-2">
+                                                            James N. Hardison
+                                                        </div>
+                                                        <div className="mt-0 border-t border-slate-300 w-16"></div>
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-[4px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Reviewed By</div>
+                                                        <div className="text-[6px] font-bold text-slate-800 leading-tight">{reviewerName}</div>
+                                                        <div className="text-[4px] text-slate-500">{reviewerTitle}</div>
+                                                        <div className="mt-1 font-serif text-[9px] text-slate-800/70 italic transform -rotate-1 select-none pr-2">
+                                                            Team Lead
+                                                        </div>
+                                                        <div className="mt-0 border-t border-slate-300 w-16"></div>
+                                                    </div>
+                                                    <div className="flex flex-col items-end text-right">
+                                                        <div className="text-[4px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Report Date</div>
+                                                        <div className="flex items-center gap-1 text-[6px] font-bold text-slate-800 mt-0.5">
+                                                            <FileText className="w-2.5 h-2.5 text-slate-600" />
+                                                            May 7, 2026
+                                                        </div>
+                                                        <div className="text-[4px] text-slate-500 mt-2">Version 3.2</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* FOOTER */}
+                                            <div className={`w-full py-2 mt-auto ${theme.bg} flex items-center justify-center gap-2 text-white shadow-inner`}>
+                                                <div className="w-3 h-3 rounded-full border border-white/50 flex items-center justify-center">
+                                                    <div className="w-1 h-1 rounded-full bg-white"></div>
+                                                </div>
+                                                <span className="text-[6px] font-bold tracking-[0.15em] uppercase">Target Submission</span>
+                                                <span className="text-[8px] font-bold tracking-wider ml-2">JUN 6, 2026</span>
                                             </div>
                                         </div>
                                     );
                                 })()}
+                            </div>
 
-                                {activeTemplate === 'capa' && (
-                                    <div className="space-y-4 animate-in fade-in zoom-in-95 duration-300">
-                                        <div className="bg-rose-950/40 border border-rose-500/30 p-4 rounded-xl backdrop-blur-sm relative overflow-hidden">
-                                            <h3 className="text-xs font-bold text-rose-400 uppercase tracking-widest mb-1 flex items-center gap-2">
-                                                <AlertTriangle className="w-4 h-4" /> CAPA Generation Engine
-                                            </h3>
-                                            <p className="text-[10px] text-rose-200/70">
-                                                Compiling major non-conformances into actionable Jira/eQMS tickets.
-                                            </p>
-                                        </div>
-                                        {[
-                                            { id: "CAPA-001", req: "Cybersecurity Threat Model", owner: "Engineering", risk: "CRITICAL", mit: "Implement AES-256 encryption for data at rest." },
-                                            { id: "CAPA-002", req: "Usability Formative Testing", owner: "UX Research", risk: "MAJOR", mit: "Schedule 15 user sessions with Target Profile A." }
-                                        ].map((capa, i) => (
-                                            <div key={i} className="bg-slate-800/80 border border-slate-700/50 rounded-xl p-4 shadow-lg relative overflow-hidden group">
-                                                <div className={`absolute left-0 top-0 h-full w-1 ${capa.risk === 'CRITICAL' ? 'bg-rose-500' : 'bg-amber-500'}`}></div>
-                                                <div className="flex justify-between items-center mb-3 ml-2">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="text-[10px] font-bold text-slate-300 bg-slate-900/50 px-2 py-0.5 rounded border border-slate-700/50">{capa.id}</span>
-                                                        <span className={`text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded ${capa.risk === 'CRITICAL' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}`}>{capa.risk}</span>
-                                                    </div>
-                                                    <span className="text-[9px] font-bold text-slate-400 uppercase">{capa.owner}</span>
-                                                </div>
-                                                <p className="text-[11px] font-bold text-white mb-2 ml-2 leading-tight">{capa.req}</p>
-                                                {engineMitigations && (
-                                                    <div className="ml-2 mt-3 p-2.5 bg-indigo-900/20 border border-indigo-500/20 rounded-lg">
-                                                        <div className="text-[8px] font-bold text-indigo-400 uppercase tracking-widest mb-1 flex items-center gap-1"><CheckCircle2 className="w-2.5 h-2.5" /> AI Mitigation</div>
-                                                        <p className="text-[10px] text-indigo-200/80 leading-relaxed">{capa.mit}</p>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-
-                                {activeTemplate === 'complaint' && (
-                                    <div className="space-y-4 animate-in fade-in zoom-in-95 duration-300">
-                                        <div className="bg-emerald-950/40 border border-emerald-500/30 p-4 rounded-xl backdrop-blur-sm">
-                                            <h3 className="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-1 flex items-center gap-2">
-                                                <Eye className="w-4 h-4" /> Active MAUDE Vector
-                                            </h3>
-                                            <p className="text-[10px] text-emerald-200/70">
-                                                Correlating predicate device adverse events from the FDA database.
-                                            </p>
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-3 mt-4">
-                                            <div className="bg-slate-800/80 border border-slate-700/50 p-4 rounded-xl flex flex-col items-center justify-center relative overflow-hidden">
-                                                <div className="absolute inset-0 bg-amber-500/5"></div>
-                                                <span className="text-3xl font-black text-amber-400 tracking-tighter">14</span>
-                                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1 z-10">MDR Reports</span>
-                                            </div>
-                                            <div className="bg-slate-800/80 border border-slate-700/50 p-4 rounded-xl flex flex-col items-center justify-center relative overflow-hidden">
-                                                <div className="absolute inset-0 bg-rose-500/5"></div>
-                                                <span className="text-3xl font-black text-rose-400 tracking-tighter">2</span>
-                                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1 z-10">Recalls</span>
-                                            </div>
-                                        </div>
-                                        <div className="space-y-2.5 mt-2">
-                                            {[
-                                                { date: "Oct 2025", desc: "Software malfunction resulted in delayed therapy.", type: "Malfunction" },
-                                                { date: "Aug 2025", desc: "Battery depleted without generating appropriate alarm.", type: "Adverse Event" },
-                                                { date: "Mar 2025", desc: "Device enclosure cracked during normal operation.", type: "Injury" }
-                                            ].map((evt, i) => (
-                                                <div key={i} className="bg-slate-800/60 p-3 border border-slate-700/50 rounded-lg flex items-start gap-3 hover:bg-slate-700/50 transition-colors">
-                                                    <div className={`w-1.5 h-10 rounded-full shrink-0 ${evt.type === 'Injury' ? 'bg-rose-500' : evt.type === 'Adverse Event' ? 'bg-amber-500' : 'bg-indigo-500'}`}></div>
-                                                    <div>
-                                                        <div className="flex justify-between items-center mb-1">
-                                                            <span className="text-[9px] font-bold uppercase text-slate-400">{evt.date}</span>
-                                                            <span className="text-[8px] font-bold text-slate-500 uppercase px-1.5 py-0.5 bg-slate-900 rounded">{evt.type}</span>
-                                                        </div>
-                                                        <p className="text-[10px] text-slate-300 leading-snug">{evt.desc}</p>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {activeTemplate === 'executive' && (
+                            {/* Action Buttons Fixed at Bottom of Preview */}
+                            <div className="mt-auto pt-4 bg-white border-t border-slate-200 relative z-20 px-6 pb-6">
+                                {hasUnresolvedGaps && (
                                     <div className="mb-3 px-3 py-2 bg-rose-50 border border-rose-200 rounded-lg flex items-start gap-2">
                                         <AlertTriangle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
                                         <div>
@@ -1798,86 +1833,13 @@ function ReportsContent() {
                                         </div>
                                     </div>
                                 )}
-                                    <div className="grid gap-3 pb-2">
-                                        {activeTemplate === '510k' && (
-                                            <div className="grid grid-cols-2 gap-3">
-                                                <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
-                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> eSTAR Mapping (.csv)
-                                                </button>
-                                                <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
-                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> 510(k) Submission Matrix (.pdf)
-                                                </button>
-                                                <button onClick={() => { generateLiveReport(); setViewMode('preview'); }} className="col-span-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] transition-all">
-                                                    <ExternalLink className="w-[1.125rem] h-[1.125rem]" /> View Interactive Matrix
-                                                </button>
-                                            </div>
-                                        )}
-                                        {activeTemplate === 'capa' && (
-                                            <div className="grid grid-cols-2 gap-3">
-                                                <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
-                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> Action Log (.csv)
-                                                </button>
-                                                <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
-                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> Report (.pdf)
-                                                </button>
-                                                <button onClick={() => { generateLiveReport(); setViewMode('preview'); }} className="col-span-2 bg-rose-600 hover:bg-rose-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(225,29,72,0.3)] hover:shadow-[0_0_25px_rgba(225,29,72,0.5)] transition-all">
-                                                    <ExternalLink className="w-[1.125rem] h-[1.125rem]" /> View Interactive Action Log
-                                                </button>
-                                            </div>
-                                        )}
-                                        {activeTemplate === 'complaint' && (
-                                            <div className="grid grid-cols-2 gap-3">
-                                                <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
-                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> MAUDE (.csv)
-                                                </button>
-                                                <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
-                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> Report (.pdf)
-                                                </button>
-                                                <button onClick={() => { generateLiveReport(); setViewMode('preview'); }} className="col-span-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(5,150,105,0.3)] hover:shadow-[0_0_25px_rgba(5,150,105,0.5)] transition-all">
-                                                    <ExternalLink className="w-[1.125rem] h-[1.125rem]" /> View Interactive Signals Board
-                                                </button>
-                                            </div>
-                                        )}
-                                        {activeTemplate === 'executive' && (
-                                            <div className="grid grid-cols-1 gap-3">
-                                                <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-                                                    <ExternalLink className="w-[1.125rem] h-[1.125rem]" /> Generate Audit Attestation (.pdf)
-                                                </button>
-                                            </div>
-                                        )}
-                                        {activeTemplate === 'predicate' && (
-                                            <div className="grid grid-cols-2 gap-3">
-                                                <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
-                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> Export Data (.csv)
-                                                </button>
-                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="col-span-1 bg-sky-600 hover:bg-sky-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(14,165,233,0.3)] hover:shadow-[0_0_25px_rgba(14,165,233,0.5)] transition-all">
-                                                    <Printer className="w-[1.125rem] h-[1.125rem]" /> Render Predicate Report (.pdf)
-                                                </button>
-                                            </div>
-                                        )}
-                                        {activeTemplate === 'standards' && (
-                                            <div className="grid grid-cols-2 gap-3">
-                                                <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
-                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> Export Data (.csv)
-                                                </button>
-                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="col-span-1 bg-purple-600 hover:bg-purple-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:shadow-[0_0_25px_rgba(168,85,247,0.5)] transition-all">
-                                                    <Printer className="w-[1.125rem] h-[1.125rem]" /> Render Standards Report (.pdf)
-                                                </button>
-                                            </div>
-                                        )}
-                                        {activeTemplate === 'supply' && (
-                                            <div className="grid grid-cols-2 gap-3">
-                                                <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
-                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> Export Data (.csv)
-                                                </button>
-                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="col-span-1 bg-orange-600 hover:bg-orange-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(234,88,12,0.3)] hover:shadow-[0_0_25px_rgba(234,88,12,0.5)] transition-all">
-                                                    <Printer className="w-[1.125rem] h-[1.125rem]" /> Render Supply Report (.pdf)
-                                                </button>
-                                            </div>
-                                        )}
-                                    </div>
+                                <div className="grid gap-3 pb-2">
+                                    <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] disabled:opacity-50 disabled:cursor-not-allowed">
+                                        <Printer className="w-[1.125rem] h-[1.125rem]" /> Export PDF Report
+                                    </button>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
