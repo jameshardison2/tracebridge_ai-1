@@ -843,12 +843,6 @@ function ReportsContent() {
             doc.setTextColor(255, 255, 255);
             doc.setFontSize(6);
             doc.text("CONFIDENTIAL DRAFT", pageWidth - 28, 15, { align: "center", baseline: "middle" });
-            
-            // Footer (Page Number)
-            doc.setTextColor(150, 150, 150);
-            doc.setFontSize(8);
-            doc.setFont("helvetica", "normal");
-            doc.text(`Page ${(doc.internal as any).getNumberOfPages()}`, pageWidth / 2, pageHeight - 10, { align: "center" });
         };
 
         const addThemedPage = () => {
@@ -904,12 +898,28 @@ function ReportsContent() {
         doc.rect(14, currentY, pageWidth - 28, 55, "FD");
 
         // Donut Chart
-        doc.setDrawColor(220, 220, 220); // Base ring
-        doc.setLineWidth(5);
-        doc.circle(55, currentY + 27, 20, "S");
-        doc.setDrawColor(185, 28, 28); // Red active ring for 0%
-        // Approximate a 3/4 circle for aesthetic
-        doc.circle(55, currentY + 27, 20, "S"); 
+        doc.setDrawColor(226, 232, 240); // Base ring slate-200
+        doc.setLineWidth(4);
+        doc.circle(55, currentY + 27, 18, "S");
+        doc.setDrawColor(themeColor[0], themeColor[1], themeColor[2]); // theme color
+        
+        const cx = 55;
+        const cy = currentY + 27;
+        const r = 18;
+        const startAngle = -Math.PI / 2;
+        const score = report.summary.complianceScore || 0;
+        const endAngle = startAngle + (score / 100) * (2 * Math.PI);
+        const steps = 40;
+        let prevX = cx + r * Math.cos(startAngle);
+        let prevY = cy + r * Math.sin(startAngle);
+        for (let j = 1; j <= steps; j++) {
+            let theta = startAngle + (endAngle - startAngle) * (j / steps);
+            let x = cx + r * Math.cos(theta);
+            let y = cy + r * Math.sin(theta);
+            doc.line(prevX, prevY, x, y);
+            prevX = x;
+            prevY = y;
+        }
         
         doc.setTextColor(185, 28, 28);
         doc.setFontSize(28);
@@ -1014,10 +1024,10 @@ function ReportsContent() {
         doc.text(authorTitle || "Senior Regulatory Affairs", 20, currentY + 11);
         
         doc.setFont("times", "italic");
-        doc.setFontSize(14);
+        doc.setFontSize(11);
         doc.setTextColor(51, 65, 85);
-        const aName = doc.splitTextToSize(authorName || "James N. Hardison", 50);
-        doc.text(aName, 20, currentY + 20);
+        const aName = doc.splitTextToSize(authorName || "James N. Hardison", 55);
+        doc.text(aName, 20, currentY + 19);
         doc.setFont("helvetica", "normal");
         
         doc.setDrawColor(203, 213, 225); // slate-300
@@ -1038,10 +1048,10 @@ function ReportsContent() {
         doc.text(reviewerTitle || "RA Director", 85, currentY + 11);
         
         doc.setFont("times", "italic");
-        doc.setFontSize(14);
+        doc.setFontSize(11);
         doc.setTextColor(51, 65, 85);
-        const rName = doc.splitTextToSize(reviewerName || "My Team", 50);
-        doc.text(rName, 85, currentY + 20);
+        const rName = doc.splitTextToSize(reviewerName || "My Team", 55);
+        doc.text(rName, 85, currentY + 19);
         doc.setFont("helvetica", "normal");
         
         doc.setDrawColor(203, 213, 225); // slate-300
@@ -1061,13 +1071,13 @@ function ReportsContent() {
         doc.text("Version 3.2", pageWidth - 20, currentY + 20, { align: "right" });
 
         // --- Footer Target Submission Bar ---
-        currentY += 30;
+        const targetY = pageHeight - 20;
         doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
-        doc.rect(14, currentY, pageWidth - 28, 12, "F");
+        doc.rect(14, targetY, pageWidth - 28, 12, "F");
         doc.setTextColor(255, 255, 255);
         doc.setFontSize(14);
         doc.setFont("helvetica", "bold");
-        doc.text(`TARGET SUBMISSION        JUN 6, 2026`, pageWidth / 2, currentY + 8, { align: "center" });
+        doc.text(`TARGET SUBMISSION        JUN 6, 2026`, pageWidth / 2, targetY + 8, { align: "center" });
 
         // ==========================================
         // 2. DYNAMIC CONTENT BASED ON TEMPLATE
@@ -1514,8 +1524,8 @@ function ReportsContent() {
             doc.setTextColor(15, 23, 42);
             doc.setFontSize(8);
             doc.setFont("helvetica", "bold");
-            doc.text(`TraceBridge AI Core  •  Generated ${new Date().toLocaleDateString('en-US')}`, pageWidth / 2, pageHeight - 10, { align: "center" });
-            doc.text(`${i} / ${totalPages}`, pageWidth - 14, pageHeight - 10, { align: "right" });
+            doc.text(`TraceBridge AI Core  •  Generated ${new Date().toLocaleDateString('en-US')}`, pageWidth / 2, pageHeight - 6, { align: "center" });
+            doc.text(`${i} / ${totalPages}`, pageWidth - 14, pageHeight - 6, { align: "right" });
         }
 
         const filenameDevicePDF = displayDeviceName.replace(/[^a-zA-Z0-9]/g, "_").replace(/_+/g, "_");
@@ -1866,7 +1876,7 @@ function ReportsContent() {
                                             {/* Header */}
                                             <div className="px-5 pt-6 pb-2 flex justify-between items-start">
                                                 <div className="flex items-center gap-2">
-                                                    <div className={`p-1 ${theme.bg} text-white rounded-sm shadow-sm flex items-center justify-center`}><Shield className="w-4 h-4" /></div>
+                                                    <img src="/brand/icon_transparent.png" alt="TraceBridge" className="w-6 h-6 object-contain" />
                                                     <div>
                                                         <div className={`text-[12px] font-black tracking-tight leading-none ${theme.text}`}>TraceBridge</div>
                                                         <div className={`text-[5px] font-bold tracking-widest uppercase opacity-80 ${theme.text}`}>AI Compliance Copilot</div>
