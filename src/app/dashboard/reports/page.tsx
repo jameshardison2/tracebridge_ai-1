@@ -912,13 +912,15 @@ function ReportsContent() {
         const steps = 40;
         let prevX = cx + r * Math.cos(startAngle);
         let prevY = cy + r * Math.sin(startAngle);
-        for (let j = 1; j <= steps; j++) {
-            let theta = startAngle + (endAngle - startAngle) * (j / steps);
-            let x = cx + r * Math.cos(theta);
-            let y = cy + r * Math.sin(theta);
-            doc.line(prevX, prevY, x, y);
-            prevX = x;
-            prevY = y;
+        if (score > 0) {
+            for (let j = 1; j <= steps; j++) {
+                let theta = startAngle + (endAngle - startAngle) * (j / steps);
+                let x = cx + r * Math.cos(theta);
+                let y = cy + r * Math.sin(theta);
+                doc.line(prevX, prevY, x, y);
+                prevX = x;
+                prevY = y;
+            }
         }
         
         doc.setTextColor(185, 28, 28);
@@ -1378,9 +1380,9 @@ function ReportsContent() {
                 doc.setTextColor(15, 23, 42);
                 doc.setFontSize(16);
                 const reqTitleLines = doc.splitTextToSize(gap.requirement, pageWidth - 28);
-                doc.text(reqTitleLines, 14, 45);
+                doc.text(reqTitleLines, 14, 52);
                 
-                let y = 45 + reqTitleLines.length * 6;
+                let y = 52 + reqTitleLines.length * 6;
                 doc.setFontSize(9);
                 doc.setTextColor(100, 116, 139);
                 const devicePrefix = "GAP";
@@ -1524,8 +1526,8 @@ function ReportsContent() {
             doc.setTextColor(15, 23, 42);
             doc.setFontSize(8);
             doc.setFont("helvetica", "bold");
-            doc.text(`TraceBridge AI Core  •  Generated ${new Date().toLocaleDateString('en-US')}`, pageWidth / 2, pageHeight - 6, { align: "center" });
-            doc.text(`${i} / ${totalPages}`, pageWidth - 14, pageHeight - 6, { align: "right" });
+            doc.text(`TraceBridge AI Core  •  Generated ${new Date().toLocaleDateString('en-US')}`, pageWidth / 2, pageHeight - 12, { align: "center" });
+            doc.text(`${i} / ${totalPages}`, pageWidth - 14, pageHeight - 12, { align: "right" });
         }
 
         const filenameDevicePDF = displayDeviceName.replace(/[^a-zA-Z0-9]/g, "_").replace(/_+/g, "_");
