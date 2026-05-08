@@ -151,6 +151,7 @@ function ReportsContent() {
     const [pendingExport, setPendingExport] = useState<'pdf' | 'csv' | null>(null);
     const [viewMode, setViewMode] = useState<'builder' | 'preview'>('builder');
     const [bypassLockout, setBypassLockout] = useState(false);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     // Custom Report Signatures State
     const [authorName, setAuthorName] = useState("James N. Hardison II");
@@ -1497,19 +1498,50 @@ function ReportsContent() {
                             <div className="space-y-6">
                                 <div>
                                     <label className="block text-sm font-bold text-slate-800 mb-2">Evaluated Submission Scope</label>
-                                    <div className="relative">
-                                        <select value={enginePayload} onChange={(e) => setEnginePayload(e.target.value)} className="w-full appearance-none bg-slate-50/50 border border-slate-200 rounded-lg px-4 py-3 text-sm font-medium text-slate-600 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer hover:bg-slate-50 transition-colors">
-                                            {availableSubmissions.length > 0 ? (
-                                                availableSubmissions.map(sub => (
-                                                    <option key={sub.id} value={sub.id}>
-                                                        {sub.deviceName} ({sub.status === 'complete' ? 'Active Audit' : sub.status})
-                                                    </option>
-                                                ))
-                                            ) : (
-                                                <option disabled>Loading database submissions...</option>
-                                            )}
-                                        </select>
-                                        <ChevronDown className="w-4 h-4 text-slate-400 absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" />
+                                    <div className="relative z-50">
+                                        {(() => {
+                                            const selectedSub = availableSubmissions.find(s => s.id === enginePayload);
+                                            return (
+                                                <>
+                                                    <button 
+                                                        onClick={() => setIsDropdownOpen(!isDropdownOpen)} 
+                                                        className={`w-full flex items-center justify-between bg-white border ${isDropdownOpen ? 'border-indigo-500 ring-2 ring-indigo-500/20' : 'border-slate-200'} rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-700 hover:border-indigo-300 transition-all shadow-sm`}
+                                                    >
+                                                        <span className="truncate">{selectedSub ? `${selectedSub.deviceName} (${selectedSub.status === 'complete' ? 'Active Audit' : selectedSub.status})` : 'Loading database submissions...'}</span>
+                                                        <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                                                    </button>
+                                                    
+                                                    {isDropdownOpen && (
+                                                        <>
+                                                            <div className="fixed inset-0 z-40" onClick={() => setIsDropdownOpen(false)}></div>
+                                                            <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl overflow-hidden z-50 py-1 animate-in fade-in slide-in-from-top-2 duration-200 max-h-64 overflow-y-auto">
+                                                                {availableSubmissions.length > 0 ? (
+                                                                    availableSubmissions.map(sub => (
+                                                                        <button
+                                                                            key={sub.id}
+                                                                            onClick={() => {
+                                                                                setEnginePayload(sub.id);
+                                                                                setIsDropdownOpen(false);
+                                                                            }}
+                                                                            className={`w-full text-left px-4 py-3 text-sm transition-colors hover:bg-slate-50 ${enginePayload === sub.id ? 'bg-indigo-50/50 text-indigo-700 font-bold' : 'text-slate-600 font-medium'}`}
+                                                                        >
+                                                                            <div className="flex items-center gap-2">
+                                                                                {enginePayload === sub.id && <Check className="w-4 h-4 text-indigo-600 shrink-0" />}
+                                                                                <span className={enginePayload !== sub.id ? 'pl-6 truncate' : 'truncate'}>
+                                                                                    {sub.deviceName} <span className="text-slate-400 font-normal ml-1">({sub.status === 'complete' ? 'Active Audit' : sub.status})</span>
+                                                                                </span>
+                                                                            </div>
+                                                                        </button>
+                                                                    ))
+                                                                ) : (
+                                                                    <div className="px-4 py-3 text-sm text-slate-500 italic">No submissions found...</div>
+                                                                )}
+                                                            </div>
+                                                        </>
+                                                    )}
+                                                </>
+                                            );
+                                        })()}
                                     </div>
                                 </div>
 
