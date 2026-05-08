@@ -23,7 +23,10 @@ import {
     FileSearch,
     Printer,
     Loader2,
-    Check
+    Check,
+    GitCompare,
+    BookOpen,
+    Truck
 } from "lucide-react";
 
 interface GapResult {
@@ -138,7 +141,7 @@ function ReportsContent() {
     const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
 
     // Customization Engine State
-    const [activeTemplate, setActiveTemplate] = useState<'510k' | 'capa' | 'complaint' | 'executive'>('510k');
+    const [activeTemplate, setActiveTemplate] = useState<'510k' | 'capa' | 'complaint' | 'executive' | 'predicate' | 'standards' | 'supply'>('510k');
     const [enginePayload, setEnginePayload] = useState<string>('');
     const [availableSubmissions, setAvailableSubmissions] = useState<any[]>([]);
     const [engineFramework, setEngineFramework] = useState('fda');
@@ -536,6 +539,9 @@ function ReportsContent() {
         else if (activeTemplate === 'capa') reportTitle = "Drift-Remediation-Log";
         else if (activeTemplate === 'complaint') reportTitle = "Emerging-Signal-Drift";
         else if (activeTemplate === 'executive') reportTitle = "Anti-Drift-Executive-Audit";
+        else if (activeTemplate === 'predicate') reportTitle = "Substantial-Equivalence-Drift";
+        else if (activeTemplate === 'standards') reportTitle = "Consensus-Standard-Drift";
+        else if (activeTemplate === 'supply') reportTitle = "Supply-Chain-Drift";
 
         let uniqueGaps: any[] = [];
         if (activeTemplate === '510k') {
@@ -586,6 +592,9 @@ function ReportsContent() {
         if (activeTemplate === '510k') headers = ["Q-SUB INPUT", "SECTION", "DHF EVIDENCE", "DRIFT STATUS", "ATTACHMENT"];
         else if (activeTemplate === 'capa') headers = ["DRIFT ID", "OWNER", "PRIORITY", "ROOT CAUSE", "REMEDIATION ACTION", "DUE DATE", "STATUS"];
         else if (activeTemplate === 'complaint') headers = ["SIGNAL KEY", "EVENT DATE", "PRODUCT CODE", "MANUFACTURER", "EVENT TYPE", "DRIFT IMPLICATION"];
+        else if (activeTemplate === 'predicate') headers = ["PREDICATE 510(k)", "FEATURE CLAIM", "DHF DEVIATION", "DRIFT RISK LEVEL"];
+        else if (activeTemplate === 'standards') headers = ["Q-SUB STANDARD", "DHF APPLIED VERSION", "CURRENT FDA VERSION", "VERSION DRIFT IMPLICATION"];
+        else if (activeTemplate === 'supply') headers = ["Q-SUB APPROVED MATERIAL", "CURRENT BOM COMPONENT", "SUPPLIER", "BIOCOMPATIBILITY DRIFT"];
         else headers = ["GAP ID", "STANDARD", "§", "REQUIREMENT", "STATUS", "CONFIDENCE", "EVIDENCE FOUND", "SOURCE DOC", "PG", "ASSIGNEE", "STATE", "DETECTED", "PRIORITY"];
         
         const rows = uniqueGaps.map((r: any, i: number) => {
@@ -656,6 +665,27 @@ function ReportsContent() {
                     `"${manufacturer.replace(/"/g, '""')}"`,
                     `"${eventType}"`,
                     `"${problemDesc.replace(/"/g, '""')}"`
+                ].join(",");
+            } else if (activeTemplate === 'predicate') {
+                return [
+                    `"Predicate K192482"`,
+                    `"Feature: ${r.requirement.substring(0, 40)}..."`,
+                    `"DHF shows deviation from predicate specs"`,
+                    `"${priority}"`
+                ].join(",");
+            } else if (activeTemplate === 'standards') {
+                return [
+                    `"${r.standard}"`,
+                    `"2018 Version (Obsolete)"`,
+                    `"2023 FDA Recognized"`,
+                    `"Retesting required for ${r.section}"`
+                ].join(",");
+            } else if (activeTemplate === 'supply') {
+                return [
+                    `"Approved Resin Polycarbonate"`,
+                    `"Supplier Substitution: ABS"`,
+                    `"Supplier: MedPlastics Inc."`,
+                    `"Biocomp (ISO 10993) invalidated"`
                 ].join(",");
             } else {
                 return [
@@ -751,6 +781,18 @@ function ReportsContent() {
             titleString = "EXECUTIVE AUDIT ATTESTATION BRIEF";
             fileNameSuffix = "Executive-Brief";
             themeColor = [245, 158, 11]; // Amber
+        } else if (activeTemplate === 'predicate') {
+            titleString = "SUBSTANTIAL EQUIVALENCE DRIFT ANALYSIS";
+            fileNameSuffix = "Predicate-Drift";
+            themeColor = [14, 165, 233]; // Sky Blue
+        } else if (activeTemplate === 'standards') {
+            titleString = "CONSENSUS STANDARD DRIFT AUDIT";
+            fileNameSuffix = "Standard-Drift";
+            themeColor = [168, 85, 247]; // Purple
+        } else if (activeTemplate === 'supply') {
+            titleString = "SUPPLY CHAIN & MATERIAL DRIFT LOG";
+            fileNameSuffix = "Supply-Drift";
+            themeColor = [234, 88, 12]; // Orange
         }
 
         // ==========================================
@@ -1427,6 +1469,24 @@ function ReportsContent() {
                                     <p className="text-xs text-slate-500 mt-1 pl-6">High-level RTA risk profile and drift velocity summary for VP sign-off.</p>
                                     <p className="text-xs text-slate-500 mt-1 pr-2">High-level readiness charts and attestation sign-offs. Ideal for C-Suite.</p>
                                 </button>
+                                <button onClick={() => setActiveTemplate('predicate')} className={`text-left p-4 rounded-xl border-2 transition-all ${activeTemplate === 'predicate' ? 'border-sky-500 bg-sky-50/50 relative overflow-hidden' : 'border-slate-200 hover:border-sky-300 hover:bg-slate-50'}`}>
+                                    {activeTemplate === 'predicate' && <div className="absolute top-0 left-0 w-1 h-full bg-sky-500"></div>}
+                                    <h3 className={`font-bold text-base ${activeTemplate === 'predicate' ? 'text-sky-900' : 'text-slate-800'} flex items-center gap-2`}><GitCompare className="w-4 h-4 text-sky-500" /> Predicate Feature Drift</h3>
+                                    <p className="text-xs text-slate-500 mt-1 pl-6">Flags "Technological Characteristic Drift" against K-number predicates.</p>
+                                    <p className="text-xs text-slate-500 mt-1 pr-2">Prevents loss of Substantial Equivalence due to over-engineering.</p>
+                                </button>
+                                <button onClick={() => setActiveTemplate('standards')} className={`text-left p-4 rounded-xl border-2 transition-all ${activeTemplate === 'standards' ? 'border-purple-500 bg-purple-50/50 relative overflow-hidden' : 'border-slate-200 hover:border-purple-300 hover:bg-slate-50'}`}>
+                                    {activeTemplate === 'standards' && <div className="absolute top-0 left-0 w-1 h-full bg-purple-500"></div>}
+                                    <h3 className={`font-bold text-base ${activeTemplate === 'standards' ? 'text-purple-900' : 'text-slate-800'} flex items-center gap-2`}><BookOpen className="w-4 h-4 text-purple-500" /> Regulatory Standards Drift</h3>
+                                    <p className="text-xs text-slate-500 mt-1 pl-6">Live sync against FDA Recognized Consensus Standards database.</p>
+                                    <p className="text-xs text-slate-500 mt-1 pr-2">Flags engineers using deprecated standards (e.g., ISO 10993:2018 vs 2023).</p>
+                                </button>
+                                <button onClick={() => setActiveTemplate('supply')} className={`text-left p-4 rounded-xl border-2 transition-all ${activeTemplate === 'supply' ? 'border-orange-500 bg-orange-50/50 relative overflow-hidden' : 'border-slate-200 hover:border-orange-300 hover:bg-slate-50'}`}>
+                                    {activeTemplate === 'supply' && <div className="absolute top-0 left-0 w-1 h-full bg-orange-500"></div>}
+                                    <h3 className={`font-bold text-base ${activeTemplate === 'supply' ? 'text-orange-900' : 'text-slate-800'} flex items-center gap-2`}><Truck className="w-4 h-4 text-orange-500" /> Supply Chain Material Drift</h3>
+                                    <p className="text-xs text-slate-500 mt-1 pl-6">Tracks Bill of Materials (BOM) against Q-Sub approved formulations.</p>
+                                    <p className="text-xs text-slate-500 mt-1 pr-2">Prevents unverified resin/supplier changes from invalidating Biocomp testing.</p>
+                                </button>
                             </div>
                         </div>
 
@@ -1732,6 +1792,115 @@ function ReportsContent() {
                                     </div>
                                 )}
 
+                                {activeTemplate === 'predicate' && (
+                                    <div className="flex-1 flex flex-col items-center justify-center p-6 bg-slate-900 border border-sky-500/30 rounded-xl">
+                                        <div className="w-full flex items-center justify-between mb-8 pb-4 border-b border-slate-700/50">
+                                            <div>
+                                                <h3 className="text-xl font-bold text-white flex items-center gap-2"><GitCompare className="w-5 h-5 text-sky-400" /> Predicate Divergence</h3>
+                                                <p className="text-xs text-slate-400 mt-1">Comparing against K192482</p>
+                                            </div>
+                                            <div className="text-right">
+                                                <div className="text-3xl font-black text-sky-400">82%</div>
+                                                <div className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Substantial Equivalence Match</div>
+                                            </div>
+                                        </div>
+                                        <div className="w-full grid grid-cols-3 gap-4 mb-8">
+                                            <div className="bg-slate-800/80 rounded-lg p-4 border border-slate-700/50">
+                                                <div className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1">Aligned Features</div>
+                                                <div className="text-2xl font-bold text-white">41</div>
+                                            </div>
+                                            <div className="bg-slate-800/80 rounded-lg p-4 border border-sky-500/30 shadow-[0_0_15px_rgba(14,165,233,0.15)] relative overflow-hidden">
+                                                <div className="absolute top-0 right-0 w-1 h-full bg-sky-500"></div>
+                                                <div className="text-sky-300 text-[10px] font-bold uppercase tracking-widest mb-1">Novel Claims</div>
+                                                <div className="text-2xl font-bold text-white">7</div>
+                                            </div>
+                                            <div className="bg-slate-800/80 rounded-lg p-4 border border-rose-500/30 shadow-[0_0_15px_rgba(225,29,72,0.15)] relative overflow-hidden">
+                                                <div className="absolute top-0 right-0 w-1 h-full bg-rose-500"></div>
+                                                <div className="text-rose-300 text-[10px] font-bold uppercase tracking-widest mb-1">Drift Risk</div>
+                                                <div className="text-2xl font-bold text-white">High</div>
+                                            </div>
+                                        </div>
+                                        <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden flex shadow-inner">
+                                            <div className="h-full bg-emerald-500 w-[60%]" title="Exact Match"></div>
+                                            <div className="h-full bg-sky-500 w-[22%]" title="Minor Deviation"></div>
+                                            <div className="h-full bg-rose-500 w-[18%]" title="Novel Feature / Drift"></div>
+                                        </div>
+                                        <div className="w-full flex justify-between text-[10px] text-slate-500 mt-2 font-medium">
+                                            <span>Exact Match (60%)</span>
+                                            <span>Minor Deviation (22%)</span>
+                                            <span className="text-rose-400">Novel/Drift (18%)</span>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {activeTemplate === 'standards' && (
+                                    <div className="flex-1 flex flex-col items-center justify-center p-6 bg-slate-900 border border-purple-500/30 rounded-xl relative overflow-hidden">
+                                        <div className="absolute -top-24 -right-24 w-48 h-48 bg-purple-600/20 rounded-full blur-3xl"></div>
+                                        <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-fuchsia-600/20 rounded-full blur-3xl"></div>
+                                        
+                                        <div className="w-full flex flex-col mb-6 relative z-10">
+                                            <div className="flex items-center gap-3 mb-2">
+                                                <div className="p-2 bg-purple-500/20 rounded-lg"><BookOpen className="w-6 h-6 text-purple-400" /></div>
+                                                <h3 className="text-xl font-bold text-white">Consensus Standards Drift</h3>
+                                            </div>
+                                            <p className="text-xs text-slate-400">Live sync against FDA database (Updated Today)</p>
+                                        </div>
+                                        
+                                        <div className="w-full space-y-3 relative z-10">
+                                            {[
+                                                { code: 'ISO 14971', current: '2019', used: '2019', status: 'Aligned', color: 'emerald' },
+                                                { code: 'IEC 62304', current: '2006/AMD1:2015', used: '2006', status: 'Deprecated (Drift)', color: 'rose' },
+                                                { code: 'ISO 10993-1', current: '2018', used: '2009', status: 'Obsolete (Severe)', color: 'rose' }
+                                            ].map((std, i) => (
+                                                <div key={i} className={`flex items-center justify-between p-4 rounded-lg border bg-slate-800/80 ${std.color === 'rose' ? 'border-rose-500/30 shadow-[0_0_10px_rgba(225,29,72,0.1)]' : 'border-slate-700'}`}>
+                                                    <div>
+                                                        <div className="text-white font-bold">{std.code}</div>
+                                                        <div className="text-[10px] text-slate-400 mt-0.5">DHF Applied: <span className="text-slate-300">{std.used}</span></div>
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <div className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${std.color === 'rose' ? 'text-rose-400' : 'text-emerald-400'}`}>{std.status}</div>
+                                                        <div className="text-xs text-slate-300">FDA Requires: {std.current}</div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {activeTemplate === 'supply' && (
+                                    <div className="flex-1 flex flex-col items-center justify-center p-6 bg-slate-900 border border-orange-500/30 rounded-xl relative overflow-hidden">
+                                        <div className="w-full flex items-center justify-between mb-8 pb-4 border-b border-slate-700/50">
+                                            <div>
+                                                <h3 className="text-xl font-bold text-white flex items-center gap-2"><Truck className="w-5 h-5 text-orange-400" /> BOM Material Drift</h3>
+                                                <p className="text-xs text-slate-400 mt-1">Checking for undocumented supplier changes</p>
+                                            </div>
+                                            <div className="px-3 py-1.5 bg-orange-500/20 border border-orange-500/50 rounded-lg">
+                                                <div className="text-[10px] text-orange-400 font-bold uppercase tracking-widest text-center">Alert Status</div>
+                                                <div className="text-sm font-bold text-white mt-0.5">2 Deviations</div>
+                                            </div>
+                                        </div>
+
+                                        <div className="w-full bg-slate-800/80 rounded-lg p-5 border border-slate-700/50">
+                                            <div className="flex justify-between text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-4 pb-2 border-b border-slate-700/50">
+                                                <span>Component</span>
+                                                <span>Drift Implication</span>
+                                            </div>
+                                            <div className="space-y-4">
+                                                <div className="flex justify-between items-start">
+                                                    <div>
+                                                        <div className="text-sm font-bold text-white">Main Housing Resin</div>
+                                                        <div className="text-[11px] text-slate-400 mt-0.5 line-through decoration-rose-500">Q-Sub: Polycarbonate (Supplier A)</div>
+                                                        <div className="text-[11px] text-orange-400 mt-0.5">Found in DHF: ABS (Supplier B)</div>
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <span className="inline-block px-2 py-1 bg-rose-500/20 text-rose-300 text-[10px] font-bold rounded">Biocomp Invalidated</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
                                 {/* Action Buttons Fixed at Bottom of Preview */}
                                 <div className="mt-auto pt-6 bg-[#0f172a] relative z-20">
                                 {hasUnresolvedGaps && (
@@ -1795,6 +1964,36 @@ function ReportsContent() {
                                             <div className="grid grid-cols-1 gap-3">
                                                 <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                                                     <ExternalLink className="w-[1.125rem] h-[1.125rem]" /> Generate Audit Attestation (.pdf)
+                                                </button>
+                                            </div>
+                                        )}
+                                        {activeTemplate === 'predicate' && (
+                                            <div className="grid grid-cols-2 gap-3">
+                                                <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> Export Data (.csv)
+                                                </button>
+                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="col-span-1 bg-sky-600 hover:bg-sky-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(14,165,233,0.3)] hover:shadow-[0_0_25px_rgba(14,165,233,0.5)] transition-all">
+                                                    <Printer className="w-[1.125rem] h-[1.125rem]" /> Render Predicate Report (.pdf)
+                                                </button>
+                                            </div>
+                                        )}
+                                        {activeTemplate === 'standards' && (
+                                            <div className="grid grid-cols-2 gap-3">
+                                                <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> Export Data (.csv)
+                                                </button>
+                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="col-span-1 bg-purple-600 hover:bg-purple-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:shadow-[0_0_25px_rgba(168,85,247,0.5)] transition-all">
+                                                    <Printer className="w-[1.125rem] h-[1.125rem]" /> Render Standards Report (.pdf)
+                                                </button>
+                                            </div>
+                                        )}
+                                        {activeTemplate === 'supply' && (
+                                            <div className="grid grid-cols-2 gap-3">
+                                                <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('csv'), 500); }} className="bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                                                    <Download className="w-[1.125rem] h-[1.125rem]" /> Export Data (.csv)
+                                                </button>
+                                                <button onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="col-span-1 bg-orange-600 hover:bg-orange-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl shadow-[0_0_20px_rgba(234,88,12,0.3)] hover:shadow-[0_0_25px_rgba(234,88,12,0.5)] transition-all">
+                                                    <Printer className="w-[1.125rem] h-[1.125rem]" /> Render Supply Report (.pdf)
                                                 </button>
                                             </div>
                                         )}
