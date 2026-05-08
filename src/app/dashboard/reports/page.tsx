@@ -800,6 +800,31 @@ function ReportsContent() {
         // 1. COVER PAGE (Unified Premium Layout)
         // ==========================================
         
+        const img = new Image();
+        img.src = '/brand/icon_transparent.png';
+        let isLogoLoaded = false;
+        try {
+            await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = reject;
+            });
+            isLogoLoaded = true;
+        } catch (e) {
+            console.warn("Logo failed to load for PDF");
+        }
+
+        const addThemedPage = () => {
+            doc.addPage();
+            doc.setFillColor(255, 255, 255);
+            doc.rect(0, 0, pageWidth, pageHeight, "F");
+            doc.setDrawColor(themeColor[0], themeColor[1], themeColor[2]);
+            doc.setLineWidth(3);
+            doc.rect(0, 0, pageWidth, pageHeight, "S");
+            if (isLogoLoaded) {
+                doc.addImage(img, 'PNG', 14, 14, 6, 6);
+            }
+        };
+
         // Full Page Border
         doc.setFillColor(255, 255, 255);
         doc.rect(0, 0, pageWidth, pageHeight, "F");
@@ -810,8 +835,12 @@ function ReportsContent() {
         
         // --- Header ---
         // Brand icon box
-        doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
-        doc.roundedRect(14, 20, 8, 8, 1, 1, "F");
+        if (isLogoLoaded) {
+            doc.addImage(img, 'PNG', 14, 20, 8, 8);
+        } else {
+            doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
+            doc.roundedRect(14, 20, 8, 8, 1, 1, "F");
+        }
         
         doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
         doc.setFontSize(16);
@@ -845,8 +874,6 @@ function ReportsContent() {
         
         doc.setFontSize(14);
         doc.text(displayDeviceName, 14, currentY);
-        currentY += 6;
-        doc.text("(Automated Insulin Delivery)", 14, currentY);
         
         currentY += 8;
         doc.setFontSize(9);
@@ -871,7 +898,7 @@ function ReportsContent() {
         currentY += 8;
         doc.setFillColor(248, 250, 252); // slate-50
         doc.setDrawColor(226, 232, 240); // slate-200
-        doc.rect(14, currentY, pageWidth - 28, 40, "FD");
+        doc.rect(14, currentY, pageWidth - 28, 55, "FD");
 
         // Donut Chart
         doc.setDrawColor(226, 232, 240); // Base ring
@@ -947,7 +974,7 @@ function ReportsContent() {
         doc.setFont("times", "italic");
         doc.setFontSize(14);
         doc.setTextColor(51, 65, 85);
-        doc.text("James N. Hardison", 14, currentY + 17);
+        doc.text(authorName || "James N. Hardison", 14, currentY + 17);
         doc.setFont("helvetica", "normal");
         
         doc.setDrawColor(203, 213, 225); // slate-300
@@ -969,7 +996,7 @@ function ReportsContent() {
         doc.setFont("times", "italic");
         doc.setFontSize(14);
         doc.setTextColor(51, 65, 85);
-        doc.text("Team Lead", 80, currentY + 17);
+        doc.text(reviewerName || "Team Lead", 80, currentY + 17);
         doc.setFont("helvetica", "normal");
         
         doc.setDrawColor(203, 213, 225); // slate-300
@@ -1024,7 +1051,7 @@ function ReportsContent() {
         }
 
         if (activeTemplate === 'executive') {
-            doc.addPage();
+            addThemedPage();
             doc.setFillColor(15, 23, 42); // Dark slate
             doc.rect(14, 14, pageWidth - 28, 10, "F");
             doc.setTextColor(255, 255, 255);
@@ -1050,8 +1077,8 @@ function ReportsContent() {
             
             gaps.forEach((gap, i) => {
                 if (y > pageHeight - 30) {
-                    doc.addPage();
-                    y = 20;
+                    addThemedPage();
+                    y = 30;
                 }
                 doc.setFontSize(10);
                 doc.setTextColor(185, 28, 28);
@@ -1064,7 +1091,7 @@ function ReportsContent() {
             });
         } else if (activeTemplate === '510k') {
             // 510(k) Traceability Matrix (Data Table)
-            doc.addPage();
+            addThemedPage();
             doc.setFillColor(15, 23, 42); // Dark slate
             doc.rect(14, 14, pageWidth - 28, 10, "F");
             doc.setTextColor(255, 255, 255);
@@ -1086,8 +1113,8 @@ function ReportsContent() {
             for (let i = 0; i < uniqueGaps.length; i++) {
                 const item = uniqueGaps[i];
                 if (y > pageHeight - 20) {
-                    doc.addPage();
-                    y = 20;
+                    addThemedPage();
+                    y = 30;
                     doc.setDrawColor(226, 232, 240);
                     doc.line(14, y, pageWidth - 14, y);
                     y += 6;
@@ -1132,7 +1159,7 @@ function ReportsContent() {
                 }
                 doc.text(evLines, 162, y);
                 
-                const blockHeight = Math.max(stdLines.length, reqLines.length, evLines.length) * 4 + 4;
+                const blockHeight = Math.max(stdLines.length, reqLines.length, evLines.length) * 6 + 6;
                 y += blockHeight;
                 doc.setDrawColor(226, 232, 240);
                 doc.line(14, y - 2, pageWidth - 14, y - 2);
@@ -1158,7 +1185,7 @@ function ReportsContent() {
                 console.error("OpenFDA MAUDE fetch failed", e);
             }
 
-            doc.addPage();
+            addThemedPage();
             doc.setFillColor(15, 23, 42);
             doc.rect(0, 0, pageWidth, 40, "F");
             doc.setTextColor(255, 255, 255);
@@ -1172,8 +1199,8 @@ function ReportsContent() {
             for (let i = 0; i < gaps.length; i++) {
                 const gap = gaps[i];
                 if (y > pageHeight - 60) {
-                    doc.addPage();
-                    y = 20;
+                    addThemedPage();
+                    y = 30;
                 }
                 
                 const event = maudeEvents[i % Math.max(maudeEvents.length, 1)] || {};
@@ -1208,7 +1235,7 @@ function ReportsContent() {
         } else {
             // CAPA or default detailed layout
             for (let i = 0; i < gaps.length; i++) {
-                doc.addPage();
+                addThemedPage();
                 const gap = gaps[i];
                 
                 // Header bar (Premium Dark Slate)
