@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, Suspense, useRef } from "react";
-import { DancingScriptB64 } from "@/lib/fonts";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
@@ -764,9 +763,6 @@ function ReportsContent() {
 
         const doc = new jsPDF();
         
-        doc.addFileToVFS('DancingScript.ttf', DancingScriptB64);
-        doc.addFont('DancingScript.ttf', 'DancingScript', 'normal');
-        
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
 
@@ -978,10 +974,11 @@ function ReportsContent() {
         doc.setFont("helvetica", "normal");
         doc.text(authorTitle || "Senior Regulatory Affairs", 20, currentY + 11);
         
-        doc.setFont("DancingScript", "normal");
-        doc.setFontSize(18);
+        doc.setFont("times", "italic");
+        doc.setFontSize(14);
         doc.setTextColor(51, 65, 85);
-        doc.text(authorName || "James N. Hardison", 20, currentY + 22);
+        const aName = doc.splitTextToSize(authorName || "James N. Hardison", 50);
+        doc.text(aName, 20, currentY + 20);
         doc.setFont("helvetica", "normal");
         
         doc.setDrawColor(203, 213, 225); // slate-300
@@ -1001,10 +998,11 @@ function ReportsContent() {
         doc.setFont("helvetica", "normal");
         doc.text(reviewerTitle || "RA Director", 85, currentY + 11);
         
-        doc.setFont("DancingScript", "normal");
-        doc.setFontSize(18);
+        doc.setFont("times", "italic");
+        doc.setFontSize(14);
         doc.setTextColor(51, 65, 85);
-        doc.text(reviewerName || "My Team", 85, currentY + 22);
+        const rName = doc.splitTextToSize(reviewerName || "My Team", 50);
+        doc.text(rName, 85, currentY + 20);
         doc.setFont("helvetica", "normal");
         
         doc.setDrawColor(203, 213, 225); // slate-300
@@ -1150,10 +1148,10 @@ function ReportsContent() {
                 const secLines = doc.splitTextToSize(`§ ${item.section}`, w1 - 4);
                 const reqLines = doc.splitTextToSize(item.requirement, w2 - 4);
                 
-                const statusStr = item.status === 'gap_detected' ? "GAP\\nDETECTED" : (item.status === 'compliant' ? "COMPLIANT" : "REVIEW");
+                const statusStr = item.status === 'gap_detected' ? "GAP\nDETECTED" : (item.status === 'compliant' ? "COMPLIANT" : "REVIEW");
                 const statLines = doc.splitTextToSize(statusStr, w3 - 4);
                 
-                const cite = item.citations?.[0]?.source?.replace(/_v\d+/i, '') || (item.status === 'gap_detected' ? "DOCUMENTATION\\nMISSING" : report.upload.documents?.[0]?.fileName?.replace(/_v\d+/i, '') || "Source_Document.pdf");
+                const cite = item.citations?.[0]?.source?.replace(/_v\d+/i, '') || (item.status === 'gap_detected' ? "DOCUMENTATION\nMISSING" : report.upload.documents?.[0]?.fileName?.replace(/_v\d+/i, '') || "Source_Document.pdf");
                 const evLines = doc.splitTextToSize(cite, w4 - 4);
                 
                 const maxLines = Math.max(stdLines.length, secLines.length, reqLines.length, statLines.length, evLines.length);
