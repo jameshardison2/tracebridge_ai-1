@@ -1637,27 +1637,26 @@ function ReportsContent() {
 
                     {/* RIGHT COLUMN: STICKY PREVIEW */}
                     <div className="w-[400px] xl:w-[480px] shrink-0 sticky top-0 h-[calc(100vh-160px)]">
-                        <div className="bg-[#0f172a] h-full rounded-2xl border border-slate-800 shadow-2xl overflow-hidden flex flex-col relative text-white animate-in slide-in-from-right-4 duration-700 delay-100 fade-in">
-                            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-500/10 via-transparent to-transparent pointer-events-none" />
+                        <div className="bg-slate-50 h-full rounded-2xl border border-slate-200 shadow-inner overflow-hidden flex flex-col relative text-slate-800 animate-in slide-in-from-right-4 duration-700 delay-100 fade-in">
                             
-                            <div className="px-6 py-4 border-b border-slate-800/80 flex items-center justify-between relative z-10 bg-slate-900/60 backdrop-blur-md">
+                            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between relative z-10 bg-white/80 backdrop-blur-md shadow-sm">
                                 <div>
-                                    <h2 className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Layout Engine</h2>
-                                    <p className="text-[10px] text-slate-500 mt-0.5">Wireframe updates dynamically.</p>
+                                    <h2 className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Layout Engine</h2>
+                                    <p className="text-[10px] text-slate-400 mt-0.5">Wireframe updates dynamically.</p>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <button onClick={submitToEsg} disabled={isSubmittingEsg} className="bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-[10px] font-bold flex items-center gap-1.5 shadow-[0_0_10px_rgba(16,185,129,0.1)] transition-colors disabled:opacity-50">
+                                    <button onClick={submitToEsg} disabled={isSubmittingEsg} className="bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-[10px] font-bold flex items-center gap-1.5 shadow-sm transition-colors disabled:opacity-50">
                                         {isSubmittingEsg ? <Loader2 className="w-3 h-3 animate-spin" /> : <Shield className="w-3 h-3" />}
                                         {isSubmittingEsg ? "Transmitting..." : "Push to ESG (Test)"}
                                     </button>
-                                    <div className="flex items-center gap-2 px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
-                                        <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">Active</span>
+                                    <div className="flex items-center gap-2 px-2 py-0.5 rounded-full bg-white border border-slate-200 shadow-sm">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_4px_rgba(16,185,129,0.5)]"></div>
+                                        <span className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">Active</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="flex-1 p-6 relative z-10 flex flex-col overflow-y-auto custom-scrollbar">
+                            <div className="flex-1 py-8 px-6 relative z-10 flex flex-col items-center overflow-y-auto custom-scrollbar bg-slate-100/50">
                                 {/* Preview Dynamic Rendering */}
                                 {activeTemplate === '510k' && (() => {
                                     const mockGaps = [
@@ -1783,170 +1782,17 @@ function ReportsContent() {
                                 )}
 
                                 {activeTemplate === 'executive' && (
-                                    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300 h-full flex flex-col pb-4">
-                                        <div className="text-center mt-4 relative">
-                                            <div className="absolute inset-0 bg-indigo-500/10 blur-3xl rounded-full w-48 h-48 left-1/2 -translate-x-1/2"></div>
-                                            <div className="w-32 h-32 mx-auto rounded-full border-[6px] border-indigo-500/90 flex flex-col items-center justify-center bg-slate-900 relative z-10 shadow-[0_0_40px_rgba(79,70,229,0.2)]">
-                                                <span className="text-4xl font-extrabold text-white tracking-tighter">92<span className="text-xl">%</span></span>
-                                                <span className="text-[9px] text-indigo-300 font-bold uppercase tracking-widest mt-1">Ready</span>
-                                            </div>
-                                        </div>
-                                        <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl p-4">
-                                            <div className="flex justify-between items-center mb-2">
-                                                <span className="text-[10px] font-bold text-slate-300 uppercase">Compliance Gap Resolution</span>
-                                                <span className="text-[10px] font-bold text-emerald-400">14 / 16 Metrics</span>
-                                            </div>
-                                            <div className="w-full h-2 bg-slate-900 rounded-full overflow-hidden flex">
-                                                <div className="h-full bg-emerald-500 w-[85%]"></div>
-                                                <div className="h-full bg-rose-500 w-[15%]"></div>
-                                            </div>
-                                            <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-slate-700/50">
-                                                <div>
-                                                    <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">Prepared By</p>
-                                                    <p className="text-[11px] text-white font-medium">{authorName}</p>
-                                                    <p className="text-[9px] text-slate-400">{authorTitle}</p>
-                                                </div>
-                                                <div>
-                                                    <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">Reviewed By</p>
-                                                    <p className="text-[11px] text-white font-medium">{reviewerName}</p>
-                                                    <p className="text-[9px] text-slate-400">{reviewerTitle}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="mt-4 flex justify-between px-6">
-                                            <div className="w-28 border-b-2 border-slate-600/80 pb-1 text-center">
-                                                <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Attestation Signature</span>
-                                            </div>
-                                            <div className="w-24 border-b-2 border-slate-600/80 pb-1 text-center">
-                                                <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Date</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {activeTemplate === 'predicate' && (
-                                    <div className="flex-1 flex flex-col items-center justify-center p-6 bg-slate-900 border border-sky-500/30 rounded-xl">
-                                        <div className="w-full flex items-center justify-between mb-8 pb-4 border-b border-slate-700/50">
-                                            <div>
-                                                <h3 className="text-xl font-bold text-white flex items-center gap-2"><GitCompare className="w-5 h-5 text-sky-400" /> Predicate Divergence</h3>
-                                                <p className="text-xs text-slate-400 mt-1">Comparing against K192482</p>
-                                            </div>
-                                            <div className="text-right">
-                                                <div className="text-3xl font-black text-sky-400">82%</div>
-                                                <div className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Substantial Equivalence Match</div>
-                                            </div>
-                                        </div>
-                                        <div className="w-full grid grid-cols-3 gap-4 mb-8">
-                                            <div className="bg-slate-800/80 rounded-lg p-4 border border-slate-700/50">
-                                                <div className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1">Aligned Features</div>
-                                                <div className="text-2xl font-bold text-white">41</div>
-                                            </div>
-                                            <div className="bg-slate-800/80 rounded-lg p-4 border border-sky-500/30 shadow-[0_0_15px_rgba(14,165,233,0.15)] relative overflow-hidden">
-                                                <div className="absolute top-0 right-0 w-1 h-full bg-sky-500"></div>
-                                                <div className="text-sky-300 text-[10px] font-bold uppercase tracking-widest mb-1">Novel Claims</div>
-                                                <div className="text-2xl font-bold text-white">7</div>
-                                            </div>
-                                            <div className="bg-slate-800/80 rounded-lg p-4 border border-rose-500/30 shadow-[0_0_15px_rgba(225,29,72,0.15)] relative overflow-hidden">
-                                                <div className="absolute top-0 right-0 w-1 h-full bg-rose-500"></div>
-                                                <div className="text-rose-300 text-[10px] font-bold uppercase tracking-widest mb-1">Drift Risk</div>
-                                                <div className="text-2xl font-bold text-white">High</div>
-                                            </div>
-                                        </div>
-                                        <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden flex shadow-inner">
-                                            <div className="h-full bg-emerald-500 w-[60%]" title="Exact Match"></div>
-                                            <div className="h-full bg-sky-500 w-[22%]" title="Minor Deviation"></div>
-                                            <div className="h-full bg-rose-500 w-[18%]" title="Novel Feature / Drift"></div>
-                                        </div>
-                                        <div className="w-full flex justify-between text-[10px] text-slate-500 mt-2 font-medium">
-                                            <span>Exact Match (60%)</span>
-                                            <span>Minor Deviation (22%)</span>
-                                            <span className="text-rose-400">Novel/Drift (18%)</span>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {activeTemplate === 'standards' && (
-                                    <div className="flex-1 flex flex-col items-center justify-center p-6 bg-slate-900 border border-purple-500/30 rounded-xl relative overflow-hidden">
-                                        <div className="absolute -top-24 -right-24 w-48 h-48 bg-purple-600/20 rounded-full blur-3xl"></div>
-                                        <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-fuchsia-600/20 rounded-full blur-3xl"></div>
-                                        
-                                        <div className="w-full flex flex-col mb-6 relative z-10">
-                                            <div className="flex items-center gap-3 mb-2">
-                                                <div className="p-2 bg-purple-500/20 rounded-lg"><BookOpen className="w-6 h-6 text-purple-400" /></div>
-                                                <h3 className="text-xl font-bold text-white">Consensus Standards Drift</h3>
-                                            </div>
-                                            <p className="text-xs text-slate-400">Live sync against FDA database (Updated Today)</p>
-                                        </div>
-                                        
-                                        <div className="w-full space-y-3 relative z-10">
-                                            {[
-                                                { code: 'ISO 14971', current: '2019', used: '2019', status: 'Aligned', color: 'emerald' },
-                                                { code: 'IEC 62304', current: '2006/AMD1:2015', used: '2006', status: 'Deprecated (Drift)', color: 'rose' },
-                                                { code: 'ISO 10993-1', current: '2018', used: '2009', status: 'Obsolete (Severe)', color: 'rose' }
-                                            ].map((std, i) => (
-                                                <div key={i} className={`flex items-center justify-between p-4 rounded-lg border bg-slate-800/80 ${std.color === 'rose' ? 'border-rose-500/30 shadow-[0_0_10px_rgba(225,29,72,0.1)]' : 'border-slate-700'}`}>
-                                                    <div>
-                                                        <div className="text-white font-bold">{std.code}</div>
-                                                        <div className="text-[10px] text-slate-400 mt-0.5">DHF Applied: <span className="text-slate-300">{std.used}</span></div>
-                                                    </div>
-                                                    <div className="text-right">
-                                                        <div className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${std.color === 'rose' ? 'text-rose-400' : 'text-emerald-400'}`}>{std.status}</div>
-                                                        <div className="text-xs text-slate-300">FDA Requires: {std.current}</div>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {activeTemplate === 'supply' && (
-                                    <div className="flex-1 flex flex-col items-center justify-center p-6 bg-slate-900 border border-orange-500/30 rounded-xl relative overflow-hidden">
-                                        <div className="w-full flex items-center justify-between mb-8 pb-4 border-b border-slate-700/50">
-                                            <div>
-                                                <h3 className="text-xl font-bold text-white flex items-center gap-2"><Truck className="w-5 h-5 text-orange-400" /> BOM Material Drift</h3>
-                                                <p className="text-xs text-slate-400 mt-1">Checking for undocumented supplier changes</p>
-                                            </div>
-                                            <div className="px-3 py-1.5 bg-orange-500/20 border border-orange-500/50 rounded-lg">
-                                                <div className="text-[10px] text-orange-400 font-bold uppercase tracking-widest text-center">Alert Status</div>
-                                                <div className="text-sm font-bold text-white mt-0.5">2 Deviations</div>
-                                            </div>
-                                        </div>
-
-                                        <div className="w-full bg-slate-800/80 rounded-lg p-5 border border-slate-700/50">
-                                            <div className="flex justify-between text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-4 pb-2 border-b border-slate-700/50">
-                                                <span>Component</span>
-                                                <span>Drift Implication</span>
-                                            </div>
-                                            <div className="space-y-4">
-                                                <div className="flex justify-between items-start">
-                                                    <div>
-                                                        <div className="text-sm font-bold text-white">Main Housing Resin</div>
-                                                        <div className="text-[11px] text-slate-400 mt-0.5 line-through decoration-rose-500">Q-Sub: Polycarbonate (Supplier A)</div>
-                                                        <div className="text-[11px] text-orange-400 mt-0.5">Found in DHF: ABS (Supplier B)</div>
-                                                    </div>
-                                                    <div className="text-right">
-                                                        <span className="inline-block px-2 py-1 bg-rose-500/20 text-rose-300 text-[10px] font-bold rounded">Biocomp Invalidated</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Action Buttons Fixed at Bottom of Preview */}
-                                <div className="mt-auto pt-6 bg-[#0f172a] relative z-20">
-                                {hasUnresolvedGaps && (
-                                    <div className="mb-3 px-3 py-2 bg-rose-500/10 border border-rose-500/30 rounded-lg flex items-start gap-2">
-                                        <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                                    <div className="mb-3 px-3 py-2 bg-rose-50 border border-rose-200 rounded-lg flex items-start gap-2">
+                                        <AlertTriangle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
                                         <div>
-                                            <p className="text-[11px] font-medium text-rose-300 leading-tight">
-                                                <strong className="font-bold text-rose-200 uppercase tracking-wider">Draft Lockout:</strong> You cannot export final regulatory submissions while critical gaps remain unresolved in the triage pipeline.
+                                            <p className="text-[11px] font-medium text-rose-700 leading-tight">
+                                                <strong className="font-bold text-rose-800 uppercase tracking-wider">Draft Lockout:</strong> You cannot export final regulatory submissions while critical gaps remain unresolved in the triage pipeline.
                                             </p>
                                             <label className="flex items-center gap-2 mt-2 cursor-pointer w-fit group">
-                                                <div className={`w-3.5 h-3.5 rounded-sm border flex items-center justify-center transition-colors ${bypassLockout ? 'bg-rose-500 border-rose-500' : 'bg-slate-900 border-slate-600 group-hover:border-rose-400'}`}>
+                                                <div className={`w-3.5 h-3.5 rounded-sm border flex items-center justify-center transition-colors ${bypassLockout ? 'bg-rose-500 border-rose-500' : 'bg-slate-100 border-slate-300 group-hover:border-rose-400'}`}>
                                                     {bypassLockout && <Check className="w-2.5 h-2.5 text-white" />}
                                                 </div>
-                                                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider group-hover:text-slate-300">Bypass Lockout (Beta Only)</span>
+                                                <span className="text-[10px] text-slate-600 font-bold uppercase tracking-wider group-hover:text-slate-800">Bypass Lockout (Beta Only)</span>
                                                 <input type="checkbox" className="hidden" checked={bypassLockout} onChange={(e) => setBypassLockout(e.target.checked)} />
                                             </label>
                                         </div>
