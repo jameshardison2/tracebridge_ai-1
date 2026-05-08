@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, Suspense, useRef } from "react";
+import { DancingScriptB64 } from "@/lib/fonts";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
@@ -762,6 +763,10 @@ function ReportsContent() {
         const { default: jsPDF } = await import("jspdf");
 
         const doc = new jsPDF();
+        
+        doc.addFileToVFS('DancingScript.ttf', DancingScriptB64);
+        doc.addFont('DancingScript.ttf', 'DancingScript', 'normal');
+        
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
 
@@ -882,19 +887,36 @@ function ReportsContent() {
         let sy = currentY + 10;
         const pendingReview = report.summary.total - report.summary.compliant - report.summary.gaps;
         const stats = [
-            { l: "Compliant requirements", v: report.summary.compliant.toString(), iconColor: [16, 185, 129], icon: "V" },
-            { l: "Critical gaps detected", v: report.summary.gaps.toString(), iconColor: [220, 38, 38], icon: "!" },
-            { l: "Items pending review", v: pendingReview > 0 ? pendingReview.toString() : "0", iconColor: [234, 179, 8], icon: "?" },
-            { l: "Total requirements evaluated", v: report.summary.total.toString(), iconColor: [37, 99, 235], icon: "i" }
+            { l: "Compliant requirements", v: report.summary.compliant.toString(), iconColor: [16, 185, 129], type: "check" },
+            { l: "Critical gaps detected", v: report.summary.gaps.toString(), iconColor: [220, 38, 38], type: "alert" },
+            { l: "Items pending review", v: pendingReview > 0 ? pendingReview.toString() : "0", iconColor: [234, 179, 8], type: "phone" },
+            { l: "Total requirements evaluated", v: report.summary.total.toString(), iconColor: [37, 99, 235], type: "clip" }
         ];
         
         doc.setFont("helvetica", "normal");
         stats.forEach(s => {
             doc.setFillColor(s.iconColor[0], s.iconColor[1], s.iconColor[2]);
             doc.circle(100, sy - 1, 3, "F");
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(7);
-            doc.text(s.icon, 100, sy + 0.5, { align: "center", baseline: "middle" });
+            
+            // Draw Icon
+            doc.setDrawColor(255, 255, 255);
+            doc.setFillColor(255, 255, 255);
+            if (s.type === 'check') {
+                doc.setLineWidth(0.6);
+                doc.lines([[0.8, 0.8], [1.5, -2]], 98.8, sy - 0.8);
+            } else if (s.type === 'alert') {
+                doc.setLineWidth(0.8);
+                doc.line(100, sy - 2.5, 100, sy - 0.5);
+                doc.circle(100, sy + 0.6, 0.4, "F");
+            } else if (s.type === 'phone') {
+                doc.setLineWidth(0.5);
+                doc.lines([[1, -1], [1, 1], [-1, 1]], 99.5, sy - 0.5);
+            } else if (s.type === 'clip') {
+                doc.setLineWidth(0.4);
+                doc.rect(99, sy - 2, 2, 2.5, "S");
+                doc.line(99.5, sy - 1, 100.5, sy - 1);
+                doc.line(99.5, sy, 100.5, sy);
+            }
             
             doc.setTextColor(51, 65, 85);
             doc.setFontSize(9);
@@ -913,9 +935,12 @@ function ReportsContent() {
         
         doc.setFillColor(147, 51, 234); // purple-600
         doc.circle(100, sy - 1, 3, "F");
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(7);
-        doc.text("~", 100, sy + 0.5, { align: "center", baseline: "middle" });
+        doc.setDrawColor(255, 255, 255);
+        doc.setLineWidth(0.4);
+        doc.circle(100, sy - 1, 1.2, "S"); // Clock face
+        doc.line(100, sy - 1, 100, sy - 1.8); // Hour hand
+        doc.line(100, sy - 1, 100.6, sy - 0.8); // Minute hand
+
         doc.setTextColor(51, 65, 85);
         doc.setFontSize(9);
         doc.text("Est. remediation effort", 108, sy);
@@ -953,8 +978,8 @@ function ReportsContent() {
         doc.setFont("helvetica", "normal");
         doc.text(authorTitle || "Senior Regulatory Affairs", 20, currentY + 11);
         
-        doc.setFont("times", "italic");
-        doc.setFontSize(16);
+        doc.setFont("DancingScript", "normal");
+        doc.setFontSize(18);
         doc.setTextColor(51, 65, 85);
         doc.text(authorName || "James N. Hardison", 20, currentY + 22);
         doc.setFont("helvetica", "normal");
@@ -976,8 +1001,8 @@ function ReportsContent() {
         doc.setFont("helvetica", "normal");
         doc.text(reviewerTitle || "RA Director", 85, currentY + 11);
         
-        doc.setFont("times", "italic");
-        doc.setFontSize(16);
+        doc.setFont("DancingScript", "normal");
+        doc.setFontSize(18);
         doc.setTextColor(51, 65, 85);
         doc.text(reviewerName || "My Team", 85, currentY + 22);
         doc.setFont("helvetica", "normal");
