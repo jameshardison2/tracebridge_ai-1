@@ -814,15 +814,54 @@ function ReportsContent() {
             console.warn("Logo failed to load for PDF");
         }
 
+        const drawHeader = () => {
+            // Full Page Border
+            doc.setDrawColor(themeColor[0], themeColor[1], themeColor[2]);
+            doc.setLineWidth(2);
+            doc.rect(4, 4, pageWidth - 8, pageHeight - 8, "S");
+            
+            // --- Header ---
+            if (isLogoLoaded) {
+                doc.addImage(img, 'PNG', 14, 10, 8, 8);
+            } else {
+                doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
+                doc.roundedRect(14, 10, 8, 8, 1, 1, "F");
+            }
+            
+            doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
+            doc.setFontSize(14);
+            doc.setFont("helvetica", "bold");
+            doc.text("TraceBridge", 24, 14.5);
+            doc.setFontSize(6);
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
+            doc.text("AI COMPLIANCE COPILOT", 24, 17.5);
+            
+            // Confidential badge
+            doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
+            doc.roundedRect(pageWidth - 42, 11, 28, 6, 3, 3, "F");
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(6);
+            doc.text("CONFIDENTIAL DRAFT", pageWidth - 28, 15, { align: "center", baseline: "middle" });
+            
+            // Footer (Page Number)
+            doc.setTextColor(150, 150, 150);
+            doc.setFontSize(8);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Page ${(doc.internal as any).getNumberOfPages()}`, pageWidth / 2, pageHeight - 10, { align: "center" });
+        };
+
         const addThemedPage = () => {
             doc.addPage();
             doc.setFillColor(255, 255, 255);
             doc.rect(0, 0, pageWidth, pageHeight, "F");
+            drawHeader();
         };
 
-        // Full Page Border (None for printed layout)
+        // Initialize First Page
         doc.setFillColor(255, 255, 255);
         doc.rect(0, 0, pageWidth, pageHeight, "F");
+        drawHeader();
         
         // --- Title Block ---
         doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
@@ -1060,12 +1099,12 @@ function ReportsContent() {
         if (activeTemplate === 'executive') {
             addThemedPage();
             doc.setFillColor(15, 23, 42); // Dark slate
-            doc.rect(14, 14, pageWidth - 28, 10, "F");
+            doc.rect(14, 24, pageWidth - 28, 10, "F");
             doc.setTextColor(255, 255, 255);
             doc.setFontSize(11);
-            doc.text("EXECUTIVE AUDIT SUMMARY (AI SYNTHESIS)", 18, 20.5);
+            doc.text("EXECUTIVE AUDIT SUMMARY (AI SYNTHESIS)", 18, 30.5);
             
-            let y = 35;
+            let y = 45;
             doc.setTextColor(15, 23, 42);
             doc.setFontSize(14);
             doc.text("Overall Compliance Posture", 14, y);
@@ -1104,11 +1143,11 @@ function ReportsContent() {
             doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
             doc.setFontSize(16);
             doc.setFont("helvetica", "bold");
-            doc.text("PRE-SUBMISSION GAP ANALYSIS", pageWidth / 2, 20, { align: "center" });
+            doc.text("PRE-SUBMISSION GAP ANALYSIS", pageWidth / 2, 26, { align: "center" });
             doc.setFontSize(12);
-            doc.text("REQUIREMENT TRACEABILITY MATRIX (AI ANALYSIS)", pageWidth / 2, 26, { align: "center" });
+            doc.text("REQUIREMENT TRACEABILITY MATRIX (AI ANALYSIS)", pageWidth / 2, 32, { align: "center" });
             
-            let y = 35;
+            let y = 42;
             // Table Header Row
             doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
             doc.rect(14, y, pageWidth - 28, 10, "F");
@@ -1137,7 +1176,7 @@ function ReportsContent() {
                 const item = uniqueGaps[i];
                 if (y > pageHeight - 20) {
                     addThemedPage();
-                    y = 20;
+                    y = 25;
                 }
                 
                 doc.setFont("helvetica", "normal");
@@ -1159,7 +1198,20 @@ function ReportsContent() {
                 
                 if (y + blockHeight > pageHeight - 20) {
                     addThemedPage();
-                    y = 20;
+                    y = 25;
+                    
+                    // Redraw Table Header Row on New Page
+                    doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
+                    doc.rect(14, y, totalW, 10, "F");
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(8);
+                    doc.setFont("helvetica", "bold");
+                    doc.text("STANDARD", 14 + w0/2, y + 6, { align: "center" });
+                    doc.text("§", 14 + w0 + w1/2, y + 6, { align: "center" });
+                    doc.text("REQUIREMENT", 14 + w0 + w1 + w2/2, y + 6, { align: "center" });
+                    doc.text("STATUS", 14 + w0 + w1 + w2 + w3/2, y + 6, { align: "center" });
+                    doc.text("EVIDENCE LOCATOR", 14 + w0 + w1 + w2 + w3 + w4/2, y + 6, { align: "center" });
+                    y += 10;
                 }
                 
                 // Background
@@ -1241,15 +1293,15 @@ function ReportsContent() {
 
             addThemedPage();
             doc.setFillColor(15, 23, 42);
-            doc.rect(0, 0, pageWidth, 40, "F");
+            doc.rect(14, 24, pageWidth - 28, 16, "F");
             doc.setTextColor(255, 255, 255);
-            doc.setFontSize(16);
-            doc.text("POST-MARKET SENTINEL EVENTS", 14, 20);
+            doc.setFontSize(14);
+            doc.text("POST-MARKET SENTINEL EVENTS", 18, 35);
             doc.setFontSize(10);
             doc.setTextColor(148, 163, 184);
-            doc.text("The following real-world FDA MAUDE reports represent critical risks related to undetected gaps.", 14, 26);
+            doc.text("The following real-world FDA MAUDE reports represent critical risks related to undetected gaps.", 14, 46);
             
-            let y = 50;
+            let y = 56;
             for (let i = 0; i < gaps.length; i++) {
                 const gap = gaps[i];
                 if (y > pageHeight - 60) {
@@ -1295,24 +1347,24 @@ function ReportsContent() {
                 // Header bar (Premium Dark Slate)
                 doc.setDrawColor(15, 23, 42);
                 doc.setLineWidth(2);
-                doc.line(14, 14, pageWidth - 14, 14);
+                doc.line(14, 24, pageWidth - 14, 24);
                 
                 doc.setFillColor(15, 23, 42);
-                doc.rect(14, 18, 15, 6, "F");
+                doc.rect(14, 28, 15, 6, "F");
                 doc.setTextColor(255, 255, 255);
                 doc.setFontSize(8);
-                doc.text(`${i+1}/${gaps.length}`, 21.5, 22.5, { align: "center" });
+                doc.text(`${i+1}/${gaps.length}`, 21.5, 32.5, { align: "center" });
                 
                 doc.setTextColor(71, 85, 105);
-                doc.text(`CRITICAL GAP • PRIORITY ${i+1} OF ${gaps.length}`, 33, 22.5);
+                doc.text(`CRITICAL GAP • PRIORITY ${i+1} OF ${gaps.length}`, 33, 32.5);
                 
                 doc.setTextColor(15, 23, 42);
-                doc.text("✓ TraceBridge", pageWidth - 14, 22.5, { align: "right" });
+                doc.text("✓ TraceBridge", pageWidth - 14, 32.5, { align: "right" });
 
                 // Title section
                 doc.setTextColor(100, 116, 139);
                 doc.setFontSize(10);
-                doc.text(`${gap.standard.toUpperCase()} • SECTION ${gap.section}`, 14, 35);
+                doc.text(`${gap.standard.toUpperCase()} • SECTION ${gap.section}`, 14, 45);
                 doc.setTextColor(15, 23, 42);
                 doc.setFontSize(16);
                 const reqTitleLines = doc.splitTextToSize(gap.requirement, pageWidth - 28);
