@@ -532,10 +532,10 @@ function ReportsContent() {
         if (!report) return;
         
         let reportTitle = "Gap-Analysis";
-        if (activeTemplate === '510k') reportTitle = "eSTAR-Mapping";
-        else if (activeTemplate === 'capa') reportTitle = "Action-Log";
-        else if (activeTemplate === 'complaint') reportTitle = "MAUDE-Signals";
-        else if (activeTemplate === 'executive') reportTitle = "Audit-Metrics";
+        if (activeTemplate === '510k') reportTitle = "Q-Sub-Divergence-Matrix";
+        else if (activeTemplate === 'capa') reportTitle = "Drift-Remediation-Log";
+        else if (activeTemplate === 'complaint') reportTitle = "Emerging-Signal-Drift";
+        else if (activeTemplate === 'executive') reportTitle = "Anti-Drift-Executive-Audit";
 
         let uniqueGaps: any[] = [];
         if (activeTemplate === '510k') {
@@ -583,9 +583,9 @@ function ReportsContent() {
         }
         
         let headers: string[] = [];
-        if (activeTemplate === '510k') headers = ["eSTAR VOL", "SECTION", "REQUIREMENT", "STATUS", "ATTACHMENT"];
-        else if (activeTemplate === 'capa') headers = ["GAP ID", "CAPA OWNER", "PRIORITY", "ROOT CAUSE", "REMEDIATION ACTION", "DUE DATE", "STATUS"];
-        else if (activeTemplate === 'complaint') headers = ["MDR REPORT KEY", "EVENT DATE", "PRODUCT CODE", "MANUFACTURER", "EVENT TYPE", "PROBLEM DESCRIPTION"];
+        if (activeTemplate === '510k') headers = ["Q-SUB INPUT", "SECTION", "DHF EVIDENCE", "DRIFT STATUS", "ATTACHMENT"];
+        else if (activeTemplate === 'capa') headers = ["DRIFT ID", "OWNER", "PRIORITY", "ROOT CAUSE", "REMEDIATION ACTION", "DUE DATE", "STATUS"];
+        else if (activeTemplate === 'complaint') headers = ["SIGNAL KEY", "EVENT DATE", "PRODUCT CODE", "MANUFACTURER", "EVENT TYPE", "DRIFT IMPLICATION"];
         else headers = ["GAP ID", "STANDARD", "§", "REQUIREMENT", "STATUS", "CONFIDENCE", "EVIDENCE FOUND", "SOURCE DOC", "PG", "ASSIGNEE", "STATE", "DETECTED", "PRIORITY"];
         
         const rows = uniqueGaps.map((r: any, i: number) => {
@@ -1405,22 +1405,26 @@ function ReportsContent() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <button onClick={() => setActiveTemplate('510k')} className={`text-left p-4 rounded-xl border-2 transition-all ${activeTemplate === '510k' ? 'border-indigo-600 bg-indigo-50/50 relative overflow-hidden' : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'}`}>
                                     {activeTemplate === '510k' && <div className="absolute top-0 left-0 w-1 h-full bg-indigo-600"></div>}
-                                    <h3 className={`font-bold text-base ${activeTemplate === '510k' ? 'text-indigo-900' : 'text-slate-800'} flex items-center gap-2`}><FileText className="w-4 h-4 text-indigo-600" /> 510(k) Trace Matrix</h3>
+                                    <h3 className={`font-bold text-base ${activeTemplate === '510k' ? 'text-indigo-900' : 'text-slate-800'} flex items-center gap-2`}><FileText className="w-4 h-4 text-indigo-600" /> Q-Sub Divergence Matrix</h3>
+                                    <p className="text-xs text-slate-500 mt-1 pl-6">Line-by-line divergence between FDA Q-Sub requests and DHF outputs.</p>
                                     <p className="text-xs text-slate-500 mt-1 pr-2">Full pre-market compliance grid strictly mapped to IEC 62304 & ISO 14971.</p>
                                 </button>
                                 <button onClick={() => setActiveTemplate('capa')} className={`text-left p-4 rounded-xl border-2 transition-all ${activeTemplate === 'capa' ? 'border-rose-500 bg-rose-50/50 relative overflow-hidden' : 'border-slate-200 hover:border-rose-300 hover:bg-slate-50'}`}>
                                     {activeTemplate === 'capa' && <div className="absolute top-0 left-0 w-1 h-full bg-rose-500"></div>}
-                                    <h3 className={`font-bold text-base ${activeTemplate === 'capa' ? 'text-rose-900' : 'text-slate-800'} flex items-center gap-2`}><Shield className="w-4 h-4 text-rose-500" /> CAPA Action Log</h3>
+                                    <h3 className={`font-bold text-base ${activeTemplate === 'capa' ? 'text-rose-900' : 'text-slate-800'} flex items-center gap-2`}><Shield className="w-4 h-4 text-rose-500" /> Drift Remediation Log</h3>
+                                    <p className="text-xs text-slate-500 mt-1 pl-6">Formal log of corrected drifts and QA sign-offs for auditor review.</p>
                                     <p className="text-xs text-slate-500 mt-1 pr-2">Aggregates "Critical" and "Major" gaps combined with AI remediation plans.</p>
                                 </button>
                                 <button onClick={() => setActiveTemplate('complaint')} className={`text-left p-4 rounded-xl border-2 transition-all ${activeTemplate === 'complaint' ? 'border-emerald-500 bg-emerald-50/50 relative overflow-hidden' : 'border-slate-200 hover:border-emerald-300 hover:bg-slate-50'}`}>
                                     {activeTemplate === 'complaint' && <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>}
-                                    <h3 className={`font-bold text-base ${activeTemplate === 'complaint' ? 'text-emerald-900' : 'text-slate-800'} flex items-center gap-2`}><AlertTriangle className="w-4 h-4 text-emerald-500" /> Post-Market Signals</h3>
+                                    <h3 className={`font-bold text-base ${activeTemplate === 'complaint' ? 'text-emerald-900' : 'text-slate-800'} flex items-center gap-2`}><AlertTriangle className="w-4 h-4 text-emerald-500" /> Emerging Signal Drift</h3>
+                                    <p className="text-xs text-slate-500 mt-1 pl-6">Proactive alerts on real-world events that could trigger future regulatory drift.</p>
                                     <p className="text-xs text-slate-500 mt-1 pr-2">Complaint handling data sourced directly from adverse event reports (MAUDE).</p>
                                 </button>
                                 <button onClick={() => setActiveTemplate('executive')} className={`text-left p-4 rounded-xl border-2 transition-all ${activeTemplate === 'executive' ? 'border-amber-500 bg-amber-50/50 relative overflow-hidden' : 'border-slate-200 hover:border-amber-300 hover:bg-slate-50'}`}>
                                     {activeTemplate === 'executive' && <div className="absolute top-0 left-0 w-1 h-full bg-amber-500"></div>}
-                                    <h3 className={`font-bold text-base ${activeTemplate === 'executive' ? 'text-amber-900' : 'text-slate-800'} flex items-center gap-2`}><Printer className="w-4 h-4 text-amber-500" /> Executive Audit Brief</h3>
+                                    <h3 className={`font-bold text-base ${activeTemplate === 'executive' ? 'text-amber-900' : 'text-slate-800'} flex items-center gap-2`}><Printer className="w-4 h-4 text-amber-500" /> Executive Anti-Drift Brief</h3>
+                                    <p className="text-xs text-slate-500 mt-1 pl-6">High-level RTA risk profile and drift velocity summary for VP sign-off.</p>
                                     <p className="text-xs text-slate-500 mt-1 pr-2">High-level readiness charts and attestation sign-offs. Ideal for C-Suite.</p>
                                 </button>
                             </div>
