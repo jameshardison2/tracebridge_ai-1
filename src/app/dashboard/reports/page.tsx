@@ -1371,7 +1371,7 @@ function ReportsContent() {
                 doc.text(`CRITICAL GAP • PRIORITY ${i+1} OF ${gaps.length}`, 33, 32.5);
                 
                 doc.setTextColor(15, 23, 42);
-                doc.text("✓ TraceBridge", pageWidth - 14, 32.5, { align: "right" });
+                // Removed duplicate TraceBridge header text to avoid encoding artifact
 
                 // Title section
                 doc.setTextColor(100, 116, 139);
