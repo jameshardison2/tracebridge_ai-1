@@ -1521,7 +1521,7 @@ function ReportsContent() {
             ? (doc as any).getNumberOfPages() 
             : doc.internal.pages.length - 1;
             
-        for (let i = 1; i <= totalPages; i++) {
+        for (let i = 2; i <= totalPages; i++) {
             doc.setPage(i);
             doc.setTextColor(15, 23, 42);
             doc.setFontSize(8);
