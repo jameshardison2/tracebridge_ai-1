@@ -13,7 +13,10 @@ import {
     Loader2,
     ArrowUpDown,
     Search,
-    Filter
+    Filter,
+    FileText,
+    X,
+    Copy
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 
@@ -50,6 +53,10 @@ export default function TraceabilityMatrixPage() {
     const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
     const [filterText, setFilterText] = useState("");
     const [riskFilter, setRiskFilter] = useState("All");
+
+    // Modal State
+    const [selectedDraftItem, setSelectedDraftItem] = useState<TraceabilityItem | null>(null);
+    const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
 
     const filteredAndSortedData = useMemo(() => {
         let result = [...data];
@@ -403,6 +410,18 @@ export default function TraceabilityMatrixPage() {
                                                     <span className="font-semibold text-slate-800">AI Note: </span>
                                                     {item.aiAnalysis.rationale}
                                                 </p>
+                                                {(item.aiAnalysis.driftRisk === "High" || item.aiAnalysis.driftRisk === "Medium") && (
+                                                    <button 
+                                                        onClick={() => {
+                                                            setSelectedDraftItem(item);
+                                                            setIsDraftModalOpen(true);
+                                                        }}
+                                                        className="mt-2 w-full py-2 bg-gradient-to-r from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 border border-indigo-200 text-indigo-700 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-colors"
+                                                    >
+                                                        <FileText className="w-3.5 h-3.5" />
+                                                        Draft Q-Sub Addendum
+                                                    </button>
+                                                )}
                                             </div>
                                         </td>
 
@@ -430,6 +449,72 @@ export default function TraceabilityMatrixPage() {
                     </table>
                 </div>
             </div>
+
+            {/* Q-Sub Addendum Modal */}
+            {isDraftModalOpen && selectedDraftItem && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white/90 backdrop-blur-md border border-white/40 shadow-2xl rounded-2xl w-full max-w-2xl overflow-hidden flex flex-col transform transition-all scale-100">
+                        {/* Header */}
+                        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200/50 bg-white/50">
+                            <div className="flex items-center gap-2">
+                                <div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
+                                    <FileText className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <h2 className="text-lg font-black text-slate-800 leading-tight">Auto-Draft Q-Sub Deviation</h2>
+                                    <p className="text-xs font-medium text-slate-500 uppercase tracking-widest">Formal "Blue Book" Concurrence Request</p>
+                                </div>
+                            </div>
+                            <button onClick={() => setIsDraftModalOpen(false)} className="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-colors">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        {/* Content */}
+                        <div className="p-6 overflow-y-auto max-h-[60vh] custom-scrollbar bg-slate-50/30">
+                            <div className="space-y-4">
+                                <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm relative group">
+                                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Context</h3>
+                                    <p className="text-sm text-slate-700 leading-relaxed font-medium">
+                                        We planned to proceed with <span className="font-bold text-slate-900">{selectedDraftItem.regulatoryAnchor.topic}</span> as agreed. Due to integration constraints, the engineering team has pivoted to <span className="font-bold text-slate-900">{selectedDraftItem.engineeringLink.title}</span>.
+                                    </p>
+                                </div>
+                                <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm relative group">
+                                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Rationale</h3>
+                                    <p className="text-sm text-slate-700 leading-relaxed font-medium">
+                                        As detailed in Appendix A, this approach captures the critical vectors required for safety. Specifically, <span className="text-slate-600 italic">"{selectedDraftItem.aiAnalysis.rationale.split('.')[0]}."</span>
+                                    </p>
+                                </div>
+                                <div className="p-5 bg-indigo-50 rounded-xl border border-indigo-100 shadow-sm relative group">
+                                    <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500 rounded-l-xl"></div>
+                                    <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-2">The Formal Question</h3>
+                                    <p className="text-base text-indigo-900 leading-relaxed font-black">
+                                        Does the FDA concur that utilizing the proposed <span className="underline decoration-indigo-300 underline-offset-4">{selectedDraftItem.engineeringLink.title}</span> protocol is adequate to support the requirements of our upcoming 510(k) submission?
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Footer */}
+                        <div className="px-6 py-4 border-t border-slate-200/50 bg-slate-50 flex justify-end gap-3">
+                            <button onClick={() => setIsDraftModalOpen(false)} className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors">
+                                Cancel
+                            </button>
+                            <button 
+                                onClick={() => {
+                                    navigator.clipboard.writeText(`Context: We planned to proceed with ${selectedDraftItem.regulatoryAnchor.topic} as agreed. Due to integration constraints, the engineering team has pivoted to ${selectedDraftItem.engineeringLink.title}.\n\nRationale: As detailed in Appendix A, this approach captures the critical vectors required for safety. Specifically, ${selectedDraftItem.aiAnalysis.rationale.split('.')[0]}.\n\nThe Formal Question: Does the FDA concur that utilizing the proposed ${selectedDraftItem.engineeringLink.title} protocol is adequate to support the requirements of our upcoming 510(k) submission?`);
+                                    alert("Copied to clipboard!");
+                                    setIsDraftModalOpen(false);
+                                }}
+                                className="px-4 py-2 bg-indigo-600 text-white text-sm font-bold rounded-lg hover:bg-indigo-700 shadow-sm flex items-center gap-2 transition-colors"
+                            >
+                                <Copy className="w-4 h-4" />
+                                Copy to Clipboard
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
