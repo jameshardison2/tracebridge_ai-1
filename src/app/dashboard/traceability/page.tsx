@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { 
     AlertTriangle, 
     CheckCircle2, 
@@ -10,7 +10,10 @@ import {
     Network,
     RefreshCw,
     Download,
-    Loader2
+    Loader2,
+    ArrowUpDown,
+    Search,
+    Filter
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 
@@ -42,6 +45,75 @@ export default function TraceabilityMatrixPage() {
     const [loading, setLoading] = useState(true);
     const [isSyncing, setIsSyncing] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Sorting & Filtering State
+    const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
+    const [filterText, setFilterText] = useState("");
+    const [riskFilter, setRiskFilter] = useState("All");
+
+    const filteredAndSortedData = useMemo(() => {
+        let result = [...data];
+
+        // 1. Text Filter
+        if (filterText) {
+            const lowerFilter = filterText.toLowerCase();
+            result = result.filter(item => 
+                item.regulatoryAnchor.id.toLowerCase().includes(lowerFilter) ||
+                item.regulatoryAnchor.topic.toLowerCase().includes(lowerFilter) ||
+                item.engineeringLink.id.toLowerCase().includes(lowerFilter) ||
+                item.engineeringLink.title.toLowerCase().includes(lowerFilter)
+            );
+        }
+
+        // 2. Risk Filter
+        if (riskFilter !== "All") {
+            result = result.filter(item => item.aiAnalysis.driftRisk === riskFilter);
+        }
+
+        // 3. Sorting
+        if (sortConfig) {
+            result.sort((a, b) => {
+                let aVal: any = '';
+                let bVal: any = '';
+                
+                switch (sortConfig.key) {
+                    case 'fda':
+                        aVal = a.regulatoryAnchor.id;
+                        bVal = b.regulatoryAnchor.id;
+                        break;
+                    case 'jira':
+                        aVal = a.engineeringLink.id;
+                        bVal = b.engineeringLink.id;
+                        break;
+                    case 'risk':
+                        const riskWeight: Record<string, number> = { "Low": 1, "Medium": 2, "High": 3 };
+                        aVal = riskWeight[a.aiAnalysis.driftRisk] || 0;
+                        bVal = riskWeight[b.aiAnalysis.driftRisk] || 0;
+                        break;
+                    case 'status':
+                        aVal = a.estarStatus;
+                        bVal = b.estarStatus;
+                        break;
+                }
+
+                if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+                if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+
+        return result;
+    }, [data, filterText, riskFilter, sortConfig]);
+
+    const handleSort = (key: string) => {
+        setSortConfig(current => {
+            if (current?.key === key) {
+                if (current.direction === 'asc') return { key, direction: 'desc' };
+                return null;
+            }
+            return { key, direction: 'asc' };
+        });
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -172,23 +244,74 @@ export default function TraceabilityMatrixPage() {
                 </div>
             </div>
 
+            {/* Toolbar */}
+            <div className="flex flex-col sm:flex-row gap-4 items-center bg-white p-4 rounded-xl border border-[var(--border)] shadow-sm">
+                <div className="relative flex-1 w-full">
+                    <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input 
+                        type="text" 
+                        placeholder="Search requirements, tickets..." 
+                        value={filterText}
+                        onChange={(e) => setFilterText(e.target.value)}
+                        className="w-full pl-9 pr-4 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                    />
+                </div>
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                    <Filter className="w-4 h-4 text-slate-500" />
+                    <select 
+                        value={riskFilter} 
+                        onChange={(e) => setRiskFilter(e.target.value)}
+                        className="text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-slate-700 bg-white w-full sm:w-auto"
+                    >
+                        <option value="All">All Risks</option>
+                        <option value="High">High Risk</option>
+                        <option value="Medium">Medium Risk</option>
+                        <option value="Low">Low Risk</option>
+                    </select>
+                </div>
+            </div>
+
             {/* Matrix Table */}
             <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm overflow-hidden flex flex-col">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-slate-50 border-b border-[var(--border)]">
-                                <th className="px-6 py-4 font-semibold text-sm text-slate-700 w-1/4">
-                                    FDA Requirement (Anchor)
+                                <th 
+                                    className="px-6 py-4 font-semibold text-sm text-slate-700 w-1/4 cursor-pointer hover:bg-slate-100 transition-colors"
+                                    onClick={() => handleSort('fda')}
+                                >
+                                    <div className="flex items-center gap-2">
+                                        FDA Requirement (Anchor)
+                                        <ArrowUpDown className={`w-3 h-3 ${sortConfig?.key === 'fda' ? 'text-indigo-600' : 'text-slate-400'}`} />
+                                    </div>
                                 </th>
-                                <th className="px-6 py-4 font-semibold text-sm text-slate-700 w-1/4">
-                                    Engineering Task (Jira)
+                                <th 
+                                    className="px-6 py-4 font-semibold text-sm text-slate-700 w-1/4 cursor-pointer hover:bg-slate-100 transition-colors"
+                                    onClick={() => handleSort('jira')}
+                                >
+                                    <div className="flex items-center gap-2">
+                                        Engineering Task (Jira)
+                                        <ArrowUpDown className={`w-3 h-3 ${sortConfig?.key === 'jira' ? 'text-indigo-600' : 'text-slate-400'}`} />
+                                    </div>
                                 </th>
-                                <th className="px-6 py-4 font-semibold text-sm text-slate-700 w-1/3">
-                                    AI Drift Analysis
+                                <th 
+                                    className="px-6 py-4 font-semibold text-sm text-slate-700 w-1/3 cursor-pointer hover:bg-slate-100 transition-colors"
+                                    onClick={() => handleSort('risk')}
+                                >
+                                    <div className="flex items-center gap-2">
+                                        AI Drift Analysis
+                                        <ArrowUpDown className={`w-3 h-3 ${sortConfig?.key === 'risk' ? 'text-indigo-600' : 'text-slate-400'}`} />
+                                    </div>
                                 </th>
-                                <th className="px-6 py-4 font-semibold text-sm text-slate-700 w-1/6">
-                                    eSTAR Status
+                                <th 
+                                    className="px-6 py-4 font-semibold text-sm text-slate-700 w-1/6 cursor-pointer hover:bg-slate-100 transition-colors"
+                                    onClick={() => handleSort('status')}
+                                >
+                                    <div className="flex items-center gap-2">
+                                        eSTAR Status
+                                        <ArrowUpDown className={`w-3 h-3 ${sortConfig?.key === 'status' ? 'text-indigo-600' : 'text-slate-400'}`} />
+                                    </div>
                                 </th>
                             </tr>
                         </thead>
@@ -202,14 +325,14 @@ export default function TraceabilityMatrixPage() {
                                         </div>
                                     </td>
                                 </tr>
-                            ) : data.length === 0 ? (
+                            ) : filteredAndSortedData.length === 0 ? (
                                 <tr>
                                     <td colSpan={4} className="px-6 py-12 text-center text-slate-500">
-                                        No traceability data available. Connect Jira to begin.
+                                        {data.length === 0 ? "No traceability data available. Connect Jira to begin." : "No results found for current filters."}
                                     </td>
                                 </tr>
                             ) : (
-                                data.map((item) => (
+                                filteredAndSortedData.map((item) => (
                                     <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
                                         {/* 1. FDA Anchor */}
                                         <td className="px-6 py-5 align-top">
