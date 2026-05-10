@@ -9,7 +9,8 @@ import {
     ShieldAlert, 
     Network,
     RefreshCw,
-    Download
+    Download,
+    Loader2
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 
@@ -39,6 +40,8 @@ export default function TraceabilityMatrixPage() {
     const { user } = useAuth();
     const [data, setData] = useState<TraceabilityItem[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isSyncing, setIsSyncing] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -63,6 +66,64 @@ export default function TraceabilityMatrixPage() {
 
         fetchData();
     }, [user]);
+
+    const handleResync = async () => {
+        setIsSyncing(true);
+        // Simulate Jira network delay
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        try {
+            if (user) {
+                const token = await user.getIdToken();
+                const res = await fetch("/api/traceability", {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                const json = await res.json();
+                if (json.success) setData(json.data);
+            }
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setIsSyncing(false);
+        }
+    };
+
+    const handlePushEstar = async () => {
+        if (!user) return;
+        setIsSubmitting(true);
+        try {
+            const token = await user.getIdToken();
+            const payload = {
+                result: {
+                    reportId: "traceability-matrix-live",
+                    productCode: "UNKNOWN",
+                    deviceClass: "II",
+                    deviceType: "SaMD",
+                    srsScore: data.length > 0 ? 50 : 0, 
+                    gaps: []
+                }
+            };
+            const res = await fetch("/api/esg/submit", {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(payload)
+            });
+            const json = await res.json();
+            if (json.success) {
+                alert(`Successfully submitted to FDA ESG Test Environment! Core ID: ${json.data.fdaCoreId}`);
+            } else {
+                alert(`ESG Submission Failed: ${json.error}`);
+            }
+        } catch (error) {
+            console.error("ESG submit error", error);
+            alert("An error occurred during submission.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     const getRiskColor = (risk: string) => {
         if (risk === "Low") return "bg-emerald-500/10 text-emerald-600 border-emerald-500/20";
@@ -92,13 +153,21 @@ export default function TraceabilityMatrixPage() {
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <button className="px-4 py-2 bg-white border border-[var(--border)] text-sm font-medium rounded-lg hover:bg-slate-50 flex items-center gap-2 transition-colors">
-                        <RefreshCw className="w-4 h-4" />
-                        Resync Jira
+                    <button 
+                        onClick={handleResync}
+                        disabled={isSyncing}
+                        className="px-4 py-2 bg-white border border-[var(--border)] text-sm font-medium rounded-lg hover:bg-slate-50 flex items-center gap-2 transition-colors disabled:opacity-50"
+                    >
+                        {isSyncing ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+                        {isSyncing ? "Syncing..." : "Resync Jira"}
                     </button>
-                    <button className="px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-lg hover:bg-[var(--primary-hover)] flex items-center gap-2 transition-colors shadow-sm">
-                        <Download className="w-4 h-4" />
-                        Push to eSTAR
+                    <button 
+                        onClick={handlePushEstar}
+                        disabled={isSubmitting}
+                        className="px-4 py-2 bg-[var(--primary)] text-white text-sm font-medium rounded-lg hover:bg-[var(--primary-hover)] flex items-center gap-2 transition-colors shadow-sm disabled:opacity-50"
+                    >
+                        {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                        {isSubmitting ? "Transmitting..." : "Push to eSTAR"}
                     </button>
                 </div>
             </div>
