@@ -1134,20 +1134,23 @@ function ResultsContent() {
             <div className="shrink-0 mb-6 flex flex-col gap-6">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-2xl font-black tracking-tight flex items-center gap-3 text-slate-900">
+                        <h1 className="text-3xl font-black text-slate-900 mb-2 tracking-tight flex items-center gap-3">
+                            <span className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center border border-indigo-200">
+                                <Brain className="w-4 h-4 text-indigo-600" />
+                            </span>
                             Q-Sub Drift Intelligence
                             {report?.upload?.status === 'complete' ? (
-                                <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-widest flex items-center gap-1 border border-emerald-200">
+                                <span className="px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-widest flex items-center gap-1 border border-emerald-200">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                    Live
+                                    Live Analysis
                                 </span>
                             ) : null}
                         </h1>
-                        <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight mt-1 mb-1">
-                            Deep semantic AI audit for {upload.deviceName}
+                        <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight">
+                            Deep semantic AI audit for {upload.deviceName}.
                         </p>
-                        <p className="text-sm text-slate-500 font-medium">
-                            Last updated: Today • {upload.deviceName} • {upload.standards.join(", ")}
+                        <p className="text-slate-500 mt-2 text-sm max-w-3xl leading-relaxed">
+                            Review AI-identified compliance gaps across your V&V artifacts. Triage these findings, review automated remediation suggestions, and finalize your evidence matrix prior to FDA submission. Last updated: Today • {upload.standards.join(", ")}
                         </p>
                     </div>
 

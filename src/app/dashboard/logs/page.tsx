@@ -32,16 +32,22 @@ export default function LogsPage() {
 
     return (
         <div className="max-w-6xl mx-auto space-y-6">
-            <div className="flex items-center gap-4 border-b border-[var(--border)] pb-6">
-                <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center border border-slate-200">
-                    <Server className="w-6 h-6 text-slate-600" />
-                </div>
-                <div>
-                    <h1 className="text-3xl font-black tracking-tight text-[var(--foreground)]">System Audit Logs</h1>
-                    <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight mt-1">
-                        Immutable record of all platform activities and data transformations.
-                    </p>
-                </div>
+            <div className="border-b border-[var(--border)] pb-6">
+                <h1 className="text-3xl font-black text-slate-900 mb-2 tracking-tight flex items-center gap-3">
+                    <span className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200">
+                        <Server className="w-4 h-4 text-slate-600" />
+                    </span>
+                    System Audit Logs
+                    <span className="text-xs font-bold bg-slate-100 text-slate-700 px-2 py-1 rounded-full uppercase tracking-widest border border-slate-200">
+                        21 CFR Part 11
+                    </span>
+                </h1>
+                <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight">
+                    Immutable record of all platform activities and data transformations.
+                </p>
+                <p className="text-slate-500 mt-2 text-sm max-w-3xl leading-relaxed">
+                    Review automated events, document ingestion history, and user access changes. This log satisfies FDA traceability requirements by providing a cryptographically secure, unalterable trail of all AI decisions.
+                </p>
             </div>
 
             <div className="bg-white border border-[var(--border)] rounded-xl shadow-sm overflow-hidden">

@@ -54,10 +54,14 @@ export default function ROIPredictorPage() {
         <div className="space-y-8 pb-12 animate-in fade-in duration-500">
             <div>
                 <h1 className="text-3xl font-black text-slate-900 mb-2 tracking-tight flex items-center gap-3">
+                    <DollarSign className="w-8 h-8 text-indigo-600" />
                     Financial Predictor <span className="text-xs font-bold bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full uppercase tracking-widest border border-emerald-200">ROI Calculator</span>
                 </h1>
-                <p className="text-lg font-medium text-slate-500 tracking-tight max-w-3xl">
-                    Model the exact financial impact of manual regulatory remediation. Use this tool to calculate your organization's true <strong className="text-slate-700">Cost of Inaction</strong> and synchronize the verified savings across your submission artifacts.
+                <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight">
+                    Model the exact financial impact of manual regulatory remediation.
+                </p>
+                <p className="text-slate-500 mt-2 text-sm max-w-3xl leading-relaxed">
+                    Use this tool to calculate your organization's true <strong className="text-slate-700">Cost of Inaction</strong> and synchronize the verified savings across your submission artifacts. Adjust the baseline metrics to visualize the total capital and engineering hours saved by deploying TraceBridge AI.
                 </p>
             </div>
 

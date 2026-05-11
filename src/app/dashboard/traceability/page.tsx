@@ -223,12 +223,18 @@ export default function TraceabilityMatrixPage() {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-black tracking-tight text-[var(--foreground)] flex items-center gap-2">
+                    <h1 className="text-3xl font-black tracking-tight text-[var(--foreground)] flex items-center gap-3 mb-2">
                         <Network className="w-8 h-8 text-indigo-600" />
                         Dynamic Traceability Matrix
+                        <span className="text-xs font-bold bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full uppercase tracking-widest border border-indigo-200">
+                            Live Monitor
+                        </span>
                     </h1>
-                    <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight mt-2 max-w-2xl">
+                    <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight">
                         Real-time AI monitoring of your engineering pipeline against FDA regulatory feedback to prevent Q-Sub drift.
+                    </p>
+                    <p className="text-slate-500 mt-2 text-sm max-w-3xl leading-relaxed">
+                        Visualize the real-time compliance status of your product's subsystems against established regulatory standards. Use the filters to quickly identify unverified gaps or failing components before final submission.
                     </p>
                 </div>
                 <div className="flex items-center gap-3">

@@ -1671,11 +1671,20 @@ function ReportsContent() {
         return (
             <div className="flex flex-col h-full min-h-[0px] animate-in fade-in slide-in-from-bottom-2 duration-500">
                 <div className="mb-6 shrink-0">
-                    <h1 className="text-3xl font-black tracking-tight flex items-center gap-3 text-slate-900 mb-2">
-                        Q-Sub Drift Submission Hub <span className="text-xs font-bold bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full uppercase tracking-widest border border-indigo-200">Submission Builder</span>
+                    <h1 className="text-3xl font-black text-slate-900 mb-2 tracking-tight flex items-center gap-3">
+                        <span className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center border border-indigo-200">
+                            <FileText className="w-4 h-4 text-indigo-600" />
+                        </span>
+                        Q-Sub Drift Submission Hub
+                        <span className="text-xs font-bold bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full uppercase tracking-widest border border-indigo-200">
+                            Submission Builder
+                        </span>
                     </h1>
                     <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight">
                         Configure and generate official FDA submission matrices, CAPA reports, and post-market logs.
+                    </p>
+                    <p className="text-slate-500 mt-2 text-sm max-w-3xl leading-relaxed">
+                        Construct your final regulatory submission package. Select your target document type, configure your data sources, and export a finalized PDF matrix ready for FDA submission.
                     </p>
                 </div>
 

@@ -159,13 +159,22 @@ export default function DashboardPage() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-[var(--border)] pb-4">
                 <div>
                     <h1 
-                        className="text-3xl font-bold tracking-tight text-slate-900 mb-2 cursor-default select-none"
+                        className="text-3xl font-black text-slate-900 mb-2 tracking-tight flex items-center gap-3 cursor-default select-none"
                         onDoubleClick={handleSeedBackdoor}
                     >
+                        <span className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center border border-indigo-200">
+                            <BarChart3 className="w-4 h-4 text-indigo-600" />
+                        </span>
                         Q-Sub Alignment Dashboard
+                        <span className="text-xs font-bold bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full uppercase tracking-widest border border-indigo-200">
+                            Overview
+                        </span>
                     </h1>
-                    <p className="text-[var(--muted)] text-sm">
+                    <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight">
                         Master index of active Q-Sub alignment audits.
+                    </p>
+                    <p className="text-slate-500 mt-2 text-sm max-w-3xl leading-relaxed">
+                        Manage your enterprise compliance portfolio. Monitor the overall alignment status of your active device submissions and launch new gap analysis scans against FDA feedback.
                     </p>
                 </div>
                 <div className="flex flex-wrap gap-3 mt-4 md:mt-0">

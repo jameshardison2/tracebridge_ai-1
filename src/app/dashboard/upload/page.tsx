@@ -411,9 +411,20 @@ export default function UploadPage() {
     return (
         <div>
             <div className="mb-8">
-                <h1 className="text-3xl font-black tracking-tight text-slate-900 mb-2">Q-Sub Drift Detection Analysis</h1>
+                <h1 className="text-3xl font-black text-slate-900 mb-2 tracking-tight flex items-center gap-3">
+                    <span className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center border border-indigo-200">
+                        <Upload className="w-4 h-4 text-indigo-600" />
+                    </span>
+                    Q-Sub Drift Detection Analysis
+                    <span className="text-xs font-bold bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full uppercase tracking-widest border border-indigo-200">
+                        Core Engine
+                    </span>
+                </h1>
                 <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight">
                     Upload your V&V documents for automatic, semantic AI Q-Sub drift detection.
+                </p>
+                <p className="text-slate-500 mt-2 text-sm max-w-3xl leading-relaxed">
+                    Initiate a new compliance scan. Upload FDA pre-sub feedback alongside your product's technical documentation to immediately identify missing evidence, misaligned risk controls, or untested software requirements.
                 </p>
             </div>
 

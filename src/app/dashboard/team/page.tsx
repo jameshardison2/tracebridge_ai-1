@@ -332,10 +332,14 @@ export default function TeamPage() {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
                     <h1 className="text-3xl font-black text-slate-900 mb-2 tracking-tight flex items-center gap-3">
+                        <Users className="w-8 h-8 text-indigo-600" />
                         Team Workspace <span className="text-xs font-bold bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full uppercase tracking-widest border border-indigo-200">Beta</span>
                     </h1>
                     <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight">
                         Centralize your QMS artifacts and streamline cross-functional remediation.
+                    </p>
+                    <p className="text-slate-500 mt-2 text-sm max-w-3xl leading-relaxed">
+                        Manage your team's access to the compliance engine. Use this window to provision new user access, configure automated gap routing pipelines, and vote on upcoming platform capabilities.
                     </p>
                 </div>
 
