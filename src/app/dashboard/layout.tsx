@@ -22,6 +22,7 @@ import {
     X,
     ClipboardList,
     Network,
+    Calculator,
 } from "lucide-react";
 
 type NavItem = {
@@ -43,6 +44,7 @@ const navItems: NavItem[] = [
     { isDivider: true, heading: "Outputs & Tracking" },
     { href: "/dashboard/traceability", label: "Traceability Matrix", icon: Network },
     { href: "/dashboard/reports", label: "Submission Hub", icon: FileText },
+    { href: "/dashboard/roi", label: "Financial Predictor", icon: Calculator },
     
     { isDivider: true, heading: "Settings & Management" },
     { href: "/dashboard/team", label: "Workspace & Team", icon: Users },

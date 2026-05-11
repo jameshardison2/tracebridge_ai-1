@@ -240,6 +240,15 @@ function ReportsContent() {
                 if (parsed.raName) setTeamRaName(parsed.raName);
             } catch(e){}
         }
+
+        const savedRoi = localStorage.getItem('tracebridge_roi_metrics');
+        if (savedRoi) {
+            try {
+                const parsed = JSON.parse(savedRoi);
+                if (parsed.remediationEffortFormatted) setRemediationEffort(parsed.remediationEffortFormatted);
+                if (parsed.capitalSavedFormatted) setCapitalSaved(parsed.capitalSavedFormatted);
+            } catch(e){}
+        }
     }, [user]);
 
     const handleSavePreferences = async () => {
