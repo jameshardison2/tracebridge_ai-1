@@ -56,6 +56,10 @@ export default function TeamPage() {
     const [submittingFeedback, setSubmittingFeedback] = useState(false);
     const [votedFeature, setVotedFeature] = useState<string | null>(null);
 
+    // Client ROI States
+    const [hourlyRate, setHourlyRate] = useState(166.66);
+    const [hoursPerAnalysis, setHoursPerAnalysis] = useState(4.5);
+
     const [frameworks, setFrameworks] = useState([
         { id: 'iso13485', name: 'ISO 13485:2016', active: true, available: true, requested: false },
         { id: 'fda820', name: 'FDA 21 CFR Part 820', active: true, available: true, requested: false },
@@ -423,14 +427,14 @@ export default function TeamPage() {
                             </p>
                             
                             {/* Premium Impact Metrics */}
-                            <div className="flex flex-wrap gap-4">
+                            <div className="flex flex-wrap gap-4 mb-6">
                                 <div className="bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 transition-all rounded-2xl px-6 py-4 flex flex-col gap-2 relative overflow-hidden group/metric">
                                     <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent opacity-0 group-hover/metric:opacity-100 transition-opacity"></div>
                                     <div className="flex items-center gap-2">
                                         <Clock className="w-4 h-4 text-indigo-400" />
                                         <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold">Hours Saved</p>
                                     </div>
-                                    <p className="text-3xl font-black tracking-tight text-white">{(stats.totalUploads * 4.5).toFixed(1)} <span className="text-sm font-medium text-slate-500 ml-1">hrs</span></p>
+                                    <p className="text-3xl font-black tracking-tight text-white">{(stats.totalUploads * hoursPerAnalysis).toFixed(1)} <span className="text-sm font-medium text-slate-500 ml-1">hrs</span></p>
                                 </div>
                                 
                                 <div className="bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 transition-all rounded-2xl px-6 py-4 flex flex-col gap-2 relative overflow-hidden group/metric">
@@ -448,8 +452,38 @@ export default function TeamPage() {
                                         <span className="text-amber-400 font-bold text-sm">$</span>
                                         <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold">ROI Generated</p>
                                     </div>
-                                    <p className="text-3xl font-black tracking-tight text-white"><span className="text-slate-500 mr-1">$</span>{(stats.totalUploads * 750).toLocaleString()}</p>
+                                    <p className="text-3xl font-black tracking-tight text-white"><span className="text-slate-500 mr-1">$</span>{Math.round(stats.totalUploads * hoursPerAnalysis * hourlyRate).toLocaleString()}</p>
                                 </div>
+                            </div>
+
+                            {/* Client ROI Configuration */}
+                            <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 backdrop-blur-md">
+                                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span> Client ROI Configuration
+                                </h4>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-[10px] text-slate-500 mb-1 uppercase tracking-widest">Blended Engineering Rate ($/hr)</label>
+                                        <input 
+                                            type="number" 
+                                            value={hourlyRate}
+                                            onChange={(e) => setHourlyRate(Number(e.target.value))}
+                                            className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:ring-1 focus:ring-emerald-500 outline-none" 
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] text-slate-500 mb-1 uppercase tracking-widest">Manual Hours per Analysis</label>
+                                        <input 
+                                            type="number" 
+                                            value={hoursPerAnalysis}
+                                            onChange={(e) => setHoursPerAnalysis(Number(e.target.value))}
+                                            className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:ring-1 focus:ring-emerald-500 outline-none" 
+                                        />
+                                    </div>
+                                </div>
+                                <p className="text-[10px] text-slate-500 mt-3 font-medium">
+                                    * These inputs allow clients to model the realistic financial impact of TraceBridge using their own internal cost data. Calculation: Analyses Run × Hours Per Analysis × Hourly Rate.
+                                </p>
                             </div>
                         </div>
                     </div>
