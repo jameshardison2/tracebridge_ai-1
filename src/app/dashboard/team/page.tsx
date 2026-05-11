@@ -646,70 +646,129 @@ export default function TeamPage() {
                             </div>
 
                             {/* Cross-Functional Assignee Routing */}
-                            <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+                            <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3 group-hover:bg-indigo-100 transition-colors duration-700"></div>
                                 <div className="absolute top-0 left-0 w-1.5 h-full bg-indigo-500"></div>
                                 
-                                <h3 className="text-xl font-bold text-slate-900 mb-2 tracking-tight flex items-center gap-2">
-                                    <Network className="w-6 h-6 text-indigo-500" />
-                                    Cross-Functional Routing
-                                </h3>
-                                <p className="text-sm text-slate-500 mb-6 max-w-lg">
-                                    Map your teammates to specific remediation pipelines. TraceBridge automatically routes gaps to these assignees based on the gap classification.
-                                </p>
-                                
-                                <div className="space-y-4">
-                                    <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl border border-slate-100 bg-slate-50">
-                                        <div className="w-full sm:w-1/3">
-                                            <p className="text-sm font-bold text-slate-900">QA Review Pipeline</p>
-                                            <p className="text-xs text-slate-500">Approves document overrides</p>
-                                        </div>
-                                        <div className="flex-1 w-full">
-                                            <input 
-                                                type="text" 
-                                                value={teamQaName}
-                                                onChange={(e) => setTeamQaName(e.target.value)}
-                                                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:ring-1 focus:ring-indigo-500 outline-none"
-                                            />
+                                <div className="relative z-10">
+                                    <div className="flex items-center justify-between mb-8">
+                                        <div>
+                                            <h3 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+                                                <Network className="w-7 h-7 text-indigo-500 p-1 bg-indigo-50 rounded-lg border border-indigo-100" />
+                                                Automated Gap Routing
+                                            </h3>
+                                            <p className="text-sm text-slate-500 mt-2 max-w-lg font-medium leading-relaxed">
+                                                Visually map your engineering and regulatory team to the AI remediation pipeline. Detected gaps are automatically assigned to the correct owner.
+                                            </p>
                                         </div>
                                     </div>
+                                    
+                                    <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 sm:p-8 relative">
+                                        {/* Animated dashed line connecting nodes */}
+                                        <div className="absolute left-[44px] sm:left-[52px] top-[48px] bottom-[48px] w-0.5 bg-indigo-200 border-l-2 border-dashed border-indigo-300 opacity-50"></div>
 
-                                    <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl border border-slate-100 bg-slate-50">
-                                        <div className="w-full sm:w-1/3">
-                                            <p className="text-sm font-bold text-slate-900">Core Engineering</p>
-                                            <p className="text-xs text-slate-500">Uploads missing technical evidence</p>
-                                        </div>
-                                        <div className="flex-1 w-full">
-                                            <input 
-                                                type="text" 
-                                                value={teamEngName}
-                                                onChange={(e) => setTeamEngName(e.target.value)}
-                                                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:ring-1 focus:ring-indigo-500 outline-none"
-                                            />
-                                        </div>
-                                    </div>
+                                        <div className="space-y-6 relative">
+                                            {/* Node 1 */}
+                                            <div className="flex items-start gap-4 sm:gap-6 relative group/node">
+                                                <div className="w-10 h-10 rounded-full bg-white border-2 border-indigo-500 shadow-[0_0_0_4px_rgba(99,102,241,0.1)] flex items-center justify-center flex-shrink-0 z-10 transition-transform group-hover/node:scale-110">
+                                                    <span className="text-xs font-black text-indigo-600">01</span>
+                                                </div>
+                                                <div className="flex-1 bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-sm group-hover/node:border-indigo-300 transition-colors">
+                                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                                        <div>
+                                                            <div className="flex items-center gap-2 mb-1">
+                                                                <h4 className="font-bold text-slate-900">QA Review Pipeline</h4>
+                                                                <span className="text-[10px] bg-amber-100 text-amber-700 font-bold px-2 py-0.5 rounded uppercase tracking-wider">Gatekeeper</span>
+                                                            </div>
+                                                            <p className="text-xs text-slate-500 leading-relaxed">Reviews document overrides and verifies AI confidence scores.</p>
+                                                        </div>
+                                                        <div className="w-full sm:w-64 relative">
+                                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                                            </div>
+                                                            <input 
+                                                                type="text" 
+                                                                value={teamQaName}
+                                                                onChange={(e) => setTeamQaName(e.target.value)}
+                                                                className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-8 pr-4 py-2.5 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                                                                placeholder="Enter Assignee Name"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                                    <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl border border-slate-100 bg-slate-50">
-                                        <div className="w-full sm:w-1/3">
-                                            <p className="text-sm font-bold text-slate-900">Regulatory Affairs</p>
-                                            <p className="text-xs text-slate-500">Final FDA/ISO sign-off</p>
-                                        </div>
-                                        <div className="flex-1 w-full">
-                                            <input 
-                                                type="text" 
-                                                value={teamRaName}
-                                                onChange={(e) => setTeamRaName(e.target.value)}
-                                                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:ring-1 focus:ring-indigo-500 outline-none"
-                                            />
+                                            {/* Node 2 */}
+                                            <div className="flex items-start gap-4 sm:gap-6 relative group/node">
+                                                <div className="w-10 h-10 rounded-full bg-white border-2 border-indigo-400 shadow-[0_0_0_4px_rgba(99,102,241,0.1)] flex items-center justify-center flex-shrink-0 z-10 transition-transform group-hover/node:scale-110">
+                                                    <span className="text-xs font-black text-indigo-500">02</span>
+                                                </div>
+                                                <div className="flex-1 bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-sm group-hover/node:border-indigo-300 transition-colors">
+                                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                                        <div>
+                                                            <div className="flex items-center gap-2 mb-1">
+                                                                <h4 className="font-bold text-slate-900">Core Engineering</h4>
+                                                                <span className="text-[10px] bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded uppercase tracking-wider">Technical</span>
+                                                            </div>
+                                                            <p className="text-xs text-slate-500 leading-relaxed">Uploads missing technical evidence (e.g. Unit Test Results).</p>
+                                                        </div>
+                                                        <div className="w-full sm:w-64 relative">
+                                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" style={{ animationDelay: '0.5s'}}></span>
+                                                            </div>
+                                                            <input 
+                                                                type="text" 
+                                                                value={teamEngName}
+                                                                onChange={(e) => setTeamEngName(e.target.value)}
+                                                                className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-8 pr-4 py-2.5 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                                                                placeholder="Enter Assignee Name"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Node 3 */}
+                                            <div className="flex items-start gap-4 sm:gap-6 relative group/node">
+                                                <div className="w-10 h-10 rounded-full bg-white border-2 border-indigo-300 shadow-[0_0_0_4px_rgba(99,102,241,0.1)] flex items-center justify-center flex-shrink-0 z-10 transition-transform group-hover/node:scale-110">
+                                                    <span className="text-xs font-black text-indigo-400">03</span>
+                                                </div>
+                                                <div className="flex-1 bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-sm group-hover/node:border-indigo-300 transition-colors">
+                                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                                        <div>
+                                                            <div className="flex items-center gap-2 mb-1">
+                                                                <h4 className="font-bold text-slate-900">Regulatory Affairs</h4>
+                                                                <span className="text-[10px] bg-rose-100 text-rose-700 font-bold px-2 py-0.5 rounded uppercase tracking-wider">Final Auth</span>
+                                                            </div>
+                                                            <p className="text-xs text-slate-500 leading-relaxed">Final FDA/ISO sign-off before generating the submission matrix.</p>
+                                                        </div>
+                                                        <div className="w-full sm:w-64 relative">
+                                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" style={{ animationDelay: '1s'}}></span>
+                                                            </div>
+                                                            <input 
+                                                                type="text" 
+                                                                value={teamRaName}
+                                                                onChange={(e) => setTeamRaName(e.target.value)}
+                                                                className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-8 pr-4 py-2.5 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                                                                placeholder="Enter Assignee Name"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="mt-6 flex justify-end">
-                                    <button 
-                                        onClick={saveAssigneeMapping}
-                                        className="bg-indigo-50 text-indigo-700 font-bold px-4 py-2 rounded-lg text-sm border border-indigo-200 hover:bg-indigo-100 transition-colors"
-                                    >
-                                        Update Routing Mapping
-                                    </button>
+                                    
+                                    <div className="mt-8 flex justify-end">
+                                        <button 
+                                            onClick={saveAssigneeMapping}
+                                            className="bg-slate-900 hover:bg-slate-800 text-white font-bold px-6 py-3 rounded-xl text-sm transition-all shadow-md flex items-center gap-2"
+                                        >
+                                            <CheckCircle2 className="w-4 h-4" />
+                                            Lock Routing Pipeline
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 
