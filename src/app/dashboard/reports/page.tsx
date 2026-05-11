@@ -1853,6 +1853,21 @@ function ReportsContent() {
                                     <input type="text" value={reviewerTitle} onChange={e => setReviewerTitle(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all" />
                                 </div>
                             </div>
+                            
+                            <h5 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-6 mb-3 flex items-center gap-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span> AI Value Extrapolations
+                            </h5>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-slate-500 uppercase">Est. Remediation Effort</label>
+                                    <input type="text" value={remediationEffort} onChange={e => setRemediationEffort(e.target.value)} placeholder="e.g. 4-8 weeks" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all" />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-slate-500 uppercase">Est. Capital Saved</label>
+                                    <input type="text" value={capitalSaved} onChange={e => setCapitalSaved(e.target.value)} placeholder="e.g. $45,000" className="w-full bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2 text-sm text-emerald-700 font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all" />
+                                </div>
+                            </div>
+
                             <div className="mt-6 flex justify-end">
                                 <button
                                     onClick={handleSavePreferences}
