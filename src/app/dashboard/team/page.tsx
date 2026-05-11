@@ -329,13 +329,40 @@ export default function TeamPage() {
 
     return (
         <div className="space-y-8 pb-12">
-            <div>
-                <h1 className="text-3xl font-black text-slate-900 mb-2 tracking-tight flex items-center gap-3">
-                    Team Workspace <span className="text-xs font-bold bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full uppercase tracking-widest border border-indigo-200">Beta</span>
-                </h1>
-                <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight">
-                    Centralize your QMS artifacts and streamline cross-functional remediation.
-                </p>
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div>
+                    <h1 className="text-3xl font-black text-slate-900 mb-2 tracking-tight flex items-center gap-3">
+                        Team Workspace <span className="text-xs font-bold bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full uppercase tracking-widest border border-indigo-200">Beta</span>
+                    </h1>
+                    <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight">
+                        Centralize your QMS artifacts and streamline cross-functional remediation.
+                    </p>
+                </div>
+
+                {/* Global Workspace Switcher */}
+                {team && !showCreateModal && (
+                    <div className="flex items-center gap-3 bg-white p-2 rounded-2xl border border-slate-200 shadow-sm">
+                        <div className="relative">
+                            <select
+                                value={activeTeamId || ""}
+                                onChange={(e) => setActiveTeamId(e.target.value)}
+                                className="min-w-[200px] pl-4 pr-10 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-900 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all cursor-pointer appearance-none"
+                            >
+                                {teams.map(t => (
+                                    <option key={t.id} value={t.id}>{t.name}</option>
+                                ))}
+                            </select>
+                            <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none" />
+                        </div>
+                        <button
+                            onClick={() => setShowCreateModal(true)}
+                            className="w-10 h-10 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold border border-indigo-200 flex items-center justify-center transition-all shadow-sm flex-shrink-0 group"
+                            title="New Workspace"
+                        >
+                            <Plus className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                        </button>
+                    </div>
+                )}
             </div>
 
             {error && (
@@ -440,42 +467,19 @@ export default function TeamPage() {
                                 <div className="absolute top-0 left-0 w-1.5 h-full bg-slate-800"></div>
                                 
                                 <div className="relative z-10">
-                                    {/* Header & Switcher */}
-                                    <div className="flex flex-col xl:flex-row xl:items-start justify-between gap-6 mb-10 pb-8 border-b border-slate-100">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-14 h-14 rounded-2xl bg-slate-900 border border-slate-700 flex items-center justify-center shadow-lg relative">
-                                                <Shield className="w-7 h-7 text-white" />
-                                                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white"></div>
-                                            </div>
-                                            <div>
-                                                <h2 className="text-2xl font-black text-slate-900 tracking-tight">{team.name}</h2>
-                                                <div className="flex items-center gap-2 mt-1">
-                                                    <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{stats.totalMembers} Provisioned Users</span>
-                                                    <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                                                    <span className="text-[10px] bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded uppercase tracking-wider">{isOwner ? "Owner" : "Member"}</span>
-                                                </div>
-                                            </div>
+                                    {/* Header */}
+                                    <div className="flex items-center gap-4 mb-10 pb-8 border-b border-slate-100">
+                                        <div className="w-14 h-14 rounded-2xl bg-slate-900 border border-slate-700 flex items-center justify-center shadow-lg relative flex-shrink-0">
+                                            <Shield className="w-7 h-7 text-white" />
+                                            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white"></div>
                                         </div>
-                                        
-                                        <div className="flex flex-col sm:flex-row gap-3 w-full xl:w-auto">
-                                            <div className="relative flex-1 xl:w-48">
-                                                <select
-                                                    value={activeTeamId || ""}
-                                                    onChange={(e) => setActiveTeamId(e.target.value)}
-                                                    className="w-full pl-4 pr-10 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-slate-900 transition-all cursor-pointer appearance-none"
-                                                >
-                                                    {teams.map(t => (
-                                                        <option key={t.id} value={t.id}>{t.name}</option>
-                                                    ))}
-                                                </select>
-                                                <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none" />
+                                        <div className="min-w-0">
+                                            <h2 className="text-2xl font-black text-slate-900 tracking-tight truncate">Identity & Access</h2>
+                                            <div className="flex items-center gap-2 mt-1 flex-wrap">
+                                                <span className="text-xs font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap">{stats.totalMembers} Provisioned Users</span>
+                                                <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                                                <span className="text-[10px] bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded uppercase tracking-wider whitespace-nowrap">{isOwner ? "Owner" : "Member"}</span>
                                             </div>
-                                            <button
-                                                onClick={() => setShowCreateModal(true)}
-                                                className="px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-700 font-bold rounded-xl border border-slate-200 text-sm transition-all flex items-center justify-center gap-2 shadow-sm whitespace-nowrap"
-                                            >
-                                                <Plus className="w-4 h-4" /> New Workspace
-                                            </button>
                                         </div>
                                     </div>
 
@@ -484,22 +488,22 @@ export default function TeamPage() {
                                         <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
                                             <Users className="w-4 h-4" /> Active Directory
                                         </h3>
-                                        <div className="space-y-3">
+                                        <div className="space-y-4">
                                             {/* Owner */}
                                             <div className="flex items-center justify-between p-4 rounded-2xl bg-amber-50/30 border border-amber-100/50 hover:border-amber-200 transition-colors group/user">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white font-bold shadow-sm relative">
+                                                <div className="flex items-center gap-4 min-w-0">
+                                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white font-bold shadow-sm relative flex-shrink-0">
                                                         {(user?.displayName?.[0] || user?.email?.[0] || "O").toUpperCase()}
                                                         <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white"></div>
                                                     </div>
-                                                    <div>
-                                                        <p className="font-bold text-sm text-slate-900 group-hover/user:text-amber-900 transition-colors">
+                                                    <div className="min-w-0">
+                                                        <p className="font-bold text-sm text-slate-900 group-hover/user:text-amber-900 transition-colors truncate">
                                                             {user?.displayName || user?.email?.split("@")[0] || "Owner"}
                                                         </p>
-                                                        <p className="text-xs text-slate-500">{user?.email}</p>
+                                                        <p className="text-xs text-slate-500 truncate">{user?.email}</p>
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center gap-4">
+                                                <div className="flex items-center gap-3 flex-shrink-0 ml-2">
                                                     <span className="hidden sm:inline-flex items-center gap-1.5 text-[10px] text-emerald-600 font-bold uppercase tracking-wider bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100">
                                                         <CheckCircle2 className="w-3 h-3" /> Authenticated
                                                     </span>
@@ -515,19 +519,19 @@ export default function TeamPage() {
                                                     key={idx}
                                                     className="flex items-center justify-between p-4 rounded-2xl bg-white border border-slate-100 hover:border-slate-300 hover:shadow-sm transition-all group/user"
                                                 >
-                                                    <div className="flex items-center gap-4">
-                                                        <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-bold border border-slate-200 relative">
+                                                    <div className="flex items-center gap-4 min-w-0">
+                                                        <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-bold border border-slate-200 relative flex-shrink-0">
                                                             {(member.displayName?.[0] || member.email[0]).toUpperCase()}
                                                             <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white"></div>
                                                         </div>
-                                                        <div>
-                                                            <p className="font-bold text-sm text-slate-900 group-hover/user:text-indigo-600 transition-colors">
+                                                        <div className="min-w-0">
+                                                            <p className="font-bold text-sm text-slate-900 group-hover/user:text-indigo-600 transition-colors truncate">
                                                                 {member.displayName || member.email.split("@")[0]}
                                                             </p>
-                                                            <p className="text-xs text-slate-500">{member.email}</p>
+                                                            <p className="text-xs text-slate-500 truncate">{member.email}</p>
                                                         </div>
                                                     </div>
-                                                    <div className="flex items-center gap-3">
+                                                    <div className="flex items-center gap-3 flex-shrink-0 ml-2">
                                                         <span className="hidden sm:inline-flex items-center gap-1.5 text-[10px] text-emerald-600 font-bold uppercase tracking-wider bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100">
                                                             <CheckCircle2 className="w-3 h-3" /> Authenticated
                                                         </span>
@@ -537,7 +541,7 @@ export default function TeamPage() {
                                                         {isOwner && (
                                                             <button
                                                                 onClick={() => removeMember(member.email)}
-                                                                className="p-2 rounded-lg hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition-all opacity-0 group-hover/user:opacity-100"
+                                                                className="p-1.5 rounded-lg hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition-all opacity-40 group-hover/user:opacity-100"
                                                                 title="Revoke Access"
                                                             >
                                                                 <Trash2 className="w-4 h-4" />
