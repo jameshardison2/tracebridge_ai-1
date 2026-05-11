@@ -435,133 +435,161 @@ export default function TeamPage() {
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-4">
                         {/* Left Column: Team Management */}
                         <div className="lg:col-span-5 space-y-6">
-                            <div className="glass-card p-6 border-slate-200 shadow-sm">
-                                <div className="flex flex-col gap-4 mb-6 pb-6 border-b border-slate-100">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center">
-                                                <Shield className="w-6 h-6 text-slate-700" />
+                            <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+                                <div className="absolute top-0 left-0 w-64 h-64 bg-slate-100 rounded-full blur-[80px] -translate-y-1/2 -translate-x-1/3 group-hover:bg-slate-200 transition-colors duration-700"></div>
+                                <div className="absolute top-0 left-0 w-1.5 h-full bg-slate-800"></div>
+                                
+                                <div className="relative z-10">
+                                    {/* Header & Switcher */}
+                                    <div className="flex flex-col xl:flex-row xl:items-start justify-between gap-6 mb-10 pb-8 border-b border-slate-100">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-14 h-14 rounded-2xl bg-slate-900 border border-slate-700 flex items-center justify-center shadow-lg relative">
+                                                <Shield className="w-7 h-7 text-white" />
+                                                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white"></div>
                                             </div>
                                             <div>
-                                                <h2 className="text-2xl font-bold text-slate-900 tracking-tight">{team.name}</h2>
-                                                <p className="text-sm text-slate-500 mt-1">
-                                                    {isOwner ? "Workspace Owner" : "Workspace Member"} • {stats.totalMembers} Members
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    {/* Workspace Switcher */}
-                                    <div className="flex flex-col sm:flex-row gap-3 mt-2">
-                                        <select
-                                            value={activeTeamId || ""}
-                                            onChange={(e) => setActiveTeamId(e.target.value)}
-                                            className="flex-1 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm font-bold focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all cursor-pointer shadow-inner appearance-none"
-                                            style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
-                                        >
-                                            {teams.map(t => (
-                                                <option key={t.id} value={t.id}>{t.name} (Workspace)</option>
-                                            ))}
-                                        </select>
-                                        <button
-                                            onClick={() => setShowCreateModal(true)}
-                                            className="px-5 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-xl border border-indigo-200 text-sm transition-all whitespace-nowrap flex items-center justify-center gap-2 shadow-sm"
-                                        >
-                                            <Plus className="w-4 h-4" /> New
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-3 mb-6">
-                                    {/* Owner */}
-                                    <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center border border-amber-200">
-                                                <Crown className="w-5 h-5 text-amber-600" />
-                                            </div>
-                                            <div>
-                                                <p className="font-bold text-sm text-slate-900">
-                                                    {user?.displayName || user?.email?.split("@")[0] || "Owner"}
-                                                </p>
-                                                <p className="text-xs text-slate-500">{user?.email}</p>
-                                            </div>
-                                        </div>
-                                        <span className="px-2.5 py-1 rounded-md bg-amber-100 text-amber-700 text-[10px] font-bold uppercase tracking-wider border border-amber-200">
-                                            Owner
-                                        </span>
-                                    </div>
-
-                                    {/* Members */}
-                                    {(team.members || []).map((member, idx) => (
-                                        <div
-                                            key={idx}
-                                            className="flex items-center justify-between p-3 rounded-xl bg-white border border-slate-200 shadow-sm"
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200">
-                                                    <span className="text-sm font-bold text-slate-600">
-                                                        {member.displayName?.[0]?.toUpperCase() || member.email[0].toUpperCase()}
-                                                    </span>
-                                                </div>
-                                                <div>
-                                                    <p className="font-bold text-sm text-slate-900">
-                                                        {member.displayName || member.email.split("@")[0]}
-                                                    </p>
-                                                    <p className="text-xs text-slate-500">{member.email}</p>
+                                                <h2 className="text-2xl font-black text-slate-900 tracking-tight">{team.name}</h2>
+                                                <div className="flex items-center gap-2 mt-1">
+                                                    <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{stats.totalMembers} Provisioned Users</span>
+                                                    <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                                                    <span className="text-[10px] bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded uppercase tracking-wider">{isOwner ? "Owner" : "Member"}</span>
                                                 </div>
                                             </div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-wider border border-slate-200">
-                                                    {member.role}
-                                                </span>
-                                                {isOwner && (
-                                                    <button
-                                                        onClick={() => removeMember(member.email)}
-                                                        className="p-1.5 rounded-lg hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition-all"
-                                                        title="Remove member"
-                                                    >
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </button>
-                                                )}
-                                            </div>
                                         </div>
-                                    ))}
-                                </div>
-
-                                {/* Invite member */}
-                                {isOwner && (
-                                    <div className="pt-6 mt-2 border-t border-slate-100">
-                                        <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                            <UserPlus className="w-4 h-4" />
-                                            Invite Teammate
-                                        </h4>
-                                        <div className="flex gap-2">
-                                            <div className="flex-1 relative">
-                                                <Mail className="absolute left-3.5 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                                <input
-                                                    type="email"
-                                                    value={inviteEmail}
-                                                    onChange={(e) => setInviteEmail(e.target.value)}
-                                                    placeholder="colleague@company.com"
-                                                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-900 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all shadow-sm"
-                                                    onKeyDown={(e) => e.key === "Enter" && inviteMember()}
-                                                />
+                                        
+                                        <div className="flex flex-col sm:flex-row gap-3 w-full xl:w-auto">
+                                            <div className="relative flex-1 xl:w-48">
+                                                <select
+                                                    value={activeTeamId || ""}
+                                                    onChange={(e) => setActiveTeamId(e.target.value)}
+                                                    className="w-full pl-4 pr-10 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-slate-900 transition-all cursor-pointer appearance-none"
+                                                >
+                                                    {teams.map(t => (
+                                                        <option key={t.id} value={t.id}>{t.name}</option>
+                                                    ))}
+                                                </select>
+                                                <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none" />
                                             </div>
                                             <button
-                                                onClick={inviteMember}
-                                                disabled={inviting || !inviteEmail.trim()}
-                                                className="bg-slate-900 hover:bg-slate-800 text-white font-bold px-4 py-2.5 rounded-xl text-sm flex items-center gap-2 disabled:opacity-50 transition-all shadow-sm"
+                                                onClick={() => setShowCreateModal(true)}
+                                                className="px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-700 font-bold rounded-xl border border-slate-200 text-sm transition-all flex items-center justify-center gap-2 shadow-sm whitespace-nowrap"
                                             >
-                                                {inviting ? (
-                                                    <Loader2 className="w-4 h-4 animate-spin" />
-                                                ) : (
-                                                    <Plus className="w-4 h-4" />
-                                                )}
-                                                Add
+                                                <Plus className="w-4 h-4" /> New Workspace
                                             </button>
                                         </div>
                                     </div>
-                                )}
+
+                                    {/* Members List */}
+                                    <div className="mb-10">
+                                        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                            <Users className="w-4 h-4" /> Active Directory
+                                        </h3>
+                                        <div className="space-y-3">
+                                            {/* Owner */}
+                                            <div className="flex items-center justify-between p-4 rounded-2xl bg-amber-50/30 border border-amber-100/50 hover:border-amber-200 transition-colors group/user">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white font-bold shadow-sm relative">
+                                                        {(user?.displayName?.[0] || user?.email?.[0] || "O").toUpperCase()}
+                                                        <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white"></div>
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-bold text-sm text-slate-900 group-hover/user:text-amber-900 transition-colors">
+                                                            {user?.displayName || user?.email?.split("@")[0] || "Owner"}
+                                                        </p>
+                                                        <p className="text-xs text-slate-500">{user?.email}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-4">
+                                                    <span className="hidden sm:inline-flex items-center gap-1.5 text-[10px] text-emerald-600 font-bold uppercase tracking-wider bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100">
+                                                        <CheckCircle2 className="w-3 h-3" /> Authenticated
+                                                    </span>
+                                                    <span className="px-3 py-1 rounded-lg bg-amber-100 text-amber-700 text-xs font-bold border border-amber-200 shadow-sm flex items-center gap-1.5">
+                                                        <Crown className="w-3.5 h-3.5" /> Owner
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {/* Members */}
+                                            {(team.members || []).map((member, idx) => (
+                                                <div
+                                                    key={idx}
+                                                    className="flex items-center justify-between p-4 rounded-2xl bg-white border border-slate-100 hover:border-slate-300 hover:shadow-sm transition-all group/user"
+                                                >
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-bold border border-slate-200 relative">
+                                                            {(member.displayName?.[0] || member.email[0]).toUpperCase()}
+                                                            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white"></div>
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-bold text-sm text-slate-900 group-hover/user:text-indigo-600 transition-colors">
+                                                                {member.displayName || member.email.split("@")[0]}
+                                                            </p>
+                                                            <p className="text-xs text-slate-500">{member.email}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="hidden sm:inline-flex items-center gap-1.5 text-[10px] text-emerald-600 font-bold uppercase tracking-wider bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100">
+                                                            <CheckCircle2 className="w-3 h-3" /> Authenticated
+                                                        </span>
+                                                        <span className="px-3 py-1 rounded-lg bg-slate-50 text-slate-600 text-xs font-bold border border-slate-200 shadow-sm uppercase tracking-wider">
+                                                            {member.role}
+                                                        </span>
+                                                        {isOwner && (
+                                                            <button
+                                                                onClick={() => removeMember(member.email)}
+                                                                className="p-2 rounded-lg hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition-all opacity-0 group-hover/user:opacity-100"
+                                                                title="Revoke Access"
+                                                            >
+                                                                <Trash2 className="w-4 h-4" />
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Invite member */}
+                                    {isOwner && (
+                                        <div className="bg-slate-900 rounded-2xl p-6 sm:p-8 relative overflow-hidden shadow-xl border border-slate-800">
+                                            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 rounded-full blur-[40px]"></div>
+                                            <div className="relative z-10">
+                                                <h4 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
+                                                    <UserPlus className="w-4 h-4 text-indigo-400" />
+                                                    Provision New Access
+                                                </h4>
+                                                <p className="text-xs text-slate-400 mb-6 max-w-sm">
+                                                    Send an encrypted invite link. New users will be required to authenticate via SSO before accessing the QMS data.
+                                                </p>
+                                                <div className="flex flex-col sm:flex-row gap-3">
+                                                    <div className="flex-1 relative">
+                                                        <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                                        <input
+                                                            type="email"
+                                                            value={inviteEmail}
+                                                            onChange={(e) => setInviteEmail(e.target.value)}
+                                                            placeholder="engineer@company.com"
+                                                            className="w-full pl-11 pr-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700 text-white text-sm font-medium focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-500"
+                                                            onKeyDown={(e) => e.key === "Enter" && inviteMember()}
+                                                        />
+                                                    </div>
+                                                    <button
+                                                        onClick={inviteMember}
+                                                        disabled={inviting || !inviteEmail.trim()}
+                                                        className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-3 rounded-xl text-sm flex items-center justify-center gap-2 disabled:opacity-50 transition-all shadow-md sm:w-auto w-full"
+                                                    >
+                                                        {inviting ? (
+                                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                                        ) : (
+                                                            <Plus className="w-4 h-4" />
+                                                        )}
+                                                        Send Invite
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
                             {/* Premium Early Access Survey */}
