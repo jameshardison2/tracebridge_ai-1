@@ -158,6 +158,8 @@ function ReportsContent() {
     const [authorTitle, setAuthorTitle] = useState("Senior Regulatory Affairs");
     const [reviewerName, setReviewerName] = useState("Sarah Richardson");
     const [reviewerTitle, setReviewerTitle] = useState("RA Director");
+    const [remediationEffort, setRemediationEffort] = useState("4-8 weeks");
+    const [capitalSaved, setCapitalSaved] = useState("$45,000");
 
     const [isSavingPrefs, setIsSavingPrefs] = useState(false);
     const isExportingRef = useRef(false);
@@ -220,6 +222,8 @@ function ReportsContent() {
                     if (p.teamQaName) setTeamQaName(p.teamQaName);
                     if (p.teamEngName) setTeamEngName(p.teamEngName);
                     if (p.teamRaName) setTeamRaName(p.teamRaName);
+                    if (p.remediationEffort) setRemediationEffort(p.remediationEffort);
+                    if (p.capitalSaved) setCapitalSaved(p.capitalSaved);
                 }
             } catch (e) {
                 console.error("Failed to load preferences", e);
@@ -252,7 +256,8 @@ function ReportsContent() {
                 body: JSON.stringify({
                     authorName, authorTitle, reviewerName, reviewerTitle,
                     engineMitigations, engineRedact, engineRta,
-                    teamQaName, teamEngName, teamRaName
+                    teamQaName, teamEngName, teamRaName,
+                    remediationEffort, capitalSaved
                 })
             });
             alert("Preferences saved successfully!");
@@ -1014,7 +1019,25 @@ function ReportsContent() {
         doc.setTextColor(15, 23, 42);
         doc.setFontSize(10);
         doc.setFont("helvetica", "bold");
-        doc.text("4-8 weeks", pageWidth - 25, sy, { align: "right" });
+        doc.text(remediationEffort, pageWidth - 25, sy, { align: "right" });
+        doc.setFont("helvetica", "normal");
+        
+        sy += 9;
+        doc.setFillColor(16, 185, 129); // emerald-500
+        doc.circle(100, sy - 1, 3, "F");
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(6);
+        doc.setFont("helvetica", "bold");
+        doc.text("$", 100, sy - 0.2, { align: "center", baseline: "middle" });
+
+        doc.setTextColor(51, 65, 85);
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
+        doc.text("Est. capital saved", 108, sy);
+        doc.setTextColor(4, 120, 87); // emerald-700
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "bold");
+        doc.text(capitalSaved, pageWidth - 25, sy, { align: "right" });
         doc.setFont("helvetica", "normal");
 
         // --- Attestation Footer ---
@@ -1968,8 +1991,12 @@ function ReportsContent() {
                                                             <span className="text-slate-900">{totalCount}</span>
                                                         </div>
                                                         <div className="flex justify-between items-center text-[6px] font-bold pt-0.5 mt-0.5 border-t border-slate-200">
-                                                            <span className="flex items-center gap-1.5 text-slate-700"><div className="w-2.5 h-2.5 rounded-full bg-purple-600 flex items-center justify-center text-white text-[5px]">⏱</div> Est. remediation effort</span>
-                                                            <span className="text-slate-900">4-8 weeks</span>
+                                                            <span className="flex items-center gap-1.5 text-slate-700" title="Calculated based on AI analysis of engineering hours required for detected gaps"><div className="w-2.5 h-2.5 rounded-full bg-purple-600 flex items-center justify-center text-white text-[5px]">⏱</div> Est. remediation effort</span>
+                                                            <span className="text-slate-900">{remediationEffort}</span>
+                                                        </div>
+                                                        <div className="flex justify-between items-center text-[6px] font-bold">
+                                                            <span className="flex items-center gap-1.5 text-slate-700" title="Based on average regulatory consulting rates ($250/hr)"><div className="w-2.5 h-2.5 rounded-full bg-emerald-500 flex items-center justify-center text-white text-[5px]">$</div> Est. capital saved</span>
+                                                            <span className="text-emerald-700">{capitalSaved}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -2735,6 +2762,20 @@ function ReportsContent() {
                             <div>
                                 <label className="block text-[10px] text-slate-500 mb-1">Regulatory Affairs Lead</label>
                                 <input type="text" value={teamRaName} onChange={e => setTeamRaName(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded p-2 text-sm text-white focus:ring-1 focus:ring-emerald-500 outline-none" />
+                            </div>
+                        </div>
+
+                        <div className="mb-6 space-y-3">
+                            <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-700 pb-2 flex items-center gap-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span> AI Value Extrapolations
+                            </h3>
+                            <div>
+                                <label className="block text-[10px] text-slate-500 mb-1">Est. Remediation Effort</label>
+                                <input type="text" value={remediationEffort} onChange={e => setRemediationEffort(e.target.value)} placeholder="e.g. 4-8 weeks" className="w-full bg-slate-800 border border-slate-700 rounded p-2 text-sm text-white focus:ring-1 focus:ring-emerald-500 outline-none" />
+                            </div>
+                            <div>
+                                <label className="block text-[10px] text-slate-500 mb-1">Est. Capital Saved</label>
+                                <input type="text" value={capitalSaved} onChange={e => setCapitalSaved(e.target.value)} placeholder="e.g. $45,000" className="w-full bg-slate-800 border border-slate-700 rounded p-2 text-sm text-emerald-400 font-bold focus:ring-1 focus:ring-emerald-500 outline-none" />
                             </div>
                         </div>
 
