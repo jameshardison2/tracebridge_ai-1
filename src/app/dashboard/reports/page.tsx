@@ -1897,10 +1897,10 @@ function ReportsContent() {
                                     const readinessScore = Math.round((compliantCount / totalCount) * 100) || 0;
 
                                     return (
-                                        <div className={`w-full max-w-[340px] bg-white aspect-[8.5/11] shadow-xl relative flex flex-col border-[3px] ${theme.border} transform transition-all duration-500 animate-in fade-in zoom-in-95`}>
+                                        <div className={`w-full max-w-[340px] bg-white aspect-[8.5/11] shadow-xl relative flex flex-col border-[3px] ${theme.border} transform transition-all duration-500 animate-in fade-in zoom-in-95 overflow-hidden`}>
                                             
                                             {/* Header */}
-                                            <div className="px-5 pt-6 pb-2 flex justify-between items-start">
+                                            <div className="px-5 pt-4 pb-2 flex justify-between items-start">
                                                 <div className="flex items-center gap-2">
                                                     <img src="/brand/icon_transparent.png" alt="TraceBridge" className="w-6 h-6 object-contain" />
                                                     <div>
@@ -1976,7 +1976,7 @@ function ReportsContent() {
                                             </div>
 
                                             {/* ATTESTATION */}
-                                            <div className="px-5 mt-auto mb-4">
+                                            <div className="px-5 mt-auto mb-2">
                                                 <div className={`w-full py-1 ${theme.bg} text-center text-white text-[6px] font-bold tracking-[0.1em] uppercase shadow-inner mb-2`}>
                                                     Submission Attestation
                                                 </div>
