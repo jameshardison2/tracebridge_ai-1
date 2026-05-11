@@ -19,7 +19,8 @@ import {
     Clock,
     ChevronDown,
     ChevronRight,
-    X
+    X,
+    Network
 } from "lucide-react";
 
 interface TeamMember {
@@ -59,6 +60,33 @@ export default function TeamPage() {
     // Client ROI States
     const [hourlyRate, setHourlyRate] = useState(166.66);
     const [hoursPerAnalysis, setHoursPerAnalysis] = useState(4.5);
+
+    // Assignee Mapping States
+    const [teamQaName, setTeamQaName] = useState("Aisha P. (QA Review)");
+    const [teamEngName, setTeamEngName] = useState("Mark K. (Core Eng)");
+    const [teamRaName, setTeamRaName] = useState("Sarah R. (Regulatory)");
+
+    useEffect(() => {
+        const savedNames = localStorage.getItem('tracebridge_assignee_names');
+        if (savedNames) {
+            try {
+                const parsed = JSON.parse(savedNames);
+                if (parsed.qaName) setTeamQaName(parsed.qaName);
+                if (parsed.engName) setTeamEngName(parsed.engName);
+                if (parsed.raName) setTeamRaName(parsed.raName);
+            } catch(e){}
+        }
+    }, []);
+
+    const saveAssigneeMapping = () => {
+        localStorage.setItem('tracebridge_assignee_names', JSON.stringify({
+            qaName: teamQaName,
+            engName: teamEngName,
+            raName: teamRaName
+        }));
+        setSuccess("Routing assignments updated successfully.");
+        setTimeout(() => setSuccess(""), 3000);
+    };
 
     const [frameworks, setFrameworks] = useState([
         { id: 'iso13485', name: 'ISO 13485:2016', active: true, available: true, requested: false },
@@ -404,91 +432,7 @@ export default function TeamPage() {
             ) : (
                 /* Team exists - show dashboard */
                 <div className="space-y-8">
-                    {/* Premium QMS Environment Banner */}
-                    <div className="bg-slate-900 rounded-[2rem] p-8 sm:p-10 text-white shadow-2xl relative overflow-hidden border border-slate-800 group">
-                        {/* High-tech animated background elements */}
-                        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3 group-hover:bg-indigo-500/30 transition-colors duration-700"></div>
-                        <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-emerald-500/10 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/4 group-hover:bg-emerald-500/20 transition-colors duration-700"></div>
-                        
-                        {/* Subtle Grid Pattern */}
-                        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
-
-                        <div className="relative z-10 max-w-4xl">
-                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 mb-6 backdrop-blur-md">
-                                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                                <span className="text-[10px] uppercase tracking-widest font-bold text-slate-300">System Active</span>
-                            </div>
-                            
-                            <h2 className="text-3xl sm:text-4xl font-extrabold mb-4 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400">
-                                Enterprise Alignment Hub
-                            </h2>
-                            <p className="text-slate-400 text-sm sm:text-base leading-relaxed mb-10 max-w-2xl font-light">
-                                Centralized Command Center for MedTech engineering and regulatory affairs. Track your cross-functional remediation ROI, monitor supported AI compliance frameworks, and maintain an immutable <strong className="text-white font-medium">21 CFR Part 11 Audit Trail</strong> to streamline 510(k) clearance.
-                            </p>
-                            
-                            {/* Premium Impact Metrics */}
-                            <div className="flex flex-wrap gap-4 mb-6">
-                                <div className="bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 transition-all rounded-2xl px-6 py-4 flex flex-col gap-2 relative overflow-hidden group/metric">
-                                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent opacity-0 group-hover/metric:opacity-100 transition-opacity"></div>
-                                    <div className="flex items-center gap-2">
-                                        <Clock className="w-4 h-4 text-indigo-400" />
-                                        <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold">Hours Saved</p>
-                                    </div>
-                                    <p className="text-3xl font-black tracking-tight text-white">{(stats.totalUploads * hoursPerAnalysis).toFixed(1)} <span className="text-sm font-medium text-slate-500 ml-1">hrs</span></p>
-                                </div>
-                                
-                                <div className="bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 transition-all rounded-2xl px-6 py-4 flex flex-col gap-2 relative overflow-hidden group/metric">
-                                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent opacity-0 group-hover/metric:opacity-100 transition-opacity"></div>
-                                    <div className="flex items-center gap-2">
-                                        <FileText className="w-4 h-4 text-emerald-400" />
-                                        <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold">Analyses Run</p>
-                                    </div>
-                                    <p className="text-3xl font-black tracking-tight text-white">{stats.totalUploads}</p>
-                                </div>
-                                
-                                <div className="bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 transition-all rounded-2xl px-6 py-4 flex flex-col gap-2 relative overflow-hidden group/metric">
-                                    <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-transparent opacity-0 group-hover/metric:opacity-100 transition-opacity"></div>
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-amber-400 font-bold text-sm">$</span>
-                                        <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold">ROI Generated</p>
-                                    </div>
-                                    <p className="text-3xl font-black tracking-tight text-white"><span className="text-slate-500 mr-1">$</span>{Math.round(stats.totalUploads * hoursPerAnalysis * hourlyRate).toLocaleString()}</p>
-                                </div>
-                            </div>
-
-                            {/* Client ROI Configuration */}
-                            <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 backdrop-blur-md">
-                                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span> Client ROI Configuration
-                                </h4>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-[10px] text-slate-500 mb-1 uppercase tracking-widest">Blended Engineering Rate ($/hr)</label>
-                                        <input 
-                                            type="number" 
-                                            value={hourlyRate}
-                                            onChange={(e) => setHourlyRate(Number(e.target.value))}
-                                            className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:ring-1 focus:ring-emerald-500 outline-none" 
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-[10px] text-slate-500 mb-1 uppercase tracking-widest">Manual Hours per Analysis</label>
-                                        <input 
-                                            type="number" 
-                                            value={hoursPerAnalysis}
-                                            onChange={(e) => setHoursPerAnalysis(Number(e.target.value))}
-                                            className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:ring-1 focus:ring-emerald-500 outline-none" 
-                                        />
-                                    </div>
-                                </div>
-                                <p className="text-[10px] text-slate-500 mt-3 font-medium">
-                                    * These inputs allow clients to model the realistic financial impact of TraceBridge using their own internal cost data. Calculation: Analyses Run × Hours Per Analysis × Hourly Rate.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-4">
                         {/* Left Column: Team Management */}
                         <div className="lg:col-span-5 space-y-6">
                             <div className="glass-card p-6 border-slate-200 shadow-sm">
@@ -698,6 +642,74 @@ export default function TeamPage() {
                                             </div>
                                         </div>
                                     ))}
+                                </div>
+                            </div>
+
+                            {/* Cross-Functional Assignee Routing */}
+                            <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+                                <div className="absolute top-0 left-0 w-1.5 h-full bg-indigo-500"></div>
+                                
+                                <h3 className="text-xl font-bold text-slate-900 mb-2 tracking-tight flex items-center gap-2">
+                                    <Network className="w-6 h-6 text-indigo-500" />
+                                    Cross-Functional Routing
+                                </h3>
+                                <p className="text-sm text-slate-500 mb-6 max-w-lg">
+                                    Map your teammates to specific remediation pipelines. TraceBridge automatically routes gaps to these assignees based on the gap classification.
+                                </p>
+                                
+                                <div className="space-y-4">
+                                    <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl border border-slate-100 bg-slate-50">
+                                        <div className="w-full sm:w-1/3">
+                                            <p className="text-sm font-bold text-slate-900">QA Review Pipeline</p>
+                                            <p className="text-xs text-slate-500">Approves document overrides</p>
+                                        </div>
+                                        <div className="flex-1 w-full">
+                                            <input 
+                                                type="text" 
+                                                value={teamQaName}
+                                                onChange={(e) => setTeamQaName(e.target.value)}
+                                                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:ring-1 focus:ring-indigo-500 outline-none"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl border border-slate-100 bg-slate-50">
+                                        <div className="w-full sm:w-1/3">
+                                            <p className="text-sm font-bold text-slate-900">Core Engineering</p>
+                                            <p className="text-xs text-slate-500">Uploads missing technical evidence</p>
+                                        </div>
+                                        <div className="flex-1 w-full">
+                                            <input 
+                                                type="text" 
+                                                value={teamEngName}
+                                                onChange={(e) => setTeamEngName(e.target.value)}
+                                                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:ring-1 focus:ring-indigo-500 outline-none"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl border border-slate-100 bg-slate-50">
+                                        <div className="w-full sm:w-1/3">
+                                            <p className="text-sm font-bold text-slate-900">Regulatory Affairs</p>
+                                            <p className="text-xs text-slate-500">Final FDA/ISO sign-off</p>
+                                        </div>
+                                        <div className="flex-1 w-full">
+                                            <input 
+                                                type="text" 
+                                                value={teamRaName}
+                                                onChange={(e) => setTeamRaName(e.target.value)}
+                                                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:ring-1 focus:ring-indigo-500 outline-none"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="mt-6 flex justify-end">
+                                    <button 
+                                        onClick={saveAssigneeMapping}
+                                        className="bg-indigo-50 text-indigo-700 font-bold px-4 py-2 rounded-lg text-sm border border-indigo-200 hover:bg-indigo-100 transition-colors"
+                                    >
+                                        Update Routing Mapping
+                                    </button>
                                 </div>
                             </div>
 
