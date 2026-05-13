@@ -827,7 +827,7 @@ export default function TeamPage() {
                             </div>
 
                             {/* Immutable Audit Log - Restricted to Owner */}
-                            {isOwner && (
+                            {false && isOwner && (
                                 <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
                                     <div className="absolute top-0 left-0 w-1.5 h-full bg-slate-800"></div>
                                     <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-slate-800/5 rounded-full blur-3xl group-hover:bg-slate-800/10 transition-colors duration-700"></div>

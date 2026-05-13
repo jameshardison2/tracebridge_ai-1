@@ -48,7 +48,6 @@ const navItems: NavItem[] = [
     
     { isDivider: true, heading: "Settings & Management" },
     { href: "/dashboard/team", label: "Workspace & Team", icon: Users },
-    { href: "/dashboard/logs", label: "System Logs", icon: Server },
     { href: "/dashboard/survey", label: "Validation Survey", icon: ClipboardList },
 ];
 
