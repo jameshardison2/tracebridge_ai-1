@@ -113,6 +113,8 @@ export default function PipelinePage() {
                 }
             } catch (err) {
                 console.error("Pipeline Sync Failed:", err);
+            } finally {
+                setIsLoading(false);
             }
         };
 
