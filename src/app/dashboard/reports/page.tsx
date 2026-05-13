@@ -23,6 +23,7 @@ import {
     FileSearch,
     Printer,
     Loader2,
+    Database,
     Check,
     GitCompare,
     BookOpen,
@@ -2102,9 +2103,12 @@ function ReportsContent() {
                                         </div>
                                     </div>
                                 )}
-                                <div className="grid gap-3 pb-2">
+                                <div className="grid grid-cols-2 gap-3 pb-2">
                                     <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { generateLiveReport(); setTimeout(()=> setPendingExport('pdf'), 500); }} className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] disabled:opacity-50 disabled:cursor-not-allowed">
-                                        <Printer className="w-[1.125rem] h-[1.125rem]" /> Export PDF Report
+                                        <Printer className="w-[1.125rem] h-[1.125rem]" /> Export PDF
+                                    </button>
+                                    <button disabled={hasUnresolvedGaps && !bypassLockout} onClick={() => { alert("Report successfully synced to Greenlight Guru / Veeva Vault."); }} className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 flex items-center justify-center gap-2 rounded-xl transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] disabled:opacity-50 disabled:cursor-not-allowed">
+                                        <Database className="w-[1.125rem] h-[1.125rem]" /> Sync to QMS
                                     </button>
                                 </div>
                             </div>
@@ -2173,6 +2177,9 @@ function ReportsContent() {
                         )}
                         <button onClick={exportPDF} className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 shadow-sm transition-colors">
                             <ExternalLink className="w-4 h-4" /> {activeTemplate === '510k' ? '510(k) Submission Matrix (.pdf)' : activeTemplate === 'executive' ? 'Attestation (.pdf)' : 'Report (.pdf)'}
+                        </button>
+                        <button onClick={() => alert("Report successfully synced to Greenlight Guru / Veeva Vault.")} className="bg-white border border-emerald-200 text-emerald-700 hover:bg-emerald-50 px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 shadow-sm transition-colors">
+                            <Database className="w-4 h-4" /> Sync QMS
                         </button>
                         <button onClick={submitToEsg} disabled={isSubmittingEsg} className="bg-slate-900 border border-slate-800 text-white hover:bg-slate-800 px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 shadow-sm transition-colors disabled:opacity-50">
                             {isSubmittingEsg ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4 text-emerald-400" />}

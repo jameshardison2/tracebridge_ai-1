@@ -36,6 +36,7 @@ export default function PipelinePage() {
     const searchParams = useSearchParams();
     const [uploads, setUploads] = useState<any[]>([]);
     const [activeUploadId, setActiveUploadId] = useState<string | null>(searchParams.get("id"));
+    const [isLoading, setIsLoading] = useState(true);
 
 
     // Initial Load & API Hydration
@@ -53,10 +54,15 @@ export default function PipelinePage() {
                     setUploads(data.data.uploads);
                     if (!activeUploadId) {
                         setActiveUploadId(data.data.uploads[0].id);
+                    } else {
+                        // If activeUploadId is already set but gaps are zero, wait for gap load.
                     }
+                } else {
+                    setIsLoading(false); // No uploads
                 }
             } catch (err) {
                 console.error("Failed to load uploads view:", err);
+                setIsLoading(false);
             }
         };
 
@@ -256,8 +262,16 @@ export default function PipelinePage() {
                 {t.confidence !== undefined && (
                     <div className="flex items-center justify-between pt-2.5 border-t border-slate-100/60 mt-1">
                         <div className="flex items-center gap-1.5">
-                            <svg className="w-3.5 h-3.5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{t.confidence > 0 ? `AI CONFIDENCE: ${t.confidence}%` : 'AI ANALYSIS PENDING'}</span>
+                            <svg className={`w-3.5 h-3.5 ${
+                                t.confidence && t.confidence >= 95 ? 'text-emerald-500' :
+                                t.confidence && t.confidence >= 80 ? 'text-indigo-500' :
+                                t.confidence && t.confidence >= 50 ? 'text-amber-500' : 'text-rose-500'
+                            }`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                            <span className={`text-[9px] font-bold uppercase tracking-widest ${
+                                t.confidence && t.confidence >= 95 ? 'text-emerald-600' :
+                                t.confidence && t.confidence >= 80 ? 'text-indigo-600' :
+                                t.confidence && t.confidence >= 50 ? 'text-amber-600' : 'text-rose-600'
+                            }`}>{t.confidence > 0 ? `AI CONFIDENCE: ${t.confidence}%` : 'AI ANALYSIS PENDING'}</span>
                         </div>
                     </div>
                 )}
@@ -285,6 +299,19 @@ export default function PipelinePage() {
             </div>
         );
     };
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col h-[calc(100vh-8rem)] relative">
+                <div className="flex-1 flex items-center justify-center">
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
+                        <p className="text-sm font-bold text-slate-500 uppercase tracking-widest animate-pulse">Syncing Pipeline Data...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col h-[calc(100vh-8rem)] relative">

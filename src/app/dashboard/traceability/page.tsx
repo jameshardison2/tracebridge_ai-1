@@ -218,8 +218,32 @@ export default function TraceabilityMatrixPage() {
         return null;
     };
 
+    const unassignedCriticalCount = data.filter((item: any) => item.aiAnalysis.driftRisk === "High" && !["ASSIGNED", "IN_REMEDIATION", "Completed", "CLOSED"].includes(item.engineeringLink.status)).length;
+
     return (
         <div className="space-y-6">
+            {unassignedCriticalCount > 0 && (
+                <div className="bg-rose-50 border border-rose-200 text-rose-800 px-4 py-3 rounded-xl flex items-center justify-between shadow-sm mb-2 animate-in fade-in slide-in-from-top-4 sticky top-0 z-10">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
+                            <AlertTriangle className="w-4 h-4 text-rose-600" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-bold">Action Required</p>
+                            <p className="text-xs opacity-90">You have {unassignedCriticalCount} critical gap{unassignedCriticalCount !== 1 ? 's' : ''} unassigned. Review them immediately to prevent submission delays.</p>
+                        </div>
+                    </div>
+                    <button 
+                        onClick={() => {
+                            setRiskFilter('High');
+                            document.getElementById('traceability-table')?.scrollIntoView({ behavior: 'smooth' });
+                        }}
+                        className="bg-white text-rose-700 border border-rose-200 hover:bg-rose-50 px-4 py-2 rounded-lg font-bold text-xs shadow-sm transition-colors"
+                    >
+                        Review Now
+                    </button>
+                </div>
+            )}
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
@@ -285,7 +309,7 @@ export default function TraceabilityMatrixPage() {
             </div>
 
             {/* Matrix Table */}
-            <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm overflow-hidden flex flex-col">
+            <div id="traceability-table" className="bg-white rounded-xl border border-[var(--border)] shadow-sm overflow-hidden flex flex-col">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
@@ -403,13 +427,20 @@ export default function TraceabilityMatrixPage() {
                                                         <div className="w-16 h-2 bg-slate-100 rounded-full overflow-hidden">
                                                             <div 
                                                                 className={`h-full rounded-full ${
-                                                                    item.aiAnalysis.confidenceScore > 80 ? 'bg-emerald-500' :
-                                                                    item.aiAnalysis.confidenceScore > 50 ? 'bg-amber-500' : 'bg-rose-500'
+                                                                    item.aiAnalysis.confidenceScore >= 95 ? 'bg-emerald-500' :
+                                                                    item.aiAnalysis.confidenceScore >= 80 ? 'bg-indigo-500' :
+                                                                    item.aiAnalysis.confidenceScore >= 50 ? 'bg-amber-500' : 'bg-rose-500'
                                                                 }`}
                                                                 style={{ width: `${item.aiAnalysis.confidenceScore}%` }}
                                                             />
                                                         </div>
-                                                        <span className="text-xs font-bold text-slate-700">{item.aiAnalysis.confidenceScore}%</span>
+                                                        <span className={`text-xs font-bold ${
+                                                            item.aiAnalysis.confidenceScore >= 95 ? 'text-emerald-600' :
+                                                            item.aiAnalysis.confidenceScore >= 80 ? 'text-indigo-600' :
+                                                            item.aiAnalysis.confidenceScore >= 50 ? 'text-amber-600' : 'text-rose-600'
+                                                        }`}>
+                                                            {item.aiAnalysis.confidenceScore}%
+                                                        </span>
                                                     </div>
                                                 </div>
                                                 <p className="text-sm text-slate-600 bg-white p-3 rounded-lg border border-[var(--border)] shadow-sm">

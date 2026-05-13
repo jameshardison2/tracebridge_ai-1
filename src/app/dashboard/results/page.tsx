@@ -1128,8 +1128,32 @@ function ResultsContent() {
     const circumference = 2 * Math.PI * 45;
     const offset = circumference - (summary.complianceScore / 100) * circumference;
 
+    const unassignedCriticalCount = report?.upload?.gapResults?.filter((g: any) => g.severity === 'critical' && g.status === 'gap_detected' && !['ASSIGNED', 'IN_REMEDIATION', 'CLOSED'].includes(g.pipelineStatus || '')).length || 0;
+
     return (
         <div className="flex flex-col pb-12">
+            {unassignedCriticalCount > 0 && (
+                <div className="bg-rose-50 border border-rose-200 text-rose-800 px-4 py-3 rounded-xl flex items-center justify-between shadow-sm mb-6 animate-in fade-in slide-in-from-top-4 sticky top-0 z-10">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
+                            <AlertTriangle className="w-4 h-4 text-rose-600" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-bold">Action Required</p>
+                            <p className="text-xs opacity-90">You have {unassignedCriticalCount} critical gap{unassignedCriticalCount !== 1 ? 's' : ''} unassigned. Review them immediately to prevent submission delays.</p>
+                        </div>
+                    </div>
+                    <button 
+                        onClick={() => {
+                            setFilter('gap_detected');
+                            document.getElementById('results-table')?.scrollIntoView({ behavior: 'smooth' });
+                        }}
+                        className="bg-white text-rose-700 border border-rose-200 hover:bg-rose-50 px-4 py-2 rounded-lg font-bold text-xs shadow-sm transition-colors"
+                    >
+                        Review Now
+                    </button>
+                </div>
+            )}
             {/* Top Workspace Header (Qualio Style) */}
             <div className="shrink-0 mb-6 flex flex-col gap-6">
                 <div className="flex items-center justify-between">
@@ -1347,24 +1371,24 @@ function ResultsContent() {
                                     {/* Confidence Pill */}
                                     <td className="px-5 py-4">
                                         {(() => {
-                                            let pillColor = 'bg-emerald-100 text-emerald-800 border-emerald-200';
-                                            let label = 'High Confidence';
+                                            const score = result.confidenceScore ?? ((result as any).confidence === 'high' ? 95 : (result as any).confidence === 'medium' ? 75 : (result as any).confidence === 'low' ? 45 : 80);
+                                            let textColor = 'text-emerald-700';
+                                            let bgColor = 'bg-emerald-100';
+                                            let borderColor = 'border-emerald-200';
                                             let dotColor = 'bg-emerald-500';
                                             
-                                            if (result.status === 'gap_detected') { 
-                                                pillColor = 'bg-rose-100 text-rose-800 border-rose-200'; 
-                                                label = 'No Evidence'; 
-                                                dotColor = 'bg-rose-500';
-                                            } else if (result.status === 'needs_review') { 
-                                                pillColor = 'bg-amber-100 text-amber-800 border-amber-200'; 
-                                                label = 'Medium Confidence'; 
-                                                dotColor = 'bg-amber-500';
+                                            if (score < 50) {
+                                                textColor = 'text-rose-700'; bgColor = 'bg-rose-100'; borderColor = 'border-rose-200'; dotColor = 'bg-rose-500';
+                                            } else if (score < 80) {
+                                                textColor = 'text-amber-700'; bgColor = 'bg-amber-100'; borderColor = 'border-amber-200'; dotColor = 'bg-amber-500';
+                                            } else if (score < 95) {
+                                                textColor = 'text-indigo-700'; bgColor = 'bg-indigo-100'; borderColor = 'border-indigo-200'; dotColor = 'bg-indigo-500';
                                             }
-                                            
+
                                             return (
-                                                <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded text-[10px] font-bold border whitespace-nowrap shadow-sm ${pillColor}`}>
+                                                <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded text-[10px] font-bold border whitespace-nowrap shadow-sm ${bgColor} ${textColor} ${borderColor}`}>
                                                     <span className={`w-1.5 h-1.5 rounded-full ${dotColor}`}></span>
-                                                    {label}
+                                                    {score}% Confidence
                                                 </span>
                                             )
                                         })()}
@@ -1583,7 +1607,11 @@ function ResultsContent() {
                                                     <div className="flex items-center gap-2 bg-slate-50 rounded-md px-3 py-1.5 border border-slate-200">
                                                         <Brain className="w-4 h-4 text-slate-500" />
                                                         <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Confidence:</span>
-                                                        <span className={`font-mono font-bold text-xs ${score >= 85 ? 'text-emerald-600' : 'text-amber-600'}`}>
+                                                        <span className={`font-mono font-bold text-xs ${
+                                                            score >= 95 ? 'text-emerald-600' :
+                                                            score >= 80 ? 'text-indigo-600' :
+                                                            score >= 50 ? 'text-amber-600' : 'text-rose-600'
+                                                        }`}>
                                                             {score}%
                                                         </span>
                                                     </div>
