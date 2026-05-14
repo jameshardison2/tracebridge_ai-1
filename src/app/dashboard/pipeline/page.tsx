@@ -88,7 +88,7 @@ export default function PipelinePage() {
                         title: gap.requirement.substring(0,60) + (gap.requirement.length > 60 ? "..." : ""),
                         standard: gap.standard + (gap.section ? ` § ${gap.section}` : ""),
                         priority: gap.severity ? gap.severity.toUpperCase() : "MEDIUM",
-                        confidence: gap.confidence ? Math.round(gap.confidence * 100) : 0,
+                        confidence: gap.confidenceScore ?? (gap.confidence === 'high' ? 95 : gap.confidence === 'medium' ? 75 : gap.confidence === 'low' ? 45 : 80),
                         subNote: gap.citations?.[0]?.quote ? "Evidence Extracted" : "Missing File",
                         closedBy: gap.status === 'compliant' ? "AI Verified" : undefined,
                         closedTime: gap.status === 'compliant' ? "Automated" : undefined

@@ -1333,7 +1333,7 @@ function ResultsContent() {
                     <div className="flex-1 overflow-y-auto custom-scrollbar">
 
             {/* Results Table */}
-            <div className="bg-[var(--card)] w-full">
+            <div id="results-table" className="bg-[var(--card)] w-full">
                 <div className="px-5 py-3 border-b border-[var(--border)] bg-slate-50 flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">
                         Showing {sortedResults.length} requirements
