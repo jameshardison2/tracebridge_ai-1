@@ -60,19 +60,19 @@ export default function LandingPage() {
           
           {/* Main Title Portal */}
           <div className="space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-widest shadow-sm">
-              <AlertTriangle className="w-3.5 h-3.5 text-emerald-600" />
-              <span>510(k) Pre-Submission Readiness &amp; RTA Prevention</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-100 text-amber-700 text-xs font-bold uppercase tracking-widest shadow-sm">
+              <AlertTriangle className="w-3.5 h-3.5" />
+              <span>Stop 510(k) Submission Bottlenecks.</span>
             </div>
             <h1 className="text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.1]">
-              Find documentation gaps before the FDA does.
+              Never miss an FDA commitment.
             </h1>
             <p className="text-slate-600 leading-relaxed text-lg max-w-2xl font-light">
-              TraceBridge AI audits your 510(k) submission package against FDA guidance, the RTA (Refuse to Accept) checklist, and historical clearance precedents. Catch critical omissions, resolve compliance gaps, and verify cross-document coherence before you file.
+              TraceBridge AI is an intelligent alignment engine that ingests your FDA meeting minutes and cross-references them against your 1,500+ page DHF. We ensure "Submission Readiness" by aggressively verifying that every single FDA request, constraint, and commitment is flawlessly met before your final submission.
             </p>
             <div className="flex gap-4 pt-4">
               <Link href="/login" className="bg-slate-900 text-white hover:bg-slate-800 px-6 py-3 rounded-lg text-sm font-bold flex items-center gap-2 transition-all group shadow-lg shadow-slate-900/20">
-                Evaluate Submission Package 
+                Initialize Audit Workflow 
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
@@ -88,27 +88,27 @@ export default function LandingPage() {
                 <div className="p-2.5 bg-blue-50 rounded-lg w-fit mb-4 group-hover:scale-110 transition-transform shadow-sm border border-blue-100">
                   <Database className="w-5 h-5 text-blue-600" />
                 </div>
-                <h3 className="text-sm font-bold text-slate-900 tracking-tight mb-2">Precedent &amp; RTA Benchmarks</h3>
+                <h3 className="text-sm font-bold text-slate-900 tracking-tight mb-2">Deterministic Rules</h3>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  Cross-reference submission files against historical FDA 510(k) clearances, RTA screening criteria, and product codes.
+                  153+ strict constraints hardcoded from IEC 62304, ISO 14971, and ISO 13485 mapped directly to a massive PostgreSQL architecture database.
                 </p>
               </div>
               <div className="p-5 rounded-xl bg-white/60 backdrop-blur-sm border border-slate-200 hover:bg-white transition-all group shadow-sm hover:shadow-md">
                 <div className="p-2.5 bg-emerald-50 rounded-lg w-fit mb-4 group-hover:scale-110 transition-transform shadow-sm border border-emerald-100">
                   <Brain className="w-5 h-5 text-emerald-600" />
                 </div>
-                <h3 className="text-sm font-bold text-slate-900 tracking-tight mb-2">Targeted Gap Detection</h3>
+                <h3 className="text-sm font-bold text-slate-900 tracking-tight mb-2">Semantic Evaluation</h3>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  Scans draft risk files, software architecture, and cybersecurity files against ISO 14971 and IEC 62304 with exact clause citations.
+                  Engine utilizes Google Gemini specialized routing to parse 100+ page clinical PDFs, extracting exact quotes to satisfy database constraints.
                 </p>
               </div>
               <div className="p-5 rounded-xl bg-white/60 backdrop-blur-sm border border-slate-200 hover:bg-white transition-all group shadow-sm hover:shadow-md">
                 <div className="p-2.5 bg-indigo-50 rounded-lg w-fit mb-4 group-hover:scale-110 transition-transform shadow-sm border border-indigo-100">
                   <CheckCircle2 className="w-5 h-5 text-indigo-600" />
                 </div>
-                <h3 className="text-sm font-bold text-slate-900 tracking-tight mb-2">Package Coherence</h3>
+                <h3 className="text-sm font-bold text-slate-900 tracking-tight mb-2">Verdict Triangulation</h3>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  Evaluates cross-document consistency to ensure risk mitigations, software requirements, and verification evidence hang together.
+                  Output is merged into strict JSON generating a mathematically sound trace matrix showing complete compliance, partial reviews, or missing evidence.
                 </p>
               </div>
             </div>
@@ -162,8 +162,8 @@ export default function LandingPage() {
                   <FileSearch className="w-4 h-4 text-slate-400 group-hover/item:text-blue-600" />
                 </div>
                 <div>
-                  <span className="text-sm font-bold text-slate-900 block mb-1">1. Dossier &amp; Specification Ingestion</span>
-                  <span className="text-xs text-slate-500 leading-relaxed">Secure File API handles submission components (SRS, Risk Management Plan, Architecture, and SBOM).</span>
+                  <span className="text-sm font-bold text-slate-900 block mb-1">1. FDA Feedback & Evidence Ingestion</span>
+                  <span className="text-xs text-slate-500 leading-relaxed">Secure File API handles 20MB+ PDFs natively with advanced OCR fallback.</span>
                 </div>
               </div>
               <div className="flex gap-4 group/item">
@@ -171,8 +171,8 @@ export default function LandingPage() {
                   <BarChart3 className="w-4 h-4 text-slate-400 group-hover/item:text-teal-600" />
                 </div>
                 <div>
-                  <span className="text-sm font-bold text-slate-900 block mb-1">2. Precedent &amp; RTA Gap Audit</span>
-                  <span className="text-xs text-slate-500 leading-relaxed">Automated analysis flags missing clauses, unaddressed guidance, and incomplete mitigations with exact citations.</span>
+                  <span className="text-sm font-bold text-slate-900 block mb-1">2. Alignment Verification</span>
+                  <span className="text-xs text-slate-500 leading-relaxed">System throttles processing to abide by rate limits and ensure deterministic outcomes.</span>
                 </div>
               </div>
               <div className="flex gap-4 group/item">
@@ -180,8 +180,8 @@ export default function LandingPage() {
                   <Shield className="w-4 h-4 text-slate-400 group-hover/item:text-indigo-600" />
                 </div>
                 <div>
-                  <span className="text-sm font-bold text-slate-900 block mb-1">3. Traceability &amp; Coherence Matrix</span>
-                  <span className="text-xs text-slate-500 leading-relaxed">Export auditor-ready compliance summaries, gap severity rankings, and cross-document verification before filing.</span>
+                  <span className="text-sm font-bold text-slate-900 block mb-1">3. Traceability Output</span>
+                  <span className="text-xs text-slate-500 leading-relaxed">Matrix formats directly for auditor review with full citations mapped.</span>
                 </div>
               </div>
             </div>
