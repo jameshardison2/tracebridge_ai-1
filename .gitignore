@@ -28,15 +28,17 @@ tsconfig.tsbuildinfo
 phase_2_files/test_data/
 .env*.local
 
-# Large datasets & archive bundles (>90MB, keep out of GitHub)
+# Archives & sensitive personal files (keep local)
+archive/
+.archive/
+tmp/
 *.zip
 *.tgz
 *.tar.gz
-tmp/
 *.jsonl
+test-results/
 scratch_*
 step*.html
 referrals_body.html
 "spark-deliverables [0-9]*/"
 
-test-results/
