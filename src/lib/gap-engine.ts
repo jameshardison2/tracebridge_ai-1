@@ -160,7 +160,7 @@ export async function runGapAnalysis(
 
     const ruleChunks = chunkArray(applicableRules, 15);
     
-    // Process all chunks concurrently without the 35-second artificial throttle
+    // Await all chunks in parallel
     const chunkPromises = ruleChunks.map(async (chunk, c) => {
         let chunkSuccess = false;
         let retryCount = 0;
@@ -168,20 +168,34 @@ export async function runGapAnalysis(
         
         while (!chunkSuccess && retryCount <= maxRetries) {
             try {
-                // If retrying due to a transient API failure, add a small exponential backoff
                 if (retryCount > 0) {
-                    const delay = Math.pow(2, retryCount) * 2000; // 4s, 8s, 16s
+                    const delay = Math.pow(2, retryCount) * 2000;
                     console.log(`[Gap Engine] Transient error retry pause for ${delay}ms... (Chunk ${c+1}/${ruleChunks.length}, Attempt ${retryCount+1})`);
                     await new Promise(resolve => setTimeout(resolve, delay));
                 }
 
-                const chunkResults = await queryGeminiRESTArray(fileBuffers, chunk.map(r => ({
-                    id: r.id || "",
-                    requirement: r.requirement,
-                    standard: r.standard,
-                    section: r.section,
-                    expectedDocument: r.expectedDocument
-                })), qsubBuffers, aiEngine, fdaPrecedents);
+                // --- VECTOR SEARCH RETRIEVAL (RAG Core) ---
+                const { retrieveRelevantChunks, retrieveRelevantPrecedents } = await import("./document-processor");
+                const combinedQuery = chunk.map(r => r.requirement).join(" ");
+                
+                console.log(`[Gap Engine] Retrieving context for Chunk ${c+1}...`);
+                const retrievedContext = await retrieveRelevantChunks(uploadId, combinedQuery, 10);
+                const retrievedPrecedentsStr = await retrieveRelevantPrecedents(combinedQuery, 3);
+                // ------------------------------------------
+
+                const chunkResults = await queryGeminiRESTArray(
+                    chunk.map(r => ({
+                        id: r.id || "",
+                        requirement: r.requirement,
+                        standard: r.standard,
+                        section: r.section,
+                        expectedDocument: r.expectedDocument
+                    })),
+                    retrievedContext,
+                    retrievedPrecedentsStr,
+                    qsubBuffers,
+                    aiEngine
+                );
                 
                 return chunkResults;
                 

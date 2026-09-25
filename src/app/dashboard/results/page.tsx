@@ -1091,7 +1091,7 @@ function ResultsContent() {
                     </div>
                     <h2 className="text-xl font-bold text-slate-800 mb-3">No Audit Initialized</h2>
                     <p className="text-slate-500 mb-8 text-[15px] leading-relaxed">
-                        Navigate to the Master System Query List and select an active pipeline submission to begin triaging its Q-Sub alignment gaps.
+                        Navigate to the Master System Query List and select an active pipeline submission to begin triaging its regulatory alignment gaps.
                     </p>
                     <Link href="/dashboard" className="inline-flex items-center gap-2 bg-indigo-600 text-white font-bold text-sm px-6 py-3.5 rounded-xl hover:bg-indigo-700 transition shadow-sm hover:translate-y-[-1px]">
                         <ArrowLeft className="w-4 h-4" /> Return to Overview
@@ -1162,7 +1162,7 @@ function ResultsContent() {
                             <span className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center border border-indigo-200">
                                 <Brain className="w-4 h-4 text-indigo-600" />
                             </span>
-                            Q-Sub Drift Intelligence
+                            510(k) Submission Intelligence
                             {report?.upload?.status === 'complete' ? (
                                 <span className="px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-widest flex items-center gap-1 border border-emerald-200">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>

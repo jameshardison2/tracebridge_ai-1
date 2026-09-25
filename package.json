@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "seed:firestore": "npx tsx scripts/seed-firestore.ts",
+    "seed:vectors": "npx tsx scripts/seed-vector-db.ts",
     "parse:templates": "npx tsx scripts/parse-templates.ts",
     "eval:hostile": "npx tsx scripts/eval-engine.ts"
   },
@@ -23,6 +24,7 @@
     "mammoth": "^1.11.0",
     "next": "16.1.6",
     "node-fetch": "^2.7.0",
+    "puppeteer-core": "^25.0.4",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "resend": "^6.12.2"

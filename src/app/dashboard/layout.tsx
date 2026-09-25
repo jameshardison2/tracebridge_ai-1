@@ -23,6 +23,7 @@ import {
     ClipboardList,
     Network,
     Calculator,
+    AlertTriangle,
 } from "lucide-react";
 
 type NavItem = {
@@ -37,13 +38,14 @@ const navItems: NavItem[] = [
     { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
     
     { isDivider: true, heading: "Core Workflow" },
-    { href: "/dashboard/upload", label: "Drift Detection", icon: Upload },
-    { href: "/dashboard/results", label: "Q-Sub Intelligence", icon: FileSearch },
-    { href: "/dashboard/pipeline", label: "Drift Remediation", icon: Kanban },
+    { href: "/dashboard/upload", label: "New Analysis", icon: Upload },
+    { href: "/dashboard/results", label: "510(k) Intelligence", icon: FileSearch },
+    { href: "/dashboard/pipeline", label: "Remediation Pipeline", icon: Kanban },
     
     { isDivider: true, heading: "Outputs & Tracking" },
     { href: "/dashboard/traceability", label: "Traceability Matrix", icon: Network },
     { href: "/dashboard/reports", label: "Submission Hub", icon: FileText },
+    { href: "/dashboard/complaints", label: "Adverse Events", icon: AlertTriangle },
     { href: "/dashboard/roi", label: "Financial Predictor", icon: Calculator },
     
     { isDivider: true, heading: "Settings & Management" },

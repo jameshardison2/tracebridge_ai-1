@@ -255,7 +255,7 @@ export default function TraceabilityMatrixPage() {
                         </span>
                     </h1>
                     <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight">
-                        Real-time AI monitoring of your engineering pipeline against FDA regulatory feedback to prevent Q-Sub drift.
+                        Real-time AI monitoring of your engineering pipeline against FDA regulatory feedback to prevent regulatory gaps.
                     </p>
                     <p className="text-slate-500 mt-2 text-sm max-w-3xl leading-relaxed">
                         Visualize the real-time compliance status of your product's subsystems against established regulatory standards. Use the filters to quickly identify unverified gaps or failing components before final submission.
@@ -456,7 +456,7 @@ export default function TraceabilityMatrixPage() {
                                                         className="mt-2 w-full py-2 bg-gradient-to-r from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 border border-indigo-200 text-indigo-700 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-colors"
                                                     >
                                                         <FileText className="w-3.5 h-3.5" />
-                                                        Draft Q-Sub Addendum
+                                                        Draft FDA Deviation
                                                     </button>
                                                 )}
                                             </div>
@@ -487,7 +487,7 @@ export default function TraceabilityMatrixPage() {
                 </div>
             </div>
 
-            {/* Q-Sub Addendum Modal */}
+            {/* FDA Deviation Modal */}
             {isDraftModalOpen && selectedDraftItem && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
                     <div className="bg-white/90 backdrop-blur-md border border-white/40 shadow-2xl rounded-2xl w-full max-w-2xl overflow-hidden flex flex-col transform transition-all scale-100">
@@ -498,7 +498,7 @@ export default function TraceabilityMatrixPage() {
                                     <FileText className="w-5 h-5" />
                                 </div>
                                 <div>
-                                    <h2 className="text-lg font-black text-slate-800 leading-tight">Auto-Draft Q-Sub Deviation</h2>
+                                    <h2 className="text-lg font-black text-slate-800 leading-tight">Auto-Draft FDA Deviation</h2>
                                     <p className="text-xs font-medium text-slate-500 uppercase tracking-widest">Formal "Blue Book" Concurrence Request</p>
                                 </div>
                             </div>

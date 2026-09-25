@@ -1,0 +1,54 @@
+{
+  "dataset_metadata": {
+    "description": "Ground truth annotations for the mock documents. Used to evaluate AI precision and recall.",
+    "version": "1.0"
+  },
+  "documents": [
+    {
+      "filename": "Risk_Management_Plan_Rev01.pdf",
+      "expected_outcomes": [
+        {
+          "rule_id": "ISO_14971_01",
+          "requirement": "The manufacturer shall establish, document and maintain throughout the lifecycle an ongoing process for identifying hazards associated with a medical device.",
+          "expected_found": true,
+          "ground_truth_reasoning": "Section 3.1 and 3.2 explicitly document the comprehensive hazard analysis process and list identified hazards."
+        },
+        {
+          "rule_id": "ISO_14971_02",
+          "requirement": "For each identified hazard, the manufacturer shall estimate the probability of occurrence of harm and the severity of that harm.",
+          "expected_found": false,
+          "ground_truth_reasoning": "Section 4 explicitly states they have 'temporarily suspended the creation of the Risk Evaluation Matrix (Probability vs. Severity)'."
+        },
+        {
+          "rule_id": "ISO_14971_03",
+          "requirement": "The manufacturer shall document a policy for determining acceptable risk.",
+          "expected_found": false,
+          "ground_truth_reasoning": "Section 4 explicitly notes the team is 'still debating the threshold for ALARP', indicating no formal policy is documented."
+        }
+      ]
+    },
+    {
+      "filename": "Software_Architecture_Document_Rev01.pdf",
+      "expected_outcomes": [
+        {
+          "rule_id": "FDA_Cyber_01",
+          "requirement": "The manufacturer shall implement encryption for data in transit to ensure the confidentiality of sensitive device control commands.",
+          "expected_found": false,
+          "ground_truth_reasoning": "Section 3.2 explicitly states 'we have opted not to implement application-layer AES encryption for the insulin dosage commands or historical logs during transit.'"
+        },
+        {
+          "rule_id": "FDA_Cyber_02",
+          "requirement": "The system architecture shall document all communication interfaces, including wireless connections.",
+          "expected_found": true,
+          "ground_truth_reasoning": "Section 2.3 explicitly lists the Communication & Interface Subsystem (CIS) handling BLE connections."
+        },
+        {
+          "rule_id": "FDA_Cyber_03",
+          "requirement": "Protected Health Information (PHI) stored on the device must be protected using encryption at rest.",
+          "expected_found": false,
+          "ground_truth_reasoning": "Section 3.3 explicitly states that the last 90 days of insulin delivery history is 'stored in plain text'."
+        }
+      ]
+    }
+  ]
+}

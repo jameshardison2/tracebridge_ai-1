@@ -1,57 +1,86 @@
 set jsCode to "(async function() {
     const delay = ms => new Promise(res => setTimeout(res, ms));
-    const rows = document.querySelectorAll('tbody tr');
     let vouchedCount = 0;
-
-    for (let row of rows) {
-        const vouchBtn = Array.from(row.querySelectorAll('button')).find(b => b.textContent.trim().toLowerCase() === 'vouch');
+    try {
+        console.log('Script started');
         
-        if (!vouchBtn || vouchBtn.disabled) {
-            continue;
-        }
-
-        vouchBtn.click();
-        await delay(1500);
-        
-        const socialOption = Array.from(document.querySelectorAll('*')).find(el => el.textContent === 'Found via social platform');
-        if (socialOption) {
-            socialOption.click();
-            await delay(500);
-            const input = document.querySelector('input[type=\"text\"]');
-            if (input) {
-                const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-                nativeInputValueSetter.call(input, 'LinkedIn');
-                input.dispatchEvent(new Event('input', { bubbles: true}));
+        // Helper to wait for a VISIBLE element
+        const waitForElement = async (selectorFn, timeout = 5000) => {
+            const start = Date.now();
+            while (Date.now() - start < timeout) {
+                const el = selectorFn();
+                if (el && el.offsetParent !== null) return el;
+                await delay(100);
             }
+            return null;
+        };
+
+        let count = 0;
+        while (true) {
+            const vouchBtn = Array.from(document.querySelectorAll('button')).find(b => {
+                const text = b.textContent.toLowerCase();
+                return text.includes('vouch') && !text.includes('vouched') && !text.includes('submit') && !b.disabled;
+            });
+            console.log('Found vouchBtn?', !!vouchBtn);
+            if (!vouchBtn) break;
+            
+            vouchBtn.click();
+            console.log('Clicked vouch');
+            
+            // Wait for modal Step 1 Option
+            const step1Option = await waitForElement(() => Array.from(document.querySelectorAll('span')).find(el => el.textContent.trim() === 'Know socially'));
+            console.log('Found step1 option?', !!step1Option);
+            if (!step1Option) {
+                alert('Failed to open modal for Step 1. The script will stop here so you can check what went wrong.');
+                break;
+            }
+            const step1Input = step1Option.closest('div[role=\"button\"]').querySelector('input');
+            if (step1Input) step1Input.click();
+            else step1Option.closest('div[role=\"button\"]').click();
+            await delay(500);
+            
+            const nextBtn1 = await waitForElement(() => Array.from(document.querySelectorAll('button')).find(b => b.textContent.trim() === 'Next' && !b.disabled));
+            if (nextBtn1) nextBtn1.click();
+            
+            // Wait for Step 2 Option
+            const step2Option = await waitForElement(() => Array.from(document.querySelectorAll('span')).find(el => el.textContent.trim() === 'Relevant skills'));
+            if (step2Option) {
+                const step2Input = step2Option.closest('div[role=\"button\"]').querySelector('input');
+                if (step2Input) step2Input.click();
+                else step2Option.closest('div[role=\"button\"]').click();
+            }
+            await delay(500);
+            
+            const nextBtn2 = await waitForElement(() => Array.from(document.querySelectorAll('button')).find(b => b.textContent.trim() === 'Next' && !b.disabled));
+            if (nextBtn2) nextBtn2.click();
+            
+            // Wait for Step 3 Textarea
+            const textarea = await waitForElement(() => document.querySelector('textarea'));
+            const nameEl = document.querySelector('p.text-sm.text-gray-600 span.font-medium');
+            const candidateName = nameEl ? nameEl.textContent.trim() : 'this candidate';
+            
+            if (textarea) {
+                const nativeTextareaValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set;
+                const text = `I am formally vouching for ${candidateName}'s technical and professional caliber. Based on their background and execution skills, ${candidateName} demonstrates the exact traits highly-funded startups are looking for: extreme agency, a bias for action, and the ability to ship clean, scalable work quickly. ${candidateName} doesn't just complete tasks; they understand product vision and execution. I highly recommend ${candidateName} as a massive force multiplier for any lean, fast-paced team.`;
+                nativeTextareaValueSetter.call(textarea, text);
+                textarea.dispatchEvent(new Event('input', { bubbles: true}));
+            }
+            await delay(500);
+            
+            const submitBtn = await waitForElement(() => Array.from(document.querySelectorAll('button')).find(b => b.textContent.trim() === 'Submit Vouch' && !b.disabled));
+            if (submitBtn) submitBtn.click();
+            
+            vouchedCount++;
+            console.log('Vouched count:', vouchedCount);
+            
+            // Wait for the modal to close and the button to change to Vouched
+            await delay(2500);
         }
         
-        await delay(500);
-        
-        const skillsOption = Array.from(document.querySelectorAll('*')).find(el => el.textContent === 'Relevant skills');
-        if (skillsOption) skillsOption.click();
-        
-        await delay(500);
-        
-        const textarea = document.querySelector('textarea');
-        if (textarea) {
-            const nativeTextareaValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set;
-            const text = 'I am formally referring this candidate. Based on their LinkedIn profile, technical background, and experience, they appear to be a highly qualified match for the roles you are actively filling. They have strong technical skills that would be an asset to any fast-paced engineering or product team.';
-            nativeTextareaValueSetter.call(textarea, text);
-            textarea.dispatchEvent(new Event('input', { bubbles: true}));
-        }
-        
-        await delay(500);
-        
-        const submitBtn = Array.from(document.querySelectorAll('button')).find(b => b.textContent.trim() === 'Submit');
-        if (submitBtn) {
-            submitBtn.click();
-        }
-        
-        vouchedCount++;
-        await delay(2000); 
+        alert(`Finished vouching for ${vouchedCount} candidates! Move to the next page and say ready!`);
+    } catch (e) {
+        alert('Script error: ' + e.message);
     }
-    
-    alert(`Finished vouching for ${vouchedCount} candidates! Move to the next page and run again.`);
 })();"
 
 tell application "Google Chrome"

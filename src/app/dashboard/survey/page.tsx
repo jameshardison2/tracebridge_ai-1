@@ -141,7 +141,7 @@ export default function SurveyPage() {
                     </div>
 
                     <div className="space-y-3">
-                        <label className="block font-bold text-slate-700">Q2. How many 510(k) submissions or Q-Subs have you been involved with or studied?</label>
+                        <label className="block font-bold text-slate-700">Q2. How many FDA 510(k) submissions have you been involved with or studied?</label>
                         <div className="space-y-2">
                             {['None — I am learning about the process', '1-2', '3-10', 'More than 10'].map(opt => (
                                 <label key={opt} className="flex items-center gap-3">
@@ -232,7 +232,7 @@ export default function SurveyPage() {
                     </div>
 
                     <div className="space-y-3">
-                        <label className="block font-bold text-slate-700">Q8. How confident are you that this engineering documentation aligns with the FDA Q-Sub feedback based on TraceBridge's analysis?</label>
+                        <label className="block font-bold text-slate-700">Q8. How confident are you that this engineering documentation aligns with the FDA feedback based on TraceBridge's analysis?</label>
                         <div className="space-y-2">
                             {['Very confident it would be refused', 'Somewhat confident it would be refused', 'Uncertain', 'Somewhat confident it would be accepted', 'Very confident it would be accepted'].map(opt => (
                                 <label key={opt} className="flex items-center gap-3">
@@ -330,7 +330,7 @@ export default function SurveyPage() {
                     <h2 className="text-2xl font-bold text-slate-800 pb-2 border-b border-slate-100">Section 5: Overall Assessment</h2>
                     
                     <div className="space-y-3">
-                        <label className="block font-bold text-slate-700">Q15. How likely are you to recommend TraceBridge AI to a colleague or classmate working on Q-Sub alignment?</label>
+                        <label className="block font-bold text-slate-700">Q15. How likely are you to recommend TraceBridge AI to a colleague or classmate working on FDA submission alignment?</label>
                         <p className="text-xs text-slate-500 uppercase tracking-widest">(0 = Not at all likely, 10 = Extremely likely)</p>
                         <div className="flex flex-wrap gap-2">
                             {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(opt => {

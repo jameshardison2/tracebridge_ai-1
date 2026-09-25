@@ -671,7 +671,7 @@ export default function TeamPage() {
                                     AI Framework Capabilities
                                 </h3>
                                 <p className="text-sm text-slate-500 mb-8 max-w-lg">
-                                    TraceBridge AI is continuously trained on the following core frameworks. When you ingest a Q-Sub, the engine automatically extracts the required standards for your analysis.
+                                    TraceBridge AI is continuously trained on the following core frameworks. When you ingest FDA feedback, the engine automatically extracts the required standards for your analysis.
                                 </p>
                                 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

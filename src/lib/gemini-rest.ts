@@ -8,6 +8,7 @@ import { GoogleAIFileManager } from "@google/generative-ai/server";
 import * as fs from "fs/promises";
 import * as path from "path";
 import * as os from "os";
+import pdf from "pdf-parse";
 
 // Configure fetch with longer timeout for Node.js environment
 const fetchWithTimeout = async (url: string, options: RequestInit & { timeout?: number } = {}) => {
@@ -36,11 +37,11 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
  * Optimized for Single-Prompt Batching
  */
 export async function queryGeminiRESTArray(
-    fileBuffers: { data: Buffer; mimeType: string; name: string }[],
     rules: { id: string; requirement: string; standard: string; section: string; expectedDocument: string }[],
+    retrievedContext: string,
+    retrievedPrecedents: string,
     qsubBuffers: { data: Buffer; mimeType: string; name: string }[] = [],
-    aiEngine: "gemini" | "local" = "gemini",
-    fdaPrecedents: any[] = []
+    aiEngine: "gemini" | "local" = "gemini"
 ): Promise<any[]> {
     console.log(`[DEBUG] Querying Gemini REST API for batch of ${rules.length} rules!`);
     console.log(`[DEBUG] API Key present: ${!!GEMINI_API_KEY}`);
@@ -48,10 +49,10 @@ export async function queryGeminiRESTArray(
     // Build the rules payload string
     const rulesListString = rules.map(r => `ruleId: ${r.id}\nSTANDARD: ${r.standard}\nSECTION: ${r.section}\nREQUIREMENT: ${r.requirement}\nEXPECTED DOCUMENT: ${r.expectedDocument}`).join('\n\n');
 
-    const precedentsString = fdaPrecedents.length > 0 
+    const precedentsString = retrievedPrecedents.trim().length > 0 
         ? `\n--- RECENT FDA DENIAL LETTERS (NSE PRECEDENTS) ---\n` + 
-          `The following are real FDA Non-Substantial Equivalence (NSE) rejections for devices exactly like the one under review. Use these as your absolute baseline for strictness. If the uploaded evidence repeats ANY of these mistakes, you MUST fail the requirement and cite the precedent.\n` +
-          fdaPrecedents.map((p, i) => `${i+1}. K-Number: ${p.k_number}\nDevice: ${p.device_name}\nDeficiencies Cited by FDA:\n${p.text_content}`).join('\n\n') +
+          `The following are real FDA Non-Substantial Equivalence (NSE) rejections for devices. Use these as your absolute baseline for strictness. If the uploaded evidence repeats ANY of these mistakes, you MUST fail the requirement and cite the precedent.\n` +
+          retrievedPrecedents +
           `\n--------------------------------------------------\n`
         : "";
 
@@ -66,8 +67,11 @@ export async function queryGeminiRESTArray(
                     qsubContent += `\n--- Q-Sub Document: ${file.name} ---\n${result.value}\n`;
                 } else if (file.mimeType === "text/plain") {
                     qsubContent += `\n--- Q-Sub Document: ${file.name} ---\n${file.data.toString("utf-8")}\n`;
+                } else if (file.mimeType === "application/pdf") {
+                    const result = await pdf(file.data);
+                    qsubContent += `\n--- Q-Sub Document: ${file.name} ---\n${result.text}\n`;
                 } else {
-                    qsubContent += `\n--- Q-Sub Document: ${file.name} ---\n[File format not supported for inline Q-Sub extraction. Only TXT/DOCX supported for Q-Sub]\n`;
+                    qsubContent += `\n--- Q-Sub Document: ${file.name} ---\n[File format not supported for inline Q-Sub extraction]\n`;
                 }
             } catch (e) {
                 console.error("Failed to parse QSub document", e);
@@ -84,13 +88,19 @@ export async function queryGeminiRESTArray(
 
     const prompt = `You are a regulatory compliance auditor reviewing medical device documentation.
 
-TASK: Determine if the uploaded documents contain sufficient evidence for EACH of the following regulatory requirements. You will return exactly ONE JSON array containing an object for every rule.
+TASK: Determine if the uploaded document excerpts contain sufficient evidence for EACH of the following regulatory requirements. You will return exactly ONE JSON array containing an object for every rule.
 
 --- RULES TO EVALUATE ---
 ${rulesListString}
 -------------------------
 ${precedentsString}
 ${qsubContext}
+
+--- UPLOADED DOCUMENT EXCERPTS (RAG CONTEXT) ---
+The following are snippets retrieved from the user's uploaded documents that might be relevant to the rules:
+${retrievedContext}
+-------------------------------------------------
+
 DOCUMENT SYNONYM GUIDE:
 Companies often use different names for the same regulatory document. Match on CONTENT, not just filename.
 - "Software Development Plan" = SDP, Dev Plan, Development Plan, SDLC Plan, SRS (when it contains planning sections)
@@ -175,66 +185,6 @@ RESPOND IN EXACTLY THIS JSON FORMAT (you MUST return a JSON array containing one
 ]`;
 
     const parts: any[] = [{ text: prompt }];
-
-    for (const file of fileBuffers) {
-        if (file.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
-            console.log(`[DEBUG] Converting .docx file to text: ${file.name}`);
-            try {
-                const result = await mammoth.extractRawText({ buffer: file.data });
-                parts.push({ text: `\n\n--- Document: ${file.name} ---\n${result.value}\n--- End of ${file.name} ---\n` });
-                console.log(`[DEBUG] Successfully converted ${file.name} (${result.value.length} chars)`);
-            } catch (error) {
-                console.error(`[DEBUG] Failed to convert ${file.name}:`, error);
-                parts.push({ text: `\n\n--- Document: ${file.name} ---\n[Error: Could not extract text from this document]\n--- End of ${file.name} ---\n` });
-            }
-        } else if (file.mimeType === "text/plain") {
-            console.log(`[DEBUG] Directly injecting plaintext: ${file.name}`);
-            try {
-                const textValue = file.data.toString("utf-8");
-                parts.push({ text: `\n\n--- Document: ${file.name} ---\n${textValue}\n--- End of ${file.name} ---\n` });
-                console.log(`[DEBUG] Successfully mapped ${file.name} (${textValue.length} chars)`);
-            } catch (err) {
-                console.error(`[DEBUG] Failed to map plaintext ${file.name}:`, err);
-            }
-        } else {
-            console.log(`[DEBUG] Attempting secure File API upload for massive payload: ${file.name}`);
-            const tempFilePath = path.join(os.tmpdir(), `tracebridge_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`);
-            
-            try {
-                // 1. Write buffer to secure localhost /tmp path
-                await fs.writeFile(tempFilePath, file.data);
-                
-                // 2. Upload file securely to Google API
-                const fileManager = new GoogleAIFileManager(GEMINI_API_KEY);
-                const uploadResponse = await fileManager.uploadFile(tempFilePath, {
-                    mimeType: file.mimeType,
-                    displayName: file.name,
-                });
-                
-                console.log(`[DEBUG] File natively hosted at URI: ${uploadResponse.file.uri}`);
-                
-                // 3. Inject TINY link into the generation array instead of massive Base64
-                parts.push({
-                    file_data: { 
-                        file_uri: uploadResponse.file.uri,
-                        mime_type: file.mimeType
-                    }
-                });
-            } catch (err) {
-                console.error(`[DEBUG] Enterprise File Upload Failed, falling back to base64 legacy pipeline...`, err);
-                parts.push({
-                    inline_data: { mime_type: file.mimeType, data: file.data.toString("base64") }
-                });
-            } finally {
-                // 4. Scrub the local temporary file
-                try {
-                    await fs.unlink(tempFilePath);
-                } catch (cleanupErr) {
-                    console.warn(`[DEBUG] Temp file cleanup warning:`, cleanupErr);
-                }
-            }
-        }
-    }
 
     // Enterprise Air-Gapped Local Inference Engine (Ollama)
     if (aiEngine === "local") {

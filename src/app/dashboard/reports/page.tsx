@@ -141,6 +141,10 @@ function ReportsContent() {
     const [remediationDrafts, setRemediationDrafts] = useState<Record<string, string>>({});
     const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
 
+    // Module 3 Real-time Data
+    const [localComplaints, setLocalComplaints] = useState<any[]>([]);
+    const [localAlerts, setLocalAlerts] = useState<any[]>([]);
+
     // Customization Engine State
     const [activeTemplate, setActiveTemplate] = useState<'510k' | 'capa' | 'complaint' | 'executive' | 'predicate' | 'standards' | 'supply'>('510k');
     const [enginePayload, setEnginePayload] = useState<string>('');
@@ -508,6 +512,28 @@ function ReportsContent() {
         fetchDrift();
     }, [uploadId]);
 
+    // Secondary Effect: Fetch Module 3 Complaints & Alerts
+    useEffect(() => {
+        const fetchLocalModule3 = async () => {
+            try {
+                const alertsQ = query(collection(db, "alerts"), where("status", "==", "open"), limit(10));
+                const unsubscribeAlerts = onSnapshot(alertsQ, (snap) => {
+                    setLocalAlerts(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+                });
+                
+                const compQ = query(collection(db, "complaints"), orderBy("received_at", "desc"), limit(20));
+                const unsubscribeComp = onSnapshot(compQ, (snap) => {
+                    setLocalComplaints(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+                });
+                
+                return () => { unsubscribeAlerts(); unsubscribeComp(); };
+            } catch (err) {
+                console.error("Failed to fetch Module 3 data", err);
+            }
+        };
+        fetchLocalModule3();
+    }, []);
+
     // Secondary Effect: Secure Polling for Real-Time Team Activity Sync (Bypasses Rules)
     useEffect(() => {
         if (!uploadId && !report) return;
@@ -551,13 +577,13 @@ function ReportsContent() {
         if (!report) return;
         
         let reportTitle = "Gap-Analysis";
-        if (activeTemplate === '510k') reportTitle = "Q-Sub-Divergence-Matrix";
-        else if (activeTemplate === 'capa') reportTitle = "Drift-Remediation-Log";
-        else if (activeTemplate === 'complaint') reportTitle = "Emerging-Signal-Drift";
-        else if (activeTemplate === 'executive') reportTitle = "Anti-Drift-Executive-Audit";
-        else if (activeTemplate === 'predicate') reportTitle = "Substantial-Equivalence-Drift";
-        else if (activeTemplate === 'standards') reportTitle = "Consensus-Standard-Drift";
-        else if (activeTemplate === 'supply') reportTitle = "Supply-Chain-Drift";
+        if (activeTemplate === '510k') reportTitle = "510k-Submission-Readiness-Report";
+        else if (activeTemplate === 'capa') reportTitle = "Remediation-Log";
+        else if (activeTemplate === 'complaint') reportTitle = "Post-Market-Safety-Signals";
+        else if (activeTemplate === 'executive') reportTitle = "Executive-Readiness-Audit";
+        else if (activeTemplate === 'predicate') reportTitle = "Substantial-Equivalence-Gaps";
+        else if (activeTemplate === 'standards') reportTitle = "Consensus-Standard-Gaps";
+        else if (activeTemplate === 'supply') reportTitle = "Supply-Chain-Gaps";
 
         let uniqueGaps: any[] = [];
         if (activeTemplate === '510k') {
@@ -583,34 +609,15 @@ function ReportsContent() {
             }
         }
         
-        let maudeEvents: any[] = [];
-        if (activeTemplate === 'complaint') {
-            try {
-                let actualProductCode = (report.upload as any).productCode;
-                if (!actualProductCode || actualProductCode === "UNKNOWN" || actualProductCode === "N/A" || actualProductCode === "FRN") {
-                    actualProductCode = "MKJ";
-                }
-                let res = await fetch(`https://api.fda.gov/device/event.json?search=device.product_code:${actualProductCode}&sort=date_received:desc&limit=20`);
-                let data = await res.json();
-                if (data.results && data.results.length > 0) {
-                    maudeEvents = data.results.sort(() => 0.5 - Math.random());
-                } else {
-                    res = await fetch(`https://api.fda.gov/device/event.json?search=device.openfda.device_name:defibrillator&sort=date_received:desc&limit=20`);
-                    data = await res.json();
-                    if (data.results) maudeEvents = data.results.sort(() => 0.5 - Math.random());
-                }
-            } catch(e) {
-                console.error("OpenFDA MAUDE fetch failed", e);
-            }
-        }
+        let maudeEvents: any[] = localComplaints; // Replace openFDA fetch with our local data
         
         let headers: string[] = [];
-        if (activeTemplate === '510k') headers = ["Q-SUB INPUT", "SECTION", "DHF EVIDENCE", "DRIFT STATUS", "ATTACHMENT"];
-        else if (activeTemplate === 'capa') headers = ["DRIFT ID", "OWNER", "PRIORITY", "ROOT CAUSE", "REMEDIATION ACTION", "DUE DATE", "STATUS"];
-        else if (activeTemplate === 'complaint') headers = ["SIGNAL KEY", "EVENT DATE", "PRODUCT CODE", "MANUFACTURER", "EVENT TYPE", "DRIFT IMPLICATION"];
-        else if (activeTemplate === 'predicate') headers = ["PREDICATE 510(k)", "FEATURE CLAIM", "DHF DEVIATION", "DRIFT RISK LEVEL"];
-        else if (activeTemplate === 'standards') headers = ["Q-SUB STANDARD", "DHF APPLIED VERSION", "CURRENT FDA VERSION", "VERSION DRIFT IMPLICATION"];
-        else if (activeTemplate === 'supply') headers = ["Q-SUB APPROVED MATERIAL", "CURRENT BOM COMPONENT", "SUPPLIER", "BIOCOMPATIBILITY DRIFT"];
+        if (activeTemplate === '510k') headers = ["FDA REQUIREMENT", "SECTION", "DHF EVIDENCE", "DRIFT STATUS", "ATTACHMENT"];
+        else if (activeTemplate === 'capa') headers = ["CAPA ID", "SOURCE SIGNAL", "ROOT CAUSE", "REMEDIATION STATUS", "DUE DATE"];
+        else if (activeTemplate === 'complaint') headers = ["COMPLAINT ID", "DATE", "SEVERITY", "CLASSIFICATION", "MDR REQ", "RESOLUTION"];
+        else if (activeTemplate === 'predicate') headers = ["PREDICATE DEVICE", "510(K) NUMBER", "TECHNOLOGICAL DIFF", "PERFORMANCE DATA REQ"];
+        else if (activeTemplate === 'standards') headers = ["REGULATORY STANDARD", "DHF APPLIED VERSION", "CURRENT FDA VERSION", "VERSION DRIFT IMPLICATION"];
+        else if (activeTemplate === 'supply') headers = ["APPROVED MATERIAL", "CURRENT BOM COMPONENT", "SUPPLIER", "BIOCOMPATIBILITY DRIFT"];
         else headers = ["GAP ID", "STANDARD", "§", "REQUIREMENT", "STATUS", "CONFIDENCE", "EVIDENCE FOUND", "SOURCE DOC", "PG", "ASSIGNEE", "STATE", "DETECTED", "PRIORITY"];
         
         const rows = uniqueGaps.map((r: any, i: number) => {
@@ -665,14 +672,13 @@ function ReportsContent() {
                 ].join(",");
             } else if (activeTemplate === 'complaint') {
                 const event = maudeEvents[i % Math.max(maudeEvents.length, 1)] || {};
-                const mdrKey = event.mdr_report_key || `${2000000 + i * 45123}`;
-                const rawDate = event.date_of_event || event.date_received;
-                const eventDate = rawDate ? `${rawDate.substring(0,4)}-${rawDate.substring(4,6)}-${rawDate.substring(6,8)}` : new Date(Date.now() - i * 86400000 * 30).toISOString().split('T')[0];
-                const pCode = event.device?.[0]?.product_code || (report.upload as any).productCode || "UNKNOWN";
-                const manufacturer = event.device?.[0]?.manufacturer_d_name || "Unknown Manufacturer";
-                const eventType = event.event_type || "Malfunction";
-                const rawText = event.mdr_text?.[0]?.text || "No description available.";
-                const problemDesc = `[FDA EVENT] ${rawText.substring(0, 300)}... (Mapped to Gap: ${r.requirement})`;
+                const mdrKey = event.id || `${2000000 + i * 45123}`;
+                const rawDate = event.received_at?.toDate?.()?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0];
+                const pCode = event.device_component || (report.upload as any).productCode || "UNKNOWN";
+                const manufacturer = "TraceBridge Internal Intake";
+                const eventType = event.failure_type || "Malfunction";
+                const rawText = event.raw_text || "No description available.";
+                const problemDesc = `[LOCAL INTAKE] ${rawText.substring(0, 300)}... (Severity: ${event.severity || 'Unknown'})`;
 
                 return [
                     `"${mdrKey}"`,
@@ -782,40 +788,40 @@ function ReportsContent() {
         const pageHeight = doc.internal.pageSize.getHeight();
 
         // Theme Configuration Based on Active Template
-        let titleString = "Q-SUB DIVERGENCE MATRIX";
+        let titleString = "510(K) SUBMISSION READINESS REPORT";
         let subTitleString = "PRE-SUBMISSION GAP ANALYSIS REPORT";
         let fileNameSuffix = "QSub-Matrix";
         let themeColor = [11, 40, 102]; // #0b2866
 
         if (activeTemplate === 'capa') {
-            titleString = "DRIFT REMEDIATION LOG";
-            subTitleString = "CORRECTIVE AND PREVENTIVE ACTION (CAPA) REPORT";
-            fileNameSuffix = "Remediation-Log";
-            themeColor = [26, 82, 118]; // #1a5276
+            titleString = "REMEDIATION LOG";
+            subTitleString = "CORRECTIVE & PREVENTIVE ACTION REGISTER";
+            fileNameSuffix = "CAPA-Log";
+            themeColor = [190, 24, 93]; // #be185d
         } else if (activeTemplate === 'complaint') {
-            titleString = "EMERGING SIGNAL DRIFT";
-            subTitleString = "POST-MARKET SURVEILLANCE & MAUDE SIGNALS";
-            fileNameSuffix = "Signal-Drift";
-            themeColor = [146, 43, 33]; // #922b21
+            titleString = "POST-MARKET SAFETY SIGNALS";
+            subTitleString = "ADVERSE EVENT & TREND ANALYSIS";
+            fileNameSuffix = "Safety-Signals";
+            themeColor = [4, 120, 87]; // #047857
         } else if (activeTemplate === 'executive') {
-            titleString = "EXECUTIVE ANTI-DRIFT BRIEF";
-            subTitleString = "EXECUTIVE AUDIT ATTESTATION REPORT";
-            fileNameSuffix = "Anti-Drift-Brief";
-            themeColor = [14, 102, 85]; // #0e6655
+            titleString = "EXECUTIVE READINESS AUDIT";
+            subTitleString = "RTA RISK PROFILE & VELOCITY SUMMARY";
+            fileNameSuffix = "Executive-Readiness-Audit";
+            themeColor = [180, 83, 9]; // #b45309
         } else if (activeTemplate === 'predicate') {
-            titleString = "PREDICATE FEATURE DRIFT";
+            titleString = "PREDICATE EQUIVALENCE GAPS";
             subTitleString = "SUBSTANTIAL EQUIVALENCE EVALUATION";
-            fileNameSuffix = "Predicate-Drift";
+            fileNameSuffix = "Predicate-Gaps";
             themeColor = [211, 84, 0]; // #d35400
         } else if (activeTemplate === 'standards') {
-            titleString = "REGULATORY STANDARDS DRIFT";
+            titleString = "REGULATORY STANDARDS GAPS";
             subTitleString = "CONSENSUS STANDARD AUDIT";
-            fileNameSuffix = "Standard-Drift";
+            fileNameSuffix = "Standard-Gaps";
             themeColor = [74, 35, 90]; // #4a235a
         } else if (activeTemplate === 'supply') {
-            titleString = "SUPPLY CHAIN MATERIAL DRIFT";
-            subTitleString = "SUPPLY CHAIN & BOM DRIFT LOG";
-            fileNameSuffix = "Material-Drift";
+            titleString = "SUPPLY CHAIN MATERIAL GAPS";
+            subTitleString = "SUPPLY CHAIN & BOM LOG";
+            fileNameSuffix = "Material-Gaps";
             themeColor = [24, 106, 59]; // #186a3b
         }
 
@@ -1180,7 +1186,7 @@ function ReportsContent() {
             y += 8;
             doc.setFontSize(10);
             doc.setTextColor(71, 85, 105);
-            const execSummary = `TraceBridge AI Autonomous Engine has evaluated the ${displayDeviceName} submission against ${report.upload.standards.join(', ')}. The neural system detected ${report.summary.gaps} critical non-conformances across ${report.summary.total} evaluated requirements, yielding an overall compliance score of ${Math.round((report.summary.compliant / report.summary.total) * 100)}%. Immediate remediation is recommended by the AI co-pilot for identified critical gaps to prevent regulatory delays.`;
+            const execSummary = `TraceBridge AI Autonomous Engine has evaluated the ${displayDeviceName} submission against ${report.upload.standards.join(', ')}. The neural system detected ${report.summary.gaps} critical non-conformances across ${report.summary.total} evaluated requirements, yielding an overall compliance score of ${Math.round((report.summary.compliant / report.summary.total) * 100)}%. Immediate remediation is recommended by the AI co-pilot for identified critical gaps to prevent regulatory delays.\n\nAdditionally, the post-market surveillance engine has detected ${localAlerts.length} active safety signals (including ${localAlerts.filter(a => a.type === 'trend_drift').length} systemic trend drifts).`;
             const summaryLines = doc.splitTextToSize(execSummary, pageWidth - 28);
             doc.text(summaryLines, 14, y);
             
@@ -1212,7 +1218,7 @@ function ReportsContent() {
             doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
             doc.setFontSize(16);
             doc.setFont("helvetica", "bold");
-            doc.text("Q-SUB DIVERGENCE MATRIX", pageWidth / 2, 26, { align: "center" });
+            doc.text("510(K) SUBMISSION READINESS REPORT", pageWidth / 2, 26, { align: "center" });
             doc.setFontSize(12);
             doc.text("REQUIREMENT TRACEABILITY MATRIX (AI ANALYSIS)", pageWidth / 2, 32, { align: "center" });
             
@@ -1341,24 +1347,7 @@ function ReportsContent() {
             }
         } else if (activeTemplate === 'complaint') {
             // Post-Market Sentinel Events (Complaint)
-            let maudeEvents: any[] = [];
-            try {
-                let actualProductCode = (report.upload as any).productCode;
-                if (!actualProductCode || actualProductCode === "UNKNOWN" || actualProductCode === "N/A" || actualProductCode === "FRN") {
-                    actualProductCode = "MKJ";
-                }
-                let res = await fetch(`https://api.fda.gov/device/event.json?search=device.product_code:${actualProductCode}&sort=date_received:desc&limit=20`);
-                let data = await res.json();
-                if (data.results && data.results.length > 0) {
-                    maudeEvents = data.results.sort(() => 0.5 - Math.random());
-                } else {
-                    res = await fetch(`https://api.fda.gov/device/event.json?search=device.openfda.device_name:defibrillator&sort=date_received:desc&limit=20`);
-                    data = await res.json();
-                    if (data.results) maudeEvents = data.results.sort(() => 0.5 - Math.random());
-                }
-            } catch(e) {
-                console.error("OpenFDA MAUDE fetch failed", e);
-            }
+            let maudeEvents: any[] = localComplaints;
 
             addThemedPage();
             doc.setFillColor(15, 23, 42);
@@ -1379,16 +1368,16 @@ function ReportsContent() {
                 }
                 
                 const event = maudeEvents[i % Math.max(maudeEvents.length, 1)] || {};
-                const mdrKey = event.mdr_report_key || `${2000000 + i * 45123}`;
-                const rawDate = event.date_of_event || event.date_received;
-                const eventDate = rawDate ? `${rawDate.substring(0,4)}-${rawDate.substring(4,6)}-${rawDate.substring(6,8)}` : new Date(Date.now() - i * 86400000 * 30).toISOString().split('T')[0];
-                const problemDesc = event.mdr_text?.[0]?.text || "No description available.";
+                const mdrKey = event.id || `${2000000 + i * 45123}`;
+                const rawDate = event.received_at?.toDate?.()?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0];
+                const eventDate = rawDate;
+                const problemDesc = event.raw_text || "No description available.";
 
                 doc.setFillColor(254, 226, 226);
                 doc.rect(14, y, pageWidth - 28, 6, "F");
                 doc.setTextColor(185, 28, 28);
                 doc.setFontSize(8);
-                doc.text(`FDA MAUDE EVENT ${i+1}: HIGH SEVERITY RISK CORRELATION`, 16, y + 4);
+                doc.text(`TRACEBRIDGE LOCAL INTAKE EVENT ${i+1}: HIGH SEVERITY RISK CORRELATION`, 16, y + 4);
                 
                 y += 12;
                 doc.setTextColor(15, 23, 42);
@@ -1676,7 +1665,7 @@ function ReportsContent() {
                         <span className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center border border-indigo-200">
                             <FileText className="w-4 h-4 text-indigo-600" />
                         </span>
-                        Q-Sub Drift Submission Hub
+                        Submission Hub
                         <span className="text-xs font-bold bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full uppercase tracking-widest border border-indigo-200">
                             Submission Builder
                         </span>
@@ -1698,44 +1687,44 @@ function ReportsContent() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <button onClick={() => setActiveTemplate('510k')} className={`text-left p-4 rounded-xl border-2 transition-all ${activeTemplate === '510k' ? 'border-indigo-600 bg-indigo-50/50 relative overflow-hidden' : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'}`}>
                                     {activeTemplate === '510k' && <div className="absolute top-0 left-0 w-1 h-full bg-indigo-600"></div>}
-                                    <h3 className={`font-bold text-base ${activeTemplate === '510k' ? 'text-indigo-900' : 'text-slate-800'} flex items-center gap-2`}><FileText className="w-4 h-4 text-indigo-600" /> Q-Sub Divergence Matrix</h3>
-                                    <p className="text-xs text-slate-500 mt-1 pl-6">Line-by-line divergence between FDA Q-Sub requests and DHF outputs.</p>
+                                    <h3 className={`font-bold text-base ${activeTemplate === '510k' ? 'text-indigo-900' : 'text-slate-800'} flex items-center gap-2`}><FileText className="w-4 h-4 text-indigo-600" /> 510(k) Submission Readiness Report</h3>
+                                    <p className="text-xs text-slate-500 mt-1 pl-6">Line-by-line readiness gap analysis against FDA requirements.</p>
                                     <p className="text-xs text-slate-500 mt-1 pr-2">Full pre-market compliance grid strictly mapped to IEC 62304 & ISO 14971.</p>
                                 </button>
                                 <button onClick={() => setActiveTemplate('capa')} className={`text-left p-4 rounded-xl border-2 transition-all ${activeTemplate === 'capa' ? 'border-rose-500 bg-rose-50/50 relative overflow-hidden' : 'border-slate-200 hover:border-rose-300 hover:bg-slate-50'}`}>
                                     {activeTemplate === 'capa' && <div className="absolute top-0 left-0 w-1 h-full bg-rose-500"></div>}
-                                    <h3 className={`font-bold text-base ${activeTemplate === 'capa' ? 'text-rose-900' : 'text-slate-800'} flex items-center gap-2`}><Shield className="w-4 h-4 text-rose-500" /> Drift Remediation Log</h3>
-                                    <p className="text-xs text-slate-500 mt-1 pl-6">Formal log of corrected drifts and QA sign-offs for auditor review.</p>
-                                    <p className="text-xs text-slate-500 mt-1 pr-2">Aggregates "Critical" and "Major" gaps combined with AI remediation plans.</p>
+                                    <h3 className={`font-bold text-base ${activeTemplate === 'capa' ? 'text-rose-900' : 'text-slate-800'} flex items-center gap-2`}><Shield className="w-4 h-4 text-rose-500" /> Remediation Log</h3>
+                                    <p className="text-xs text-slate-500 mt-1 pl-6">Formal log of corrected gaps and QA sign-offs for auditor review.</p>
+                                    <p className="text-xs text-slate-500 mt-1 pr-2">Exports in eSTAR-compatible format for Part 11 compliance.</p>
                                 </button>
                                 <button onClick={() => setActiveTemplate('complaint')} className={`text-left p-4 rounded-xl border-2 transition-all ${activeTemplate === 'complaint' ? 'border-emerald-500 bg-emerald-50/50 relative overflow-hidden' : 'border-slate-200 hover:border-emerald-300 hover:bg-slate-50'}`}>
                                     {activeTemplate === 'complaint' && <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>}
-                                    <h3 className={`font-bold text-base ${activeTemplate === 'complaint' ? 'text-emerald-900' : 'text-slate-800'} flex items-center gap-2`}><AlertTriangle className="w-4 h-4 text-emerald-500" /> Emerging Signal Drift</h3>
-                                    <p className="text-xs text-slate-500 mt-1 pl-6">Proactive alerts on real-world events that could trigger future regulatory drift.</p>
-                                    <p className="text-xs text-slate-500 mt-1 pr-2">Complaint handling data sourced directly from adverse event reports (MAUDE).</p>
+                                    <h3 className={`font-bold text-base ${activeTemplate === 'complaint' ? 'text-emerald-900' : 'text-slate-800'} flex items-center gap-2`}><AlertTriangle className="w-4 h-4 text-emerald-500" /> Post-Market Safety Signals</h3>
+                                    <p className="text-xs text-slate-500 mt-1 pl-6">Proactive alerts on real-world events that could trigger future regulatory gaps.</p>
+                                    <p className="text-xs text-slate-500 mt-1 pr-2">Hooks into MDR database to compare adverse event rates.</p>
                                 </button>
                                 <button onClick={() => setActiveTemplate('executive')} className={`text-left p-4 rounded-xl border-2 transition-all ${activeTemplate === 'executive' ? 'border-amber-500 bg-amber-50/50 relative overflow-hidden' : 'border-slate-200 hover:border-amber-300 hover:bg-slate-50'}`}>
                                     {activeTemplate === 'executive' && <div className="absolute top-0 left-0 w-1 h-full bg-amber-500"></div>}
-                                    <h3 className={`font-bold text-base ${activeTemplate === 'executive' ? 'text-amber-900' : 'text-slate-800'} flex items-center gap-2`}><Printer className="w-4 h-4 text-amber-500" /> Executive Anti-Drift Brief</h3>
-                                    <p className="text-xs text-slate-500 mt-1 pl-6">High-level RTA risk profile and drift velocity summary for VP sign-off.</p>
-                                    <p className="text-xs text-slate-500 mt-1 pr-2">High-level readiness charts and attestation sign-offs. Ideal for C-Suite.</p>
+                                    <h3 className={`font-bold text-base ${activeTemplate === 'executive' ? 'text-amber-900' : 'text-slate-800'} flex items-center gap-2`}><Printer className="w-4 h-4 text-amber-500" /> Executive Readiness Audit</h3>
+                                    <p className="text-xs text-slate-500 mt-1 pl-6">High-level RTA risk profile and readiness velocity summary for VP sign-off.</p>
+                                    <p className="text-xs text-slate-500 mt-1 pr-2">Aggregates Financial Predictor ROI metrics into a 1-page brief.</p>
                                 </button>
                                 <button onClick={() => setActiveTemplate('predicate')} className={`text-left p-4 rounded-xl border-2 transition-all ${activeTemplate === 'predicate' ? 'border-sky-500 bg-sky-50/50 relative overflow-hidden' : 'border-slate-200 hover:border-sky-300 hover:bg-slate-50'}`}>
                                     {activeTemplate === 'predicate' && <div className="absolute top-0 left-0 w-1 h-full bg-sky-500"></div>}
-                                    <h3 className={`font-bold text-base ${activeTemplate === 'predicate' ? 'text-sky-900' : 'text-slate-800'} flex items-center gap-2`}><GitCompare className="w-4 h-4 text-sky-500" /> Predicate Feature Drift</h3>
+                                    <h3 className={`font-bold text-base ${activeTemplate === 'predicate' ? 'text-sky-900' : 'text-slate-800'} flex items-center gap-2`}><GitCompare className="w-4 h-4 text-sky-500" /> Predicate Equivalence Gaps</h3>
                                     <p className="text-xs text-slate-500 mt-1 pl-6">Flags "Technological Characteristic Drift" against K-number predicates.</p>
                                     <p className="text-xs text-slate-500 mt-1 pr-2">Prevents loss of Substantial Equivalence due to over-engineering.</p>
                                 </button>
                                 <button onClick={() => setActiveTemplate('standards')} className={`text-left p-4 rounded-xl border-2 transition-all ${activeTemplate === 'standards' ? 'border-purple-500 bg-purple-50/50 relative overflow-hidden' : 'border-slate-200 hover:border-purple-300 hover:bg-slate-50'}`}>
                                     {activeTemplate === 'standards' && <div className="absolute top-0 left-0 w-1 h-full bg-purple-500"></div>}
-                                    <h3 className={`font-bold text-base ${activeTemplate === 'standards' ? 'text-purple-900' : 'text-slate-800'} flex items-center gap-2`}><BookOpen className="w-4 h-4 text-purple-500" /> Regulatory Standards Drift</h3>
+                                    <h3 className={`font-bold text-base ${activeTemplate === 'standards' ? 'text-purple-900' : 'text-slate-800'} flex items-center gap-2`}><BookOpen className="w-4 h-4 text-purple-500" /> Regulatory Standards Gaps</h3>
                                     <p className="text-xs text-slate-500 mt-1 pl-6">Live sync against FDA Recognized Consensus Standards database.</p>
                                     <p className="text-xs text-slate-500 mt-1 pr-2">Flags engineers using deprecated standards (e.g., ISO 10993:2018 vs 2023).</p>
                                 </button>
                                 <button onClick={() => setActiveTemplate('supply')} className={`text-left p-4 rounded-xl border-2 transition-all ${activeTemplate === 'supply' ? 'border-orange-500 bg-orange-50/50 relative overflow-hidden' : 'border-slate-200 hover:border-orange-300 hover:bg-slate-50'}`}>
                                     {activeTemplate === 'supply' && <div className="absolute top-0 left-0 w-1 h-full bg-orange-500"></div>}
-                                    <h3 className={`font-bold text-base ${activeTemplate === 'supply' ? 'text-orange-900' : 'text-slate-800'} flex items-center gap-2`}><Truck className="w-4 h-4 text-orange-500" /> Supply Chain Material Drift</h3>
-                                    <p className="text-xs text-slate-500 mt-1 pl-6">Tracks Bill of Materials (BOM) against Q-Sub approved formulations.</p>
+                                    <h3 className={`font-bold text-base ${activeTemplate === 'supply' ? 'text-orange-900' : 'text-slate-800'} flex items-center gap-2`}><Truck className="w-4 h-4 text-orange-500" /> Supply Chain Material Gaps</h3>
+                                    <p className="text-xs text-slate-500 mt-1 pl-6">Tracks Bill of Materials (BOM) against approved formulations.</p>
                                     <p className="text-xs text-slate-500 mt-1 pr-2">Prevents unverified resin/supplier changes from invalidating Biocomp testing.</p>
                                 </button>
                             </div>
@@ -1925,13 +1914,13 @@ function ReportsContent() {
                                 {/* Unified Premium PDF Cover Renderer */}
                                 {(() => {
                                     const themeMap: Record<string, any> = {
-                                        '510k': { title: "Q-SUB DIVERGENCE MATRIX", subTitle: "PRE-SUBMISSION GAP ANALYSIS REPORT", bg: "bg-[#0b2866]", text: "text-[#0b2866]", border: "border-[#0b2866]" },
-                                        'supply': { title: "SUPPLY CHAIN MATERIAL DRIFT", subTitle: "SUPPLY CHAIN & BOM DRIFT LOG", bg: "bg-[#186a3b]", text: "text-[#186a3b]", border: "border-[#186a3b]" },
-                                        'standards': { title: "REGULATORY STANDARDS DRIFT", subTitle: "CONSENSUS STANDARD AUDIT", bg: "bg-[#4a235a]", text: "text-[#4a235a]", border: "border-[#4a235a]" },
-                                        'predicate': { title: "PREDICATE FEATURE DRIFT", subTitle: "SUBSTANTIAL EQUIVALENCE EVALUATION", bg: "bg-[#d35400]", text: "text-[#d35400]", border: "border-[#d35400]" },
-                                        'executive': { title: "EXECUTIVE ANTI-DRIFT BRIEF", subTitle: "EXECUTIVE AUDIT ATTESTATION REPORT", bg: "bg-[#0e6655]", text: "text-[#0e6655]", border: "border-[#0e6655]" },
-                                        'complaint': { title: "EMERGING SIGNAL DRIFT", subTitle: "POST-MARKET SURVEILLANCE & MAUDE SIGNALS", bg: "bg-[#922b21]", text: "text-[#922b21]", border: "border-[#922b21]" },
-                                        'capa': { title: "DRIFT REMEDIATION LOG", subTitle: "CORRECTIVE AND PREVENTIVE ACTION (CAPA) REPORT", bg: "bg-[#1a5276]", text: "text-[#1a5276]", border: "border-[#1a5276]" }
+                                        '510k': { title: "510(K) SUBMISSION READINESS REPORT", subTitle: "PRE-SUBMISSION GAP ANALYSIS", bg: "bg-[#0b2866]", text: "text-[#0b2866]", border: "border-[#0b2866]" },
+                                        'supply': { title: "SUPPLY CHAIN MATERIAL GAPS", subTitle: "SUPPLY CHAIN & BOM LOG", bg: "bg-[#186a3b]", text: "text-[#186a3b]", border: "border-[#186a3b]" },
+                                        'standards': { title: "REGULATORY STANDARDS GAPS", subTitle: "CONSENSUS STANDARD AUDIT", bg: "bg-[#4a235a]", text: "text-[#4a235a]", border: "border-[#4a235a]" },
+                                        'predicate': { title: "PREDICATE EQUIVALENCE GAPS", subTitle: "SUBSTANTIAL EQUIVALENCE EVALUATION", bg: "bg-[#d35400]", text: "text-[#d35400]", border: "border-[#d35400]" },
+                                        'executive': { title: "EXECUTIVE READINESS AUDIT", subTitle: "RTA RISK PROFILE & VELOCITY SUMMARY", bg: "bg-[#b45309]", text: "text-[#b45309]", border: "border-[#b45309]" },
+                                        'complaint': { title: "POST-MARKET SAFETY SIGNALS", subTitle: "ADVERSE EVENT & TREND ANALYSIS", bg: "bg-[#047857]", text: "text-[#047857]", border: "border-[#047857]" },
+                                        'capa': { title: "REMEDIATION LOG", subTitle: "CORRECTIVE & PREVENTIVE ACTION REGISTER", bg: "bg-[#be185d]", text: "text-[#be185d]", border: "border-[#be185d]" }
                                     };
                                     const theme = themeMap[activeTemplate] || themeMap['510k'];
                                     const selectedSub = availableSubmissions.find(s => s.id === enginePayload);

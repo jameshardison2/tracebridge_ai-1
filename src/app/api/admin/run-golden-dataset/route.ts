@@ -3,55 +3,55 @@ import { adminDb, verifyIdToken } from "@/lib/firebase-admin";
 import { Timestamp } from "firebase-admin/firestore";
 
 const DEVICE_VARIANTS = [
-    { name: "Surgical Robot Control Interface v2.4", type: "Orthopedic", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "ISO 14971"] },
-    { name: "AI Radiological Triage System", type: "Radiology", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "FDA Cybersecurity"] },
-    { name: "TraceGlow Continuous Glucose Monitor", type: "Cardiovascular", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "ISO 10993"] },
-    { name: "AeroFlow Infusion Pump Telemetry", type: "General Hospital", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "IEC 60601"] },
-    { name: "CardioLink Implantable Pacemaker Firmware", type: "Cardiovascular", class: "Class III", standards: ["Q-Sub Alignment", "PMA Evidence", "ISO 14971"] },
-    { name: "Orthopedic Drill Calibration System", type: "Orthopedic", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "FDA 820"] },
-    { name: "Ophthalmic Laser Control Board", type: "Ophthalmic", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "IEC 60601"] },
-    { name: "Dialysis Machine Safety Interlock", type: "Gastroenterology", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "ISO 14971"] },
-    { name: "Dental Milling CAD/CAM Integration", type: "Dental", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "IEC 62304"] },
-    { name: "Pediatric Ventilator Flow Sensor", type: "Anesthesiology", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "IEC 60601"] },
-    { name: "Neurostimulation Lead Programmer", type: "Neurology", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "ISO 14971"] },
-    { name: "Endoscopic Suture Delivery Device", type: "General Surgery", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "ISO 10993"] },
-    { name: "Automated External Defibrillator (AED)", type: "Cardiovascular", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "IEC 60601"] },
-    { name: "Digital Pathology Image Analyzer", type: "Pathology", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "FDA Cybersecurity"] },
-    { name: "Fetal Heart Rate Monitor", type: "Obstetrics", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "IEC 60601"] },
-    { name: "Powered Exoskeleton for Rehabilitation", type: "Physical Medicine", class: "Class II", standards: ["Q-Sub Alignment", "510(k) DHF", "ISO 14971"] }
+    { name: "Surgical Robot Control Interface v2.4", type: "Orthopedic", class: "Class II", standards: ["Submission Alignment", "510(k) DHF", "ISO 14971"] },
+    { name: "AI Radiological Triage System", type: "Radiology", class: "Class II", standards: ["Submission Alignment", "510(k) DHF", "FDA Cybersecurity"] },
+    { name: "TraceGlow Continuous Glucose Monitor", type: "Cardiovascular", class: "Class II", standards: ["Submission Alignment", "510(k) DHF", "ISO 10993"] },
+    { name: "AeroFlow Infusion Pump Telemetry", type: "General Hospital", class: "Class II", standards: ["Submission Alignment", "510(k) DHF", "IEC 60601"] },
+    { name: "CardioLink Implantable Pacemaker Firmware", type: "Cardiovascular", class: "Class III", standards: ["Submission Alignment", "PMA Evidence", "ISO 14971"] },
+    { name: "Orthopedic Drill Calibration System", type: "Orthopedic", class: "Class II", standards: ["Submission Alignment", "510(k) DHF", "FDA 820"] },
+    { name: "Ophthalmic Laser Control Board", type: "Ophthalmic", class: "Class II", standards: ["Submission Alignment", "510(k) DHF", "IEC 60601"] },
+    { name: "Dialysis Machine Safety Interlock", type: "Gastroenterology", class: "Class II", standards: ["Submission Alignment", "510(k) DHF", "ISO 14971"] },
+    { name: "Dental Milling CAD/CAM Integration", type: "Dental", class: "Class II", standards: ["Submission Alignment", "510(k) DHF", "IEC 62304"] },
+    { name: "Pediatric Ventilator Flow Sensor", type: "Anesthesiology", class: "Class II", standards: ["Submission Alignment", "510(k) DHF", "IEC 60601"] },
+    { name: "Neurostimulation Lead Programmer", type: "Neurology", class: "Class II", standards: ["Submission Alignment", "510(k) DHF", "ISO 14971"] },
+    { name: "Endoscopic Suture Delivery Device", type: "General Surgery", class: "Class II", standards: ["Submission Alignment", "510(k) DHF", "ISO 10993"] },
+    { name: "Automated External Defibrillator (AED)", type: "Cardiovascular", class: "Class II", standards: ["Submission Alignment", "510(k) DHF", "IEC 60601"] },
+    { name: "Digital Pathology Image Analyzer", type: "Pathology", class: "Class II", standards: ["Submission Alignment", "510(k) DHF", "FDA Cybersecurity"] },
+    { name: "Fetal Heart Rate Monitor", type: "Obstetrics", class: "Class II", standards: ["Submission Alignment", "510(k) DHF", "IEC 60601"] },
+    { name: "Powered Exoskeleton for Rehabilitation", type: "Physical Medicine", class: "Class II", standards: ["Submission Alignment", "510(k) DHF", "ISO 14971"] }
 ];
 
 const EXHAUSTIVE_RULES = [
     {
-        id: "rule_qsub_cyber", standard: "FDA Q-Sub Agreement (Cybersecurity)", section: "Pre-Sub Q230911",
+        id: "rule_qsub_cyber", standard: "FDA Feedback Agreement (Cybersecurity)", section: "Pre-Sub Q230911",
         requirement: "Sponsor agreed to utilize CVSS v3.1 for vulnerability scoring and mapping in the final threat model.",
         expectedDocument: "Cybersecurity Threat Model",
         posPassText: "AI Trace Confirmed: All third-party SBOM components and vulnerability scoring mapped strictly to CVSS v3.1 as agreed in the Pre-Sub.",
-        negFailText: "Root Cause Analysis: Q-Sub Engineering Drift Detected. The 510(k) threat model documentation was generated using the deprecated CVSS v2.0 scoring system, violating the Q-Sub agreement.",
+        negFailText: "Root Cause Analysis: Submission Gap Detected. The 510(k) threat model documentation was generated using the deprecated CVSS v2.0 scoring system, violating the FDA agreement.",
         missingArtifact: "CVSS v3.1 Vulnerability Matrix"
     },
     {
-        id: "rule_qsub_biocomp", standard: "FDA Q-Sub Agreement (Biocompatibility)", section: "Pre-Sub Q230911",
+        id: "rule_qsub_biocomp", standard: "FDA Feedback Agreement (Biocompatibility)", section: "Pre-Sub Q230911",
         requirement: "FDA explicitly requested a GLP in-vivo animal study to evaluate mucosal irritation.",
         expectedDocument: "Biocompatibility Test Report",
         posPassText: "AI Trace Confirmed: DHF documentation includes full GLP in-vivo animal study results matching the FDA request.",
-        negFailText: "Root Cause Analysis: Q-Sub Engineering Drift Detected. Engineering performed an in-vitro alternative test instead of the agreed in-vivo GLP animal study. Submitting this will trigger an immediate RTA.",
+        negFailText: "Root Cause Analysis: Submission Gap Detected. Engineering performed an in-vitro alternative test instead of the agreed in-vivo GLP animal study. Submitting this will trigger an immediate RTA.",
         missingArtifact: "GLP In-Vivo Mucosal Irritation Study"
     },
     {
-        id: "rule_qsub_clinical", standard: "FDA Q-Sub Agreement (Clinical Evaluation)", section: "Pre-Sub Q230911",
+        id: "rule_qsub_clinical", standard: "FDA Feedback Agreement (Clinical Evaluation)", section: "Pre-Sub Q230911",
         requirement: "FDA agreed to a non-inferiority clinical endpoint margin of 5%.",
         expectedDocument: "Clinical Evaluation Protocol",
         posPassText: "AI Trace Confirmed: Clinical protocol correctly establishes the non-inferiority margin at 5% per the FDA agreement.",
-        negFailText: "Root Cause Analysis: Q-Sub Engineering Drift Detected. The Clinical team adjusted the non-inferiority margin to 10% in the final protocol without seeking FDA concurrence, voiding the Pre-Sub agreement.",
+        negFailText: "Root Cause Analysis: Submission Gap Detected. The Clinical team adjusted the non-inferiority margin to 10% in the final protocol without seeking FDA concurrence, voiding the FDA agreement.",
         missingArtifact: "Revised Clinical Protocol with 5% Margin"
     },
     {
-        id: "rule_qsub_usability", standard: "FDA Q-Sub Agreement (Human Factors)", section: "Pre-Sub Q230911",
+        id: "rule_qsub_usability", standard: "FDA Feedback Agreement (Human Factors)", section: "Pre-Sub Q230911",
         requirement: "Summative usability testing must include a minimum of 15 representative users per distinct user group (e.g., clinicians, lay users).",
         expectedDocument: "Human Factors Engineering Report",
         posPassText: "AI Trace Confirmed: Summative usability cohort sizes (n=15 per group) meet the FDA agreed threshold.",
-        negFailText: "Root Cause Analysis: Q-Sub Engineering Drift Detected. Summative test report only recruited 10 lay users due to budget constraints, directly violating the FDA sample size agreement.",
+        negFailText: "Root Cause Analysis: Submission Gap Detected. Summative test report only recruited 10 lay users due to budget constraints, directly violating the FDA sample size agreement.",
         missingArtifact: "Summative Testing Addendum (n=15)"
     }
 ];

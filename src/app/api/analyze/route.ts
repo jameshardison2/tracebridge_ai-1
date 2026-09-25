@@ -80,30 +80,40 @@ async function runAnalysisInBackground(uploadId: string): Promise<void> {
         }
 
         // ─────────────────────────────────────────────────────────────────
-        // RAG PIPELINE: Inject Live FDA Precedent Data
+        // RAG PIPELINE: Process Uploaded Documents
         // ─────────────────────────────────────────────────────────────────
-        let fdaPrecedents: any[] = [];
-        try {
-            const chunksPath = path.join(process.cwd(), 'src/pipeline/rag-chunks.jsonl');
-            if (fs.existsSync(chunksPath)) {
-                const fileContent = fs.readFileSync(chunksPath, 'utf8');
-                const chunks = fileContent.split('\n').filter(Boolean).map(line => JSON.parse(line));
-                // For the MVP demo, grab the NSE records as anti-patterns
-                fdaPrecedents = chunks.filter((c: any) => c.category === 'nse');
-                console.log(`[RAG Engine] Loaded ${fdaPrecedents.length} FDA historical precedents into memory.`);
-            }
-        } catch (err) {
-            console.error("[RAG Engine] Failed to load RAG chunks:", err);
+        const { extractTextFromBuffer, chunkText, embedAndStoreChunks } = await import("@/lib/document-processor");
+
+        console.log(`[ANALYZE] Extracting text and generating embeddings for ${fileBuffers.length} documents...`);
+        let allChunks: any[] = [];
+        
+        for (const file of fileBuffers) {
+            console.log(`[ANALYZE] Extracting text from ${file.name}...`);
+            const text = await extractTextFromBuffer(file.data, file.mimeType);
+            const chunks = chunkText(text, file.name, uploadId);
+            allChunks = allChunks.concat(chunks);
+        }
+        
+        for (const file of qsubBuffers) {
+            console.log(`[ANALYZE] Extracting text from ${file.name}...`);
+            const text = await extractTextFromBuffer(file.data, file.mimeType);
+            const chunks = chunkText(text, file.name, uploadId);
+            allChunks = allChunks.concat(chunks);
         }
 
-        // Run gap analysis (this is the slow part - Gemini calls)
+        console.log(`[ANALYZE] Generated ${allChunks.length} chunks. Uploading to Vector Search...`);
+        await embedAndStoreChunks(allChunks, uploadId);
+        
+        // We no longer pass fdaPrecedents or raw buffers down, as gap-engine will vector search for them.
+
+        // Run gap analysis
         const results = await runGapAnalysis(
             uploadId,
             upload.standards as string[],
-            fileBuffers,
-            qsubBuffers,
+            [], // Passing empty array as buffers are no longer stuffed into prompt
+            [],
             upload.aiEngine,
-            fdaPrecedents
+            []
         );
 
         const summary = getGapSummary(results);

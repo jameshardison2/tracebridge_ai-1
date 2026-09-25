@@ -415,13 +415,13 @@ export default function UploadPage() {
                     <span className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center border border-indigo-200">
                         <Upload className="w-4 h-4 text-indigo-600" />
                     </span>
-                    Q-Sub Drift Detection Analysis
+                    510(k) Gap Analysis Engine
                     <span className="text-xs font-bold bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full uppercase tracking-widest border border-indigo-200">
                         Core Engine
                     </span>
                 </h1>
                 <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight">
-                    Upload your V&V documents for automatic, semantic AI Q-Sub drift detection.
+                    Upload your V&V documents for automatic, semantic AI regulatory gap detection.
                 </p>
                 <p className="text-slate-500 mt-2 text-sm max-w-3xl leading-relaxed">
                     Initiate a new compliance scan. Upload FDA pre-sub feedback alongside your product's technical documentation to immediately identify missing evidence, misaligned risk controls, or untested software requirements.
@@ -523,7 +523,7 @@ export default function UploadPage() {
                     </label>
                     
                     <div className="flex flex-col gap-4">
-                        {/* Q-Sub Dedicated Zone (Primary) */}
+                        {/* FDA Dedicated Zone (Primary) */}
                         <div
                             className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all ${
                                 qsubDragActive
@@ -542,7 +542,7 @@ export default function UploadPage() {
                                 <FileSearch className="w-6 h-6" />
                             </div>
                             <p className="text-sm font-bold text-slate-700 mb-1">
-                                FDA Pre-Sub (Q-Sub) Feedback
+                                FDA Feedback (Pre-Sub / Deficiency Letters)
                             </p>
                             <p className="text-xs text-[var(--muted)] px-8">
                                 Upload FDA meeting minutes. TraceBridge will strictly verify that your evidence addresses the FDA's direct requests.
@@ -650,7 +650,7 @@ export default function UploadPage() {
                                         <p className="text-sm font-medium truncate text-amber-900">{file.name}</p>
                                         <div className="flex items-center gap-2 mt-0.5">
                                             <span className="text-xs text-amber-700/70">
-                                                Q-Sub Feedback • {(file.size / 1024 / 1024).toFixed(2)} MB
+                                                FDA Feedback • {(file.size / 1024 / 1024).toFixed(2)} MB
                                             </span>
                                             <span className="text-[10px] text-amber-300">•</span>
                                             {isParsing ? (

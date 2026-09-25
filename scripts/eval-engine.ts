@@ -25,10 +25,10 @@ async function runEvals() {
     const dataDir = path.resolve(process.cwd(), "demo_data");
     
     // ==========================================
-    // TEST 1: FALSE POSITIVE TRAP (Buzzwords)
+    // TEST 1: ISO 14971 HAZARD TRACEABILITY
     // ==========================================
-    console.log(`${BOLD}Running Test 1: False Positive Trap (ISO 14971 FMEA)${RESET}`);
-    const rmfPath = path.join(dataDir, "MOCK_Risk_Management_Report_v1.0.txt");
+    console.log(`${BOLD}Running Test 1: ISO 14971 Hazard Traceability${RESET}`);
+    const rmfPath = path.resolve(process.cwd(), "spark-deliverables/Evaluation_Dataset/mock-docs/Risk_Management_Plan_Rev01.pdf");
     const rmfBuffer = fs.readFileSync(rmfPath);
     
     const rulesTest1 = [{
@@ -41,15 +41,15 @@ async function runEvals() {
 
     const filesTest1 = [{
         data: rmfBuffer,
-        mimeType: "text/plain",
-        name: "MOCK_Risk_Management_Report_v1.0.txt"
+        mimeType: "application/pdf",
+        name: "Risk_Management_Plan_Rev01.pdf"
     }];
 
     let result1;
     let retries1 = 3;
     while(retries1 > 0) {
         try {
-            result1 = await queryGeminiRESTArray(filesTest1, rulesTest1);
+            result1 = await queryGeminiRESTArray(rulesTest1, "", "", filesTest1);
             break;
         } catch(err: any) {
             if (err.message.includes("503") && retries1 > 1) {
@@ -76,31 +76,31 @@ async function runEvals() {
     }
 
     // ==========================================
-    // TEST 2: GOLDEN DATASET FORGIVENESS
+    // TEST 2: FDA CYBERSECURITY (CVSS v3.1/4.0 REQUIREMENT)
     // ==========================================
-    console.log(`${BOLD}Running Test 2: Golden Dataset Forgiveness (IEC 62304 Specifications)${RESET}`);
-    const srsPath = path.join(dataDir, "MOCK_Software_Requirements_Specification_v2.1.txt");
-    const srsBuffer = fs.readFileSync(srsPath);
+    console.log(`${BOLD}Running Test 2: FDA Cybersecurity (CVSS version check)${RESET}`);
+    const sadPath = path.resolve(process.cwd(), "spark-deliverables/Evaluation_Dataset/mock-docs/Software_Architecture_Document_Rev01.pdf");
+    const sadBuffer = fs.readFileSync(sadPath);
     
     const rulesTest2 = [{
         id: "RULE_TRAP_2",
         standard: "FDA Cybersecurity",
-        section: "Telemetry Security",
-        requirement: "Software architecture must decouple medical logic from UI rendering, and all wireless transmission components (BLE) must utilize AES-256 authenticated encryption to prevent signal hijacking.",
+        section: "Vulnerability Management",
+        requirement: "Software architecture and vulnerability management plans must utilize modern CVSS scoring metrics (CVSS v3.1 or CVSS v4.0). Legacy CVSS v2.0 is strictly prohibited as it does not adequately address modern attack vectors.",
         expectedDocument: "Software Architecture Document / SRS"
     }];
 
     const filesTest2 = [{
-        data: srsBuffer,
-        mimeType: "text/plain",
-        name: "MOCK_Software_Requirements_Specification_v2.1.txt"
+        data: sadBuffer,
+        mimeType: "application/pdf",
+        name: "Software_Architecture_Document_Rev01.pdf"
     }];
 
     let result2;
     let retries2 = 3;
     while(retries2 > 0) {
         try {
-            result2 = await queryGeminiRESTArray(filesTest2, rulesTest2);
+            result2 = await queryGeminiRESTArray(rulesTest2, "", "", filesTest2);
             break;
         } catch(err: any) {
             if (err.message.includes("503") && retries2 > 1) {
@@ -116,17 +116,12 @@ async function runEvals() {
 
     const engineResponse2 = result2[0];
 
-    if (engineResponse2.found === true) {
-        console.log(`${GREEN}✔ PASS: AI bypassed the superficial formatting and validated the raw mathematical encryption physics!${RESET}`);
+    if (engineResponse2.found === false && engineResponse2.exact_missing_evidence) {
+        console.log(`${GREEN}✔ PASS: AI successfully detected the outdated CVSS v2.0 usage and failed the document!${RESET}`);
         console.log(`  Engine Reasoning: ${engineResponse2.analytical_reasoning}`);
-        console.log(`  Confidence: ${engineResponse2.confidence}`);
-        if (engineResponse2.citations && engineResponse2.citations.length > 0) {
-            console.log(`  Trace Source: ${engineResponse2.citations[0].source} - ${engineResponse2.citations[0].quote}\n`);
-        } else {
-            console.log(`\n`);
-        }
+        console.log(`  Missing Evidence Flagged: ${RED}${engineResponse2.exact_missing_evidence}${RESET}\n`);
     } else {
-        console.log(`${RED}✘ FAIL: AI trapped by bad formatting - generated a false negative!${RESET}`);
+        console.log(`${RED}✘ FAIL: AI hallucinates a false positive or did not flag the legacy CVSS v2.0 usage!${RESET}`);
         console.log(JSON.stringify(engineResponse2, null, 2));
         process.exit(1);
     }
