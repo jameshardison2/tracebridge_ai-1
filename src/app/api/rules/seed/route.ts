@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebase-admin";
 import { Timestamp } from "firebase-admin/firestore";
+import { requireAdmin } from "@/lib/require-admin";
 
 export const dynamic = "force-dynamic";
 
@@ -8,7 +9,10 @@ export const dynamic = "force-dynamic";
  * POST /api/rules/seed
  * Seeds additional compliance rules: ISO 10993 (Biocompatibility) and eStar template sections.
  */
-export async function POST() {
+export async function POST(request: Request) {
+    const denied = await requireAdmin(request);
+    if (denied) return denied;
+
     try {
         if (!adminDb) {
             return NextResponse.json(

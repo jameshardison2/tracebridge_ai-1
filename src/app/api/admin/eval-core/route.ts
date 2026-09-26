@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { queryGeminiRESTArray } from "@/lib/gemini-rest";
 import * as fs from "fs";
 import * as path from "path";
+import { requireAdmin } from "@/lib/require-admin";
 
 const EXHAUSTIVE_RULES = [
     {
@@ -41,6 +42,9 @@ function getFileBuffer(filename: string) {
 }
 
 export async function POST(request: Request) {
+    const denied = await requireAdmin(request);
+    if (denied) return denied;
+
     try {
         console.log("EXEC: Starting Massive Live Clinical Eval Core...");
         

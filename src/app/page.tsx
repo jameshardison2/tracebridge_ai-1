@@ -10,7 +10,6 @@ import {
   Database,
   Brain,
   CheckCircle2,
-  Lock,
   Activity,
   Zap,
   AlertTriangle
@@ -24,7 +23,7 @@ export default function LandingPage() {
       <div className="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-blue-200/40 blur-[120px] pointer-events-none" />
       <div className="absolute top-[20%] right-[20%] w-[30vw] h-[30vw] rounded-full bg-indigo-200/30 blur-[100px] pointer-events-none" />
 
-      {/* Enterprise Header */}
+      {/* Header */}
       <header className="relative z-50 border-b border-slate-200/60 bg-white/60 backdrop-blur-xl shrink-0">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between text-sm">
           <div className="flex items-center gap-3 group cursor-pointer">
@@ -33,13 +32,10 @@ export default function LandingPage() {
             </div>
             <span className="font-bold text-2xl tracking-tight text-slate-800">TraceBridge <span className="text-emerald-500">AI</span></span>
             <span className="hidden md:inline text-slate-500 ml-4 border-l border-slate-300 pl-4 text-xs font-medium tracking-wide">
-              Enterprise Regulatory Intelligence Engine
+              510(k) Submission Coherence Audit
             </span>
           </div>
           <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2 text-slate-500 text-xs hidden sm:flex font-medium">
-              <Lock className="w-3.5 h-3.5 text-slate-400" /> Enterprise-Grade Security
-            </div>
             <div className="flex items-center gap-3">
               <a href="mailto:james@tracebridge.ai?subject=TraceBridge%20Beta%20Access%20Request&body=Hi%2C%20I%20would%20like%20to%20request%20beta%20access%20to%20TraceBridge%20AI." className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-md text-xs font-bold uppercase tracking-wider transition-all border border-slate-200 hover:border-slate-300">
                 Request Beta Access
@@ -62,13 +58,13 @@ export default function LandingPage() {
           <div className="space-y-6">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-widest shadow-sm">
               <AlertTriangle className="w-3.5 h-3.5 text-emerald-600" />
-              <span>510(k) Pre-Submission Readiness &amp; RTA Prevention</span>
+              <span>510(k) Pre-Submission Readiness · Private Beta</span>
             </div>
             <h1 className="text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.1]">
-              Find documentation gaps before the FDA does.
+              Make sure your 510(k) evidence hangs together before the FDA checks.
             </h1>
             <p className="text-slate-600 leading-relaxed text-lg max-w-2xl font-light">
-              TraceBridge AI audits your 510(k) submission package against FDA guidance, the RTA (Refuse to Accept) checklist, and historical clearance precedents. Catch critical omissions, resolve compliance gaps, and verify cross-document coherence before you file.
+              TraceBridge AI audits the submission package you have already built. It checks that intended use, risk controls, requirements, and verification evidence agree across documents, and flags gaps against FDA guidance and the RTA (Refuse to Accept) checklist, with source citations.
             </p>
             <div className="flex gap-4 pt-4">
               <Link href="/login" className="bg-slate-900 text-white hover:bg-slate-800 px-6 py-3 rounded-lg text-sm font-bold flex items-center gap-2 transition-all group shadow-lg shadow-slate-900/20">
@@ -85,6 +81,15 @@ export default function LandingPage() {
             </h4>
             <div className="grid md:grid-cols-3 gap-4">
               <div className="p-5 rounded-xl bg-white/60 backdrop-blur-sm border border-slate-200 hover:bg-white transition-all group shadow-sm hover:shadow-md">
+                <div className="p-2.5 bg-indigo-50 rounded-lg w-fit mb-4 group-hover:scale-110 transition-transform shadow-sm border border-indigo-100">
+                  <CheckCircle2 className="w-5 h-5 text-indigo-600" />
+                </div>
+                <h3 className="text-sm font-bold text-slate-900 tracking-tight mb-2">Package Coherence</h3>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Evaluates cross-document consistency to ensure risk mitigations, software requirements, and verification evidence hang together.
+                </p>
+              </div>
+              <div className="p-5 rounded-xl bg-white/60 backdrop-blur-sm border border-slate-200 hover:bg-white transition-all group shadow-sm hover:shadow-md">
                 <div className="p-2.5 bg-blue-50 rounded-lg w-fit mb-4 group-hover:scale-110 transition-transform shadow-sm border border-blue-100">
                   <Database className="w-5 h-5 text-blue-600" />
                 </div>
@@ -99,16 +104,7 @@ export default function LandingPage() {
                 </div>
                 <h3 className="text-sm font-bold text-slate-900 tracking-tight mb-2">Targeted Gap Detection</h3>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  Scans draft risk files, software architecture, and cybersecurity files against ISO 14971 and IEC 62304 with exact clause citations.
-                </p>
-              </div>
-              <div className="p-5 rounded-xl bg-white/60 backdrop-blur-sm border border-slate-200 hover:bg-white transition-all group shadow-sm hover:shadow-md">
-                <div className="p-2.5 bg-indigo-50 rounded-lg w-fit mb-4 group-hover:scale-110 transition-transform shadow-sm border border-indigo-100">
-                  <CheckCircle2 className="w-5 h-5 text-indigo-600" />
-                </div>
-                <h3 className="text-sm font-bold text-slate-900 tracking-tight mb-2">Package Coherence</h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Evaluates cross-document consistency to ensure risk mitigations, software requirements, and verification evidence hang together.
+                  Scans draft risk files, software architecture, and cybersecurity files against ISO 14971 and IEC 62304 with clause citations.
                 </p>
               </div>
             </div>
@@ -128,22 +124,22 @@ export default function LandingPage() {
             <div className="p-2">
               <div className="p-4 hover:bg-slate-50 rounded-xl transition-all cursor-default">
                 <div className="flex justify-between items-center mb-1">
-                  <span className="text-sm font-bold text-slate-900">IEC 62304:2006</span>
-                  <span className="text-[10px] bg-teal-50 text-teal-700 border border-teal-200 font-bold px-2 py-0.5 rounded uppercase">Active</span>
+                  <span className="text-sm font-bold text-slate-900">IEC 62304:2006+A1:2015</span>
+                  <span className="text-[10px] bg-teal-50 text-teal-700 border border-teal-200 font-bold px-2 py-0.5 rounded uppercase">In Scope</span>
                 </div>
                 <p className="text-xs text-slate-500">Medical Device Software Lifecycle</p>
               </div>
               <div className="p-4 hover:bg-slate-50 rounded-xl transition-all cursor-default">
                 <div className="flex justify-between items-center mb-1">
                   <span className="text-sm font-bold text-slate-900">ISO 14971:2019</span>
-                  <span className="text-[10px] bg-teal-50 text-teal-700 border border-teal-200 font-bold px-2 py-0.5 rounded uppercase">Active</span>
+                  <span className="text-[10px] bg-teal-50 text-teal-700 border border-teal-200 font-bold px-2 py-0.5 rounded uppercase">In Scope</span>
                 </div>
-                <p className="text-xs text-slate-500">Risk Management Processing</p>
+                <p className="text-xs text-slate-500">Medical Device Risk Management</p>
               </div>
               <div className="p-4 hover:bg-slate-50 rounded-xl transition-all cursor-default">
                 <div className="flex justify-between items-center mb-1">
                   <span className="text-sm font-bold text-slate-900">ISO 13485:2016</span>
-                  <span className="text-[10px] bg-teal-50 text-teal-700 border border-teal-200 font-bold px-2 py-0.5 rounded uppercase">Active</span>
+                  <span className="text-[10px] bg-teal-50 text-teal-700 border border-teal-200 font-bold px-2 py-0.5 rounded uppercase">In Scope</span>
                 </div>
                 <p className="text-xs text-slate-500">Quality Management Systems</p>
               </div>
@@ -163,7 +159,7 @@ export default function LandingPage() {
                 </div>
                 <div>
                   <span className="text-sm font-bold text-slate-900 block mb-1">1. Dossier &amp; Specification Ingestion</span>
-                  <span className="text-xs text-slate-500 leading-relaxed">Secure File API handles submission components (SRS, Risk Management Plan, Architecture, and SBOM).</span>
+                  <span className="text-xs text-slate-500 leading-relaxed">Upload submission components such as the SRS, risk management file, architecture, and SBOM.</span>
                 </div>
               </div>
               <div className="flex gap-4 group/item">
@@ -172,7 +168,7 @@ export default function LandingPage() {
                 </div>
                 <div>
                   <span className="text-sm font-bold text-slate-900 block mb-1">2. Precedent &amp; RTA Gap Audit</span>
-                  <span className="text-xs text-slate-500 leading-relaxed">Automated analysis flags missing clauses, unaddressed guidance, and incomplete mitigations with exact citations.</span>
+                  <span className="text-xs text-slate-500 leading-relaxed">Flags missing clauses, unaddressed guidance, and incomplete mitigations, with source citations.</span>
                 </div>
               </div>
               <div className="flex gap-4 group/item">
@@ -181,7 +177,7 @@ export default function LandingPage() {
                 </div>
                 <div>
                   <span className="text-sm font-bold text-slate-900 block mb-1">3. Traceability &amp; Coherence Matrix</span>
-                  <span className="text-xs text-slate-500 leading-relaxed">Export auditor-ready compliance summaries, gap severity rankings, and cross-document verification before filing.</span>
+                  <span className="text-xs text-slate-500 leading-relaxed">Review cross-document mismatches and export a gap report ranked by severity.</span>
                 </div>
               </div>
             </div>
@@ -200,7 +196,7 @@ export default function LandingPage() {
           <div className="flex gap-6 items-center">
             <div className="flex items-center gap-2 text-slate-500 font-medium">
               <div className="w-2 h-2 rounded-full bg-teal-500 animate-pulse shadow-[0_0_8px_rgba(20,184,166,0.5)]" />
-              <span>Cloud Infrastructure Active</span>
+              <span>Private beta · Hardison Labs</span>
             </div>
           </div>
         </div>

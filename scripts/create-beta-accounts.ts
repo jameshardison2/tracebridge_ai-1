@@ -9,7 +9,11 @@ async function main() {
         process.exit(1);
     }
 
-    const password = "TraceBridge2026!";
+    const password = process.env.BETA_ACCOUNT_PASSWORD;
+    if (!password || password.length < 12) {
+        console.error("❌ Set BETA_ACCOUNT_PASSWORD (12+ chars) in .env.local. Never commit it.");
+        process.exit(1);
+    }
     let createdCount = 0;
 
     for (let i = 51; i <= 150; i++) {
@@ -34,7 +38,7 @@ async function main() {
     }
 
     console.log(`\n✅ Successfully created ${createdCount} new beta accounts!`);
-    console.log(`\n🔑 Default Password for all accounts: ${password}`);
+    console.log("\n🔑 Accounts use BETA_ACCOUNT_PASSWORD from your local env.");
 }
 
 main()

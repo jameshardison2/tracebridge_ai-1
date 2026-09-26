@@ -1,122 +1,61 @@
-# TraceBridge AI — BU Spark Team Branching & Collaboration Guide
+# TraceBridge AI: BU Spark Collaboration Guide
 
-This document defines the Git branching model, development workflow, and safety guidelines for the BU Spark engineering and data science teams collaborating on TraceBridge AI.
+How the BU Spark Fall 2026 team works in this repository: branches, pull requests, data, and confidentiality.
 
----
+## 1. Branches
 
-## 1. Branch Architecture
+| Branch | Purpose | Deploys to | Rules |
+| --- | --- | --- | --- |
+| `main` | Live product | tracebridge.ai (Vercel) | Protected. No direct pushes. James merges releases. |
+| `bu-spark` | Team integration branch | Vercel preview | Students open pull requests here. |
+| `spark/<feature>` | Individual or pair work, branched from `bu-spark` | Local or Vercel preview | Delete after merge. |
 
-To protect the live, production-deployed application while enabling rapid student feature development, the repository follows a dual-branch structure:
+## 2. Quick start
 
-```mermaid
-gitGraph
-   commit id: "Live Product (v4)"
-   branch bu-spark
-   checkout bu-spark
-   commit id: "510(k) Pre-Sub Readiness (v5)"
-   branch spark/eval-engine
-   checkout spark/eval-engine
-   commit id: "Add golden eval metrics"
-   checkout bu-spark
-   merge spark/eval-engine id: "PR #1 merged into bu-spark"
-   checkout main
-   commit id: "Production fix"
-```
-
-| Branch | Role | Deployment Target | Access Policy |
-| :--- | :--- | :--- | :--- |
-| **`main`** | **Production & Live Product** (Version 4 framing / Q-Sub alignment). | Live site (`tracebridge.ai` on Vercel) | **Protected.** Direct pushes discouraged. PRs require review. |
-| **`bu-spark`** | **BU Spark Integration Branch** (Version 5/6: 510(k) Pre-submission gap detection & coherence). | Preview environments | **Shared Team Branch.** Students open PRs into this branch. |
-| **`spark/<feature>`**| **Student Feature Branches** (created off `bu-spark`). | Local dev / Vercel previews | **Individual / Pair.** Delete branch after merge. |
-
----
-
-## 2. Developer Quick-Start for BU Spark Students
-
-### Step 1: Clone and Checkout the Project
 ```bash
 git clone https://github.com/tracebridgeai-lab/tracebridge_ai.git
 cd tracebridge_ai
-npm install
-```
-
-### Step 2: Switch to the `bu-spark` Integration Branch
-Always base your work off `bu-spark`, **not** `main`:
-```bash
+npm ci
+cp .env.example .env.local        # fill in the values shared with you privately
 git checkout bu-spark
 git pull origin bu-spark
-```
-
-### Step 3: Create Your Feature Branch
-Prefix branch names with `spark/` followed by your initials or feature name:
-```bash
-# Examples:
-git checkout -b spark/rag-evaluation
-git checkout -b spark/jh-document-chunking
-```
-
-### Step 4: Run the Local Dev Server
-```bash
+git checkout -b spark/<your-feature>   # e.g. spark/fda-scraper, spark/eval-metrics
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) to view your changes.
 
----
+Set `GEMINI_MOCK_MODE="true"` if you are working without a Gemini key.
 
-## 3. Pull Request (PR) Rules
+## 3. Pull requests
 
-> [!IMPORTANT]
-> **Always set the target base branch to `bu-spark`.**
-> Never open a PR directly into `main`. The `main` branch is reserved for production releases.
+1. Run `npm run build` locally; it must pass. Run `npx eslint <files you changed>` and fix any errors in those files. The codebase has older lint errors being cleaned up separately; do not add new ones.
+2. Push your branch: `git push -u origin spark/<your-feature>`.
+3. Open a pull request with base `bu-spark`, never `main`.
+4. In the description, state the problem solved, how you tested it, and any dataset changes.
+5. At least one teammate reviews before merge.
 
-1. **Verify build and types locally before submitting:**
-   ```bash
-   npm run build
-   ```
-2. **Push your branch to GitHub:**
-   ```bash
-   git push -u origin spark/<your-feature-name>
-   ```
-3. **Open PR on GitHub:**
-   * **Base:** `bu-spark`
-   * **Compare:** `spark/<your-feature-name>`
-   * **Description:** Detail the problem solved, tests added, and any dataset changes.
+## 4. Semester workstreams
 
----
+Deliverables come from the Student Educational Project Agreement.
 
-## 4. Large Dataset & GitHub Guardrails
+| Workstream | Deliverable | Starting point |
+| --- | --- | --- |
+| Data | FDA accessdata scraper and ~80,000-record 510(k) index (Milestone 1) | `src/pipeline/` |
+| Retrieval | Vector database seeding scripts | `src/pipeline/ingest.js`, `scripts/` |
+| Engine | Gap-detection pipeline with a source citation on every finding | `src/lib/gap-engine.ts`, `src/app/api/v2/evaluate/` |
+| Evaluation | Precision, recall, and accuracy against the ground-truth answer key | `scripts/eval-engine.ts`, `FDA_Test_Dossiers/` |
+| Stretch | Cross-document consistency checks | `src/app/api/v2/evaluate/coherence/` |
 
-> [!WARNING]
-> GitHub rejects pushes containing individual files larger than **100 MB**. 
+## 5. Data rules
 
-* **Filtered 510(k) Corpus (`fda_510k_filtered.jsonl`):**
-  * Size: ~509 MB.
-  * Stored locally under `spark-deliverables/Evaluation_Dataset/`.
-  * **This file is intentionally ignored in `.gitignore`.** Do not force-add (`git add -f`) large JSONL or archive files.
-* **Zip & Archive Bundles (`*.zip`, `*.tgz`):**
-  * Kept in local storage or shared via Google Drive / BU Spark Slack.
-* **Ground Truth Annotations & Mock Documents:**
-  * Ground truth answers: [`spark-deliverables/Evaluation_Dataset/annotated_outcomes.json`](file:///Users/176693/tracebridge_ai/spark-deliverables/Evaluation_Dataset/annotated_outcomes.json) (Tracked in Git).
-  * Mock PDFs with planted gaps: [`spark-deliverables/Evaluation_Dataset/mock-docs/`](file:///Users/176693/tracebridge_ai/spark-deliverables/Evaluation_Dataset/mock-docs) (Tracked in Git).
+- GitHub rejects files over 100 MB. Large corpora (for example the filtered 510(k) JSONL, about 500 MB) stay out of git and are shared through the team drive.
+- `*.jsonl`, `*.zip`, and archive files are git-ignored. Do not force-add them.
+- Only public FDA data and synthetic documents belong in this repository.
+- The ground-truth answer key and mock submissions with planted gaps are shared with the team separately.
 
----
+## 6. Confidentiality and security
 
-## 5. Key Documentation References
+This project runs under the Student Educational Project Agreement, which includes a mutual confidentiality clause.
 
-* **Data Schema & Entity Models:** [`spark-deliverables/Data_Dictionary.md`](file:///Users/176693/tracebridge_ai/spark-deliverables/Data_Dictionary.md)
-* **Ground Truth Evaluation Answers:** [`spark-deliverables/Evaluation_Dataset/annotated_outcomes.json`](file:///Users/176693/tracebridge_ai/spark-deliverables/Evaluation_Dataset/annotated_outcomes.json)
-* **Product Evolution & Historical Log:** [`scratch/rd_log.md`](file:///Users/176693/tracebridge_ai/scratch/rd_log.md)
-
----
-
-## 6. Switching Between Live Product and BU Spark
-
-To inspect the live product:
-```bash
-git checkout main
-```
-
-To return to BU Spark development:
-```bash
-git checkout bu-spark
-```
+- Do not share non-public project material outside the team, BU Spark staff, and James.
+- Never commit API keys, tokens, passwords, or `.env` files. Report any accidental commit to James immediately.
+- Competitor research uses public sources only.

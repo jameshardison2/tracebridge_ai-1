@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebase-admin";
+import { requireAdmin } from "@/lib/require-admin";
 
 const EXHAUSTIVE_RULES = [
     // Pillar 1: General QMS
@@ -69,6 +70,9 @@ const EXHAUSTIVE_RULES = [
 ];
 
 export async function POST(request: Request) {
+    const denied = await requireAdmin(request);
+    if (denied) return denied;
+
     try {
         if (!adminDb) return NextResponse.json({ success: false, error: "Firebase offline" }, { status: 503 });
 
