@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
-import { adminDb } from "@/lib/firebase-admin";
+import { adminDb, verifyIdToken } from "@/lib/firebase-admin";
 import { Timestamp } from "firebase-admin/firestore";
+import { Resend } from "resend";
+
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 export const dynamic = "force-dynamic";
 
 /**
- * GET /api/team?userId=xxx
+ * GET /api/team
  * Returns the team for a given user, or null if they don't belong to one.
  */
 export async function GET(request: Request) {
@@ -14,43 +17,61 @@ export async function GET(request: Request) {
             return NextResponse.json({ success: false, error: "Firebase not configured" }, { status: 503 });
         }
 
-        const { searchParams } = new URL(request.url);
-        const userId = searchParams.get("userId");
-
-        if (!userId) {
-            return NextResponse.json({ success: false, error: "Missing userId" }, { status: 400 });
+        const authHeader = request.headers.get("Authorization");
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
         }
+        
+        const idToken = authHeader.split("Bearer ")[1];
+        const verification = await verifyIdToken(idToken);
+        if (!verification.success || !verification.uid) {
+            return NextResponse.json({ success: false, error: "Invalid token" }, { status: 401 });
+        }
+        const userId = verification.uid;
 
         // Find teams where user is a member
         const teamsSnapshot = await adminDb.collection("teams").get();
-        const userTeam = teamsSnapshot.docs.find(doc => {
+        const userTeams = teamsSnapshot.docs.filter(doc => {
             const data = doc.data();
             return data.ownerId === userId ||
                 (data.members || []).some((m: any) => m.uid === userId);
         });
 
-        if (!userTeam) {
-            return NextResponse.json({ success: true, data: { team: null } });
+        if (userTeams.length === 0) {
+            return NextResponse.json({ success: true, data: { teams: [] } });
         }
 
-        const teamData: any = { id: userTeam.id, ...userTeam.data() };
+        const teamsData = userTeams.map(teamDoc => {
+            const data = teamDoc.data();
+            return {
+                id: teamDoc.id,
+                ...data,
+                createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : null,
+                members: data.members?.map((m: any) => ({
+                    ...m,
+                    joinedAt: m.joinedAt?.toDate ? m.joinedAt.toDate().toISOString() : null
+                })) || []
+            };
+        });
 
-        // Get team upload stats
-        const members = teamData.members || [];
-        const memberIds = [teamData.ownerId, ...members.map((m: any) => m.uid)];
+        // Fetch actual upload count from the database to drive the ROI metrics dashboard
+        const uploadsSnapshot = await adminDb.collection('uploads').where('userId', '==', userId).get();
+        const totalUploads = uploadsSnapshot.size;
 
-        const uploadsSnapshot = await adminDb.collection("uploads").get();
-        const teamUploads = uploadsSnapshot.docs.filter(doc =>
-            memberIds.includes(doc.data().userId)
-        );
-
+        // Calculate total members across all teams this user belongs to
+        let totalMembers = 0;
+        userTeams.forEach(teamDoc => {
+            const data = teamDoc.data();
+            totalMembers += (data.members || []).length;
+        });
+        
         return NextResponse.json({
             success: true,
             data: {
-                team: teamData,
+                teams: teamsData,
                 stats: {
-                    totalUploads: teamUploads.length,
-                    totalMembers: memberIds.length,
+                    totalUploads,
+                    totalMembers,
                 },
             },
         });
@@ -73,10 +94,28 @@ export async function POST(request: Request) {
             return NextResponse.json({ success: false, error: "Firebase not configured" }, { status: 503 });
         }
 
+        const authHeader = request.headers.get("Authorization");
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+        }
+        
+        const idToken = authHeader.split("Bearer ")[1];
+        const verification = await verifyIdToken(idToken);
+        if (!verification.success || !verification.uid) {
+            return NextResponse.json({ success: false, error: "Invalid token" }, { status: 401 });
+        }
+        const authUserId = verification.uid;
+
         const { action, userId, teamName, memberEmail, teamId } = await request.json();
 
-        if (!action || !userId) {
-            return NextResponse.json({ success: false, error: "Missing action or userId" }, { status: 400 });
+        // Enforce that the user performing the action is the authenticated user
+        if (userId && userId !== authUserId) {
+            return NextResponse.json({ success: false, error: "Forbidden: UID mismatch" }, { status: 403 });
+        }
+        const effectiveUserId = authUserId;
+
+        if (!action) {
+            return NextResponse.json({ success: false, error: "Missing action" }, { status: 400 });
         }
 
         switch (action) {
@@ -87,7 +126,7 @@ export async function POST(request: Request) {
 
                 const teamRef = await adminDb.collection("teams").add({
                     name: teamName,
-                    ownerId: userId,
+                    ownerId: effectiveUserId,
                     members: [],
                     createdAt: Timestamp.now(),
                 });
@@ -109,8 +148,8 @@ export async function POST(request: Request) {
                 }
 
                 const team = teamDoc.data()!;
-                if (team.ownerId !== userId) {
-                    return NextResponse.json({ success: false, error: "Only team owner can invite" }, { status: 403 });
+                if (team.ownerId !== effectiveUserId && memberEmail !== (await adminDb.collection('users').doc(effectiveUserId).get()).data()?.email) {
+                    return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 403 });
                 }
 
                 // Check if already a member
@@ -130,6 +169,42 @@ export async function POST(request: Request) {
                 await adminDb.collection("teams").doc(teamId).update({
                     members: [...(team.members || []), newMember],
                 });
+
+                // Send email via Resend if configured
+                if (resend) {
+                    try {
+                        const { data, error } = await resend.emails.send({
+                            from: 'TraceBridge AI <noreply@tracebridge.ai>', // Custom domain verified!
+                            to: [memberEmail],
+                            subject: `You've been invited to join ${team.name} on TraceBridge AI`,
+                            html: `
+                                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
+                                    <h2 style="color: #0f172a; margin-bottom: 16px;">TraceBridge AI Workspace Invitation</h2>
+                                    <p style="color: #334155; font-size: 16px; line-height: 1.5;">
+                                        You have been invited to join the <strong>${team.name}</strong> workspace to collaborate on regulatory gaps and compliance documentation.
+                                    </p>
+                                    <div style="margin-top: 32px; margin-bottom: 32px;">
+                                        <a href="https://www.tracebridge.ai/login" style="background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 6px; display: inline-block;">
+                                            Accept Invitation
+                                        </a>
+                                    </div>
+                                    <p style="color: #64748b; font-size: 14px; margin-top: 32px; border-top: 1px solid #e2e8f0; padding-top: 16px;">
+                                        If you were not expecting this invitation, you can safely ignore this email.
+                                    </p>
+                                </div>
+                            `
+                        });
+                        if (error) {
+                            console.error("Resend API returned error:", error);
+                        } else {
+                            console.log("Email sent successfully", data);
+                        }
+                    } catch (emailError) {
+                        console.error("Failed to send Resend email:", emailError);
+                        // We don't want to fail the entire request if email fails, 
+                        // just log it. They are still added to the DB.
+                    }
+                }
 
                 return NextResponse.json({
                     success: true,

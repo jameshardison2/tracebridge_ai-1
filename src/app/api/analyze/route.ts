@@ -3,12 +3,14 @@ import { adminDb, adminStorage } from "@/lib/firebase-admin";
 import { runGapAnalysis, getGapSummary } from "@/lib/gap-engine";
 import { Timestamp } from "firebase-admin/firestore";
 import { AuditLog } from "@/lib/firestore-types";
+import * as fs from "fs";
+import * as path from "path";
 
 export const maxDuration = 300;
 export const dynamic = "force-dynamic";
 
 /**
- * Core analysis logic — runs in background (not blocking the HTTP response).
+ * Core analysis logic - runs in background (not blocking the HTTP response).
  */
 async function runAnalysisInBackground(uploadId: string): Promise<void> {
     if (!adminDb || !adminStorage) return;
@@ -34,9 +36,10 @@ async function runAnalysisInBackground(uploadId: string): Promise<void> {
 
         const bucket = adminStorage.bucket();
         const fileBuffers: { data: Buffer; mimeType: string; name: string }[] = [];
+        const qsubBuffers: { data: Buffer; mimeType: string; name: string }[] = [];
 
         for (const doc of documentsSnapshot.docs) {
-            const { storagePath, fileName, fileType } = doc.data();
+            const { storagePath, fileName, fileType, isQSub } = doc.data();
             if (!storagePath) continue;
 
             try {
@@ -51,7 +54,11 @@ async function runAnalysisInBackground(uploadId: string): Promise<void> {
                     mimeType = "text/plain";
                 }
 
-                fileBuffers.push({ data: buffer, mimeType, name: fileName });
+                if (isQSub) {
+                    qsubBuffers.push({ data: buffer, mimeType, name: fileName });
+                } else {
+                    fileBuffers.push({ data: buffer, mimeType, name: fileName });
+                }
                 console.log(`[ANALYZE] Downloaded ${fileName} (${(buffer.length / 1024).toFixed(0)}KB)`);
             } catch (err) {
                 console.error(`[ANALYZE] Failed to download ${fileName}:`, err);
@@ -72,11 +79,31 @@ async function runAnalysisInBackground(uploadId: string): Promise<void> {
             await batch.commit();
         }
 
-        // Run gap analysis (this is the slow part — Gemini calls)
+        // ─────────────────────────────────────────────────────────────────
+        // RAG PIPELINE: Inject Live FDA Precedent Data
+        // ─────────────────────────────────────────────────────────────────
+        let fdaPrecedents: any[] = [];
+        try {
+            const chunksPath = path.join(process.cwd(), 'src/pipeline/rag-chunks.jsonl');
+            if (fs.existsSync(chunksPath)) {
+                const fileContent = fs.readFileSync(chunksPath, 'utf8');
+                const chunks = fileContent.split('\n').filter(Boolean).map(line => JSON.parse(line));
+                // For the MVP demo, grab the NSE records as anti-patterns
+                fdaPrecedents = chunks.filter((c: any) => c.category === 'nse');
+                console.log(`[RAG Engine] Loaded ${fdaPrecedents.length} FDA historical precedents into memory.`);
+            }
+        } catch (err) {
+            console.error("[RAG Engine] Failed to load RAG chunks:", err);
+        }
+
+        // Run gap analysis (this is the slow part - Gemini calls)
         const results = await runGapAnalysis(
             uploadId,
             upload.standards as string[],
-            fileBuffers
+            fileBuffers,
+            qsubBuffers,
+            upload.aiEngine,
+            fdaPrecedents
         );
 
         const summary = getGapSummary(results);
@@ -87,16 +114,36 @@ async function runAnalysisInBackground(uploadId: string): Promise<void> {
             updatedAt: Timestamp.now(),
         });
 
+        // Zero Data Retention (ZDR) Execution
+        if (upload.zdrEnabled) {
+            console.log(`[ZDR] Zero Data Retention active for ${uploadId}. Purging file artifacts...`);
+            const bucket = adminStorage.bucket();
+            for (const doc of documentsSnapshot.docs) {
+                const { storagePath } = doc.data();
+                if (storagePath) {
+                    try {
+                        await bucket.file(storagePath).delete();
+                        console.log(`[ZDR] Deleted ${storagePath} from bucket.`);
+                    } catch (e) {
+                        console.error(`[ZDR] Failed to delete ${storagePath}`, e);
+                    }
+                }
+                // Also delete the metadata document to prevent broken links
+                await doc.ref.delete();
+            }
+            console.log(`[ZDR] Purge complete.`);
+        }
+
         // Audit log
         const auditLog: AuditLog = {
             userId: upload.userId as string,
             action: "analyze",
-            details: { uploadId, rulesChecked: summary.total, gapsFound: summary.gaps, complianceScore: summary.complianceScore },
+            details: { uploadId, rulesChecked: summary.total, gapsFound: summary.gaps, complianceScore: summary.complianceScore, hasQSub: qsubBuffers.length > 0 },
             createdAt: Timestamp.now(),
         };
         await adminDb.collection("auditLogs").add(auditLog);
 
-        console.log(`[ANALYZE] Complete for ${uploadId} — ${summary.complianceScore}% compliant`);
+        console.log(`[ANALYZE] Complete for ${uploadId} - ${summary.complianceScore}% compliant`);
     } catch (error) {
         console.error("[ANALYZE] Background analysis failed:", error);
         if (adminDb) {
@@ -149,16 +196,15 @@ export async function POST(request: Request) {
             );
         }
 
-        // Kick off analysis in background — DO NOT await
-        // This lets the HTTP response return immediately, avoiding Vercel's timeout
-        void runAnalysisInBackground(uploadId);
+        // Await the analysis. Vercel maxDuration is 300s, which is enough time.
+        // We cannot use 'void' fire-and-forget in Vercel because the container freezes when the response is sent.
+        await runAnalysisInBackground(uploadId);
 
-        // Return 202 Accepted immediately — client will poll for completion
         return NextResponse.json({
             success: true,
-            status: "processing",
+            status: "complete",
             uploadId,
-            message: "Analysis started. Poll /api/reports?uploadId= for status.",
+            message: "Analysis complete.",
         });
     } catch (error) {
         console.error("Analyze route error:", error);

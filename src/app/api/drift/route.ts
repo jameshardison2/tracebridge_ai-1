@@ -11,12 +11,12 @@ export async function GET(req: Request) {
 
     try {
         if (!adminDb) {
-            return generateMockDrift();
+            return NextResponse.json({ success: true, data: [] });
         }
 
         // 1. Fetch the original Report Analysis
         const reportDoc = await adminDb.collection("uploads").doc(uploadId).get();
-        if (!reportDoc.exists) return generateMockDrift();
+        if (!reportDoc.exists) return NextResponse.json({ success: true, data: [] });
         
         const reportData = reportDoc.data();
         const reportTime = reportData?.createdAt?.toDate() || new Date();
@@ -41,36 +41,12 @@ export async function GET(req: Request) {
         }
 
         if (driftedFiles.length === 0) {
-            return generateMockDrift(); // Return safe mock if no actual drift exists for pitch consistency 
+            return NextResponse.json({ success: true, data: [] });
         }
 
         return NextResponse.json({ success: true, data: driftedFiles });
     } catch (error) {
         console.error("Drift API Error:", error);
-        return generateMockDrift();
+        return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
     }
-}
-
-function generateMockDrift() {
-    return NextResponse.json({
-        success: true,
-        data: [
-            {
-                fileName: "V&V_Plan_AID_v4.docx",
-                status: "updated",
-                driftTime: new Date(Date.now() - 9 * 60000).toISOString(),
-                affectedRuleCount: 3,
-                standardRule: "IEC 62304 § 5.6",
-                author: "Mark K."
-            },
-            {
-                fileName: "Risk_Mgmt_SOP_014.pdf",
-                status: "updated",
-                driftTime: new Date(Date.now() - 86400000).toISOString(),
-                affectedRuleCount: 2,
-                standardRule: "ISO 14971 § 7.1",
-                author: "Sarah R."
-            }
-        ]
-    });
 }

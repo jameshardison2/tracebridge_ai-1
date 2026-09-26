@@ -12,7 +12,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ success: false, error: "Missing required parameters." }, { status: 400 });
         }
 
-        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
         let citationContext = "No relevant text was found in the submitted documents.";
         if (citations && citations.length > 0) {

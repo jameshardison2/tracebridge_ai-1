@@ -1,6 +1,12 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TraceBridge AI
+
+Enterprise Regulatory & Quality Intelligence Engine for Medical Device Submissions.
+
+> [!NOTE]
+> **BU Spark Contributors:** Please review the [BU Spark Team Branching & Collaboration Guide](BU_SPARK_WORKFLOW.md) before starting feature work. All student pull requests should target the `bu-spark` branch.
 
 ## Getting Started
+
 
 First, run the development server:
 

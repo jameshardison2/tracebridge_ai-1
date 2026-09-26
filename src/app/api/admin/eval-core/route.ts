@@ -49,7 +49,7 @@ export async function POST(request: Request) {
 
         // Load Real Datasets
         const filenames = [
-            "Live_510k_Hostile_Audit_18_Docs.txt"
+            "Live_510k_Submission_Artifacts.txt"
         ];
 
         const files = filenames.map(getFileBuffer).filter(f => f !== undefined) as { data: Buffer; mimeType: string; name: string }[];

@@ -34,7 +34,7 @@ const EXHAUSTIVE_RULES = [
         requirement: "Premarket submissions must contain a comprehensive Software Bill of Materials (SBOM)",
         expectedDocument: "Cybersecurity Management Plan",
         posPassText: "AI Trace Confirmed: All third-party SBOM components mapped strictly to CVE vulnerability feeds.",
-        negFailText: "Root Cause Analysis: Hostile Audit Trap Triggered. Document relies on buzzwords ('secure', 'encryption') but explicitly failed to provide the mathematical SBOM risk ledger.",
+        negFailText: "Root Cause Analysis: Critical Non-Conformance Detected. Document relies on buzzwords ('secure', 'encryption') but explicitly failed to provide the mathematical SBOM risk ledger.",
         missingArtifact: "Software Bill of Materials (SBOM) mapped to exact CVE numbers."
     },
     {
@@ -54,7 +54,7 @@ const EXHAUSTIVE_RULES = [
         requirement: "Risk evaluation must implement a deterministic threshold comparing the calculated risk index (Probability x Severity matrix) against pre-defined acceptability criteria.",
         expectedDocument: "Risk Management File",
         posPassText: "AI Trace Confirmed: All residual risk calculations deterministically resolve below the accepted threshold algorithm (PxS < 0.05).",
-        negFailText: "Root Cause Analysis: Hostile Audit Trap Triggered. Management accepted 'risk vs reward' philosophically but physically failed to compute Probability multiplied by Severity scales.",
+        negFailText: "Root Cause Analysis: Critical Non-Conformance Detected. Management accepted 'risk vs reward' philosophically but physically failed to compute Probability multiplied by Severity scales.",
         missingArtifact: "Mathematical Probability (P) x Severity (S) calculation chart."
     },
     {
@@ -94,8 +94,28 @@ const EXHAUSTIVE_RULES = [
         requirement: "Formative usability testing MUST include subjects representative of the actual intended user population, not internal engineers.",
         expectedDocument: "Usability Engineering Report",
         posPassText: "AI Trace Confirmed: Patient demographics verified against target medical persona constraints mapping correctly to naive test cases.",
-        negFailText: "Root Cause Analysis: Hostile Audit Trap Triggered. Testing demographics exclusively surveyed 25-30 year old internal engineers. Failure to evaluate target 60+ year old nurse personas.",
+        negFailText: "Root Cause Analysis: Critical Non-Conformance Detected. Testing demographics exclusively surveyed 25-30 year old internal engineers. Failure to evaluate target 60+ year old nurse personas.",
         missingArtifact: "Demographic breakdown of formative testing pool explicitly isolating target groups."
+    },
+    {
+        id: "rule_predicate_daisy_chain",
+        standard: "FDA 510(k) Substantial Equivalence",
+        section: "Predicate Selection",
+        requirement: "The chosen predicate device must not be subject to an active or unresolved Class I recall, as this invalidates the baseline safety logic of the submission.",
+        expectedDocument: "Substantial Equivalence Comparison",
+        posPassText: "AI Trace Confirmed: Selected predicate (K18XXXX) cross-referenced against FDA Recall Database. No Class I actions detected in the 10-year lineage.",
+        negFailText: "Root Cause Analysis: CRITICAL RTA RISK. The selected predicate device is currently subject to a Class I recall. This breaks the Substantial Equivalence daisy-chain and guarantees an NSE (Not Substantially Equivalent) determination.",
+        missingArtifact: "Valid, Unrecalled Predicate K-Number Selection"
+    },
+    {
+        id: "rule_ifu_consistency",
+        standard: "FDA eSTAR Administrative Check",
+        section: "Indications for Use (IFU)",
+        requirement: "The exact text of the Indications for Use (IFU) must match verbatim across the Form 3881, the Device Description, and the Product Labeling.",
+        expectedDocument: "Form 3881 & Device Description",
+        posPassText: "AI Trace Confirmed: Semantic token matching verifies 100% string consistency across Form 3881, IFU document, and Labeling drafts.",
+        negFailText: "Root Cause Analysis: CRITICAL RTA RISK. The Cover Letter states 'for adult use' but the IFU document lacks age specification. Inconsistencies across submission documents trigger automatic 15-day RTA holds.",
+        missingArtifact: "Verbatim matched IFU string across all submission documents."
     }
 ];
 
@@ -118,6 +138,7 @@ export async function POST(request: Request) {
         if (!verification.success || !verification.uid) return NextResponse.json({ success: false, error: "Token validation failed" }, { status: 401 });
         
         const tenantUid = verification.uid;
+
         console.log(`Starting Exhaustive Database Seed for User: ${tenantUid}`);
         
         const uploadsCol = adminDb.collection("uploads");
@@ -176,8 +197,8 @@ export async function POST(request: Request) {
                             quote: `The system structurally implements requirements mapping to ${rule.section} accurately.` 
                         }] : [],
                         
-                        estimatedCost: state === "gap_detected" ? "$3,500 - $7,000" : "—",
-                        estimatedTimeline: state === "gap_detected" ? "2-4 weeks" : "—",
+                        estimatedCost: state === "gap_detected" ? "$3,500 - $7,000" : "-",
+                        estimatedTimeline: state === "gap_detected" ? "2-4 weeks" : "-",
                         createdAt: Timestamp.now(),
                     };
                     batchPromises.push(gapsCol.add(gapData));

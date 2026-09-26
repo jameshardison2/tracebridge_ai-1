@@ -30,70 +30,6 @@ const fetchWithTimeout = async (url: string, options: RequestInit & { timeout?: 
 };
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
-const MOCK_MODE = process.env.GEMINI_MOCK_MODE === "true";
-
-/**
- * Mock response generator for testing
- */
-function generateMockResponse(
-    requirement: string,
-    standard: string,
-    section: string
-): {
-    found: boolean;
-    confidence: "high" | "medium" | "low";
-    citations: { source: string; section: string; quote: string }[];
-    rawResponse: string;
-    estimatedCost: string;
-    estimatedTimeline: string;
-    remediationSteps: string[];
-} {
-    const random = Math.random();
-
-    if (random < 0.4) {
-        return {
-            found: true,
-            confidence: "high",
-            citations: [
-                {
-                    source: "TraceGlow_Comprehensive_Submission_V3.txt",
-                    section: section,
-                    quote: `The system complies with ${standard} by structurally embedding cryptographic risk matrices in the Core logic bounds. Phase-gate verification mathematically fulfilled requirement parameters: ${requirement.substring(0, 45)}...`
-                }
-            ],
-            rawResponse: `The Language Model mathematically verified the compliance string by statically mapping the document boundary against strict FDA ISO sub-clause parameters. Perfect evidentiary tracing located.`,
-            estimatedCost: "—",
-            estimatedTimeline: "—",
-            remediationSteps: [],
-        };
-    } else if (random < 0.7) {
-        return {
-            found: true,
-            confidence: "medium",
-            citations: [
-                {
-                    source: "TraceGlow_Comprehensive_Submission_V3.txt",
-                    section: section,
-                    quote: `Partial heuristic validation confirmed for ${requirement.substring(0, 45)}... Additional mathematical boundary testing may be required during Stage 2 clinical audits.`
-                }
-            ],
-            rawResponse: `AI Engine detected a partial probabilistic match for ${standard} ${section}. The engineering payload contains relevant keywords but lacks strict mathematical absolute limits.`,
-            estimatedCost: "—",
-            estimatedTimeline: "—",
-            remediationSteps: [],
-        };
-    } else {
-        return {
-            found: false,
-            confidence: "low",
-            citations: [],
-            rawResponse: `The Hostile Auditor pipeline systematically traversed the entire 45-page document context and failed to isolate any mathematically quantifiable proof. The regulatory affairs team must explicitly dictate specific physical bounds for ${standard}.`,
-            estimatedCost: "$3,000 - $8,000",
-            estimatedTimeline: "4-8 weeks",
-            remediationSteps: ["Draft missing documentation", "Engage regulatory consultant", "Conduct testing if required"],
-        };
-    }
-}
 
 /**
  * Query Gemini using direct REST API (v1)
@@ -101,22 +37,49 @@ function generateMockResponse(
  */
 export async function queryGeminiRESTArray(
     fileBuffers: { data: Buffer; mimeType: string; name: string }[],
-    rules: { id: string; requirement: string; standard: string; section: string; expectedDocument: string }[]
+    rules: { id: string; requirement: string; standard: string; section: string; expectedDocument: string }[],
+    qsubBuffers: { data: Buffer; mimeType: string; name: string }[] = [],
+    aiEngine: "gemini" | "local" = "gemini",
+    fdaPrecedents: any[] = []
 ): Promise<any[]> {
     console.log(`[DEBUG] Querying Gemini REST API for batch of ${rules.length} rules!`);
     console.log(`[DEBUG] API Key present: ${!!GEMINI_API_KEY}`);
-    console.log(`[DEBUG] Mock mode: ${MOCK_MODE}`);
 
     // Build the rules payload string
     const rulesListString = rules.map(r => `ruleId: ${r.id}\nSTANDARD: ${r.standard}\nSECTION: ${r.section}\nREQUIREMENT: ${r.requirement}\nEXPECTED DOCUMENT: ${r.expectedDocument}`).join('\n\n');
 
-    if (MOCK_MODE) {
-        console.log(`[MOCK MODE] Analyzing ${rules.length} rules (Batch)`);
-        await new Promise(resolve => setTimeout(resolve, 100));
-        return rules.map(r => {
-            const mock = generateMockResponse(r.requirement, r.standard, r.section);
-            return { ruleId: r.id, ...mock };
-        });
+    const precedentsString = fdaPrecedents.length > 0 
+        ? `\n--- RECENT FDA DENIAL LETTERS (NSE PRECEDENTS) ---\n` + 
+          `The following are real FDA Non-Substantial Equivalence (NSE) rejections for devices exactly like the one under review. Use these as your absolute baseline for strictness. If the uploaded evidence repeats ANY of these mistakes, you MUST fail the requirement and cite the precedent.\n` +
+          fdaPrecedents.map((p, i) => `${i+1}. K-Number: ${p.k_number}\nDevice: ${p.device_name}\nDeficiencies Cited by FDA:\n${p.text_content}`).join('\n\n') +
+          `\n--------------------------------------------------\n`
+        : "";
+
+    // Build the Q-Sub Context String
+    let qsubContext = "";
+    if (qsubBuffers.length > 0) {
+        let qsubContent = "";
+        for (const file of qsubBuffers) {
+            try {
+                if (file.mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+                    const result = await mammoth.extractRawText({ buffer: file.data });
+                    qsubContent += `\n--- Q-Sub Document: ${file.name} ---\n${result.value}\n`;
+                } else if (file.mimeType === "text/plain") {
+                    qsubContent += `\n--- Q-Sub Document: ${file.name} ---\n${file.data.toString("utf-8")}\n`;
+                } else {
+                    qsubContent += `\n--- Q-Sub Document: ${file.name} ---\n[File format not supported for inline Q-Sub extraction. Only TXT/DOCX supported for Q-Sub]\n`;
+                }
+            } catch (e) {
+                console.error("Failed to parse QSub document", e);
+            }
+        }
+
+        if (qsubContent.trim().length > 0) {
+            qsubContext = `\n--- FDA PRE-SUBMISSION (Q-SUB) FEEDBACK ---\n` +
+                `The user received the following direct feedback from the FDA. You MUST prioritize ensuring that all specific FDA requests, constraints, or commitments mentioned in this feedback are explicitly addressed in the design documents.\n` +
+                qsubContent +
+                `\n-------------------------------------------\n`;
+        }
     }
 
     const prompt = `You are a regulatory compliance auditor reviewing medical device documentation.
@@ -126,7 +89,8 @@ TASK: Determine if the uploaded documents contain sufficient evidence for EACH o
 --- RULES TO EVALUATE ---
 ${rulesListString}
 -------------------------
-
+${precedentsString}
+${qsubContext}
 DOCUMENT SYNONYM GUIDE:
 Companies often use different names for the same regulatory document. Match on CONTENT, not just filename.
 - "Software Development Plan" = SDP, Dev Plan, Development Plan, SDLC Plan, SRS (when it contains planning sections)
@@ -151,18 +115,19 @@ Companies often use different names for the same regulatory document. Match on C
 
 IMPORTANT: A single document may satisfy MULTIPLE requirements. An SRS can contain planning sections. A CSDD can be an architecture document AND a design input artifact. A Test Protocol can be both a verification plan AND a verification report.
 
-INSTRUCTIONS FOR COGNITIVE ACCURACY (ZERO HALLUCINATION POLICY) - HOSTILE AUDITOR OVERRIDE:
-1. You are actively trying to mathematically FAIL the submitted documents. 
+INSTRUCTIONS FOR COGNITIVE ACCURACY (ZERO HALLUCINATION POLICY) - STRICT REGULATORY COMPLIANCE PROTOCOL:
+1. You are conducting a rigorous, evidence-based compliance audit. You require strict objective evidence for compliance. 
 2. Search through ALL uploaded documents thoroughly for exact mathematical or procedural proof.
 3. EXTREME CAUTION AGAINST FALSE POSITIVES (LETHAL): If a document uses a buzzword (e.g., "We performed Biocompatibility testing") but completely lacks the actual raw proof (e.g., sample sizes, extraction methods, signatures, timestamps), YOU MUST EXPLICITLY FAIL IT. Do not give the company the benefit of the doubt. 
 4. CHAIN OF THOUGHT: You must write your 'analytical_reasoning' FIRST. Mentally verify the engineering constraint is met before continuing, but keep this written justification extremely brief (1 short sentence) to conserve processing bandwidth.
 5. If found: false, you must populate 'exact_missing_evidence' telling the engineers exactly what physical object or metric they forgot to include.
-6. GOLDEN DATASET MEMORY (PSEUDO-RAG): Cross-reference the uploaded document against your vast internal pre-trained knowledge of actual, successfully cleared FDA 510(k) submissions. If the core medical device safety data exists and matches successful historical precedents, but uses slightly different start-up formatting or synonyms, do NOT fail it on semantics. You are hostile to missing math, but forgiving to formatting.
+6. GOLDEN DATASET MEMORY (PSEUDO-RAG): Cross-reference the uploaded document against your vast internal pre-trained knowledge of actual, successfully cleared FDA 510(k) submissions. If the core medical device safety data exists and matches successful historical precedents, but uses slightly different start-up formatting or synonyms, do NOT fail it on semantics. You are strict regarding missing objective evidence, but accommodating to formatting variations.
 
 CONFIDENCE SCALE:
-- "high": The requirement is explicitly addressed. You can cite a direct quote.
-- "medium": The requirement is addressed, but the evidence is brief or uses alternate terminology. (This still counts as compliant!)
-- "low": Tangential or inadequate mention. 
+- Provide a numeric score from 1 to 100.
+- 90-100: The requirement is explicitly addressed. You can cite a direct quote.
+- 70-89: The requirement is addressed, but the evidence is brief or uses alternate terminology. (This still counts as compliant!)
+- 0-69: Tangential or inadequate mention. 
 
 CRITICAL RULE FOR MISSING EVIDENCE: If you cannot find a direct quote that satisfies the requirement, you MUST STRICTLY RETURN "found": false. Do not hallucinate compliance. A false positive in medical device compliance literally risks human lives. Do not automatically return true with low confidence.
 
@@ -185,7 +150,7 @@ If the requirement is NOT met (found=false or confidence=low), estimate the reme
 - estimatedTimeline: a time range (e.g., "4-6 weeks") based on typical regulatory work
 - remediationSteps: list of 2-4 specific action items to address the gap
 
-If the requirement IS met (found=true, confidence=high/medium), set cost to "—", timeline to "—", and remediationSteps to [].
+If the requirement IS met (found=true, confidenceScore > 69), set cost to "-", timeline to "-", and remediationSteps to [].
 
 RESPOND IN EXACTLY THIS JSON FORMAT (you MUST return a JSON array containing one object per ruleId. Do NOT wrap in markdown codeblocks):
 [
@@ -194,7 +159,7 @@ RESPOND IN EXACTLY THIS JSON FORMAT (you MUST return a JSON array containing one
     "analytical_reasoning": "step-by-step analysis of exactly why it passes or fails",
     "exact_missing_evidence": "absent artifact if missing",
     "found": true/false,
-    "confidence": "high"/"medium"/"low",
+    "confidenceScore": 95,
     "citations": [
       {
         "source": "document name",
@@ -202,9 +167,10 @@ RESPOND IN EXACTLY THIS JSON FORMAT (you MUST return a JSON array containing one
         "quote": "relevant excerpt (max 200 chars)"
       }
     ],
-    "estimatedCost": "$X,XXX - $X,XXX" or "—",
-    "estimatedTimeline": "X-X weeks" or "—",
-    "remediationSteps": ["step 1", "step 2"]
+    "estimatedCost": "$X,XXX - $X,XXX" or "-",
+    "estimatedTimeline": "X-X weeks" or "-",
+    "remediationSteps": ["step 1", "step 2"],
+    "fdaPrecedent": "Kxxxxx - The FDA rejected this because..." or ""
   }
 ]`;
 
@@ -270,8 +236,65 @@ RESPOND IN EXACTLY THIS JSON FORMAT (you MUST return a JSON array containing one
         }
     }
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
-    console.log(`[DEBUG] Using v1beta API endpoint / Model: gemini-2.0-flash`);
+    // Enterprise Air-Gapped Local Inference Engine (Ollama)
+    if (aiEngine === "local") {
+        console.log(`[DEBUG] Routing payload to Air-Gapped Local Server (localhost:11434)...`);
+        
+        // Combine prompt and parts into a single text block since local Llama3 is primarily text-in text-out
+        let fullPrompt = parts[0].text + "\n\n";
+        for (let i = 1; i < parts.length; i++) {
+            if (parts[i].text) {
+                fullPrompt += parts[i].text + "\n\n";
+            }
+        }
+
+        try {
+            const ollamaResponse = await fetchWithTimeout("http://localhost:11434/api/generate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    model: "llama3.1",
+                    prompt: fullPrompt,
+                    format: "json",
+                    stream: false,
+                    options: {
+                        temperature: 0.1
+                    }
+                }),
+                timeout: 180000 // 3 minutes for local inference
+            });
+
+            if (!ollamaResponse.ok) {
+                const errorText = await ollamaResponse.text();
+                throw new Error(`Ollama API error: ${ollamaResponse.status} - ${errorText}`);
+            }
+
+            const ollamaData = await ollamaResponse.json();
+            console.log(`[DEBUG] Received response from Local Air-Gapped Engine`);
+            
+            let text = ollamaData.response || "";
+            text = text.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
+
+            try {
+                return JSON.parse(text);
+            } catch (parseError) {
+                console.error("Failed to parse Local Ollama JSON. Trying aggressive regex...", text);
+                const jsonMatch = text.match(/\[\s*\{[\s\S]*\}\s*\]/);
+                if (jsonMatch) return JSON.parse(jsonMatch[0]);
+                throw new Error("Fatal JSON parse failure from Local Air-Gapped Engine.");
+            }
+        } catch (error) {
+            console.error("[DEBUG] Local Air-Gapped Server Error:", error);
+            const msg = error instanceof Error ? error.message : String(error);
+            if (msg.includes("fetch failed") || msg.includes("ECONNREFUSED")) {
+                throw new Error("Air-Gapped Connection Refused: Ensure Ollama is running locally (http://localhost:11434) and the 'llama3.1' model is pulled.");
+            }
+            throw new Error(`Air-Gapped Analysis Failed: ${msg}`);
+        }
+    }
+
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${GEMINI_API_KEY}`;
+    console.log(`[DEBUG] Using v1beta API endpoint / Model: gemini-2.5-pro`);
 
     try {
         const response = await fetchWithTimeout(url, {
@@ -293,7 +316,7 @@ RESPOND IN EXACTLY THIS JSON FORMAT (you MUST return a JSON array containing one
                                         analytical_reasoning: { type: "STRING" },
                                         exact_missing_evidence: { type: "STRING" },
                                         found: { type: "BOOLEAN" },
-                                        confidence: { type: "STRING" },
+                                        confidenceScore: { type: "INTEGER" },
                                         citations: {
                                             type: "ARRAY",
                                             items: {
@@ -309,7 +332,7 @@ RESPOND IN EXACTLY THIS JSON FORMAT (you MUST return a JSON array containing one
                                         estimatedTimeline: { type: "STRING" },
                                         remediationSteps: { type: "ARRAY", items: { type: "STRING" } }
                                     },
-                                    required: ["ruleId", "analytical_reasoning", "exact_missing_evidence", "found", "confidence", "citations", "estimatedCost", "estimatedTimeline", "remediationSteps"]
+                                    required: ["ruleId", "analytical_reasoning", "exact_missing_evidence", "found", "confidenceScore", "citations", "estimatedCost", "estimatedTimeline", "remediationSteps"]
                                 }
                             }
                 }
@@ -351,17 +374,6 @@ RESPOND IN EXACTLY THIS JSON FORMAT (you MUST return a JSON array containing one
         }
     } catch (error) {
         console.error("[DEBUG] Gemini REST API error:", error);
-        console.warn("[DEMO FAILSAFE] Catching fatal API error and injecting mock recovery dataset to preserve presentation state.");
-        
-        // Return perfect mock data so the UI continues seamlessly during a live pitch if Google goes down.
-        return rules.map(r => {
-            const mock = generateMockResponse(r.requirement, r.standard, r.section);
-            return { 
-                ruleId: r.id, 
-                ...mock,
-                analytical_reasoning: "[AUTO-RECOVERY OVERRIDE] " + mock.rawResponse,
-                exact_missing_evidence: mock.found ? undefined : "Verification artifact not detected during offline heuristics.",
-            };
-        });
+        throw new Error(`Analysis failed or timed out: ${error instanceof Error ? error.message : 'Unknown API error'}`);
     }
 }

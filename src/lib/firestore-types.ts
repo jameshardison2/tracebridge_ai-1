@@ -21,6 +21,9 @@ export interface Upload {
   };
   standards: string[];
   status: "pending" | "analyzing" | "complete" | "failed";
+  zdrEnabled?: boolean;
+  aiEngine?: "gemini" | "local";
+  documentCount?: number;
   createdAt: Timestamp | Date;
   updatedAt: Timestamp | Date;
 }
@@ -36,6 +39,7 @@ export interface DocumentMetadata {
   fileSize: number;
   storageUrl: string;
   storagePath: string;
+  isQSub?: boolean;
   createdAt: Timestamp | Date;
 }
 
@@ -60,6 +64,7 @@ export interface GapResult {
   reasoning?: string;
   missingEvidence?: string;
   geminiResponse?: string;
+  fdaPrecedent?: string;
   estimatedCost?: string;
   estimatedTimeline?: string;
   remediationSteps?: string[];
@@ -119,4 +124,17 @@ export interface TeamMember {
   displayName?: string;
   role: "admin" | "member";
   joinedAt: Timestamp | Date;
+}
+
+/**
+ * Customer Discovery Feedback stored in Firestore
+ */
+export interface Feedback {
+  id?: string;
+  userId: string;
+  teamId?: string;
+  type: "feature_vote" | "open_feedback";
+  content: string;
+  featureRequest?: string;
+  createdAt: Timestamp | Date;
 }

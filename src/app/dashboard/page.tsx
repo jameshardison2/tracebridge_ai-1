@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import {
     BarChart3,
@@ -14,7 +15,9 @@ import {
     Clock,
     Search,
     Loader2,
-    Trash2
+    Trash2,
+    HelpCircle,
+    X
 } from "lucide-react";
 
 interface Upload {
@@ -30,8 +33,10 @@ interface Upload {
 export default function DashboardPage() {
     const [submissions, setSubmissions] = useState<Upload[]>([]);
     const [loading, setLoading] = useState(true);
+    const router = useRouter();
     const { user } = useAuth();
     const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
+    const [showGuide, setShowGuide] = useState(false);
 
     const handleSort = (key: string) => {
         let direction: 'asc' | 'desc' = 'asc';
@@ -74,13 +79,21 @@ export default function DashboardPage() {
     };
 
     const handleSeedBackdoor = async () => {
-        if (!user || !window.confirm("DEVELOPER BACKDOOR: Seed 30 Demo Enterprise Documents?")) return;
+        if (submissions.length > 10) {
+            alert("Demo dataset has already been loaded. Please delete existing audits to load again.");
+            return;
+        }
+        if (!user || !window.confirm("This will populate your workspace with Q-Sub Demo Data. Proceed?")) return;
         try {
             setLoading(true);
             const token = await user.getIdToken();
-            const res = await fetch("/api/admin/seed", {
+            const res = await fetch("/api/admin/run-golden-dataset", {
                 method: "POST",
-                headers: { "Authorization": `Bearer ${token}` }
+                headers: { 
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ userId: user.uid })
             });
             const data = await res.json();
             if (data.success) {
@@ -146,30 +159,47 @@ export default function DashboardPage() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-[var(--border)] pb-4">
                 <div>
                     <h1 
-                        className="text-2xl font-bold tracking-tight text-[var(--foreground)] uppercase mb-1 cursor-default select-none"
+                        className="text-3xl font-black text-slate-900 mb-2 tracking-tight flex items-center gap-3 cursor-default select-none"
                         onDoubleClick={handleSeedBackdoor}
                     >
-                        Quality Regulatory Dashboard
+                        <span className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center border border-indigo-200">
+                            <BarChart3 className="w-4 h-4 text-indigo-600" />
+                        </span>
+                        Q-Sub Alignment Dashboard
+                        <span className="text-xs font-bold bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full uppercase tracking-widest border border-indigo-200">
+                            Overview
+                        </span>
                     </h1>
-                    <p className="text-[var(--muted)] text-sm">
-                        Master index of IEC 62304 and ISO 14971 active compliance audits.
+                    <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight">
+                        Master index of active Q-Sub alignment audits.
+                    </p>
+                    <p className="text-slate-500 mt-2 text-sm max-w-3xl leading-relaxed">
+                        Manage your enterprise compliance portfolio. Monitor the overall alignment status of your active device submissions and launch new gap analysis scans against FDA feedback.
                     </p>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex flex-wrap gap-3 mt-4 md:mt-0">
+                    <button
+                        onClick={() => setShowGuide(true)}
+                        className="bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 transition-colors px-4 py-2 rounded-md text-sm font-bold flex items-center gap-2 shadow-sm"
+                    >
+                        <HelpCircle className="w-4 h-4" />
+                        User Guide
+                    </button>
                     <button
                         onClick={handleSeedBackdoor}
-                        disabled={loading}
-                        className="bg-indigo-600 text-white hover:bg-indigo-700 transition-colors px-4 py-2 rounded-md text-sm font-bold flex items-center gap-2 shadow-sm disabled:opacity-50"
+                        disabled={loading || submissions.length > 10}
+                        className="bg-indigo-600 text-white hover:bg-indigo-700 transition-colors px-4 py-2 rounded-md text-sm font-bold flex items-center gap-2 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                        title={submissions.length > 10 ? "Dataset already loaded. Please delete existing audits to load again." : ""}
                     >
                         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
-                        Inject 30 Demo Audits
+                        Populate Demo Data
                     </button>
                     <Link
                         href="/dashboard/upload"
                         className="bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] transition-colors px-4 py-2 rounded-md text-sm font-bold flex items-center gap-2 shadow-sm"
                     >
                         <Upload className="w-4 h-4" />
-                        Initiate Device Audit
+                        Initiate Alignment Audit
                     </Link>
                 </div>
             </div>
@@ -178,45 +208,45 @@ export default function DashboardPage() {
             <div className="bg-[#0f172a] rounded-xl border border-slate-800 p-6 shadow-xl mb-2 relative overflow-hidden hidden xl:block">
                 <div className="absolute top-0 right-0 p-40 bg-indigo-500/10 blur-[80px] rounded-full pointer-events-none"></div>
                 <h2 className="text-white font-bold text-xs uppercase tracking-widest flex items-center gap-2 mb-6">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                    TraceBridge Operating Mechanism
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    Your TraceBridge AI Workflow
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 relative z-10">
                     {/* Step 1 */}
                     <Link href="/dashboard/upload" className="bg-slate-800/80 backdrop-blur-sm border border-slate-700 hover:border-slate-500 transition-colors p-4 rounded-lg flex gap-3 items-start relative group cursor-pointer block">
                         <div className="w-8 h-8 rounded bg-slate-700 text-white flex items-center justify-center font-bold shrink-0 shadow-sm group-hover:bg-slate-600 transition-colors">1</div>
                         <div>
-                            <h3 className="text-sm font-bold text-white mb-1">Submit Audit</h3>
-                            <p className="text-xs text-slate-400">Upload MedTech documentation to directly target ISO/FDA protocols.</p>
+                            <h3 className="text-sm font-bold text-white mb-1">Drift Detection</h3>
+                            <p className="text-[11px] text-slate-400 leading-relaxed">Drop in your DHF and FDA minutes. We'll automatically build a semantic knowledge graph of your entire device architecture.</p>
                         </div>
                         <ArrowRight className="w-5 h-5 text-slate-600 absolute -right-3 top-1/2 -translate-y-1/2 z-20 hidden md:block" />
                     </Link>
                     {/* Step 2 */}
-                    <div className="bg-indigo-900/40 backdrop-blur-sm border border-indigo-500/30 p-4 rounded-lg flex gap-3 items-start relative">
-                        <div className="w-8 h-8 rounded bg-indigo-600 text-white flex items-center justify-center font-bold shrink-0 shadow-md">2</div>
+                    <Link href="/dashboard/results" className="bg-indigo-900/40 backdrop-blur-sm border border-indigo-500/30 hover:border-indigo-400/60 transition-colors p-4 rounded-lg flex gap-3 items-start relative group cursor-pointer block">
+                        <div className="w-8 h-8 rounded bg-indigo-600 text-white flex items-center justify-center font-bold shrink-0 shadow-md group-hover:bg-indigo-500 transition-colors">2</div>
                         <div>
-                            <h3 className="text-sm font-bold text-indigo-100 mb-1">AI Detection</h3>
-                            <p className="text-xs text-indigo-300">Google Gemini systematically parses architecture and intelligently flags gaps.</p>
+                            <h3 className="text-sm font-bold text-indigo-100 mb-1">Q-Sub Intelligence</h3>
+                            <p className="text-[11px] text-indigo-300 leading-relaxed">Our specialized Gemini models instantly detect "Q-Sub Drift" and proactively flag missing FDA regulatory requirements.</p>
                         </div>
                         <ArrowRight className="w-5 h-5 text-slate-600 absolute -right-3 top-1/2 -translate-y-1/2 z-20 hidden md:block" />
-                    </div>
+                    </Link>
                     {/* Step 3 */}
                     <Link href="/dashboard/pipeline" className="bg-emerald-900/40 backdrop-blur-sm border border-emerald-500/30 hover:border-emerald-400/60 transition-colors p-4 rounded-lg flex gap-3 items-start relative group cursor-pointer block">
                         <div className="w-8 h-8 rounded bg-emerald-600 text-white flex items-center justify-center font-bold shrink-0 shadow-md group-hover:bg-emerald-500 transition-colors">3</div>
                         <div>
-                            <h3 className="text-sm font-bold text-emerald-100 mb-1">Execute Triage</h3>
-                            <p className="text-xs text-emerald-300">Formally assign and remediate issues using the interactive Pipeline Tracker.</p>
+                            <h3 className="text-sm font-bold text-emerald-100 mb-1">Drift Remediation</h3>
+                            <p className="text-[11px] text-emerald-300 leading-relaxed">Triage the flagged gaps. We automatically sync with your Jira board to seamlessly assign fixes directly to your engineering team.</p>
                         </div>
                         <ArrowRight className="w-5 h-5 text-slate-600 absolute -right-3 top-1/2 -translate-y-1/2 z-20 hidden md:block" />
                     </Link>
                     {/* Step 4 */}
-                    <div className="bg-slate-800/80 backdrop-blur-sm border border-slate-700 p-4 rounded-lg flex gap-3 items-start relative">
-                        <div className="w-8 h-8 rounded bg-amber-500 text-white flex items-center justify-center font-bold shrink-0 shadow-sm">4</div>
+                    <Link href="/dashboard/traceability" className="bg-blue-900/40 backdrop-blur-sm border border-blue-500/30 hover:border-blue-400/60 transition-colors p-4 rounded-lg flex gap-3 items-start relative group cursor-pointer block">
+                        <div className="w-8 h-8 rounded bg-blue-600 text-white flex items-center justify-center font-bold shrink-0 shadow-sm group-hover:bg-blue-500 transition-colors">4</div>
                         <div>
-                            <h3 className="text-sm font-bold text-white mb-1">FDA Checkout</h3>
-                            <p className="text-xs text-slate-400">Export your signed-off trace items flawlessly to the FDA eCopy CSV Format.</p>
+                            <h3 className="text-sm font-bold text-white mb-1">Traceability Matrix</h3>
+                            <p className="text-[11px] text-blue-200 leading-relaxed">Watch your live matrix turn green as engineers ship code, guaranteeing 100% compliance before your final eSTAR export.</p>
                         </div>
-                    </div>
+                    </Link>
                 </div>
             </div>
 
@@ -224,7 +254,7 @@ export default function DashboardPage() {
             <div className="flex flex-col lg:flex-row gap-6">
                 
                 {/* Compact Stats Grid */}
-                <div className="grid grid-cols-4 border border-[var(--border)] rounded bg-white shadow-sm flex-1">
+                <div className="grid grid-cols-2 md:grid-cols-4 border border-[var(--border)] rounded bg-white shadow-sm flex-1">
                     <div className="p-4 border-r border-[var(--border)]">
                         <div className="flex items-center gap-2 text-slate-500 mb-1">
                             <BarChart3 className="w-4 h-4 text-[var(--primary)]" />
@@ -260,10 +290,10 @@ export default function DashboardPage() {
             {/* Master Audit List - Formal Table */}
             <div className="bg-white border border-[var(--border)] rounded shadow-sm">
                 <div className="bg-slate-50 border-b border-[var(--border)] px-4 py-3 flex justify-between items-center">
-                    <h2 className="text-sm font-bold text-slate-700 uppercase tracking-widest flex items-center gap-2">
+                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
                         <Shield className="w-4 h-4 text-[var(--primary)]" />
                         Master System Query List
-                    </h2>
+                    </h4>
                 </div>
                 
                 <div className="overflow-x-auto w-full">
@@ -297,7 +327,7 @@ export default function DashboardPage() {
                                     <tr key={sub.id} className="hover:bg-slate-50 transition-colors">
                                         <td className="px-4 py-3">
                                             <div className="flex items-center gap-2 mb-0.5">
-                                                <span className="font-bold text-sm text-slate-900 block truncate max-w-[200px]">
+                                                <span className="font-bold text-sm text-slate-900 block max-w-[250px] leading-tight">
                                                     {sub.deviceName}
                                                 </span>
                                                 <span className="bg-slate-800 text-white text-[9px] font-bold px-1.5 py-0.5 rounded tracking-widest uppercase shadow-sm">
@@ -359,6 +389,79 @@ export default function DashboardPage() {
                 </div>
             </div>
 
+            {/* Quick Start Guide Modal */}
+            {showGuide && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden border border-slate-200">
+                        <div className="flex justify-between items-center p-6 border-b border-slate-100 bg-slate-50">
+                            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                                <Shield className="w-5 h-5 text-[var(--primary)]" />
+                                TraceBridge Quick Start Guide
+                            </h2>
+                            <button onClick={() => setShowGuide(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
+                                <X className="w-6 h-6" />
+                            </button>
+                        </div>
+                        <div className="p-6 space-y-6 text-slate-600 max-h-[70vh] overflow-y-auto">
+                            <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-2">
+                                <h3 className="font-bold text-blue-900 flex items-center gap-2 mb-2">
+                                    <Shield className="w-4 h-4" /> Enterprise-Grade Security
+                                </h3>
+                                <p className="text-sm text-blue-800">
+                                    Your data is protected by a <strong>Zero-Trust Architecture</strong>. All uploads are processed in ephemeral, isolated containers, and system activities are permanently recorded in our <strong>Secure Audit Log</strong> to ensure strict <strong>FDA 21 CFR Part 11 Compliance</strong>.
+                                </p>
+                            </div>
+
+                            <p className="text-sm font-medium">
+                                Welcome to the TraceBridge Q-Sub Alignment Engine Beta! This is a closed beta - your feedback directly shapes the product. Use the feedback button in the bottom right to flag anything unexpected. Here is how to evaluate the platform:
+                            </p>
+                            
+                            <div className="space-y-4">
+                                <div className="flex gap-4">
+                                    <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold shrink-0">1</div>
+                                    <div>
+                                        <h3 className="font-bold text-slate-800">Run a Drift Detection Analysis</h3>
+                                        <p className="text-sm text-slate-500 mt-1">Click <strong>Initiate Alignment Audit</strong> to upload your own Design History File, Risk Management, or V&V documents. We will instantly build a semantic knowledge graph of your device.</p>
+                                        <p className="text-sm text-slate-500 mt-2"><em>Don't have a document ready?</em> Click <strong>Populate Demo Data</strong> on the dashboard to safely load a pre-configured Q-Sub alignment example.</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4">
+                                    <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold shrink-0">2</div>
+                                    <div>
+                                        <h3 className="font-bold text-slate-800">Review AI Intelligence & Remediate</h3>
+                                        <p className="text-sm text-slate-500 mt-1">Navigate to the <strong>Remediation Pipeline</strong>. Watch how TraceBridge automatically flags missing ISO 13485 or FDA requirements and allows you to seamlessly assign fixes directly to Jira.</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4">
+                                    <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold shrink-0">3</div>
+                                    <div>
+                                        <h3 className="font-bold text-slate-800">Monitor the Traceability Matrix</h3>
+                                        <p className="text-sm text-slate-500 mt-1">Go to the <strong>Traceability Matrix</strong> to watch your real-time FDA compliance status. As your engineers close Jira tickets, the AI will automatically lower the "Drift Risk" and turn the matrix green.</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4">
+                                    <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold shrink-0">4</div>
+                                    <div>
+                                        <h3 className="font-bold text-slate-800">Export to eSTAR</h3>
+                                        <p className="text-sm text-slate-500 mt-1">When your matrix is green, go to <strong>Saved Reports</strong> to generate a deterministic, FDA-ready Part 11 compliant eSTAR payload with zero manual spreadsheet work.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="p-6 bg-slate-50 border-t border-slate-100 flex justify-end">
+                            <button 
+                                onClick={() => {
+                                    setShowGuide(false);
+                                    router.push('/dashboard/upload');
+                                }}
+                                className="bg-[var(--primary)] text-white px-6 py-2 rounded font-bold shadow hover:bg-blue-800 transition-colors"
+                            >
+                                Get Started
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

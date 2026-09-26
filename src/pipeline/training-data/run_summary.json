@@ -1,0 +1,34 @@
+{
+  "generated_at": "2026-05-02T16:26:27.105Z",
+  "config": {
+    "seCount": 2,
+    "nseCount": 2,
+    "productCode": "FRN",
+    "fromDate": "2020-01-01",
+    "toDate": "2026-05-02",
+    "outputDir": "src/pipeline/training-data",
+    "dryRun": false,
+    "delayMs": 800,
+    "maxRetries": 3
+  },
+  "results": {
+    "cleared": {
+      "total": 2,
+      "pdfOk": 0,
+      "pdfFail": 2
+    },
+    "nse": {
+      "total": 0,
+      "pdfOk": 0,
+      "pdfFail": 0
+    },
+    "matched_pairs": 0
+  },
+  "output_dir": "/Users/176693/tracebridge_ai/src/pipeline/training-data",
+  "next_steps": [
+    "1. Review matched_pairs.json — these are your highest-signal training records",
+    "2. Manually annotate deficiency_tags[] in each NSE metadata.json",
+    "3. Feed cleared + NSE pairs into TraceBridge RAG ingestion pipeline",
+    "4. Re-run weekly with --from set to last run date to stay current"
+  ]
+}

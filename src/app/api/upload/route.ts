@@ -19,7 +19,7 @@ export async function POST(request: Request) {
         }
 
         const body = await request.json();
-        const { deviceName, productCode, files, idToken } = body;
+        const { deviceName, productCode, files, idToken, zdrEnabled, aiEngine } = body;
 
         // Authoritative FDA Code Lookup
         let fdaData = null;
@@ -40,9 +40,21 @@ export async function POST(request: Request) {
         const regulationNumber = fdaData?.regulationNumber || "Unknown";
 
         // Dynamically build applicable standards
-        const standards = ["ISO 13485:2016", "ISO 14971:2019"];
+        const standards = [
+            "ISO 13485:2016",
+            "ISO 14971:2019",
+            "IEC 62366-1"
+        ];
+        if (deviceClass === "Class I") {
+            standards.push("Class I Exemption Protocol");
+        }
         if (safeFeatures.requiresSoftware) {
-            standards.push("IEC 62304:2006");
+            standards.push("IEC 62304"); // Fixed from :2006
+            standards.push("FDA Cybersecurity Guidance");
+            standards.push("FDA SaMD Guidance");
+        }
+        if (safeFeatures.requiresBiocompatibility) {
+            standards.push("ISO 10993-1");
         }
 
         // Validate required fields
@@ -58,19 +70,21 @@ export async function POST(request: Request) {
 
         // Verify Firebase ID token if provided
         let userId: string;
-        if (idToken) {
-            const verification = await verifyIdToken(idToken);
-            if (!verification.success) {
-                return NextResponse.json(
-                    { success: false, error: "Invalid authentication token" },
-                    { status: 401 }
-                );
-            }
-            userId = verification.uid!;
-        } else {
-            userId = "demo-user";
-            console.warn("No ID token provided, using demo user");
+        if (!idToken) {
+            return NextResponse.json(
+                { success: false, error: "Unauthorized: Missing authentication token" },
+                { status: 401 }
+            );
         }
+
+        const verification = await verifyIdToken(idToken);
+        if (!verification.success || !verification.uid) {
+            return NextResponse.json(
+                { success: false, error: "Unauthorized: Invalid authentication token" },
+                { status: 401 }
+            );
+        }
+        userId = verification.uid;
 
         // Create upload document in Firestore
         const uploadData: Upload = {
@@ -82,6 +96,9 @@ export async function POST(request: Request) {
             features: safeFeatures,
             standards,
             status: "pending",
+            zdrEnabled: zdrEnabled ?? true,
+            aiEngine: aiEngine || "gemini",
+            documentCount: files.length, // FIX: Track file count for dashboard
             createdAt: Timestamp.now(),
             updatedAt: Timestamp.now(),
         };
@@ -100,6 +117,7 @@ export async function POST(request: Request) {
                 fileSize: file.fileSize,
                 storageUrl: file.storageUrl,
                 storagePath: file.storagePath,
+                isQSub: file.isQSub || false,
                 createdAt: Timestamp.now(),
             };
 

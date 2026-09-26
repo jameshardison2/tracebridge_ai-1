@@ -36,6 +36,7 @@ export default function PipelinePage() {
     const searchParams = useSearchParams();
     const [uploads, setUploads] = useState<any[]>([]);
     const [activeUploadId, setActiveUploadId] = useState<string | null>(searchParams.get("id"));
+    const [isLoading, setIsLoading] = useState(true);
 
 
     // Initial Load & API Hydration
@@ -53,10 +54,15 @@ export default function PipelinePage() {
                     setUploads(data.data.uploads);
                     if (!activeUploadId) {
                         setActiveUploadId(data.data.uploads[0].id);
+                    } else {
+                        // If activeUploadId is already set but gaps are zero, wait for gap load.
                     }
+                } else {
+                    setIsLoading(false); // No uploads
                 }
             } catch (err) {
                 console.error("Failed to load uploads view:", err);
+                setIsLoading(false);
             }
         };
 
@@ -78,35 +84,37 @@ export default function PipelinePage() {
                     const newTasks: Task[] = (latest.gapResults || []).map((gap: any) => ({
                         id: gap.id,
                         uploadId: latest.id,
-                        status: gap.status === 'compliant' ? 'CLOSED' : (gap.status === 'gap_detected' ? 'DETECTED' : 'TRIAGED'),
+                        status: gap.pipelineStatus || (gap.status === 'compliant' ? 'CLOSED' : (gap.status === 'gap_detected' ? 'DETECTED' : 'TRIAGED')),
                         title: gap.requirement.substring(0,60) + (gap.requirement.length > 60 ? "..." : ""),
                         standard: gap.standard + (gap.section ? ` § ${gap.section}` : ""),
                         priority: gap.severity ? gap.severity.toUpperCase() : "MEDIUM",
-                        confidence: gap.confidence ? Math.round(gap.confidence * 100) : 0,
+                        confidence: gap.confidenceScore ?? (gap.confidence === 'high' ? 95 : gap.confidence === 'medium' ? 75 : gap.confidence === 'low' ? 45 : 80),
                         subNote: gap.citations?.[0]?.quote ? "Evidence Extracted" : "Missing File",
                         closedBy: gap.status === 'compliant' ? "AI Verified" : undefined,
                         closedTime: gap.status === 'compliant' ? "Automated" : undefined
                     }));
                     
                     let finalTasks = newTasks;
-                    const savedTasks = localStorage.getItem('tracebridge_pipeline_tasks');
-                    if (savedTasks) {
-                        try {
-                            const parsed = JSON.parse(savedTasks);
-                            if (parsed.length > 0 && parsed[0].uploadId === latest.id) {
-                                finalTasks = newTasks.map((t) => {
-                                    const stored = parsed.find((p: any) => p.id === t.id);
-                                    return stored ? { ...t, ...stored, title: t.title, standard: t.standard } : t;
-                                });
-                            }
-                        } catch (e) {
-                            console.error("Local pipeline storage unparseable");
+                    try {
+                        const pipelineRes = await fetch(`/api/pipeline?uploadId=${latest.id}`, { headers: { Authorization: `Bearer ${token}` } });
+                        const pipelineData = await pipelineRes.json();
+                        
+                        if (pipelineData.success && pipelineData.data && pipelineData.data.length > 0) {
+                            const storedTasks = pipelineData.data;
+                            finalTasks = newTasks.map((t) => {
+                                const stored = storedTasks.find((p: any) => p.id === t.id);
+                                return stored ? { ...t, ...stored, title: t.title, standard: t.standard } : t;
+                            });
                         }
+                    } catch (e) {
+                        console.error("Failed to load pipeline DB state", e);
                     }
                     setTasks(finalTasks);
                 }
             } catch (err) {
                 console.error("Pipeline Sync Failed:", err);
+            } finally {
+                setIsLoading(false);
             }
         };
 
@@ -115,11 +123,24 @@ export default function PipelinePage() {
 
 
 
-    useEffect(() => {
-        if (isMounted) {
-            localStorage.setItem('tracebridge_pipeline_tasks', JSON.stringify(tasks));
+    // Helper to persist task state to DB
+    const persistTasks = async (updatedTasks: Task[]) => {
+        if (!user || !activeUploadId) return;
+        try {
+            const token = await user.getIdToken();
+            await fetch("/api/pipeline", {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({ uploadId: activeUploadId, tasks: updatedTasks })
+            });
+        } catch (e) {
+            console.error("Failed to persist pipeline tasks:", e);
         }
-    }, [tasks, isMounted]);
+    };
+
 
     const detected = tasks.filter(t => t.status === 'DETECTED');
     const triaged = tasks.filter(t => t.status === 'TRIAGED');
@@ -148,7 +169,7 @@ export default function PipelinePage() {
                 triggerSlackToast(`Task "${task.title}" synced to Jira as DONE and posted to #compliance.`);
             }
 
-            return prev.map(t => {
+            const updatedTasks = prev.map(t => {
                 if (t.id === id) {
                     const extraFields: Partial<Task> = {};
                     if (targetStatus === 'ASSIGNED') {
@@ -170,6 +191,11 @@ export default function PipelinePage() {
                 }
                 return t;
             });
+            
+            // Fire API call asynchronously
+            persistTasks(updatedTasks);
+            
+            return updatedTasks;
         });
     };
 
@@ -187,6 +213,7 @@ export default function PipelinePage() {
         if (t.status === 'CLOSED') {
             return (
                 <div 
+                    id={`gap-${t.id}`}
                     key={t.id} draggable onDragStart={(e) => onDragStart(e, t.id)}
                     onClick={() => router.push(`/dashboard/results?id=${t.uploadId || 'demo-id'}&demoGap=${t.id}`)}
                     className="bg-white rounded-lg p-4 border border-emerald-100 shadow-sm mb-3 cursor-pointer hover:shadow-md transition-all active:cursor-grabbing"
@@ -200,35 +227,54 @@ export default function PipelinePage() {
         }
 
         const isMine = t.priority?.includes('MINE');
-        const borderColor = isMine ? 'border-amber-400 border-2' : 'border-slate-200';
+        let statusColor = 'bg-slate-400';
+        if (t.status === 'TRIAGED') statusColor = 'bg-amber-400';
+        if (t.status === 'ASSIGNED') statusColor = 'bg-indigo-500';
+        if (t.status === 'IN_REMEDIATION') statusColor = 'bg-purple-500';
+        
+        const borderColor = isMine ? 'border-amber-300 ring-2 ring-amber-100' : 'border-slate-200/80';
         
         return (
             <div 
+                id={`gap-${t.id}`}
                 key={t.id} draggable onDragStart={(e) => onDragStart(e, t.id)}
                 onClick={() => router.push(`/dashboard/results?id=${t.uploadId || 'demo-id'}&demoGap=${t.id}`)}
-                className={`bg-white rounded-lg p-4 border shadow-sm mb-3 cursor-pointer hover:shadow-md hover:border-indigo-400 transition-all active:cursor-grabbing ${borderColor} relative group overflow-hidden`}
+                className={`bg-white rounded-xl p-4 border shadow-sm hover:shadow-md mb-3 cursor-pointer transition-all active:cursor-grabbing ${borderColor} relative group overflow-hidden hover:-translate-y-0.5 duration-200`}
             >
-                <div className="absolute inset-0 bg-indigo-50/50 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-                <div className="relative z-10">
-                    {t.priority && (
-                        <span className={`px-1.5 py-0.5 rounded font-bold text-[9px] uppercase tracking-wider mb-2 inline-block ${
-                            t.priority.includes('CRITICAL') ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-700'
-                        }`}>
-                            {t.priority}
+                <div className={`absolute top-0 left-0 w-1 h-full ${statusColor} transition-all group-hover:w-1.5`} />
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-50/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                <div className="relative z-10 pl-1">
+                    <div className="flex justify-between items-start mb-2">
+                        {t.priority && (
+                            <span className={`px-2 py-0.5 rounded flex items-center gap-1 font-bold text-[9px] uppercase tracking-wider ${
+                                t.priority.includes('CRITICAL') ? 'bg-rose-50 text-rose-600 border border-rose-100' : 'bg-amber-50 text-amber-700 border border-amber-100'
+                            }`}>
+                                <span className={`w-1.5 h-1.5 rounded-full ${t.priority.includes('CRITICAL') ? 'bg-rose-500' : 'bg-amber-500'}`}></span>
+                                {t.priority}
+                            </span>
+                        )}
+                        <span className="text-[9px] font-mono text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-100">
+                            ID-{t.id.substring(0, 4).toUpperCase()}
                         </span>
-                    )}
-                    <h4 className="text-[13px] font-bold text-slate-900 mb-1 group-hover:text-indigo-700 transition-colors">{t.title}</h4>
-                    <p className="text-[10px] text-slate-400 mb-4 font-mono tracking-tighter">{t.standard}</p>
+                    </div>
+                    <h4 className="text-[12px] leading-snug font-bold text-slate-800 mb-1.5 group-hover:text-indigo-700 transition-colors line-clamp-3">{t.title}</h4>
+                    <p className="text-[9px] text-slate-400 mb-3 font-mono tracking-tighter truncate" title={t.standard}>{t.standard}</p>
 
                 {/* Progress Bar (Detected/Triaged) */}
                 {t.confidence !== undefined && (
-                    <div className="flex items-center gap-1.5 pt-3 border-t border-slate-100">
-                        {t.confidence === 0 ? (
-                            <div className="w-4 bg-slate-200 h-1.5 rounded-full"><div className="w-0 bg-red-500 h-full rounded-full"></div></div>
-                        ) : (
-                            <div className="w-4 h-4 rounded-full border border-dashed border-amber-400 flex items-center justify-center"></div>
-                        )}
-                        <span className="text-[9px] font-bold text-slate-400">{t.confidence > 0 ? `${t.confidence}% • ` : ''}{t.subNote}</span>
+                    <div className="flex items-center justify-between pt-2.5 border-t border-slate-100/60 mt-1">
+                        <div className="flex items-center gap-1.5">
+                            <svg className={`w-3.5 h-3.5 ${
+                                t.confidence && t.confidence >= 95 ? 'text-emerald-500' :
+                                t.confidence && t.confidence >= 80 ? 'text-indigo-500' :
+                                t.confidence && t.confidence >= 50 ? 'text-amber-500' : 'text-rose-500'
+                            }`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                            <span className={`text-[9px] font-bold uppercase tracking-widest ${
+                                t.confidence && t.confidence >= 95 ? 'text-emerald-600' :
+                                t.confidence && t.confidence >= 80 ? 'text-indigo-600' :
+                                t.confidence && t.confidence >= 50 ? 'text-amber-600' : 'text-rose-600'
+                            }`}>{t.confidence > 0 ? `AI CONFIDENCE: ${t.confidence}%` : 'AI ANALYSIS PENDING'}</span>
+                        </div>
                     </div>
                 )}
 
@@ -256,6 +302,19 @@ export default function PipelinePage() {
         );
     };
 
+    if (isLoading) {
+        return (
+            <div className="flex flex-col h-[calc(100vh-8rem)] relative">
+                <div className="flex-1 flex items-center justify-center">
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
+                        <p className="text-sm font-bold text-slate-500 uppercase tracking-widest animate-pulse">Syncing Pipeline Data...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="flex flex-col h-[calc(100vh-8rem)] relative">
             
@@ -273,11 +332,20 @@ export default function PipelinePage() {
             <div className="shrink-0 mb-6 flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-2xl font-extrabold flex items-center gap-3 text-slate-900 tracking-tight">
-                            Gap Lifecycle Pipeline
+                        <h1 className="text-3xl font-black text-slate-900 mb-2 tracking-tight flex items-center gap-3">
+                            <span className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center border border-indigo-200">
+                                <svg className="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                            </span>
+                            Q-Sub Drift Remediation Pipeline
+                            <span className="text-xs font-bold bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full uppercase tracking-widest border border-indigo-200">
+                                Kanban View
+                            </span>
                         </h1>
-                        <p className="text-sm font-medium text-slate-500 mt-1">
-                            Jira-style state machine • Drag gaps between columns • Real-time sync to Slack
+                        <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight">
+                            Kanban anti-drift machine • Live Jira Integration Active
+                        </p>
+                        <p className="text-slate-500 mt-2 text-sm max-w-3xl leading-relaxed">
+                            Drag and drop Q-Sub drift gaps between columns to update their status. Changes are automatically synchronized with your engineering issue tracker.
                         </p>
                     </div>
                     {isMounted && uploads.length > 0 && (
