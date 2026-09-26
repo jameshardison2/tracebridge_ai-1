@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "TraceBridge AI - Regulatory Gap Detection",
   description:
-    "AI-powered gap detection for FDA 510(k) and medical device regulatory compliance. Powered by Gemini File Search.",
+    "Pre-submission audit for FDA 510(k) packages: checks cross-document coherence and flags gaps against FDA guidance, with source citations.",
 };
 
 export default function RootLayout({

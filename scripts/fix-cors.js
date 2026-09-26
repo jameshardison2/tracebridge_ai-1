@@ -18,7 +18,7 @@ async function fixCors() {
         
         await bucket.setCorsConfiguration([
             {
-              origin: ["*"],
+              origin: ["http://localhost:3000", "https://tracebridge.ai", "https://www.tracebridge.ai"],
               method: ["GET", "PUT", "POST", "DELETE", "HEAD", "OPTIONS"],
               responseHeader: ["*"],
               maxAgeSeconds: 3600
