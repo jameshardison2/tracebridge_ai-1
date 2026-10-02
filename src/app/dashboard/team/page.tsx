@@ -688,7 +688,7 @@ export default function TeamPage() {
                                             <div>
                                                 <p className={`text-sm font-bold ${framework.active ? 'text-emerald-900' : 'text-slate-700'}`}>{framework.name}</p>
                                                 <p className={`text-[10px] uppercase mt-1 font-semibold tracking-wider ${framework.active ? 'text-emerald-600' : (framework.requested ? 'text-indigo-500' : 'text-slate-400')}`}>
-                                                    {framework.active ? 'AI Model Trained' : (framework.requested ? 'Beta Request Logged' : 'Request Early Access')}
+                                                    {framework.active ? 'Rules Database Loaded' : (framework.requested ? 'Beta Request Logged' : 'Request Early Access')}
                                                 </p>
                                             </div>
                                             <div className={`w-11 h-6 rounded-full flex items-center px-1 transition-colors duration-300 ${framework.active ? 'bg-emerald-500 justify-end shadow-inner' : (framework.requested ? 'bg-indigo-100 justify-start ring-1 ring-indigo-200' : 'bg-slate-200 justify-start')}`}>

@@ -235,7 +235,7 @@ export default function DashboardPage() {
                         <div className="w-8 h-8 rounded bg-emerald-600 text-white flex items-center justify-center font-bold shrink-0 shadow-md group-hover:bg-emerald-500 transition-colors">3</div>
                         <div>
                             <h3 className="text-sm font-bold text-emerald-100 mb-1">Drift Remediation</h3>
-                            <p className="text-[11px] text-emerald-300 leading-relaxed">Triage the flagged gaps. We automatically sync with your Jira board to seamlessly assign fixes directly to your engineering team.</p>
+                            <p className="text-[11px] text-emerald-300 leading-relaxed">Triage the flagged gaps. Easily assign fixes directly to your engineering team for remediation.</p>
                         </div>
                         <ArrowRight className="w-5 h-5 text-slate-600 absolute -right-3 top-1/2 -translate-y-1/2 z-20 hidden md:block" />
                     </Link>
@@ -244,7 +244,7 @@ export default function DashboardPage() {
                         <div className="w-8 h-8 rounded bg-blue-600 text-white flex items-center justify-center font-bold shrink-0 shadow-sm group-hover:bg-blue-500 transition-colors">4</div>
                         <div>
                             <h3 className="text-sm font-bold text-white mb-1">Traceability Matrix</h3>
-                            <p className="text-[11px] text-blue-200 leading-relaxed">Watch your live matrix turn green as engineers ship code, guaranteeing 100% compliance before your final eSTAR export.</p>
+                            <p className="text-[11px] text-blue-200 leading-relaxed">Watch your live matrix update as engineers ship code, ensuring readiness before your final eSTAR export.</p>
                         </div>
                     </Link>
                 </div>
@@ -429,14 +429,14 @@ export default function DashboardPage() {
                                     <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold shrink-0">2</div>
                                     <div>
                                         <h3 className="font-bold text-slate-800">Review AI Intelligence & Remediate</h3>
-                                        <p className="text-sm text-slate-500 mt-1">Navigate to the <strong>Remediation Pipeline</strong>. Watch how TraceBridge automatically flags missing ISO 13485 or FDA requirements and allows you to seamlessly assign fixes directly to Jira.</p>
+                                        <p className="text-sm text-slate-500 mt-1">Navigate to the <strong>Remediation Pipeline</strong>. Watch how TraceBridge automatically flags missing ISO 13485 or FDA requirements and allows you to seamlessly assign fixes directly to the team.</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
                                     <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold shrink-0">3</div>
                                     <div>
                                         <h3 className="font-bold text-slate-800">Monitor the Traceability Matrix</h3>
-                                        <p className="text-sm text-slate-500 mt-1">Go to the <strong>Traceability Matrix</strong> to watch your real-time FDA compliance status. As your engineers close Jira tickets, the AI will automatically lower the "Drift Risk" and turn the matrix green.</p>
+                                        <p className="text-sm text-slate-500 mt-1">Go to the <strong>Traceability Matrix</strong> to watch your real-time FDA compliance status. As your engineers close tickets, the AI will automatically lower the "Drift Risk" and turn the matrix green.</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-4">

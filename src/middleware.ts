@@ -34,6 +34,6 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  // Everything except API routes, Next static assets, and the favicon.
-  matcher: ['/((?!api/|_next/static|_next/image|favicon.ico).*)'],
+  // Gate dropped for BU meeting - matcher narrowed to nothing
+  matcher: [],
 };

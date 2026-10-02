@@ -342,7 +342,7 @@ export default function PipelinePage() {
                             </span>
                         </h1>
                         <p className="text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 tracking-tight">
-                            Kanban anti-drift machine • Live Jira Integration Active
+                            Kanban anti-drift machine • Remediation Tracking Active
                         </p>
                         <p className="text-slate-500 mt-2 text-sm max-w-3xl leading-relaxed">
                             Drag and drop Q-Sub drift gaps between columns to update their status. Changes are automatically synchronized with your engineering issue tracker.
