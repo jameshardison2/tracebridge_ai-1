@@ -1676,7 +1676,7 @@ function ReportsContent() {
                         <span className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center border border-indigo-200">
                             <FileText className="w-4 h-4 text-indigo-600" />
                         </span>
-                        Q-Sub Drift Submission Hub
+                        510(k) Submission Hub
                         <span className="text-xs font-bold bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full uppercase tracking-widest border border-indigo-200">
                             Submission Builder
                         </span>
